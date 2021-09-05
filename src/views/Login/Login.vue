@@ -6,7 +6,7 @@
       :rules="loginRules"
       class="login-form"
       label-position="top"
-      autocomplete="on" 
+       
     >
       <div class="title-container">
         <h3 class="title">{{headerTitle}}</h3>
@@ -17,13 +17,13 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
           placeholder="请输入用户名称"
-          @keyup.enter.native="login('loginForm')"
+          v-model="loginForm.username"
           name="username"
           type="text"
           tabindex="1"
-          autocomplete="on"
+          
+          @keyup.enter.native="submitForm('loginForm')"
         >
         </el-input>
       </el-form-item>
@@ -33,15 +33,53 @@
           <font-awesome-icon icon="key" />
         </span>
         <el-input
+          ref="password"
           placeholder="请输入密码"
           v-model="loginForm.password"
+          name="password"
           type="password"
-          @keyup.enter.native="login('loginForm')"
+          tabindex="2"
+          
+          @keyup.enter.native="submitForm('loginForm')"
         >
         </el-input>
       </el-form-item>
-      <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="login('loginForm')">登入</el-button>
+      <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="submitForm('loginForm')">登入</el-button>
+      <div style="position:relative">
+        <div class="tips">
+          <span>您还没有帐号吗 ?</span>
+        </div>
+        <div class="tips">
+          <span>点击按钮立即注册</span>
+        </div>
+        <el-button class="thirdparty-button" type="danger" @click="showDialog=true">立即注册</el-button>
+      </div>
     </el-form>
+    <el-dialog :title="registerTitle" :visible.sync="showDialog">
+      <el-form label-position="right" :rules="loginRules" label-width="80px" :model="registerForm">
+        <el-form-item label="电话区码">
+          <font-awesome-icon icon="globe"/>
+          <el-input v-model="registerForm.countryCallingCode" placeholder="+886"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <font-awesome-icon icon="envelope" />
+          <el-input v-model="registerForm.email" type="text" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <font-awesome-icon icon="phone" />
+          <el-input v-model="registerForm.telephone" type="text" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名">
+          <font-awesome-icon icon="user" />
+          <el-input v-model="registerForm.username" type="text" placeholder="请输入用户名称"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <font-awesome-icon icon="key" />
+          <el-input v-model="registerForm.password" type="password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-button type="danger" style="width:100%;margin-bottom:30px;" @click="submitForm('registerForm')">立即注册</el-button>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -53,7 +91,8 @@ export default {
   data() {
     return {
       headerTitle:'聊天室登入系統',
-      tableIndex: 0,
+      registerTitle:'立即註冊',
+      showDialog: false,
       loginForm: {
         username: "",
         password: "",
@@ -64,6 +103,13 @@ export default {
           { required: true, message: "請輸入密碼", trigger: "blur" },
           { min: 8, message: "最小8個字符以上", trigger: "blur" },
         ],
+      },
+      registerForm: {
+        username: '',
+        password: '',
+        countryCallingCode:'',
+        email: '',
+        telephone:'',
       },
       token: getLocal("token"),
     };
@@ -82,8 +128,10 @@ export default {
     }
   },
   methods: {
-    //登入
-    login(rules) {
+    //登入&&註冊
+    submitForm(rules) {
+      console.log('rules',rules)
+
       if (this.loginForm.username.trim() == "") {
         this.loginForm.username = "";
       }
@@ -91,29 +139,29 @@ export default {
         this.loginForm.password = "";
       }
       //驗證表單是否通過
-      this.$refs[rules].validate((valid) => {
-        if (!valid) {
-          alert("登入驗證失敗，請重新輸入並確認");
-          return;
-        }
-        login(this.loginForm)
-          .then((res) => {
-            //登入成功
-            if (res.code == 200) {
-              setToken(res.data.token);
-              this.$store.commit("getToken", res.data.token);
-              this.$router.push({ path: "/domain/home" });
-            } else {
-              alert("登入失敗，請重新確認帳號密碼");
-              return false;
-            }
-            //登入失敗
-          })
-          .catch((err) => {
-            alert("登入失敗，請重新確認帳號密碼");
-            return false;
-          });
-      });    
+      // this.$refs[rules].validate((valid) => {
+      //   if (!valid) {
+      //     alert("登入驗證失敗，請重新輸入並確認");
+      //     return;
+      //   }
+      //   login(this.loginForm)
+      //     .then((res) => {
+      //       //登入成功
+      //       if (res.code == 200) {
+      //         setToken(res.data.token);
+      //         this.$store.commit("getToken", res.data.token);
+      //         this.$router.push({ path: "/domain/home" });
+      //       } else {
+      //         alert("登入失敗，請重新確認帳號密碼");
+      //         return false;
+      //       }
+      //       //登入失敗
+      //     })
+      //     .catch((err) => {
+      //       alert("登入失敗，請重新確認帳號密碼");
+      //       return false;
+      //     });
+      // });    
     },
   },
 };
