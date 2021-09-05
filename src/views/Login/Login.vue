@@ -55,27 +55,27 @@
         <el-button class="thirdparty-button" type="danger" @click="showDialog=true">立即注册</el-button>
       </div>
     </el-form>
-    <el-dialog :title="registerTitle" :visible.sync="showDialog">
-      <el-form label-position="right" :rules="loginRules" label-width="80px" :model="registerForm">
-        <el-form-item label="电话区码">
+    <el-dialog :title="registerTitle" :visible.sync="showDialog" :before-close="dialogClose('registerForm')">
+      <el-form ref="registerForm" label-position="right" :rules="loginRules" label-width="20px" :model="registerForm">
+        <el-form-item>
           <font-awesome-icon icon="globe"/>
-          <el-input v-model="registerForm.countryCallingCode" placeholder="+886"></el-input>
+          <el-input v-model="registerForm.countryCallingCode" placeholder="请输入电话区码"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item>
           <font-awesome-icon icon="envelope" />
           <el-input v-model="registerForm.email" type="text" placeholder="请输入邮箱"></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item>
           <font-awesome-icon icon="phone" />
           <el-input v-model="registerForm.telephone" type="text" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item label="用户名">
+        <el-form-item prop="username">
           <font-awesome-icon icon="user" />
-          <el-input v-model="registerForm.username" type="text" placeholder="请输入用户名称"></el-input>
+          <el-input v-model="registerForm.username" name="username" type="text" placeholder="请输入用户名称"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item prop="password">
           <font-awesome-icon icon="key" />
-          <el-input v-model="registerForm.password" type="password" placeholder="请输入密码"></el-input>
+          <el-input v-model="registerForm.password" name="password" type="password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-button type="danger" style="width:100%;margin-bottom:30px;" @click="submitForm('registerForm')">立即注册</el-button>
       </el-form>
@@ -130,39 +130,52 @@ export default {
   methods: {
     //登入&&註冊
     submitForm(rules) {
-      console.log('rules',rules)
-
-      if (this.loginForm.username.trim() == "") {
-        this.loginForm.username = "";
-      }
-      if (this.loginForm.password.trim() == "") {
-        this.loginForm.password = "";
-      }
-      //驗證表單是否通過
-      // this.$refs[rules].validate((valid) => {
-      //   if (!valid) {
-      //     alert("登入驗證失敗，請重新輸入並確認");
-      //     return;
-      //   }
-      //   login(this.loginForm)
-      //     .then((res) => {
-      //       //登入成功
-      //       if (res.code == 200) {
-      //         setToken(res.data.token);
-      //         this.$store.commit("getToken", res.data.token);
-      //         this.$router.push({ path: "/domain/home" });
-      //       } else {
-      //         alert("登入失敗，請重新確認帳號密碼");
-      //         return false;
-      //       }
-      //       //登入失敗
-      //     })
-      //     .catch((err) => {
-      //       alert("登入失敗，請重新確認帳號密碼");
-      //       return false;
-      //     });
-      // });    
+      switch (rules) {
+        case 'loginForm':
+          if (this.loginForm.username.trim() == "") {
+            this.loginForm.username = "";
+          }
+          if (this.loginForm.password.trim() == "") {
+            this.loginForm.password = "";
+          }
+          //驗證表單是否通過
+          this.$refs[rules].validate((valid) => {
+            if (!valid) {
+              alert("登入驗證失敗，請重新輸入並確認");
+              return;
+            }
+            login(this.loginForm)
+              .then((res) => {
+                //登入成功
+                if (res.code == 200) {
+                  setToken(res.data.token);
+                  this.$store.commit("getToken", res.data.token);
+                  this.$router.push({ path: "/domain/home" });
+                } else {
+                  alert("登入失敗，請重新確認帳號密碼");
+                  return false;
+                }
+                //登入失敗
+              })
+              .catch((err) => {
+                alert("登入失敗，請重新確認帳號密碼");
+                return false;
+              });
+          });   
+          break;
+        case 'registerForm':
+          console.log('2')
+          
+          break;
+        default:
+          break;
+      } 
     },
+    dialogClose(rules){
+      this.$nextTick(()=>{
+         this.$refs[rules].resetFields();
+      })
+    }
   },
 };
 </script>
