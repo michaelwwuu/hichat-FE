@@ -52,10 +52,10 @@
         <div class="tips">
           <span>点击按钮立即注册</span>
         </div>
-        <el-button class="thirdparty-button" type="danger" @click="showDialog=true">立即注册</el-button>
+        <el-button class="thirdparty-button" type="danger" @click="showDialog=true;resetRegisterForm('registerForm')">立即注册</el-button>
       </div>
     </el-form>
-    <el-dialog :title="registerTitle" :visible.sync="showDialog" :before-close="dialogClose('registerForm')">
+    <el-dialog :title="registerTitle" :visible.sync="showDialog">
       <el-form ref="registerForm" label-position="right" :rules="loginRules" label-width="20px" :model="registerForm">
         <el-form-item>
           <font-awesome-icon icon="globe"/>
@@ -86,7 +86,7 @@
 <script>
 import { login } from "_api/index.js";
 import { setToken, setLocal, getLocal } from "_util/utils.js";
-// import { getUserInfo } from "@/api";
+import { getUserInfo,register } from "@/api";
 export default {
   data() {
     return {
@@ -144,7 +144,7 @@ export default {
               alert("登入驗證失敗，請重新輸入並確認");
               return;
             }
-            login(this.loginForm)
+            login(this.registerForm)
               .then((res) => {
                 //登入成功
                 if (res.code == 200) {
@@ -164,16 +164,45 @@ export default {
           });   
           break;
         case 'registerForm':
-          console.log('2')
-          
+          if (this.registerForm.username.trim() == "") {
+            this.registerForm.username = "";
+          }
+          if (this.registerForm.password.trim() == "") {
+            this.registerForm.password = "";
+          }
+          this.$refs[rules].validate((valid) => {
+            if (!valid) {
+              alert("註冊失敗，請重新輸入並確認");
+              return;
+            }
+            register(this.registerForm)
+            console.log(this.registerForm)
+              this.$confirm('确认註冊？')
+              .then((res) => {
+                //登入成功
+                if (res.code == 200) {
+                  setToken(res.data.token);
+                  this.$store.commit("getToken", res.data.token);
+                  this.$router.push({ path: "/domain/home" });
+                } else {
+                  alert("註冊失敗，請重新輸入並確認");
+                  return false;
+                }
+                //登入失敗
+              })
+              .catch((err) => {
+                alert("註冊失敗，請重新輸入並確認");
+                return false;
+              });
+          });   
           break;
         default:
           break;
       } 
     },
-    dialogClose(rules){
+    resetRegisterForm(formName){
       this.$nextTick(()=>{
-         this.$refs[rules].resetFields();
+        this.$refs[formName].resetFields();
       })
     }
   },
