@@ -52,14 +52,14 @@
         <div class="tips">
           <span>点击按钮立即注册</span>
         </div>
-        <el-button class="thirdparty-button" type="danger" @click="showDialog=true;resetRegisterForm('registerForm')">立即注册</el-button>
+        <el-button class="thirdparty-button" type="danger" @click="showDialog=true;resetRegisterForm()">立即注册</el-button>
       </div>
     </el-form>
     <el-dialog :title="registerTitle" :visible.sync="showDialog">
       <el-form ref="registerForm" label-position="right" :rules="loginRules" label-width="20px" :model="registerForm">
         <el-form-item>
           <font-awesome-icon icon="globe"/>
-          <el-input v-model="registerForm.countryCallingCode" placeholder="请输入电话区码"></el-input>
+          <el-input v-model="registerForm.countryCallingCode" placeholder="请输入电话区码 如+886"></el-input>
         </el-form-item>
         <el-form-item>
           <font-awesome-icon icon="envelope" />
@@ -85,7 +85,7 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, setLocal, getLocal } from "_util/utils.js";
+import { setToken, getLocal } from "_util/utils.js";
 import { getUserInfo,register } from "@/api";
 export default {
   data() {
@@ -101,7 +101,7 @@ export default {
         username: [{ required: true, message: "請輸入帳號", trigger: "blur"}],
         password: [
           { required: true, message: "請輸入密碼", trigger: "blur" },
-          { min: 8, message: "最小8個字符以上", trigger: "blur" },
+          { min: 4, message: "最小4個字符以上", trigger: "blur" },
         ],
       },
       registerForm: {
@@ -120,7 +120,7 @@ export default {
       //驗證token是否過期
       getUserInfo({}).then((res) => {
         if (res.code == 200) {
-          this.$router.push({ path: "/domain/home" });
+          this.$router.push({ path: "/Chat" });
         } else {
           return false;
         }
@@ -132,66 +132,82 @@ export default {
     submitForm(rules) {
       switch (rules) {
         case 'loginForm':
-          if (this.loginForm.username.trim() == "") {
+          if (this.loginForm.username.trim() === "") {
             this.loginForm.username = "";
           }
-          if (this.loginForm.password.trim() == "") {
+          if (this.loginForm.password.trim() === "") {
             this.loginForm.password = "";
           }
-          //驗證表單是否通過
+          //驗證登入表單是否通過
           this.$refs[rules].validate((valid) => {
             if (!valid) {
-              alert("登入驗證失敗，請重新輸入並確認");
+              this.$message({
+                message: "登入驗證失敗，請重新輸入並確認",
+                type: 'error'
+              });
               return;
             }
-            login(this.registerForm)
+            login(this.loginForm)
               .then((res) => {
                 //登入成功
-                if (res.code == 200) {
+                if (res.code === 200) {
                   setToken(res.data.token);
                   this.$store.commit("getToken", res.data.token);
-                  this.$router.push({ path: "/domain/home" });
+                  this.$router.push({ path: "/Chat" });
                 } else {
-                  alert("登入失敗，請重新確認帳號密碼");
+                  this.$message({
+                    message: "登入驗證失敗，請重新輸入並確認",
+                    type: 'error'
+                  });
                   return false;
                 }
                 //登入失敗
               })
               .catch((err) => {
-                alert("登入失敗，請重新確認帳號密碼");
+                this.$message({
+                  message: "登入驗證失敗，請重新輸入並確認",
+                  type: 'error'
+                });
                 return false;
               });
           });   
           break;
         case 'registerForm':
-          if (this.registerForm.username.trim() == "") {
+          if (this.registerForm.username.trim() === "") {
             this.registerForm.username = "";
           }
-          if (this.registerForm.password.trim() == "") {
+          if (this.registerForm.password.trim() === "") {
             this.registerForm.password = "";
           }
+          //驗證註冊表單是否通過
           this.$refs[rules].validate((valid) => {
             if (!valid) {
-              alert("註冊失敗，請重新輸入並確認");
+              this.$message({
+                message: "註冊失敗，請重新輸入並確認",
+                type: 'error'
+              });
               return;
             }
             register(this.registerForm)
-            console.log(this.registerForm)
-              this.$confirm('确认註冊？')
               .then((res) => {
                 //登入成功
-                if (res.code == 200) {
+                if (res.code === 200) {
                   setToken(res.data.token);
                   this.$store.commit("getToken", res.data.token);
-                  this.$router.push({ path: "/domain/home" });
-                } else {
-                  alert("註冊失敗，請重新輸入並確認");
+                  this.$router.push({ path: "/Chat" });
+                } else if(res.code === 500){
+                  this.$message({
+                    message: res.message,
+                    type: 'error'
+                  });
                   return false;
-                }
-                //登入失敗
+                }                 
               })
               .catch((err) => {
-                alert("註冊失敗，請重新輸入並確認");
+                this.$message({
+                  message: "註冊失敗，請重新輸入並確認",
+                  type: 'error'
+                });
                 return false;
               });
           });   
@@ -200,9 +216,10 @@ export default {
           break;
       } 
     },
-    resetRegisterForm(formName){
+    resetRegisterForm(){
       this.$nextTick(()=>{
-        this.$refs[formName].resetFields();
+        this.$refs['loginForm'].resetFields();
+        this.$refs['registerForm'].resetFields();
       })
     }
   },
@@ -212,7 +229,6 @@ export default {
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg:#283443;
 $light_gray:#fff;
 $cursor: #fff;
@@ -275,7 +291,12 @@ $light_gray:#eee;
     margin: 0 auto;
     overflow: hidden;
   }
-
+  /deep/.el-dialog__wrapper{
+    .el-input__inner{
+      color: #000000;
+    }
+  }
+  
   .tips {
     font-size: 14px;
     color: #fff;

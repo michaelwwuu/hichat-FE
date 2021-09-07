@@ -21,16 +21,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "Login" */ '@/views/Login/Login.vue'),
   },
   {
-    path: "/domain",
-    name: "domain",
-    component: () => import(/* webpackChunkName: "domain" */ '@/views/Domain/Domain.vue'),
-    children: [
-      {
-        path: "home",
-        name: "Home",  // 首页
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Home/Home.vue'),
-      },
-    ]
+    path: "/Chat",
+    name: "Chat",
+    component: () => import(/* webpackChunkName: "Chat" */ '@/views/Chat/Chat.vue'),
   },
   {
     path: "*",
