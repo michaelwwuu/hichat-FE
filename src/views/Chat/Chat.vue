@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="search">
+    <!-- <div class="search">
       <el-form ref="searchForm" :inline="true" :model="searchForm" class="demo-form-inline">
         <el-form-item>
           <el-input v-model="searchForm.name"  placeholder="请输入 不輸入則顯示所有聊天室" style="width: 250px; margin-right: 10px;"></el-input>
@@ -12,27 +12,25 @@
       
     </div>
     <div class="search-list">
-        <span>聊天室選擇 :</span>
-        <el-row v-for="item in searchData" :key="item.i">
-          <el-button type="primary" plain round @click="onChat(item)">{{item.chatRoomName}}</el-button>
-        </el-row>
-      </div>
+      <span>聊天室選擇 :</span>
+      <el-row v-for="item in searchData" :key="item.i">
+        <el-button type="primary" plain round>{{item.chatRoomName}}</el-button>
+      </el-row>
+    </div> -->
     <el-container>
-      <!-- <el-aside width="250px">
+      <el-aside width="250px">
         
         <el-header height="40px">
           <i class="el-icon-user-solid icon-message"></i>
-          <span class="title">联系人</span>
+          <span class="title">联系人 </span>
         </el-header>
 
         <message-group
           :concats="concats"
-          @switchGroup="switchGroup" />
-      </el-aside> -->
+           />
+      </el-aside>
       <el-main>
-        <el-header height="40px">
-          <span class="title">聊天室 <span v-if="roomName !== ''">( {{roomName}} )</span></span>
-        </el-header>
+        <el-header height="40px"></el-header>
         <message-pabel
           :concats="concats"
           :nowSwitchId="nowSwitchId"
@@ -63,7 +61,6 @@ export default {
   name: 'Chat',
   data () {
     return {
-      roomName: '',
       concats: [{
         id: 0,
         active: false,
@@ -107,6 +104,8 @@ export default {
     }
   },
   mounted () {
+    this.UUID()
+    console.log(this.UUID())
     const params = this.$route.params
  
     /**
@@ -117,13 +116,16 @@ export default {
       this.localInfo = {
         id: params.id,
       }
-    } 
+    }
     // else{
     //   this.goBack()
     // }
-    
   },
   methods: {
+    UUID(){
+      let number = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+      localStorage.setItem('UUID',number + number + '-' + number + '-' + number + '-' + number + '-' + number + number + number ) 
+    },
     onSearch(){
       getSearchChat(this.searchForm)
       .then((res) => {
@@ -134,9 +136,6 @@ export default {
       .catch((err) => {
         console.log(err)
       })
-    },
-    onChat(item){
-      this.roomName = item.chatRoomName
     },
     /**
      * 接收消息
@@ -235,18 +234,24 @@ export default {
   }
   .el-container {
     position: fixed;
-    top: 100px;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     width: 95%;
     margin: 30px auto;
     .el-aside,
-    .el-main {
+    .el-main{
       display: flex;
       flex-direction: column;
-      border-radius: 6px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      border-radius: 6px 0px 6px 6px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);      
+    }
+    .el-aside{
+      border-radius: 6px 0px 6px 6px;
+    }
+    .el-main {
+      border-radius: 0px 6px 6px 6px;
     }
     .el-aside {
       background: rgba(235, 233, 232, .8);
@@ -259,6 +264,7 @@ export default {
       line-height: 40px;
       background: rgb(55, 126, 200);
       overflow: hidden;
+      border-right:1px solid #FFFFFF;
       .title,
       .icon-message {
         color: #ffffff;

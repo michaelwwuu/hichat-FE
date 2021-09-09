@@ -7,6 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token:getLocal("token"),
+
   },
   mutations: {
     getToken(state,payload){
