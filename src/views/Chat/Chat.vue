@@ -104,20 +104,20 @@ export default {
     }
   },
   mounted () {
-    const params = this.$route.params
+    const query = this.$route.query
+    console.log('params',params)
 
     /**
      * 判断是否通过路由跳转过来的
      */
-    if (params.id) {
+    if (query.username) {
       // 保存当前用户信息
       this.localInfo = {
-        id: params.id,
+        id: query.username,
       }
+    } else{
+      this.goBack()
     }
-    // else{
-    //   this.goBack()
-    // }
   },
   methods: {
     onSearch(){

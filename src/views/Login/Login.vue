@@ -6,10 +6,9 @@
       :rules="loginRules"
       class="login-form"
       label-position="top"
-       
     >
       <div class="title-container">
-        <h3 class="title">{{headerTitle}}</h3>
+        <h3 class="title">{{ headerTitle }}</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container">
@@ -22,7 +21,6 @@
           name="username"
           type="text"
           tabindex="1"
-          
           @keyup.enter.native="submitForm('loginForm')"
         >
         </el-input>
@@ -39,45 +37,89 @@
           name="password"
           type="password"
           tabindex="2"
-          
           @keyup.enter.native="submitForm('loginForm')"
         >
         </el-input>
       </el-form-item>
-      <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="submitForm('loginForm')">登入</el-button>
-      <div style="position:relative">
+      <el-button
+        type="primary"
+        style="width: 100%; margin-bottom: 30px"
+        @click="submitForm('loginForm')"
+        >登入</el-button
+      >
+      <div style="position: relative">
         <div class="tips">
           <span>您还没有帐号吗 ?</span>
         </div>
         <div class="tips">
           <span>点击按钮立即注册</span>
         </div>
-        <el-button class="thirdparty-button" type="danger" @click="showDialog=true;resetRegisterForm()">立即注册</el-button>
+        <el-button
+          class="thirdparty-button"
+          type="danger"
+          @click="
+            showDialog = true;
+            resetRegisterForm();
+          "
+          >立即注册</el-button
+        >
       </div>
     </el-form>
     <el-dialog :title="registerTitle" :visible.sync="showDialog">
-      <el-form ref="registerForm" label-position="right" :rules="loginRules" label-width="20px" :model="registerForm">
+      <el-form
+        ref="registerForm"
+        label-position="right"
+        :rules="loginRules"
+        label-width="20px"
+        :model="registerForm"
+      >
         <el-form-item>
-          <font-awesome-icon icon="globe"/>
-          <el-input v-model="registerForm.countryCallingCode" placeholder="请输入电话区码 如+886"></el-input>
+          <font-awesome-icon icon="globe" />
+          <el-input
+            v-model="registerForm.countryCallingCode"
+            placeholder="请输入电话区码 如+886"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <font-awesome-icon icon="envelope" />
-          <el-input v-model="registerForm.email" type="text" placeholder="请输入邮箱"></el-input>
+          <el-input
+            v-model="registerForm.email"
+            type="text"
+            placeholder="请输入邮箱"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <font-awesome-icon icon="phone" />
-          <el-input v-model="registerForm.telephone" type="text" placeholder="请输入手机号"></el-input>
+          <el-input
+            v-model="registerForm.telephone"
+            type="text"
+            placeholder="请输入手机号"
+          ></el-input>
         </el-form-item>
         <el-form-item prop="username">
           <font-awesome-icon icon="user" />
-          <el-input v-model="registerForm.username" name="username" type="text" placeholder="请输入用户名称"></el-input>
+          <el-input
+            v-model="registerForm.username"
+            name="username"
+            type="text"
+            placeholder="请输入用户名称"
+          ></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <font-awesome-icon icon="key" />
-          <el-input v-model="registerForm.password" name="password" type="password" placeholder="请输入密码"></el-input>
+          <el-input
+            v-model="registerForm.password"
+            name="password"
+            type="password"
+            placeholder="请输入密码"
+          ></el-input>
         </el-form-item>
-        <el-button type="danger" style="width:100%;margin-bottom:30px;" @click="submitForm('registerForm')">立即注册</el-button>
+        <el-button
+          type="danger"
+          style="width: 100%; margin-bottom: 30px"
+          @click="submitForm('registerForm')"
+          >立即注册</el-button
+        >
       </el-form>
     </el-dialog>
   </div>
@@ -85,37 +127,36 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, getToken,setUUID } from "_util/utils.js";
-import { getUserInfo,register } from "@/api";
+import { setToken, getToken, setUUID } from "_util/utils.js";
+import { getUserInfo, register } from "@/api";
 export default {
   data() {
     return {
-      headerTitle:'聊天室登入系統',
-      registerTitle:'立即註冊',
+      headerTitle: "聊天室登入系統",
+      registerTitle: "立即註冊",
       showDialog: false,
       loginForm: {
         username: "",
         password: "",
       },
       loginRules: {
-        username: [{ required: true, message: "請輸入帳號", trigger: "blur"}],
+        username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
         password: [
           { required: true, message: "請輸入密碼", trigger: "blur" },
           { min: 4, message: "最小4個字符以上", trigger: "blur" },
         ],
       },
       registerForm: {
-        username: '',
-        password: '',
-        countryCallingCode:'',
-        email: '',
-        telephone:'',
+        username: "",
+        password: "",
+        countryCallingCode: "",
+        email: "",
+        telephone: "",
       },
       token: getToken("token"),
     };
   },
   mounted() {
-
     // 判斷是否記住我
     if (this.token) {
       //驗證token是否過期
@@ -129,14 +170,21 @@ export default {
     }
   },
   methods: {
-    getUUID(){
-      let number = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
-      setUUID(number)       
+    getUUID() {
+      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
+      setUUID(number);
     },
     //登入&&註冊
     submitForm(rules) {
       switch (rules) {
-        case 'loginForm':
+        case "loginForm":
           if (this.loginForm.username.trim() === "") {
             this.loginForm.username = "";
           }
@@ -148,7 +196,7 @@ export default {
             if (!valid) {
               this.$message({
                 message: "登入驗證失敗，請重新輸入並確認",
-                type: 'error'
+                type: "error",
               });
               return;
             }
@@ -156,14 +204,17 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
-                  this.getUUID()
+                  this.getUUID();
                   setToken(res.data.tokenHead + res.data.token);
                   // this.$store.commit("getToken", res.data.token);
-                  this.$router.push({ path: "/Chat" });
+                  this.$router.push({
+                    path: "/Chat",
+                    query: { username: this.loginForm.username },
+                  });
                 } else {
                   this.$message({
                     message: "登入驗證失敗，請重新輸入並確認",
-                    type: 'error'
+                    type: "error",
                   });
                   return false;
                 }
@@ -172,13 +223,13 @@ export default {
               .catch((err) => {
                 this.$message({
                   message: "登入驗證失敗，請重新輸入並確認",
-                  type: 'error'
+                  type: "error",
                 });
                 return false;
               });
-          });   
+          });
           break;
-        case 'registerForm':
+        case "registerForm":
           if (this.registerForm.username.trim() === "") {
             this.registerForm.username = "";
           }
@@ -190,7 +241,7 @@ export default {
             if (!valid) {
               this.$message({
                 message: "註冊失敗，請重新輸入並確認",
-                type: 'error'
+                type: "error",
               });
               return;
             }
@@ -198,37 +249,40 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
-                  this.getUUID()
+                  this.getUUID();
                   setToken(res.data.tokenHead + res.data.token);
                   // this.$store.commit("getToken", res.data.token);
-                  this.$router.push({ path: "/Chat" });
-                } else if(res.code === 500){
+                  this.$router.push({
+                    path: "/Chat",
+                    query: { username: this.loginForm.username },
+                  });
+                } else if (res.code === 500) {
                   this.$message({
                     message: res.message,
-                    type: 'error'
+                    type: "error",
                   });
                   return false;
-                }                 
+                }
               })
               .catch((err) => {
                 this.$message({
                   message: "註冊失敗，請重新輸入並確認",
-                  type: 'error'
+                  type: "error",
                 });
                 return false;
               });
-          });   
+          });
           break;
         default:
           break;
-      } 
+      }
     },
-    resetRegisterForm(){
-      this.$nextTick(()=>{
-        this.$refs['loginForm'].resetFields();
-        this.$refs['registerForm'].resetFields();
-      })
-    }
+    resetRegisterForm() {
+      this.$nextTick(() => {
+        this.$refs["loginForm"].resetFields();
+        this.$refs["registerForm"].resetFields();
+      });
+    },
   },
 };
 </script>
@@ -236,8 +290,8 @@ export default {
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -280,9 +334,9 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
@@ -298,12 +352,12 @@ $light_gray:#eee;
     margin: 0 auto;
     overflow: hidden;
   }
-  /deep/.el-dialog__wrapper{
-    .el-input__inner{
+  /deep/.el-dialog__wrapper {
+    .el-input__inner {
       color: #000000;
     }
   }
-  
+
   .tips {
     font-size: 14px;
     color: #fff;
