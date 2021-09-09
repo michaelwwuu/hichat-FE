@@ -1,7 +1,25 @@
 <template>
   <div class="wrapper">
+    <div class="search">
+      <el-form ref="searchForm" :inline="true" :model="searchForm" class="demo-form-inline">
+        <el-form-item>
+          <el-input v-model="searchForm.name"  placeholder="请输入 不輸入則顯示所有聊天室" style="width: 250px; margin-right: 10px;"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="onSearch">搜寻</el-button>
+        </el-form-item>
+      </el-form>
+      
+    </div>
+    <div class="search-list">
+        <span>聊天室選擇 :</span>
+        <el-row v-for="item in searchData" :key="item.i">
+          <el-button type="primary" plain round @click="onChat(item)">{{item.chatRoomName}}</el-button>
+        </el-row>
+      </div>
     <el-container>
-      <el-aside width="250px">
+      <!-- <el-aside width="250px">
+        
         <el-header height="40px">
           <i class="el-icon-user-solid icon-message"></i>
           <span class="title">联系人</span>
@@ -10,14 +28,11 @@
         <message-group
           :concats="concats"
           @switchGroup="switchGroup" />
-      </el-aside>
-
+      </el-aside> -->
       <el-main>
         <el-header height="40px">
-          <span class="title" v-if="concats[nowSwitch].id == 'group'">聊天室({{lineCount}})人</span>
-          <span class="title" v-else>{{concats[nowSwitch].nickName}}</span>
+          <span class="title">聊天室 <span v-if="roomName !== ''">( {{roomName}} )</span></span>
         </el-header>
-
         <message-pabel
           :concats="concats"
           :nowSwitchId="nowSwitchId"
@@ -38,14 +53,17 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 import MessageGroup from '@/components/message-group'
 import MessagePabel from '@/components/message-pabel'
 import MessageInput from '@/components/message-input'
+import { getSearchChat } from "@/api";
 export default {
   name: 'Chat',
   data () {
     return {
-      lineCount: 0,
+      roomName: '',
       concats: [{
         id: 0,
         active: false,
@@ -59,42 +77,38 @@ export default {
       nowSwitch: 0,
       nowSwitchId: 'group',
       localInfo: {},
+      searchForm: {
+        pageSize: 10,
+        pageNum: 1 ,
+        name: '',
+      },
+      searchData:[],
+    }
+  },  
+  computed: {
+    ...mapState({
+      wsRes: state => state.ws.wsRes
+    }),
+  },
+  watch: {
+    wsRes(val) {
+      const StatusCode = val;
+      StatusCode === 0 && this.$message({ type: "error", message: "查詢失敗" });
+      console.log('val',val)
+      let chatType = val.chatType
+      switch (chatType) {
+        case "SRV_RECENT_CHAT":
+          console.log(val.recentChat)
+          break;
+      
+        default:
+          break;
+      }
     }
   },
-  sockets:{
-    disconnect(){
-      console.log('Socket 斷開')
-    },
-    connect_failed(){
-      console.log('連接失敗')
-    },
-    connect(){
-      console.log('socket connected')
-    },
-  },
-  
   mounted () {
-    this.onsocket();
-    this.sockets.subscribe("client_event", data => {
-      console.log(data);
-    // this.msg = data.message;
-    });
-    //發送信息給服務端
-    this.$socket.emit({
-      chatType: 'CLI_AUTH',
-      id: Math.random(),
-      tokenType: 0,
-      deviceId: "f19462c5-9cd4-4460-bc51-35e0dea1c8ab",
-      token:localStorage.getItem('token')
-    });   
-
-    //接收服務端的信息
-    this.sockets.subscribe('relogin', (data) => {
-      console.log(data)
-    })
-
     const params = this.$route.params
-
+ 
     /**
      * 判断是否通过路由跳转过来的
      */
@@ -102,106 +116,28 @@ export default {
       // 保存当前用户信息
       this.localInfo = {
         id: params.id,
-        avatar: params.avatar,
-        nickName: params.nickName
       }
-    } else{
-      this.goBack()
-    }
-
-    // 历史返回重新登陆
-    // if (window.history && window.history.pushState) {
-    //   history.pushState(null, null, document.URL)
-    //   window.addEventListener('popstate', this.goBack, false)
+    } 
+    // else{
+    //   this.goBack()
     // }
-
-    /**
-     * 获取联系人信息
-     */
-    // this.sockets.subscribe('conCats', res => {
-    //   let body = res.body
-
-    //   // 默认选中第一个
-    //   body.map(item => {
-    //     item.active = false
-    //   })
-    //   body[0].active = true
-    //   this.concats = body
-    //   this.nowSwitchId = 'group'
-    // })
-
-    /**
-     * 获取在线人数及通知
-     */
-    // this.sockets.subscribe('onLine', res => {
-    //   let code = res.code
-    //   let body = res.body
-    //   let notify = code === 2 ? '欢迎:)' : ':)'
-    //   this.$notify({
-    //     title: '通知',
-    //     dangerouslyUseHTMLString: true,
-    //     message: `
-    //       <img class="notify-image" src="${body.avatar}">
-    //       <div class="notify-content">
-    //         <strong class="notify-title">${notify}</strong>
-    //         <span><strong> ${body.notify} </strong</span>
-    //       </div>
-    //     `
-    //   })
-    //   // 删除通知
-    //   delete body.notify
-    //   // 在线人数
-    //   this.lineCount = res.lineCount
-    //   // 添加联系人
-    //   if (code === 2) {
-    //     this.concats.push(body)
-    //   } else {
-    //     // 如果当前选择的人离开了就选中聊天室
-    //     if (body.id === this.nowSwitchId) {
-    //       this.concats[0].active = true
-    //       this.nowSwitch = 0
-    //       this.nowSwitchId = 'group'
-    //       this.concats[0].message.newMessageCount = 0
-    //       this.concats[0].message.isNewMessage = false
-    //     }
-    //     // 删除联系人
-    //     for (let i = 0; i < this.concats.length; i++) {
-    //       if (body.id === this.concats[i].id) {
-    //         this.concats.splice(i, 1)
-    //       }
-    //     }
-    //   }
-    // })
-  },
-  sockets: {
-    connect: function() {
-      console.log("客户端检测到 socket connected------------");
-    },
-    server_event: function(data) {
-      console.log(
-      ' 服务端定义的事件名字："server_event" socket server. eg: io.emit("server_event", data)'
-      );
-      console.log(data);
-    }
+    
   },
   methods: {
-    onsocket() {
-    this.$socket.emit("client_event", { origin: "client" });
+    onSearch(){
+      getSearchChat(this.searchForm)
+      .then((res) => {
+        if(res.code === 200){
+          this.searchData = res.data.list
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     },
-    /**
-     * 切换聊天对象
-     */
-    switchGroup (index, id) {
-      this.nowSwitchId = id
-      this.nowSwitch = index
-
-      // 隐藏小红点
-      if (this.concats[index].message.isNewMessage !== undefined) {
-        this.concats[index].message.isNewMessage = false
-        this.concats[index].message.newMessageCount = 0
-      }
+    onChat(item){
+      this.roomName = item.chatRoomName
     },
-
     /**
      * 接收消息
      */
@@ -249,8 +185,9 @@ export default {
     /**
      * 关闭
      */
-    goBack () {
-      console.log('狀態未連接')
+    goBack() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('username')
       // let href = window.location.href
       // window.location.href = href.split('#')[0]
     }
@@ -267,16 +204,42 @@ export default {
 .wrapper {
   height: 100vh;
   background-image: url('/static/images/bg.jpg');
-  background-image: url('http://api.btstu.cn/sjbz/zsy.php');
   background-size: cover;
   background-repeat: no-repeat;
-  .el-container {
+  .search{
+    display: inline-flex;
+    align-content: center;
     position: fixed;
-    top: 0;
+    top: 0px;
     bottom: 0;
     left: 0;
     right: 0;
-    width: 88%;
+    width: 95%;
+    margin: 30px auto;
+  }
+  .search-list{
+    display: inline-flex;
+    align-content: center;
+    align-items: center;
+    position: fixed;
+    top: 45px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 95%;
+    height: 6%;
+    margin: 30px auto;
+    div{
+      margin-left: 10px;
+    }
+  }
+  .el-container {
+    position: fixed;
+    top: 100px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 95%;
     margin: 30px auto;
     .el-aside,
     .el-main {
@@ -290,7 +253,6 @@ export default {
     }
     .el-main {
       padding: 0;
-      margin-left: 20px;
     }
     .el-header {
       position: relative;

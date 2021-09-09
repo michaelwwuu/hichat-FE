@@ -151,7 +151,7 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
-                  setToken(res.data.token);
+                  setToken(res.data.tokenHead + res.data.token);
                   this.$store.commit("getToken", res.data.token);
                   this.$router.push({ path: "/Chat" });
                 } else {

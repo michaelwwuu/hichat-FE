@@ -29,14 +29,22 @@ export const getUserInfo = (params) => {
   return axios.request(postData)
 }
 
-// 首页列表
-export const getBaiduList = (params) => {
+// 搜尋用戶聊天內容
+export const getSearchData = (params) => {
   let postData = {
-    url: '/baidu/list',
+    url: '/member/profile/search',
     method: 'get',
     params
   }
   return axios.request(postData)
 }
 
-
+// 搜尋聊天室內
+export const getSearchChat = (params) => {
+  let postData = {
+    url: 'chatroom/searchByName',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}

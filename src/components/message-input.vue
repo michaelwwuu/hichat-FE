@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import Bus from '@/assets/eventBus'
+// import Bus from '@/assets/eventBus'
 import { gotoBottom } from '@/assets/tools'
-
+import Socket from "@/utils/socket";
 export default {
   data () {
     return {
@@ -105,44 +105,49 @@ export default {
     /**
      * 发送消息
      */
-    sendMessage () {
-      let message = {
-        // 类型
-        type: this.nowSwitchType(),
-        // 发送者ID
-        id: this.localInfo.id,
-        body: {
-          // 消息类型
-          type: 'user-message',
-          // 收者ID
-          gotoId: this.nowSwitchId,
-          // 发送者ID
-          fromId: this.localInfo.id,
-          // 发送者头像
-          avatar: this.localInfo.avatar,
-          // 发送者昵称
-          nickName: this.localInfo.nickName,
-          message: {
-            // 发送时间
-            time: +new Date(),
-            // 内容带标签
-            content: this.obj.replaceFace(this.textAreaTran()),
-            // 纯内容不带标签
-            textContent: this.textAreaTran()
-          }
-        }
-      }
-      if (this.blankTesting()) {
-        // 发送服务器
-        this.$socket.emit('MESSAGE', message)
-        // 传递至同级
-        Bus.$emit('MESSAGE', message)
-        // 消息清空
-        this.textArea = ''
-        // 消息置底
-        this.gotoBottom()
-      }
-    }
+    // sendMessage () {
+    //   let message = {
+    //     // 类型
+    //     type: this.nowSwitchType(),
+    //     // 发送者ID
+    //     id: this.localInfo.id,
+    //     body: {
+    //       // 消息类型
+    //       type: 'user-message',
+    //       // 收者ID
+    //       gotoId: this.nowSwitchId,
+    //       // 发送者ID
+    //       fromId: this.localInfo.id,
+    //       // 发送者头像
+    //       avatar: this.localInfo.avatar,
+    //       // 发送者昵称
+    //       nickName: this.localInfo.nickName,
+    //       message: {
+    //         // 发送时间
+    //         time: +new Date(),
+    //         // 内容带标签
+    //         content: this.obj.replaceFace(this.textAreaTran()),
+    //         // 纯内容不带标签
+    //         textContent: this.textAreaTran()
+    //       }
+    //     }
+    //   }
+    //   if (this.blankTesting()) {
+    //     // 发送服务器
+    //     this.$socket.emit('MESSAGE', message)
+    //     // 传递至同级
+    //     Bus.$emit('MESSAGE', message)
+    //     // 消息清空
+    //     this.textArea = ''
+    //     // 消息置底
+    //     this.gotoBottom()
+    //   }
+    // }
+    sendMessage() {
+      Socket.send(
+        //...一些後端要求要傳的資料request，通常會是一包物件{}。
+      );
+    },
   }
 }
 </script>

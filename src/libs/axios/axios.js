@@ -35,7 +35,7 @@ class HttpRequest {
         
         if(getToken){
           //  config.headers.Authorization = 'Bearer '+`${localStorage.token}`//完整版本
-           config.headers.Authorization = 'hiApp'+`${localStorage.token}`
+           config.headers.Authorization = `${localStorage.token}`
         }
 
         if (config.isForm){
