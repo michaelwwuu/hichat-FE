@@ -104,10 +104,8 @@ export default {
     }
   },
   mounted () {
-    this.UUID()
-    console.log(this.UUID())
     const params = this.$route.params
- 
+
     /**
      * 判断是否通过路由跳转过来的
      */
@@ -122,10 +120,6 @@ export default {
     // }
   },
   methods: {
-    UUID(){
-      let number = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-      localStorage.setItem('UUID',number + number + '-' + number + '-' + number + '-' + number + '-' + number + number + number ) 
-    },
     onSearch(){
       getSearchChat(this.searchForm)
       .then((res) => {
@@ -185,10 +179,7 @@ export default {
      * 关闭
      */
     goBack() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('username')
-      // let href = window.location.href
-      // window.location.href = href.split('#')[0]
+      localStorage.clear()
     }
   },
   components: {

@@ -5,20 +5,24 @@ export const getToken = () => {
 }
 
 export const setToken = (token) => {
-localStorage.setItem('token', token)
+  localStorage.setItem('token', token)
+}
+
+export const setUUID = (uuid) => {
+  localStorage.setItem('UUID', uuid)
 }
 
 export const getLocal = (key) => {
-if(!key) {
-  return;
-}
-const getLocalSth = window.localStorage.getItem(key);
-return getLocalSth;
+  if (!key) {
+    return;
+  }
+  const getLocalSth = window.localStorage.getItem(key);
+  return getLocalSth;
 }
 
-export const setLocal = ( key , value ) => {
-if(!key || !value) {
-  return;
-}
-window.localStorage.setItem(key,value);
+export const setLocal = (key, value) => {
+  if (!key || !value) {
+    return;
+  }
+  window.localStorage.setItem(key, value);
 }

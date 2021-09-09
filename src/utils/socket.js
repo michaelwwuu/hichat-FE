@@ -17,7 +17,7 @@ const emitter = new Vue({
           "id": Math.random(),
           "tokenType": 0,
           "deviceId": "hiWeb" + localStorage.getItem('UUID'),
-          "token": localStorage.getItem('token'),
+          "token": getToken('token'),
         }));
       };
       socket.onmessage = function(msg) {

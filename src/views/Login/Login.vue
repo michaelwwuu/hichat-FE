@@ -85,7 +85,7 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, getLocal } from "_util/utils.js";
+import { setToken, getToken,setUUID } from "_util/utils.js";
 import { getUserInfo,register } from "@/api";
 export default {
   data() {
@@ -111,10 +111,11 @@ export default {
         email: '',
         telephone:'',
       },
-      token: getLocal("token"),
+      token: getToken("token"),
     };
   },
   mounted() {
+
     // 判斷是否記住我
     if (this.token) {
       //驗證token是否過期
@@ -128,6 +129,10 @@ export default {
     }
   },
   methods: {
+    getUUID(){
+      let number = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
+      setUUID(number)       
+    },
     //登入&&註冊
     submitForm(rules) {
       switch (rules) {
@@ -151,8 +156,9 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
+                  this.getUUID()
                   setToken(res.data.tokenHead + res.data.token);
-                  this.$store.commit("getToken", res.data.token);
+                  // this.$store.commit("getToken", res.data.token);
                   this.$router.push({ path: "/Chat" });
                 } else {
                   this.$message({
@@ -192,8 +198,9 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
-                  setToken(res.data.token);
-                  this.$store.commit("getToken", res.data.token);
+                  this.getUUID()
+                  setToken(res.data.tokenHead + res.data.token);
+                  // this.$store.commit("getToken", res.data.token);
                   this.$router.push({ path: "/Chat" });
                 } else if(res.code === 500){
                   this.$message({
