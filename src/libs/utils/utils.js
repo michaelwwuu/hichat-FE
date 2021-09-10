@@ -9,7 +9,7 @@ export const setToken = (token) => {
 }
 
 export const setUUID = (uuid) => {
-  localStorage.setItem('UUID', uuid)
+  localStorage.setItem('UUID', "hiWeb" + uuid)
 }
 
 export const getLocal = (key) => {
