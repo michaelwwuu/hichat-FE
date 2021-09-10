@@ -22,7 +22,7 @@
         
         <el-header height="40px">
           <i class="el-icon-user-solid icon-message"></i>
-          <span class="title">联系人 </span>
+          <span class="title">聊天室人數 ({{lineCount}})人</span>
         </el-header>
 
         <message-group
@@ -71,6 +71,7 @@ export default {
           content: 'Welcome'
         }
       }],
+      lineCount:0,
       nowSwitch: 0,
       nowSwitchId: 'group',
       localInfo: {},
