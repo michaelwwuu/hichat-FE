@@ -105,7 +105,7 @@ export default {
   },
   mounted () {
     const query = this.$route.query
-    console.log('params',params)
+    console.log('query',query)
 
     /**
      * 判断是否通过路由跳转过来的
