@@ -13,14 +13,6 @@ export default new Vuex.Store({
     getToken(state,payload){
       state.token = payload;
     },
-    //記住我
-    rememberRecord(state,payload) {
-      state.rememberRecord = payload;
-    },
-    //登出移除token
-    deltoken(state){
-      state.token = "";
-    },
   },
   modules: { ws }
 })

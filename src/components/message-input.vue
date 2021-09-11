@@ -28,8 +28,8 @@
 
 <script>
 // import Bus from '@/assets/eventBus'
-import { gotoBottom } from '@/assets/tools'
 import Socket from "@/utils/socket";
+import { gotoBottom } from '@/assets/tools'
 export default {
   data () {
     return {
@@ -41,10 +41,6 @@ export default {
     // 联系人列表
     concats: {
       type: Array
-    },
-    // 当前选择的ID
-    nowSwitchId: {
-      type: String
     },
     // 当前用户
     localInfo: {
@@ -62,19 +58,6 @@ export default {
   //   })
   // },
   methods: {
-    /**
-     * 消息类型
-     */
-    nowSwitchType () {
-      if (this.nowSwitchId === 'group') {
-        return 'group-message'
-      } else if (this.nowSwitchId === 'robots') {
-        return 'robots-message'
-      } else {
-        return 'user-message'
-      }
-    },
-
     /**
      * 消息过滤
      */
@@ -107,49 +90,29 @@ export default {
     /**
      * 发送消息
      */
-    // sendMessage () {
-    //   let message = {
-    //     // 类型
-    //     type: this.nowSwitchType(),
-    //     // 发送者ID
-    //     id: this.localInfo.id,
-    //     body: {
-    //       // 消息类型
-    //       type: 'user-message',
-    //       // 收者ID
-    //       gotoId: this.nowSwitchId,
-    //       // 发送者ID
-    //       fromId: this.localInfo.id,
-    //       // 发送者头像
-    //       avatar: this.localInfo.avatar,
-    //       // 发送者昵称
-    //       nickName: this.localInfo.nickName,
-    //       message: {
-    //         // 发送时间
-    //         time: +new Date(),
-    //         // 内容带标签
-    //         content: this.obj.replaceFace(this.textAreaTran()),
-    //         // 纯内容不带标签
-    //         textContent: this.textAreaTran()
-    //       }
-    //     }
-    //   }
-    //   if (this.blankTesting()) {
-    //     // 发送服务器
-    //     this.$socket.emit('MESSAGE', message)
-    //     // 传递至同级
-    //     Bus.$emit('MESSAGE', message)
-    //     // 消息清空
-    //     this.textArea = ''
-    //     // 消息置底
-    //     this.gotoBottom()
-    //   }
-    // }
-    sendMessage() {
-      Socket.send(
-        //...一些後端要求要傳的資料request，通常會是一包物件{}。
-      );
-    },
+    sendMessage () {
+      let message = {
+        chatType:"CLI_ROOM_SEND",
+        id: Math.random(),
+        tokenType:0,
+        deviceId:this.localInfo.deviceId,
+        token:this.localInfo.token,
+        fromChatId:this.localInfo.fromChatId,
+        toChatId:this.localInfo.toChatId,
+        text: this.textAreaTran(),
+      }
+      console.log('message',message)
+      if (this.blankTesting()) {
+        // 发送服务器
+        Socket.send(message);
+        // 传递至同级
+        // Bus.$emit('MESSAGE', message)
+        // 消息清空
+        this.textArea = ''
+        // 消息置底
+        this.gotoBottom()
+      }
+    }
   }
 }
 </script>

@@ -48,13 +48,12 @@
           :concats="concats"
           :nowSwitchId="nowSwitchId"
           :localInfo="localInfo"
-          @message="message"
         />
+          <!-- @message="message" -->
 
         <message-input
           :concats="concats"
           :localInfo="localInfo"
-          :nowSwitchId="nowSwitchId"
         />
       </el-main>
       <footer class="footer">
@@ -84,7 +83,6 @@ import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
 import { getSearchChat } from "@/api";
-import { getLocal } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
@@ -140,27 +138,31 @@ export default {
     },
   },
   mounted() {
-    const query = this.$route.query;
-    /**
-     * 判断是否通过路由跳转过来的
-     */
-    if (localStorage.getItem("token") !== '') {
-      // 保存当前用户信息
-      this.localInfo = {
-        id: query.username,
-        uuid: getLocal("UUID"),
-      };
-    } else {
-      this.goBack();
-    }
+    if (localStorage.getItem("token") === '') this.goBack();
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+    
     handleGetMessage(msg) {
       // 一些全局的動作可以放在這裡
       this.setWsRes(JSON.parse(msg));
+      let userInfo = JSON.parse(msg)
+      switch (userInfo.chatType) {
+        case "SRV_JOIN_ROOM":
+          this.localInfo = {
+            deviceId: userInfo.deviceId,
+            fromChatId: userInfo.fromChatId,
+            toChatId: userInfo.chatRoomId,
+            token: localStorage.getItem("token"),
+            tokenType: 0,
+          };
+          break;
+      
+        default:
+          break;
+      }
     },
     onSearch() {
       getSearchChat(this.searchForm)
@@ -176,47 +178,47 @@ export default {
     /**
      * 接收消息
      */
-    message(respone) {
-      console.log("respone", respone);
-      let type = respone.type;
-      let body = respone.body;
-      let concats = this.concats;
-      let length = concats.length;
-      let id = body.gotoId;
-      let notifyAudio = document.getElementById("notify-audio");
+    // message(respone) {
+    //   console.log("respone", respone);
+    //   let type = respone.type;
+    //   let body = respone.body;
+    //   let concats = this.concats;
+    //   let length = concats.length;
+    //   let id = body.gotoId;
+    //   let notifyAudio = document.getElementById("notify-audio");
 
-      // 服务器返回的消息
-      if (type === "server-message") {
-        if (respone.id === "robots") {
-          id = "robots";
-        }
-      }
+    //   // 服务器返回的消息
+    //   if (type === "server-message") {
+    //     if (respone.id === "robots") {
+    //       id = "robots";
+    //     }
+    //   }
 
-      // 更新小红点
-      if (this.nowSwitchId !== id) {
-        body.message.isNewMessage = true;
-        body.message.newMessageCount = (() => {
-          for (var i = 0; i < length; i++) {
-            if (id === this.concats[i].id) {
-              notifyAudio.play();
-              if (this.concats[i].message.newMessageCount !== undefined) {
-                let count = (this.concats[i].message.newMessageCount += 1);
-                return count;
-              } else {
-                return 1;
-              }
-            }
-          }
-        })();
-      }
+    //   // 更新小红点
+    //   if (this.nowSwitchId !== id) {
+    //     body.message.isNewMessage = true;
+    //     body.message.newMessageCount = (() => {
+    //       for (var i = 0; i < length; i++) {
+    //         if (id === this.concats[i].id) {
+    //           notifyAudio.play();
+    //           if (this.concats[i].message.newMessageCount !== undefined) {
+    //             let count = (this.concats[i].message.newMessageCount += 1);
+    //             return count;
+    //           } else {
+    //             return 1;
+    //           }
+    //         }
+    //       }
+    //     })();
+    //   }
 
-      // 更新联系人消息
-      for (let i = 0; i < length; i++) {
-        if (concats[i].id === id) {
-          Object.assign(this.concats[i].message, body.message);
-        }
-      }
-    },
+    //   // 更新联系人消息
+    //   for (let i = 0; i < length; i++) {
+    //     if (concats[i].id === id) {
+    //       Object.assign(this.concats[i].message, body.message);
+    //     }
+    //   }
+    // },
     clearChat() {
       this.clearDialog = false;
     },
