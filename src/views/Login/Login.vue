@@ -127,7 +127,7 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, getToken, setUUID } from "_util/utils.js";
+import { setToken, getToken, setLocal } from "_util/utils.js";
 import { getUserInfo, register } from "@/api";
 export default {
   data() {
@@ -179,7 +179,7 @@ export default {
           return v.toString(16);
         }
       );
-      setUUID(number);
+      setLocal("UUID","hiWeb" + number);
     },
     //登入&&註冊
     submitForm(rules) {
@@ -207,10 +207,7 @@ export default {
                   this.getUUID();
                   setToken(res.data.tokenHead + res.data.token);
                   // this.$store.commit("getToken", res.data.token);
-                  this.$router.push({
-                    path: "/Chat",
-                    query: { username: this.loginForm.username },
-                  });
+                  this.$router.push({ path: "/Chat"});
                 } else {
                   this.$message({
                     message: "登入驗證失敗，請重新輸入並確認",
@@ -279,8 +276,8 @@ export default {
     },
     resetRegisterForm() {
       this.$nextTick(() => {
-        this.$refs["loginForm"].resetFields();
-        this.$refs["registerForm"].resetFields();
+        this.$refs["loginForm","registerForm"].resetFields();
+        // this.$refs["registerForm"].resetFields();
       });
     },
   },
@@ -355,6 +352,10 @@ $light_gray: #eee;
   /deep/.el-dialog__wrapper {
     .el-input__inner {
       color: #000000;
+       &:-webkit-autofill {
+        box-shadow: 0 0 1000px 0 #e8e2e2 inset !important;
+        -webkit-text-fill-color: #000000 !important;
+      }
     }
   }
 

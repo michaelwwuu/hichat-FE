@@ -9,19 +9,16 @@
       <div class="message-left">
         <el-badge
           class="item"
-          :max="99"
-          :value="item.message.newMessageCount"
-          :hidden="item.message.isNewMessage ? !item.message.isNewMessage : true">
-          <img class="message-avatar" :src="item.avatar">
+          :max="99">
+          <img class="message-avatar" :src="imgAdmin(item,index)">
         </el-badge>
       </div>
 
       <div class="message-right">
         <div class="message-header">
-          <div class="message-title">{{item.nickName}}</div>
-          <div class="message-time">{{item.message.time | formatTime}}</div>
+          <div class="message-title">{{item.nickname}}</div>
+          <div class="message-user-type"><el-tag :class="item.id === '0'?'user-admin':'user'">{{item.id === "0"? '專家':'粉絲'}}</el-tag></div>
         </div>
-        <div class="message-content" v-html="item.message.content"></div>
       </div>
     </li>
   </ul>
@@ -43,6 +40,13 @@ export default {
     }
   },
   methods: {
+    imgAdmin(item,index){
+      if(item.id === '0'){
+        return require("./../../static/avatar/group.png")
+      }else{
+        return require('./../../static/avatar/avatar_0' + `${index + 1}` + '.jpg')
+      }
+    },
     /**
      * 切换联系对象
      */
@@ -90,13 +94,16 @@ export default {
 
   .message-list {
     display: flex;
+    align-items: center;
     padding: 10px 15px;
     width: 100%;
     height: 62px;
     font-size: 12px;
     box-sizing: border-box;
+    background-color: #F3F9FF;
+    border-bottom:3px solid #E6F3FF;
     &:hover {
-      background: rgba(255, 255, 255, .4);
+      background-color: #F3F9FF;
     }
     .message-left {
       margin-right: 10px;
@@ -104,6 +111,7 @@ export default {
       .message-avatar {
         width: 40px;
         height: 40px;
+        border-radius: 50%;
       }
       .message-group {
         border: 1px solid #dedede;
@@ -116,12 +124,22 @@ export default {
       .message-header {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         .message-title {
           width: 100%;
           font-size: 14px;
         }
-        .message-time {
-          color: #aaaaaa;
+        .message-user-type {
+          .user-admin{
+            border: 1px solid #FEDA42;
+            background-image: linear-gradient(#FFFBC9, #FFEF2C);
+            color: #DD4400;
+          }
+          .user{
+            border: 1px solid #7986CB;
+            background-color: #FFFFFF;
+            color: #7986CB;
+          }
         }
       }
       .message-content {

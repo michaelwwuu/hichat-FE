@@ -1,26 +1,28 @@
 <template>
   <div class="message-input-box">
     <div class="input-tools">
-      <i slot="reference" class="el-icon-s-opportunity" title="表情"></i>
+     <el-button class="other-btn" size="mini" round><img src="./../../static/images/red-btn.svg" alt=""> 发红包</el-button>
+     <el-button class="other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
     </div>
-
-    <el-input
-      type="textarea"
-      resize="none"
-      :autosize="{ minRows: 3, maxRows: 3}"
-      v-model="textArea"
-      v-on:keyup.native="keyUp">
-    </el-input>
-
-    <div class="footer-tools">
-      <el-button
-        size="mini"
-        type="primary"
-        @click="sendMessage"
-        class="send-button">
-        发送/Send
-      </el-button>
+    <div class="text-send-box">
+      <el-input
+        type="textarea"
+        resize="none"
+        :autosize="{ minRows: 3, maxRows: 3}"
+        v-model="textArea"
+        v-on:keyup.native="keyUp">
+      </el-input>
+      <div class="footer-tools">
+        <el-button
+          size="mini"
+          @click="sendMessage"
+          class="send-button">
+          <img src="./../../static/images/send-btn.svg" alt="">
+          发送
+        </el-button>
+      </div>
     </div>
+  
   </div>
 </template>
 
@@ -152,41 +154,61 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 .message-input-box {
-  height: 150px;
+  height: 130px;
   background-color: rgba(255, 255, 255, .85);
   border-top: 1px solid #dddddd;
   .input-tools {
     position: relative;
-    padding-left: 10px;
-    padding-top: 10px;
+    padding: 10px 0 10px 18px;
     .upload-demo {
       display: inline;
     }
-    i {
-      margin-left: 10px;
-      color: rgb(94, 94, 94);
-      font-size: 20px;
-      cursor: pointer;
+    .other-btn{
+      color: #FFFFFF;
+      border: 1px solid #87B3F9;
+      background-image: linear-gradient(#B4D4FF, #559DFF);
+      span{
+        display: flex;
+        align-items: center;
+        img{
+          padding-right:5px;
+        }
+      }
     }
   }
-  .el-textarea {
-    .el-textarea__inner {
-      padding: 5px 20px;
-      border-radius: 0;
-      border: 0;
-      background-color: transparent;
+  .text-send-box{
+    width: 94%;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    background-color: #F4F4F4;
+    .el-textarea {
+      .el-textarea__inner {
+        padding: 5px 20px;
+        border-radius: 0;
+        border: 0;
+        background-color: transparent;
+        
+      }
+    }
+    .footer-tools {
+      text-align: right;
+      img{
+        height: 9px;
+      }
+      .send-button {
+        width: 90px;
+        padding: 7px 10px;
+        margin-right: 20px;
+        color: #FFFFFF;
+        background-image: linear-gradient(180deg,rgba(67,141,255,0.8), rgba(19,99,255,0.8));
+      }
     }
   }
-  .footer-tools {
-    text-align: right;
-    .send-button {
-      padding: 7px 10px;
-      margin-right: 20px;
-      background: #377ec8;
-    }
-  }
+
 }
 .face-pabel {
   .face {

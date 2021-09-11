@@ -8,10 +8,6 @@ export const setToken = (token) => {
   localStorage.setItem('token', token)
 }
 
-export const setUUID = (uuid) => {
-  localStorage.setItem('UUID', "hiWeb" + uuid)
-}
-
 export const getLocal = (key) => {
   if (!key) {
     return;

@@ -6,6 +6,7 @@ export const actions = {};
 export const mutations = {
   setWsRes(state, payload) {
     state.wsRes = payload;
+    console.log('連線已接通----訊息已收入vuex')
   }
 };
 export const getters = {};

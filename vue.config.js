@@ -11,7 +11,7 @@ module.exports = {
     proxy: {    //配置跨域
       '/': {
         target: 'http://10.99.114.10:8285', //這裡後台的地址模擬的，應該填寫真實的後台api
-        ws: true,     // 如果要代理 websockets
+        ws: false,     // 如果要代理 websockets
         changOrigin: true,  //允許跨域
         //  pathRewrite: {
         //   '^/api': '' //請求的時候使用這個api就可以

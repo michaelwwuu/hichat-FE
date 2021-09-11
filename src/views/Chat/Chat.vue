@@ -18,186 +18,231 @@
       </el-row>
     </div> -->
     <el-container>
-      <el-aside width="250px">
-        
-        <el-header height="40px">
-          <i class="el-icon-user-solid icon-message"></i>
-          <span class="title">聊天室人數 ({{lineCount}})人</span>
+      <el-aside width="290px">
+        <el-header height="55px">
+          <img src="./../../../static/images/user-group.svg" alt="" />
+          <span class="title"
+            >聊天室人數
+            <img
+              class="online-img"
+              src="./../../../static/images/online.svg"
+              alt=""
+            />{{ concats.length }}</span
+          >
         </el-header>
-
-        <message-group
-          :concats="concats"
-           />
+        <message-group :concats="concats" />
       </el-aside>
       <el-main>
-        <el-header height="40px"></el-header>
+        <el-header height="55px">
+          <el-row>
+            <el-button
+              size="mini"
+              style="margin-right: 15px"
+              @click="clearDialog = true"
+              >清频</el-button
+            >
+            <el-checkbox v-model="checked">滚动</el-checkbox>
+          </el-row>
+        </el-header>
         <message-pabel
           :concats="concats"
           :nowSwitchId="nowSwitchId"
           :localInfo="localInfo"
-          @message="message" />
+          @message="message"
+        />
 
         <message-input
           :concats="concats"
           :localInfo="localInfo"
-          :nowSwitchId="nowSwitchId" />
+          :nowSwitchId="nowSwitchId"
+        />
       </el-main>
       <footer class="footer">
         <a href="https://xiaobaicai.fun/" target="_blank">WeiLin</a> &copy; 2020
       </footer>
       <audio id="notify-audio" src="./../../../static/wav/tim.wav"></audio>
     </el-container>
+    <el-dialog
+      title="聊天室清除"
+      :visible.sync="clearDialog"
+      width="30%"
+      center
+    >
+      <span>確定要清除聊天室</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="clearChat">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import Socket from "@/utils/socket";
+import { mapMutations } from "vuex";
 import { mapState } from "vuex";
-
-import MessageGroup from '@/components/message-group'
-import MessagePabel from '@/components/message-pabel'
-import MessageInput from '@/components/message-input'
+import MessageGroup from "@/components/message-group";
+import MessagePabel from "@/components/message-pabel";
+import MessageInput from "@/components/message-input";
 import { getSearchChat } from "@/api";
+import { getLocal } from "_util/utils.js";
 export default {
-  name: 'Chat',
-  data () {
+  name: "Chat",
+  data() {
     return {
-      concats: [{
-        id: 0,
-        active: false,
-        nickName: '聊天室',
-        avatar: './../../../static/avatar/group.png',
-        message: {
-          time: 1580572800000,
-          content: 'Welcome'
-        }
-      }],
-      lineCount:0,
+      concats: [],
+      clearDialog: false,
+      checked: true,
+      lineCount: 0,
       nowSwitch: 0,
-      nowSwitchId: 'group',
+      nowSwitchId: "group",
       localInfo: {},
       searchForm: {
         pageSize: 10,
-        pageNum: 1 ,
-        name: '',
+        pageNum: 1,
+        name: "",
       },
-      searchData:[],
-    }
-  },  
+      searchData: [],
+    };
+  },
+  created() {
+    Socket.$on("message", this.handleGetMessage);
+  },
+  beforeDestroy() {
+    Socket.$off("message", this.handleGetMessage);
+  },
   computed: {
     ...mapState({
-      wsRes: state => state.ws.wsRes
+      wsRes: (state) => state.ws.wsRes,
     }),
   },
   watch: {
     wsRes(val) {
       const StatusCode = val;
       StatusCode === 0 && this.$message({ type: "error", message: "查詢失敗" });
-      console.log('val',val)
-      let chatType = val.chatType
+      let chatType = val.chatType;
       switch (chatType) {
-        case "SRV_RECENT_CHAT":
-          console.log(val.recentChat)
+        case "SRV_JOIN_ROOM":
+          this.concats = StatusCode.roomMemberList
+          let adminUser = {
+            chatRoomId: "c1",
+            createTime: 1631327281438,
+            id: "0",
+            isAdmin: false,
+            memberId: "u180",
+            nickname: "菜票之神彩票之神",
+            username: "master-admin",
+          };
+          this.concats.unshift(adminUser)
           break;
-      
         default:
           break;
       }
-    }
+    },
   },
-  mounted () {
-    const query = this.$route.query
-    console.log('query',query)
-
+  mounted() {
+    const query = this.$route.query;
     /**
      * 判断是否通过路由跳转过来的
      */
-    if (query.username) {
+    if (localStorage.getItem("token") !== '') {
       // 保存当前用户信息
       this.localInfo = {
         id: query.username,
-      }
-    } else{
-      this.goBack()
+        uuid: getLocal("UUID"),
+      };
+    } else {
+      this.goBack();
     }
   },
   methods: {
-    onSearch(){
+    ...mapMutations({
+      setWsRes: "ws/setWsRes",
+    }),
+    handleGetMessage(msg) {
+      // 一些全局的動作可以放在這裡
+      this.setWsRes(JSON.parse(msg));
+    },
+    onSearch() {
       getSearchChat(this.searchForm)
-      .then((res) => {
-        if(res.code === 200){
-          this.searchData = res.data.list
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+        .then((res) => {
+          if (res.code === 200) {
+            this.searchData = res.data.list;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     /**
      * 接收消息
      */
-    message (respone) {
-      let type = respone.type
-      let body = respone.body
-      let concats = this.concats
-      let length = concats.length
-      let id = body.gotoId
-      let notifyAudio = document.getElementById('notify-audio')
+    message(respone) {
+      console.log("respone", respone);
+      let type = respone.type;
+      let body = respone.body;
+      let concats = this.concats;
+      let length = concats.length;
+      let id = body.gotoId;
+      let notifyAudio = document.getElementById("notify-audio");
 
       // 服务器返回的消息
-      if (type === 'server-message') {
-        if (respone.id === 'robots') {
-          id = 'robots'
+      if (type === "server-message") {
+        if (respone.id === "robots") {
+          id = "robots";
         }
       }
 
       // 更新小红点
       if (this.nowSwitchId !== id) {
-        body.message.isNewMessage = true
+        body.message.isNewMessage = true;
         body.message.newMessageCount = (() => {
           for (var i = 0; i < length; i++) {
             if (id === this.concats[i].id) {
-              notifyAudio.play()
+              notifyAudio.play();
               if (this.concats[i].message.newMessageCount !== undefined) {
-                let count = this.concats[i].message.newMessageCount += 1
-                return count
+                let count = (this.concats[i].message.newMessageCount += 1);
+                return count;
               } else {
-                return 1
+                return 1;
               }
             }
           }
-        })()
+        })();
       }
 
       // 更新联系人消息
       for (let i = 0; i < length; i++) {
         if (concats[i].id === id) {
-          Object.assign(this.concats[i].message, body.message)
+          Object.assign(this.concats[i].message, body.message);
         }
       }
     },
-
+    clearChat() {
+      this.clearDialog = false;
+    },
     /**
-     * 关闭
+     * 防止只沒資料進入
      */
     goBack() {
-      localStorage.clear()
-    }
+      localStorage.clear();
+      this.$$route.push({ path: "/Login" });
+    },
   },
   components: {
     MessageGroup,
     MessagePabel,
-    MessageInput
-  }
-}
+    MessageInput,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .wrapper {
   height: 100vh;
-  background-image: url('/static/images/bg.jpg');
+  background-image: url("/static/images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  .search{
+  .search {
     display: inline-flex;
     align-content: center;
     position: fixed;
@@ -208,7 +253,7 @@ export default {
     width: 95%;
     margin: 30px auto;
   }
-  .search-list{
+  .search-list {
     display: inline-flex;
     align-content: center;
     align-items: center;
@@ -220,7 +265,7 @@ export default {
     width: 95%;
     height: 6%;
     margin: 30px auto;
-    div{
+    div {
       margin-left: 10px;
     }
   }
@@ -233,30 +278,60 @@ export default {
     width: 95%;
     margin: 30px auto;
     .el-aside,
-    .el-main{
+    .el-main {
       display: flex;
       flex-direction: column;
       border-radius: 6px 0px 6px 6px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);      
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      /deep/.el-row {
+        float: right;
+        .el-button {
+          background-image: linear-gradient(#579fff, #3481e8);
+          color: #ffffff;
+        }
+        .el-checkbox__inner {
+          border-radius: 0;
+          border: 1px solid #dcdfe6;
+          &::after {
+            border: 1px solid #4fba00;
+            border-left: 0;
+            border-top: 0;
+          }
+        }
+        .el-checkbox__input.is-checked .el-checkbox__inner {
+          background-color: #ffffff;
+        }
+        .el-checkbox__label {
+          color: #fff;
+        }
+      }
     }
-    .el-aside{
+    .el-aside {
       border-radius: 6px 0px 6px 6px;
     }
     .el-main {
       border-radius: 0px 6px 6px 6px;
     }
     .el-aside {
-      background: rgba(235, 233, 232, .8);
+      background: rgba(235, 233, 232, 0.8);
     }
     .el-main {
       padding: 0;
     }
     .el-header {
       position: relative;
-      line-height: 40px;
-      background: rgb(55, 126, 200);
+      line-height: 55px;
+      background-image: linear-gradient(#579fff, #3481e8);
       overflow: hidden;
-      border-right:1px solid #FFFFFF;
+      border-right: 1px solid #ffffff;
+      img {
+        position: relative;
+        top: 7px;
+      }
+      .online-img {
+        position: relative;
+        top: 9px;
+      }
       .title,
       .icon-message {
         color: #ffffff;

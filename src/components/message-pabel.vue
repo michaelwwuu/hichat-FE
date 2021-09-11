@@ -1,11 +1,11 @@
 <template>
   <div class="message-pabel-box">
 
-    <el-button
+    <!-- <el-button
       class="eye-more"
       @click="eyeMore"
       v-if="nowSwitchId == 'group' && isShowMore"
-      type="text">加载更多消息</el-button>
+      type="text">加载更多消息</el-button> -->
 
     <ul class="message-styles-box">
       <li
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import Bus from '@/assets/eventBus'
+// import Bus from '@/assets/eventBus'
 import { gotoBottom } from '@/assets/tools'
 
 export default {
@@ -85,23 +85,23 @@ export default {
     /**
      * 当前用户发的消息
      */
-    Bus.$on('MESSAGE', response => {
-      let body = response.body
-      let gotoId = body.gotoId
-      let fromId = body.fromId
+    // Bus.$on('MESSAGE', response => {
+    //   let body = response.body
+    //   let gotoId = body.gotoId
+    //   let fromId = body.fromId
 
-      this.initMessageArray(gotoId, fromId)
+    //   this.initMessageArray(gotoId, fromId)
 
-      // 自己给自己发消息
-      if (gotoId === fromId) {
-        this.message[fromId].push(body)
-      } else if (response.type === 'robots-message' || response.type === 'user-message') {
-        this.message[gotoId].push(body)
-      }
-      this.$forceUpdate()
-      // 把消息传给父级
-      this.$emit('message', response)
-    })
+    //   // 自己给自己发消息
+    //   if (gotoId === fromId) {
+    //     this.message[fromId].push(body)
+    //   } else if (response.type === 'robots-message' || response.type === 'user-message') {
+    //     this.message[gotoId].push(body)
+    //   }
+    //   this.$forceUpdate()
+    //   // 把消息传给父级
+    //   this.$emit('message', response)
+    // })
 
     /**
      * 接收更多消息
@@ -222,7 +222,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 .message-pabel-box {
   padding: 0 20px;
   flex: 1;
