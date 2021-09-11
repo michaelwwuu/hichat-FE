@@ -155,7 +155,6 @@ export default {
         case "SRV_RECENT_CHAT":
           this.localInfo = {
             fromChatId: userInfo.toChatId,
-            toChatId:userInfo.chatRoomId
           };
         case "SRV_ROOM_SEND":
           let srvRoomMsg = [{

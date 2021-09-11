@@ -99,7 +99,7 @@ export default {
         deviceId: getLocal('UUID'),
         token: getToken("token"),
         fromChatId:this.localInfo.fromChatId,
-        toChatId:this.localInfo.toChatId,
+        toChatId:"c1",
         text: this.textAreaTran(),
       }
       if (this.blankTesting()) {

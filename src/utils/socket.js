@@ -16,7 +16,7 @@ const emitter = new Vue({
           "chatType": "CLI_AUTH",
           "id": Math.random(),
           "tokenType": 0,
-          "deviceId": "hiWeb" + localStorage.getItem('UUID'),
+          "deviceId": localStorage.getItem('UUID'),
           "token": localStorage.getItem('token'),
         }));
       };
@@ -30,8 +30,8 @@ const emitter = new Vue({
               "tokenType": 0,
               "fromChatId": msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
               "chatRoomId": 'c1',
-              // "deviceId": "hiWeb" + localStorage.getItem('UUID'),
-              "deviceId": "hiWeb" + localStorage.getItem('UUID'),
+              // "deviceId": localStorage.getItem('UUID'),
+              "deviceId": localStorage.getItem('UUID'),
               "token": localStorage.getItem('token'),
             }));
             break;
