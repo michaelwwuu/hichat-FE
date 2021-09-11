@@ -1,24 +1,28 @@
 <template>
   <div class="message-pabel-box">
-
     <!-- <el-button
       class="eye-more"
       @click="eyeMore"
       v-if="nowSwitchId == 'group' && isShowMore"
       type="text">加载更多消息</el-button> -->
-
     <ul class="message-styles-box">
       <li
-        v-for="(item, index) in messageTemplate()"
+        v-for="(item, index) in message"
         :key="index"
-        :class="judgeClass(item.type)">
+        :class="judgeClass(item.chatType)"
+      >
+        <img
+          class="message-avatar"
+          :src="item.avatar ? item.avatar : './../../../static/avatar/avatar_14.jpg'"
+          :alt="item.nickName ? item.nickName : '我是憨批'"
+        />
 
-        <img class="message-avatar"
-          :src="item.avatar ? item.avatar : './static/avatar/avatar_14.jpg'"
-          :alt="item.nickName ? item.nickName : '我是憨批'">
-
-        <p class="message-nickname" v-if="item.type == 'server'">{{item.nickName}} {{formatTime(item.message.time)}}</p>
-        <p class="message-nickname" v-else>{{formatTime(item.message.time)}} {{item.nickName}}</p>
+        <p class="message-nickname" v-if="item.type == 'server'">
+          {{ item.nickName }} {{ formatTime(item.message.time) }}
+        </p>
+        <p class="message-nickname" v-else>
+          {{ formatTime(item.message.time) }} {{ item.nickName }}
+        </p>
         <p class="message-classic" v-html="item.message.content"></p>
       </li>
     </ul>
@@ -26,33 +30,33 @@
 </template>
 
 <script>
-// import Bus from '@/assets/eventBus'
-import { gotoBottom } from '@/assets/tools'
-
+import Bus from "@/assets/eventBus";
+import { gotoBottom } from "@/assets/tools";
+import { getLocal } from "_util/utils.js";
 export default {
-  name: 'MessagePabel',
+  name: "MessagePabel",
   props: {
     // 选择的联系人ID
     nowSwitchId: {
-      type: String
+      type: String,
     },
     // 当前用户
     localInfo: {
-      type: Object
+      type: Object,
     },
-    concats: {
+    otherMsg: {
       type: Array
-    }
+    },
   },
-  data () {
+  data() {
     return {
-      message: {},
+      message: [],
       page: 0,
       isShowMore: true,
-      gotoBottom: gotoBottom
-    }
+      gotoBottom: gotoBottom,
+    };
   },
-  mounted () {
+  mounted() {
     /**
      * 接收消息
      */
@@ -85,23 +89,33 @@ export default {
     /**
      * 当前用户发的消息
      */
-    // Bus.$on('MESSAGE', response => {
-    //   let body = response.body
-    //   let gotoId = body.gotoId
-    //   let fromId = body.fromId
-
-    //   this.initMessageArray(gotoId, fromId)
-
-    //   // 自己给自己发消息
-    //   if (gotoId === fromId) {
-    //     this.message[fromId].push(body)
-    //   } else if (response.type === 'robots-message' || response.type === 'user-message') {
-    //     this.message[gotoId].push(body)
-    //   }
-    //   this.$forceUpdate()
-    //   // 把消息传给父级
-    //   this.$emit('message', response)
-    // })
+    Bus.$on("MESSAGE", (response) => {
+      if(response.fromChatId === "u120"){
+        this.userImg =  require("./../../static/avatar/avatar_03.jpg")
+      }else if(response.fromChatId === "u146"){
+        this.userImg =  require("./../../static/avatar/avatar_02.jpg")
+      }else{
+        for (let index = 4; index < 25; index++) {
+          this.userImg =  require("./../../static/avatar/avatar_0"+ `${ index }`+ ".jpg")
+        }
+      }
+      let message = {
+        chatType: response.chatType,
+        avatar: this.userImg,
+        fromId: response.fromChatId,
+        gotoId: response.toChatId,
+        message: { 
+          time: +new Date(), 
+          content: response.text, 
+          textContent: response.text 
+        },
+        nickName: getLocal('username'),
+      };
+      this.message.push(message)
+      this.$forceUpdate();
+      // 把消息传给父级
+      this.$emit("message", response);
+    });
 
     /**
      * 接收更多消息
@@ -129,97 +143,99 @@ export default {
     // })
   },
   methods: {
+
     /**
      * 数组初始化
      */
-    initMessageArray (gotoId, fromId) {
-      let array = this.message
+    // initMessageArray(gotoId, fromId) {
+    //   let array = this.message;
 
-      if (!gotoId) return
-      if (!array[gotoId]) {
-        this.message[gotoId] = []
-      }
+    //   if (!gotoId) return;
+    //   if (!array[gotoId]) {
+    //     this.message[gotoId] = [];
+    //   }
 
-      if (!fromId) return
-      if (!array[fromId]) {
-        this.message[fromId] = []
-      }
-    },
+    //   if (!fromId) return;
+    //   if (!array[fromId]) {
+    //     this.message[fromId] = [];
+    //   }
+    // },
 
     /**
      * 判断Class
      */
-    judgeClass (type) {
-      if (type === 'server') {
-        return 'message-layout-left'
+    judgeClass(type) {
+      console.log(type)
+      if (type === "CLI_ROOM_SEND") {
+        return "message-layout-right";
       } else {
-        return 'message-layout-right'
+        return "message-layout-left";
       }
-    },
-
-    /**
-     * 返回聊天记录集合
-     */
-    messageTemplate () {
-      return this.message[this.nowSwitchId]
     },
 
     /**
      * 查看更多
      */
-    eyeMore () {
+    eyeMore() {
       let obj = {
         id: this.localInfo.id,
-        page: this.page += 1
-      }
-      this.initMessageArray('group')
-      if (this.message['group'] !== undefined && this.page === 1) {
-        obj.length = this.message['group'].length
+        page: (this.page += 1),
+      };
+      this.initMessageArray("group");
+      if (this.message["group"] !== undefined && this.page === 1) {
+        obj.length = this.message["group"].length;
       }
       // 发送查询消息
-      this.$socket.emit('QUERY_PAGE', obj)
+      this.$socket.emit("QUERY_PAGE", obj);
     },
     /**
      * 获取年月日
      */
-    formatFullYearMonthDay (date, isShowHourMinute, type) {
-      date = new Date(date)
-      const fullYear = date.getFullYear()
-      const month = date.getMonth() + 1
-      const dayDate = date.getDate()
-      var hours = date.getHours()
-      var minutes = date.getMinutes()
+    formatFullYearMonthDay(date, isShowHourMinute, type) {
+      date = new Date(date);
+      const fullYear = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const dayDate = date.getDate();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
 
       if (isShowHourMinute) {
-        return `${fullYear}${month}${dayDate}${hours}${minutes}`
+        return `${fullYear}${month}${dayDate}${hours}${minutes}`;
       } else {
         if (type) {
-          return `${fullYear}${type}${month}${type}${dayDate}`
+          return `${fullYear}${type}${month}${type}${dayDate}`;
         } else {
-          return `${fullYear}${month}${dayDate}`
+          return `${fullYear}${month}${dayDate}`;
         }
       }
     },
     /**
      * 时间格式化
      */
-    formatTime (time) {
-      var date = new Date(time)
-      var nowDate = new Date()
-      var hours = date.getHours()
-      var minutes = date.getMinutes()
+    formatTime(time) {
+      var date = new Date(time);
+      var nowDate = new Date();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
 
-      hours = hours < 10 ? `0${hours}` : hours
-      minutes = minutes < 10 ? `0${minutes}` : minutes
+      hours = hours < 10 ? `0${hours}` : hours;
+      minutes = minutes < 10 ? `0${minutes}` : minutes;
 
-      if (this.formatFullYearMonthDay(date) === this.formatFullYearMonthDay(nowDate)) {
-        return `${hours}:${minutes}`
+      if (
+        this.formatFullYearMonthDay(date) ===
+        this.formatFullYearMonthDay(nowDate)
+      ) {
+        return `${hours}:${minutes}`;
       } else {
-        return `${this.formatFullYearMonthDay(date, false, '/')} ${hours}:${minutes}`
+        return `${this.formatFullYearMonthDay(
+          date,
+          false,
+          "/"
+        )} ${hours}:${minutes}`;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" >
@@ -228,7 +244,7 @@ export default {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: rgba(255, 255, 255, .8);
+  background: rgba(255, 255, 255, 0.8);
 
   .eye-more {
     width: 100%;
@@ -244,7 +260,7 @@ export default {
       margin-top: 20px;
       width: 100%;
       .message-classic::before {
-        content: '';
+        content: "";
         position: absolute;
         border-width: 8px;
         border-style: solid;
@@ -257,10 +273,11 @@ export default {
         margin-right: 10px;
       }
       .message-classic {
-        background-color: rgba(255, 255, 255, .8);
+        background-color: rgba(255, 255, 255, 0.8);
         &::before {
           left: -16px;
-          border-color: transparent rgba(255, 255, 255, .8) transparent transparent;
+          border-color: transparent rgba(255, 255, 255, 0.8) transparent
+            transparent;
         }
       }
     }
@@ -274,10 +291,11 @@ export default {
       .message-classic {
         text-align: left;
         color: #ffffff;
-        background-color: rgba(55, 126, 200, .8);
+        background-color: rgba(55, 126, 200, 0.8);
         &::before {
           right: -16px;
-          border-color:  transparent transparent  transparent rgba(55, 126, 200, .8);
+          border-color: transparent transparent transparent
+            rgba(55, 126, 200, 0.8);
         }
       }
     }

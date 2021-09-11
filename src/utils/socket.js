@@ -1,7 +1,5 @@
 import Vue from "vue";
-import { getToken,getLocal } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
-console.log('wsUrl',wsUrl)
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
@@ -18,8 +16,8 @@ const emitter = new Vue({
           "chatType": "CLI_AUTH",
           "id": Math.random(),
           "tokenType": 0,
-          "deviceId": "hiWeb" + getLocal('UUID'),
-          "token": getToken('token'),
+          "deviceId": "hiWeb" + localStorage.getItem('UUID'),
+          "token": localStorage.getItem('token'),
         }));
       };
       socket.onmessage = function(msg) {
@@ -32,8 +30,9 @@ const emitter = new Vue({
               "tokenType": 0,
               "fromChatId": msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
               "chatRoomId": 'c1',
-              "deviceId": "hiWeb" + getLocal('UUID'),
-              "token": getToken('token'),
+              // "deviceId": "hiWeb" + localStorage.getItem('UUID'),
+              "deviceId": "hiWeb" + localStorage.getItem('UUID'),
+              "token": localStorage.getItem('token'),
             }));
             break;
         

@@ -45,12 +45,10 @@
           </el-row>
         </el-header>
         <message-pabel
-          :concats="concats"
+          :otherMsg="otherMsg"
           :nowSwitchId="nowSwitchId"
           :localInfo="localInfo"
-        />
-          <!-- @message="message" -->
-
+          @message="message" />
         <message-input
           :concats="concats"
           :localInfo="localInfo"
@@ -77,12 +75,13 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { mapMutations } from "vuex";
-import { mapState } from "vuex";
+import { mapState,mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
 import { getSearchChat } from "@/api";
+import { getLocal,getToken } from "_util/utils.js";
+
 export default {
   name: "Chat",
   data() {
@@ -100,6 +99,17 @@ export default {
         name: "",
       },
       searchData: [],
+      roomUser:[],
+      otherMsg:[],
+      adminUser:{
+        chatRoomId: "c1",
+        createTime: 1631327281438,
+        id: "0",
+        isAdmin: false,
+        memberId: "u180",
+        nickname: "菜票之神彩票之神",
+        username: "master-admin",
+      }
     };
   },
   created() {
@@ -121,16 +131,7 @@ export default {
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           this.concats = StatusCode.roomMemberList
-          let adminUser = {
-            chatRoomId: "c1",
-            createTime: 1631327281438,
-            id: "0",
-            isAdmin: false,
-            memberId: "u180",
-            nickname: "菜票之神彩票之神",
-            username: "master-admin",
-          };
-          this.concats.unshift(adminUser)
+          this.concats.unshift(this.adminUser)
           break;
         default:
           break;
@@ -149,17 +150,29 @@ export default {
       // 一些全局的動作可以放在這裡
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg)
+      console.log('userInfo',userInfo)
       switch (userInfo.chatType) {
-        case "SRV_JOIN_ROOM":
+        case "SRV_RECENT_CHAT":
           this.localInfo = {
-            deviceId: userInfo.deviceId,
-            fromChatId: userInfo.fromChatId,
-            toChatId: userInfo.chatRoomId,
-            token: localStorage.getItem("token"),
-            tokenType: 0,
+            fromChatId: userInfo.toChatId,
+            toChatId:userInfo.chatRoomId
           };
+        case "SRV_ROOM_SEND":
+          let srvRoomMsg = [{
+            chatType: userInfo.chatType,
+            avatar: this.userImg,
+            fromId: userInfo.fromChatId,
+            gotoId: userInfo.toChatId,
+            message: { 
+              time: +new Date(), 
+              content: userInfo.text, 
+              textContent: userInfo.text 
+            },
+            nickName: getLocal('username'),
+          }];
+          this.otherMsg = srvRoomMsg
+          console.log('otherMsg',this.otherMsg)
           break;
-      
         default:
           break;
       }
@@ -178,47 +191,37 @@ export default {
     /**
      * 接收消息
      */
-    // message(respone) {
-    //   console.log("respone", respone);
-    //   let type = respone.type;
-    //   let body = respone.body;
-    //   let concats = this.concats;
-    //   let length = concats.length;
-    //   let id = body.gotoId;
-    //   let notifyAudio = document.getElementById("notify-audio");
+    message(response) {
+      if(response.chatType === "CLI_ROOM_SEND"){
+        let time = new Date()
+        let body = {
+          avatar: "./static/avatar/avatar_09.jpg",
+          fromId: response.fromChatId,
+          gotoId: response.toChatId,
+          message: { 
+            time: time.getDay(), 
+            content: response.text, 
+            textContent: response.text 
+          },
+          nickName: getLocal('username'),
+        };
+      }
+      // let notifyAudio = document.getElementById("notify-audio");
 
-    //   // 服务器返回的消息
-    //   if (type === "server-message") {
-    //     if (respone.id === "robots") {
-    //       id = "robots";
-    //     }
-    //   }
+      // // 服务器返回的消息
+      // if (type === "server-message") {
+      //   if (respone.id === "robots") {
+      //     id = "robots";
+      //   }
+      // }
 
-    //   // 更新小红点
-    //   if (this.nowSwitchId !== id) {
-    //     body.message.isNewMessage = true;
-    //     body.message.newMessageCount = (() => {
-    //       for (var i = 0; i < length; i++) {
-    //         if (id === this.concats[i].id) {
-    //           notifyAudio.play();
-    //           if (this.concats[i].message.newMessageCount !== undefined) {
-    //             let count = (this.concats[i].message.newMessageCount += 1);
-    //             return count;
-    //           } else {
-    //             return 1;
-    //           }
-    //         }
-    //       }
-    //     })();
-    //   }
-
-    //   // 更新联系人消息
-    //   for (let i = 0; i < length; i++) {
-    //     if (concats[i].id === id) {
-    //       Object.assign(this.concats[i].message, body.message);
-    //     }
-    //   }
-    // },
+      // // 更新联系人消息
+      // for (let i = 0; i < length; i++) {
+      //   if (concats[i].id === id) {
+      //     Object.assign(this.concats[i].message, body.message);
+      //   }
+      // }
+    },
     clearChat() {
       this.clearDialog = false;
     },

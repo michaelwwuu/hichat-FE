@@ -8,7 +8,7 @@
       <el-input
         type="textarea"
         resize="none"
-        :autosize="{ minRows: 3, maxRows: 3}"
+        :autosize="{ minRows: 2, maxRows: 2}"
         v-model="textArea"
         v-on:keyup.native="keyUp">
       </el-input>
@@ -27,9 +27,10 @@
 </template>
 
 <script>
-// import Bus from '@/assets/eventBus'
+import Bus from '@/assets/eventBus'
 import Socket from "@/utils/socket";
 import { gotoBottom } from '@/assets/tools'
+import { getLocal,getToken } from "_util/utils.js";
 export default {
   data () {
     return {
@@ -56,7 +57,6 @@ export default {
         document.querySelector('.face-warp').style.display = 'none'
       }
     })
-    console.log('this.obj',this.obj)
   },
   methods: {
     /**
@@ -95,19 +95,18 @@ export default {
       let message = {
         chatType:"CLI_ROOM_SEND",
         id: Math.random(),
-        tokenType:this.localInfo.tokenType,
-        deviceId:this.localInfo.deviceId,
-        token:this.localInfo.token,
+        tokenType:0,
+        deviceId: getLocal('UUID'),
+        token: getToken("token"),
         fromChatId:this.localInfo.fromChatId,
         toChatId:this.localInfo.toChatId,
         text: this.textAreaTran(),
       }
-      console.log('message',message)
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
         // 传递至同级
-        // Bus.$emit('MESSAGE', message)
+        Bus.$emit('MESSAGE', message)
         // 消息清空
         this.textArea = ''
         // 消息置底
@@ -152,7 +151,7 @@ export default {
     background-color: #F4F4F4;
     .el-textarea {
       .el-textarea__inner {
-        padding: 5px 20px;
+        padding: 20px 20px !important;
         border-radius: 0;
         border: 0;
         background-color: transparent;
