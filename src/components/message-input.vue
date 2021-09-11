@@ -2,7 +2,7 @@
   <div class="message-input-box">
     <div class="input-tools">
      <el-button class="other-btn" size="mini" round><img src="./../../static/images/red-btn.svg" alt=""> 发红包</el-button>
-     <el-button class="other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
+     <el-button class="face-other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
     </div>
     <div class="text-send-box">
       <el-input
@@ -47,16 +47,17 @@ export default {
       type: Object
     }
   },
-  // mounted () {
-  //   // 表情
-  //   this.obj = new window.Face({
-  //     el: document.querySelector('.el-icon-s-opportunity'),
-  //     callBack: face => {
-  //       this.textArea += `〖${face.title}〗`
-  //       document.querySelector('.face-warp').style.display = 'none'
-  //     }
-  //   })
-  // },
+  mounted () {
+    // 表情
+    this.obj = new window.Face({
+      el: document.querySelector('.face-other-btn'),
+      callBack: face => {
+        this.textArea += `〖${face.title}〗`
+        document.querySelector('.face-warp').style.display = 'none'
+      }
+    })
+    console.log('this.obj',this.obj)
+  },
   methods: {
     /**
      * 消息过滤
@@ -94,7 +95,7 @@ export default {
       let message = {
         chatType:"CLI_ROOM_SEND",
         id: Math.random(),
-        tokenType:0,
+        tokenType:this.localInfo.tokenType,
         deviceId:this.localInfo.deviceId,
         token:this.localInfo.token,
         fromChatId:this.localInfo.fromChatId,
@@ -128,7 +129,8 @@ export default {
     .upload-demo {
       display: inline;
     }
-    .other-btn{
+    .other-btn,
+    .face-other-btn{
       color: #FFFFFF;
       border: 1px solid #87B3F9;
       background-image: linear-gradient(#B4D4FF, #559DFF);
