@@ -56,7 +56,6 @@ export default {
   },
   watch:{
     otherMsg(val){
-      console.log('val',val)
       this.message.push(val)
     }
   },
@@ -94,7 +93,6 @@ export default {
      * 当前用户发的消息
      */
     Bus.$on("MESSAGE", (response) => {
-      console.log('response',response)
       if(response.fromChatId === "u120"){
         this.userImg =  require("./../../static/avatar/avatar_03.jpg")
       }else if(response.fromChatId === "u146"){
@@ -170,7 +168,6 @@ export default {
      * 判断Class
      */
     judgeClass(type) {
-      console.log(type)
       if (type === "CLI_ROOM_SEND") {
         return "message-layout-right";
       } else {
