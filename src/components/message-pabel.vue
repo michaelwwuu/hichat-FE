@@ -17,7 +17,7 @@
           :alt="item.nickName ? item.nickName : '我是憨批'"
         />
 
-        <p class="message-nickname" v-if="item.type == 'server'">
+        <p class="message-nickname" v-if="item.type !== 'CLI_ROOM_SEND'">
           {{ item.nickName }} {{ formatTime(item.message.time) }}
         </p>
         <p class="message-nickname" v-else>
