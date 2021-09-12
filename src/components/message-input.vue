@@ -94,12 +94,12 @@ export default {
     sendMessage () {
       let message = {
         chatType:"CLI_ROOM_SEND",
-        id: Math.random(),
-        tokenType:0,
-        deviceId: getLocal('UUID'),
-        token: getToken("token"),
-        fromChatId:this.localInfo.fromChatId,
         toChatId:"c1",
+        id: Math.random(),
+        token: getToken("token"),
+        deviceId: getLocal('UUID'),
+        fromChatId:this.localInfo.fromChatId,
+        tokenType:0,
         text: this.textAreaTran(),
       }
       if (this.blankTesting()) {

@@ -80,7 +80,6 @@ import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
 import { getSearchChat } from "@/api";
-import { getLocal,getToken } from "_util/utils.js";
 
 export default {
   name: "Chat",
@@ -130,6 +129,7 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
+          console.log('<--成功連線------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
           this.concats.unshift(this.adminUser)
           break;
@@ -150,14 +150,23 @@ export default {
       // 一些全局的動作可以放在這裡
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg)
-      console.log('userInfo',userInfo)
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
+          console.log('<--成功連線------寫入登入者資訊-->')
           this.localInfo = {
             fromChatId: userInfo.toChatId,
           };
+          break;
         case "SRV_ROOM_SEND":
-          let srvRoomMsg = [{
+          console.log('<--成功連線------群組內所有人訊息-->',userInfo)
+          if(userInfo.fromChatId === "u120"){
+            this.userImg = require("./../../../static/avatar/avatar_03.jpg")
+            this.userRoomName = "jed"
+          }else if(userInfo.fromChatId === "u146"){
+            this.userImg = require("./../../../static/avatar/avatar_02.jpg")
+            this.userRoomName = "michael"
+          }
+          let srvRoomMsg = {
             chatType: userInfo.chatType,
             avatar: this.userImg,
             fromId: userInfo.fromChatId,
@@ -167,10 +176,9 @@ export default {
               content: userInfo.text, 
               textContent: userInfo.text 
             },
-            nickName: getLocal('username'),
-          }];
+            nickName: this.userRoomName,
+          };
           this.otherMsg = srvRoomMsg
-          console.log('otherMsg',this.otherMsg)
           break;
         default:
           break;
@@ -188,23 +196,9 @@ export default {
         });
     },
     /**
-     * 接收消息
+     * 接收消息-父件需用到資料時
      */
     message(response) {
-      if(response.chatType === "CLI_ROOM_SEND"){
-        let time = new Date()
-        let body = {
-          avatar: "./static/avatar/avatar_09.jpg",
-          fromId: response.fromChatId,
-          gotoId: response.toChatId,
-          message: { 
-            time: time.getDay(), 
-            content: response.text, 
-            textContent: response.text 
-          },
-          nickName: getLocal('username'),
-        };
-      }
       // let notifyAudio = document.getElementById("notify-audio");
 
       // // 服务器返回的消息
