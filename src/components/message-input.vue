@@ -100,7 +100,7 @@ export default {
         deviceId: getLocal('UUID'),
         fromChatId:this.localInfo.fromChatId,
         tokenType:0,
-        text: this.textAreaTran(),
+        text:  this.obj.replaceFace(this.textAreaTran()),
       }
       if (this.blankTesting()) {
         // 发送服务器
@@ -123,8 +123,9 @@ export default {
   background-color: rgba(255, 255, 255, .85);
   border-top: 1px solid #dddddd;
   .input-tools {
+    width: 97%;
     position: relative;
-    padding: 10px 0 10px 18px;
+    padding: 10px 0 10px 20px;
     .upload-demo {
       display: inline;
     }
@@ -143,7 +144,7 @@ export default {
     }
   }
   .text-send-box{
-    width: 94%;
+    width: 97%;
     height: 65px;
     display: flex;
     align-items: center;

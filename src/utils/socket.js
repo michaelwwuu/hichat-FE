@@ -10,6 +10,7 @@ const emitter = new Vue({
     },
     connect() {
       socket = new WebSocket(wsUrl);
+      
       socket.onopen = function (e) {
         console.log("[开启连线] Connection Success");
         socket.send(JSON.stringify({
@@ -30,7 +31,6 @@ const emitter = new Vue({
               "tokenType": 0,
               "fromChatId": msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
               "chatRoomId": 'c1',
-              // "deviceId": localStorage.getItem('UUID'),
               "deviceId": localStorage.getItem('UUID'),
               "token": localStorage.getItem('token'),
             }));

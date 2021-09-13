@@ -86,6 +86,9 @@ export default {
   data() {
     return {
       concats: [],
+      searchData: [],
+      roomUser:[],
+      otherMsg:[],
       clearDialog: false,
       checked: true,
       lineCount: 0,
@@ -97,16 +100,13 @@ export default {
         pageNum: 1,
         name: "",
       },
-      searchData: [],
-      roomUser:[],
-      otherMsg:[],
       adminUser:{
         chatRoomId: "c1",
         createTime: 1631327281438,
         id: "0",
         isAdmin: false,
         memberId: "u180",
-        nickname: "菜票之神彩票之神",
+        nickname: "彩票之神 -- 百投百胜",
         username: "master-admin",
       }
     };
