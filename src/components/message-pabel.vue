@@ -169,18 +169,17 @@ export default {
       this.disTitle = val;
       this.disDialog = true;
       const h= this.$createElement;
-      this.$prompt('確定要封禁此人','確定要封禁此人', {
+      this.$prompt('確定要封禁玩家',`確定要封禁玩家"${this.disTitle}"?`, {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           center:true,
-          roundButton:true,
           message:h('div',null,[
             h('div', { style: 'width:100%;height:50px;background-image:url(' + this.disabledImg +');background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;'}),
           ]),
         }).then(({ value }) => {
           this.$message({
             type: 'success',
-            message: value
+            message: '确定封禁' + value + '分钟',
           });
         }).catch(() => {
           this.$message({
@@ -390,6 +389,14 @@ export default {
 .el-message-box--center{
   .el-message-box__title{
     top: 3rem;
+    span{
+      color: #2F84ED;
+      font-weight: 600;
+    }
+  }
+  .el-message-box__content{
+    padding-left: 50px;
+    padding-right: 50px;
   }
   .el-message-box__input{
     position: relative;
@@ -400,11 +407,31 @@ export default {
         text-align: center;
       }
     }
+    &:after{
+      content: '※若填0则封禁999999分钟';
+      display: block;
+      position: relative;
+      top: -10px;
+      right: -67px;
+    }
   }
   .el-message-box__btns{
     display: flex;
     justify-content: space-between;
+    flex-direction: row-reverse;
     padding: 0 86px;
+    .el-button{
+      font-size: 15px;
+      padding: 8px 27px;
+      border-radius: 5px;
+      color: #FFF;
+      &:first-child{
+        background-image: linear-gradient(#BABABA, #7C7C7C);
+      }
+      &:last-child{
+        background-image: linear-gradient(#438DFF, #1363FF);
+      }
+    }
   }
 }
 

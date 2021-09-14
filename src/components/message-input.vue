@@ -53,7 +53,7 @@ export default {
     this.obj = new window.Face({
       el: document.querySelector('.face-other-btn'),
       callBack: face => {
-        this.textArea += `〖${face.title}〗`
+        this.textArea += `:${face.title}:`
         document.querySelector('.face-warp').style.display = 'none'
       }
     })
