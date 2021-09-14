@@ -98,7 +98,7 @@ export default {
         pageNum: 1,
         name: "",
       },
-      
+      advertise:"欢迎大家来到彩票之神 --百投百胜群组<span class='face face79' title='赞'></span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span>跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！<span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span>"
     };
   },
   created() {
@@ -140,9 +140,10 @@ export default {
   mounted() {
     if (localStorage.getItem("token") === ''){
       this.goBack();
+    } else{
       this.advertiseMsg()
       Socket.connect();
-    } 
+    }
   },
   methods: {
     ...mapMutations({
@@ -156,8 +157,8 @@ export default {
         gotoId: "c1",
         message: { 
           time: +new Date(), 
-          content: "欢迎大家来到彩票之神 --百投百胜群组，跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！", 
-          textContent: "欢迎大家来到彩票之神 --百投百胜群组，跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！" 
+          content: this.advertise, 
+          textContent: this.advertise, 
         },
         nickName:"彩票之神 -- 百投百胜",
       };
@@ -224,28 +225,16 @@ export default {
         default:
           break;
       }
-      // let notifyAudio = document.getElementById("notify-audio");
-
-      // // 服务器返回的消息
-      // if (type === "server-message") {
-      //   if (respone.id === "robots") {
-      //     id = "robots";
-      //   }
-      // }
-
-      // // 更新联系人消息
-      // for (let i = 0; i < length; i++) {
-      //   if (concats[i].id === id) {
-      //     Object.assign(this.concats[i].message, body.message);
-      //   }
-      // }
     },
+    /**
+     * 清除聊天室內容
+     */
     clearChat() {
       this.clearDialog = false;
       this.roomMsg = []
     },
     /**
-     * 防呆 判定使用者是否正確
+     * 如果沒 token 自動清除暫存跳轉回登入
      */
     goBack() {
       localStorage.clear();

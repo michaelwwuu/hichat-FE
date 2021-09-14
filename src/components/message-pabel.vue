@@ -79,35 +79,6 @@ export default {
   },
   mounted() {
     /**
-     * 接收消息
-     */
-    // this.sockets.subscribe('MESSAGE', message => {
-    //   let id = message.id
-    //   let gotoId = message.body.gotoId
-    //   let fromId = message.body.fromId
-    //   let content = message.body.message.content
-
-    //   message.body.message.content = content.replace(/[{]/g, '<').replace(/[}]/g, '>')
-
-    //   this.initMessageArray(gotoId, fromId)
-
-    //   // 用户在群聊发消息
-    //   if (gotoId === 'group' && fromId === this.localInfo.id) {
-    //     message.body.type = 'user-message'
-    //   }
-
-    //   if (gotoId === 'group') {
-    //     this.message['group'].push(message.body)
-    //   } else {
-    //     this.message[id].push(message.body)
-    //   }
-    //   this.$forceUpdate()
-    //   this.gotoBottom()
-    //   // 把消息传给父级
-    //   this.$emit('message', message)
-    // })
-
-    /**
      * 当前用户发的消息
      */
     Bus.$on("MESSAGE", (response) => {
@@ -138,31 +109,6 @@ export default {
       // 把消息传给父级
       this.$emit("message", message);
     });
-
-    /**
-     * 接收更多消息
-     */
-    // this.sockets.subscribe('GROUP_MESSAGE', result => {
-    //   const box = document.getElementsByClassName('message-pabel-box')[0]
-    //   const scroll = box.scrollHeight - box.scrollTop
-
-    //   // 是否有更多数据
-    //   if (result.length) {
-    //     result.map((item, index) => {
-    //       this.message['group'].unshift(JSON.parse(item.body))
-    //     })
-    //   } else {
-    //     this.isShowMore = false
-    //   }
-
-    //   if (result.length < 9) this.isShowMore = false
-
-    //   setTimeout(() => {
-    //     box.scrollTop = box.scrollHeight - scroll
-    //   }, 0)
-
-    //   this.$forceUpdate()
-    // })
   },
   methods: {
     disabled(val) {
@@ -188,23 +134,6 @@ export default {
           });       
         });
     },
-    /**
-     * 数组初始化
-     */
-    // initMessageArray(gotoId, fromId) {
-    //   let array = this.message;
-
-    //   if (!gotoId) return;
-    //   if (!array[gotoId]) {
-    //     this.message[gotoId] = [];
-    //   }
-
-    //   if (!fromId) return;
-    //   if (!array[fromId]) {
-    //     this.message[fromId] = [];
-    //   }
-    // },
-
     /**
      * 判断Class
      */

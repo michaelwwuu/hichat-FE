@@ -1,13 +1,10 @@
 import Vue from "vue";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
-
 const emitter = new Vue({
-
   methods: {
     send(message) {
-      console.log('1123')
-      if (1 === socket.readyState) socket.send(JSON.stringify(message));
+      if (socket.readyState === 1) socket.send(message);
     },
     connect() {
       socket = new WebSocket(wsUrl);
@@ -51,6 +48,4 @@ const emitter = new Vue({
     }
   }
 });
-
-emitter.connect();
 export default emitter;
