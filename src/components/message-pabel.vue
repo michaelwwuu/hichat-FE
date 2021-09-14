@@ -1,10 +1,12 @@
 <template>
   <div class="message-pabel-box">
-    <!-- <el-button
+    <el-button
       class="eye-more"
       @click="eyeMore"
-      v-if="nowSwitchId == 'group' && isShowMore"
-      type="text">加载更多消息</el-button> -->
+      v-if="nowSwitchId === 'group' && isShowMore"
+      type="text"
+      >加载更多消息</el-button
+    >
     <ul class="message-styles-box">
       <li
         v-for="(item, index) in message"
@@ -13,7 +15,9 @@
       >
         <img
           class="message-avatar"
-          :src="item.avatar ? item.avatar : './../../../static/avatar/avatar_14.jpg'"
+          :src="
+            item.avatar ? item.avatar : './../../../static/avatar/avatar_14.jpg'
+          "
           :alt="item.nickName ? item.nickName : '我是憨批'"
         />
 
@@ -24,6 +28,14 @@
           {{ formatTime(item.message.time) }} {{ item.nickName }}
         </p>
         <p class="message-classic" v-html="item.message.content"></p>
+        <div
+          v-if="item.chatType === 'SRV_ROOM_SEND' && item.fromId !== 'admin'"
+          class="message-disabled"
+          @click="disabled(item.nickName)"
+          :class="disUserNumber === '0'? 'noDis' : 'disUser'"
+        >
+          {{disUserNumber === '0'?'封禁':'解封'}}
+        </div>
       </li>
     </ul>
   </div>
@@ -44,20 +56,26 @@ export default {
     localInfo: {
       type: Object,
     },
-    otherMsg: {},
+    roomMsg: {
+      type: Array,
+    },
   },
   data() {
     return {
       message: [],
+      disUserNumber: "0",
+      disTitle: "",
       page: 0,
       isShowMore: true,
+      disDialog:false,
       gotoBottom: gotoBottom,
+      disabledImg: require('./../../static/images/disabled.svg')
     };
   },
-  watch:{
-    otherMsg(val){
-      this.message.push(val)
-    }
+  watch: {
+    roomMsg(val) {
+      this.message = val;
+    },
   },
   mounted() {
     /**
@@ -93,13 +111,15 @@ export default {
      * 当前用户发的消息
      */
     Bus.$on("MESSAGE", (response) => {
-      if(response.fromChatId === "u120"){
-        this.userImg =  require("./../../static/avatar/avatar_03.jpg")
-      }else if(response.fromChatId === "u146"){
-        this.userImg =  require("./../../static/avatar/avatar_02.jpg")
-      }else{
+      if (response.fromChatId === "u120") {
+        this.userImg = require("./../../static/avatar/avatar_03.jpg");
+      } else if (response.fromChatId === "u146") {
+        this.userImg = require("./../../static/avatar/avatar_02.jpg");
+      } else {
         for (let index = 4; index < 25; index++) {
-          this.userImg =  require("./../../static/avatar/avatar_0"+ `${ index }`+ ".jpg")
+          this.userImg = require("./../../static/avatar/avatar_0" +
+            `${index}` +
+            ".jpg");
         }
       }
       let message = {
@@ -107,17 +127,16 @@ export default {
         avatar: this.userImg,
         fromId: response.fromChatId,
         gotoId: response.toChatId,
-        message: { 
-          time: +new Date(), 
-          content: response.text, 
-          textContent: response.text 
+        message: {
+          time: +new Date(),
+          content: response.text,
+          textContent: response.text,
         },
-        nickName: getLocal('username'),
+        nickName: getLocal("username"),
       };
-      this.message.push(message)
       this.$forceUpdate();
       // 把消息传给父级
-      this.$emit("message", response);
+      this.$emit("message", message);
     });
 
     /**
@@ -146,7 +165,30 @@ export default {
     // })
   },
   methods: {
-    
+    disabled(val) {
+      this.disTitle = val;
+      this.disDialog = true;
+      const h= this.$createElement;
+      this.$prompt('確定要封禁此人','確定要封禁此人', {
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          center:true,
+          roundButton:true,
+          message:h('div',null,[
+            h('div', { style: 'width:100%;height:50px;background-image:url(' + this.disabledImg +');background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;'}),
+          ]),
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '你的邮箱是: ' + value
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
+    },
     /**
      * 数组初始化
      */
@@ -275,11 +317,28 @@ export default {
         margin-right: 10px;
       }
       .message-classic {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgb(243, 249, 255);
         &::before {
           left: -16px;
-          border-color: transparent rgba(255, 255, 255, 0.8) transparent
-            transparent;
+          border-color: transparent rgb(243, 249, 255) transparent transparent;
+        }
+      }
+      .message-disabled {
+        display: none;
+        position: relative;
+        left: 36px;
+        color: #ffffff;
+        cursor: pointer;
+      }
+      .noDis{
+        background-image: linear-gradient(#959595, #7e7e7e);
+      }
+      .disUser{
+        background-image: linear-gradient(#B4D4FF, #559DFF);
+      }
+      &:hover {
+        .message-disabled {
+          display: inline-block;
         }
       }
     }
@@ -313,7 +372,8 @@ export default {
       font-size: 12px;
     }
 
-    .message-classic {
+    .message-classic,
+    .message-disabled {
       position: relative;
       max-width: 45%;
       margin-top: 5px;
@@ -327,4 +387,15 @@ export default {
     }
   }
 }
+.el-message-box--center{
+  .el-message-box__title{
+    top: 3rem;
+  }
+  .el-message-box__input{
+    position: relative;
+    top: 2rem;
+    padding-bottom: 36px;
+  }
+}
+
 </style>

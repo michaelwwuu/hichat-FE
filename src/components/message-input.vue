@@ -22,7 +22,6 @@
         </el-button>
       </div>
     </div>
-  
   </div>
 </template>
 
@@ -35,6 +34,7 @@ export default {
   data () {
     return {
       textArea: '',
+      message: {},
       gotoBottom: gotoBottom
     }
   },
@@ -125,7 +125,7 @@ export default {
   .input-tools {
     width: 97%;
     position: relative;
-    padding: 10px 0 10px 20px;
+    padding: 10px 0 10px 0.7rem;
     .upload-demo {
       display: inline;
     }

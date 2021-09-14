@@ -45,9 +45,9 @@
           </el-row>
         </el-header>
         <message-pabel
-          :otherMsg="otherMsg"
-          :nowSwitchId="nowSwitchId"
+          :roomMsg="roomMsg"
           :localInfo="localInfo"
+          :nowSwitchId="nowSwitchId"
           @message="message" />
         <message-input
           :concats="concats"
@@ -87,28 +87,18 @@ export default {
     return {
       concats: [],
       searchData: [],
-      roomUser:[],
-      otherMsg:[],
+      roomMsg:[],
       clearDialog: false,
       checked: true,
-      lineCount: 0,
       nowSwitch: 0,
-      nowSwitchId: "group",
+      nowSwitchId: 'group',
       localInfo: {},
       searchForm: {
         pageSize: 10,
         pageNum: 1,
         name: "",
       },
-      adminUser:{
-        chatRoomId: "c1",
-        createTime: 1631327281438,
-        id: "0",
-        isAdmin: false,
-        memberId: "u180",
-        nickname: "彩票之神 -- 百投百胜",
-        username: "master-admin",
-      }
+      
     };
   },
   created() {
@@ -131,6 +121,15 @@ export default {
         case "SRV_JOIN_ROOM":
           console.log('<--成功連線------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
+          this.adminUser = {
+            chatRoomId: "c1",
+            createTime: 1631327281438,
+            id: "0",
+            isAdmin: false,
+            memberId: "admin",
+            nickname: "彩票之神 -- 百投百胜",
+            username: "master-admin",
+          },
           this.concats.unshift(this.adminUser)
           break;
         default:
@@ -140,12 +139,28 @@ export default {
   },
   mounted() {
     if (localStorage.getItem("token") === '') this.goBack();
+    this.advertiseMsg()
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    
+    advertiseMsg(){
+      let adminRoomMsg = {
+        chatType: 'SRV_ROOM_SEND',
+        avatar: require("./../../../static/avatar/group.png"),
+        fromId: "admin",
+        gotoId: "c1",
+        message: { 
+          time: +new Date(), 
+          content: "欢迎大家来到彩票之神 --百投百胜群组，跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！", 
+          textContent: "欢迎大家来到彩票之神 --百投百胜群组，跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！" 
+        },
+        nickName:"彩票之神 -- 百投百胜",
+      };
+      this.roomMsg.push(adminRoomMsg)
+    },
+    // 收取 socket 回來訊息
     handleGetMessage(msg) {
       // 一些全局的動作可以放在這裡
       this.setWsRes(JSON.parse(msg));
@@ -178,7 +193,7 @@ export default {
             },
             nickName: this.userRoomName,
           };
-          this.otherMsg = srvRoomMsg
+          this.roomMsg.push(srvRoomMsg)
           break;
         default:
           break;
@@ -199,6 +214,13 @@ export default {
      * 接收消息-父件需用到資料時
      */
     message(response) {
+      let chatType = response.chatType
+      switch (chatType) {
+        case "CLI_ROOM_SEND":
+          this.roomMsg.push(response)
+        default:
+          break;
+      }
       // let notifyAudio = document.getElementById("notify-audio");
 
       // // 服务器返回的消息
@@ -217,9 +239,10 @@ export default {
     },
     clearChat() {
       this.clearDialog = false;
+      this.roomMsg = []
     },
     /**
-     * 防止只沒資料進入
+     * 防呆 判定使用者是否正確
      */
     goBack() {
       localStorage.clear();
