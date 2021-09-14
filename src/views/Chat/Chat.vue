@@ -122,7 +122,7 @@ export default {
           console.log('<--成功連線------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
           this.adminUser = {
-            chatRoomId: "c1",
+            toChatId: "c1",
             createTime: 1631327281438,
             id: "0",
             isAdmin: false,

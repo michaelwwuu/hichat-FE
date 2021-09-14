@@ -180,7 +180,7 @@ export default {
         }).then(({ value }) => {
           this.$message({
             type: 'success',
-            message: '你的邮箱是: ' + value
+            message: value
           });
         }).catch(() => {
           this.$message({
@@ -395,6 +395,16 @@ export default {
     position: relative;
     top: 2rem;
     padding-bottom: 36px;
+    .el-input{
+      .el-input__inner{
+        text-align: center;
+      }
+    }
+  }
+  .el-message-box__btns{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 86px;
   }
 }
 
