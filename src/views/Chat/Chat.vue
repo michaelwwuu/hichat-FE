@@ -138,8 +138,11 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem("token") === '') this.goBack();
-    this.advertiseMsg()
+    if (localStorage.getItem("token") === ''){
+      this.goBack();
+      this.advertiseMsg()
+      Socket.connect();
+    } 
   },
   methods: {
     ...mapMutations({

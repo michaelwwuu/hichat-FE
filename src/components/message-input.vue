@@ -65,7 +65,6 @@ export default {
     textAreaTran () {
       return this.textArea.replace(/\n/g, '').replace(new RegExp('<', 'gm'), '&lt')
     },
-
     /**
      * 检测空白
      */

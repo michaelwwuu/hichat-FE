@@ -6,6 +6,7 @@ const emitter = new Vue({
 
   methods: {
     send(message) {
+      console.log('1123')
       if (1 === socket.readyState) socket.send(JSON.stringify(message));
     },
     connect() {

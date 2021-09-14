@@ -22,10 +22,10 @@
         />
 
         <p class="message-nickname" v-if="item.type !== 'CLI_ROOM_SEND'">
-          {{ item.nickName }} {{ formatTime(item.message.time) }}
+          {{ item.nickName }} <span class="nickname-time">{{ $root.formatTimeS(item.message.time) }}</span>
         </p>
         <p class="message-nickname" v-else>
-          {{ formatTime(item.message.time) }} {{ item.nickName }}
+          <span class="nickname-time">{{ $root.formatTimeS(item.message.time) }}</span> {{ item.nickName }}
         </p>
         <p class="message-classic" v-html="item.message.content"></p>
         <div
@@ -231,52 +231,6 @@ export default {
       // 发送查询消息
       this.$socket.emit("QUERY_PAGE", obj);
     },
-    /**
-     * 获取年月日
-     */
-    formatFullYearMonthDay(date, isShowHourMinute, type) {
-      date = new Date(date);
-      const fullYear = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const dayDate = date.getDate();
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-
-      if (isShowHourMinute) {
-        return `${fullYear}${month}${dayDate}${hours}${minutes}`;
-      } else {
-        if (type) {
-          return `${fullYear}${type}${month}${type}${dayDate}`;
-        } else {
-          return `${fullYear}${month}${dayDate}`;
-        }
-      }
-    },
-    /**
-     * 时间格式化
-     */
-    formatTime(time) {
-      var date = new Date(time);
-      var nowDate = new Date();
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-
-      hours = hours < 10 ? `0${hours}` : hours;
-      minutes = minutes < 10 ? `0${minutes}` : minutes;
-
-      if (
-        this.formatFullYearMonthDay(date) ===
-        this.formatFullYearMonthDay(nowDate)
-      ) {
-        return `${hours}:${minutes}`;
-      } else {
-        return `${this.formatFullYearMonthDay(
-          date,
-          false,
-          "/"
-        )} ${hours}:${minutes}`;
-      }
-    },
   },
 };
 </script>
@@ -317,6 +271,9 @@ export default {
       }
       .message-classic {
         background-color: rgb(243, 249, 255);
+        line-height: 1.4rem;
+        font-weight: 500;
+        letter-spacing: 2px;
         &::before {
           left: -16px;
           border-color: transparent rgb(243, 249, 255) transparent transparent;
@@ -369,6 +326,9 @@ export default {
     .message-nickname {
       color: #777777;
       font-size: 12px;
+      .nickname-time{
+        padding: 0 10px;
+      }
     }
 
     .message-classic,
