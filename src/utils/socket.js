@@ -4,7 +4,7 @@ var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   methods: {
     send(message) {
-      if (socket.readyState === 1) socket.send(message);
+      if (socket.readyState === 1) socket.send(JSON.stringify(message));
     },
     connect() {
       socket = new WebSocket(wsUrl);

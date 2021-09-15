@@ -25,7 +25,7 @@ import './styles.scss'
 import './../static/js/face.js'
 import './../static/css/face.css'
 
-// 引入根组件mixins
+// 引入根组件mixins 日期格式
 import mixins from './mixins/root.js'
 Vue.use(ElementUI);
 

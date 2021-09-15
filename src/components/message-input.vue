@@ -118,13 +118,15 @@ export default {
 
 <style lang="scss" >
 .message-input-box {
-  height: 130px;
+  height: 145px;
   background-color: rgba(255, 255, 255, .85);
   border-top: 1px solid #dddddd;
   .input-tools {
     width: 97%;
-    position: relative;
-    padding: 10px 0 10px 0.7rem;
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
     .upload-demo {
       display: inline;
     }
@@ -144,7 +146,7 @@ export default {
   }
   .text-send-box{
     width: 97%;
-    height: 65px;
+    height: 73px;
     display: flex;
     align-items: center;
     margin: 0 auto;

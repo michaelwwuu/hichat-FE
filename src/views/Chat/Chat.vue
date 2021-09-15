@@ -48,6 +48,7 @@
           :roomMsg="roomMsg"
           :localInfo="localInfo"
           :nowSwitchId="nowSwitchId"
+          :checked="checked"
           @message="message" />
         <message-input
           :concats="concats"
@@ -98,7 +99,7 @@ export default {
         pageNum: 1,
         name: "",
       },
-      advertise:"欢迎大家来到彩票之神 --百投百胜群组<span class='face face79' title='赞'></span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span>跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！<span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span>"
+      advertise:"欢迎大家来到<span style='color: #DD4400; font-weight: 600;'>彩票之神 -- 百投百胜群组</span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span>跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！<span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span>"
     };
   },
   created() {
@@ -152,7 +153,7 @@ export default {
     advertiseMsg(){
       let adminRoomMsg = {
         chatType: 'SRV_ROOM_SEND',
-        avatar: require("./../../../static/avatar/group.png"),
+        avatar: require("./../../../static/avatar/win.jpg"),
         fromId: "admin",
         gotoId: "c1",
         message: { 

@@ -5,7 +5,7 @@
       @click="eyeMore"
       v-if="nowSwitchId === 'group' && isShowMore"
       type="text"
-      >加载更多消息</el-button
+      >加载更多历史讯息</el-button
     >
     <ul class="message-styles-box">
       <li
@@ -59,6 +59,7 @@ export default {
     roomMsg: {
       type: Array,
     },
+    checked: true,
   },
   data() {
     return {
@@ -74,8 +75,12 @@ export default {
   },
   watch: {
     roomMsg(val) {
+      if(this.checked) this.gotoBottom()
       this.message = val;
     },
+    checked(val){
+      if(val) this.gotoBottom()
+    }
   },
   mounted() {
     /**
@@ -111,6 +116,9 @@ export default {
     });
   },
   methods: {
+    /**
+     * 封禁人員
+     */
     disabled(val) {
       this.disTitle = val;
       this.disDialog = true;
@@ -118,6 +126,9 @@ export default {
       this.$prompt('確定要封禁玩家',`確定要封禁玩家"${this.disTitle}"?`, {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
+          inputPlaceholder:'請輸入封禁分鐘',
+          inputPattern: /^[+-]?\d+$/,
+          inputErrorMessage: '※只能輸入數字',
           center:true,
           message:h('div',null,[
             h('div', { style: 'width:100%;height:50px;background-image:url(' + this.disabledImg +');background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;'}),
@@ -202,7 +213,7 @@ export default {
         background-color: rgb(243, 249, 255);
         line-height: 1.4rem;
         font-weight: 500;
-        letter-spacing: 2px;
+        letter-spacing: 0.5px;
         &::before {
           left: -16px;
           border-color: transparent rgb(243, 249, 255) transparent transparent;
@@ -237,7 +248,10 @@ export default {
       .message-classic {
         text-align: left;
         color: #ffffff;
+        line-height: 1.4rem;
+        font-weight: 500;
         background-color: rgba(55, 126, 200, 0.8);
+        letter-spacing: 0.5px;
         &::before {
           right: -16px;
           border-color: transparent transparent transparent
@@ -302,6 +316,9 @@ export default {
       position: relative;
       top: -10px;
       right: -67px;
+    }
+    .el-message-box__errormsg{
+      text-align: left;
     }
   }
   .el-message-box__btns{

@@ -42,7 +42,7 @@ export default {
   methods: {
     imgAdmin(item,index){
       if(item.id === '0'){
-        return require("./../../static/avatar/group.png")
+        return require("./../../static/avatar/win.jpg")
       }else{
         return require('./../../static/avatar/avatar_0' + `${index + 1}` + '.jpg')
       }
