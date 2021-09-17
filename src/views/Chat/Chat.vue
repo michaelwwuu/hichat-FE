@@ -120,7 +120,7 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          console.log('<--成功連線------聊天室人員已列表加載-->')
+          console.log('<--【成功連線】------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
           this.adminUser = {
             toChatId: "c1",
@@ -172,13 +172,13 @@ export default {
       let userInfo = JSON.parse(msg)
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
-          console.log('<--成功連線------寫入登入者資訊-->')
+          console.log('<--【成功連線】------寫入登入者資訊-->')
           this.localInfo = {
             fromChatId: userInfo.toChatId,
           };
           break;
         case "SRV_ROOM_SEND":
-          console.log('<--成功連線------群組內所有人訊息-->',userInfo)
+          console.log('<--【成功連線】------群組內所有人訊息-->',userInfo)
           if(userInfo.fromChatId === "u120"){
             this.userImg = require("./../../../static/avatar/avatar_03.jpg")
             this.userRoomName = "jed"
