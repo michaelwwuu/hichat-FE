@@ -8,31 +8,32 @@ const emitter = new Vue({
     },
     connect() {
       socket = new WebSocket(wsUrl);
-      
       socket.onopen = function (e) {
         console.log("[开启连线] Connection Success");
-        socket.send(JSON.stringify({
-          "chatType": "CLI_AUTH",
-          "id": Math.random(),
-          "tokenType": 0,
-          "deviceId": localStorage.getItem('UUID'),
-          "token": localStorage.getItem('token'),
-        }));
+        let joinMsg = {
+          chatType: "CLI_AUTH",
+          id: Math.random(),
+          tokenType: 0,
+          deviceId: localStorage.getItem('UUID'),
+          token: localStorage.getItem('token'),
+        }
+        socket.send(JSON.stringify(joinMsg));
       };
       socket.onmessage = function(msg) {
         let msgData = JSON.parse(msg.data)
-        console.log(msgData)
-        switch (msgData.chatType) {
+        let chatType = JSON.parse(msg.data).chatType
+        switch (chatType) {
           case "SRV_RECENT_CHAT":
-            socket.send(JSON.stringify({
-              "chatType": "CLI_JOIN_ROOM",
-              "id": Math.random(),
-              "tokenType": 0,
-              "fromChatId": msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
-              "toChatId": 'r1',
-              "deviceId": localStorage.getItem('UUID'),
-              "token": localStorage.getItem('token'),
-            }));
+            let userMsg={
+              chatType: "CLI_JOIN_ROOM",
+              id: Math.random(),
+              tokenType: 0,
+              fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
+              toChatId: 'r1',
+              deviceId: localStorage.getItem('UUID'),
+              token: localStorage.getItem('token'),
+            }
+            socket.send(JSON.stringify(userMsg));
             break;
           default:
             break;
