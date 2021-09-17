@@ -8,32 +8,34 @@ const emitter = new Vue({
     },
     connect() {
       socket = new WebSocket(wsUrl);
+      
       socket.onopen = function (e) {
         console.log("[开启连线] Connection Success");
-        let joinMsg = {
+        let joinRoomMsg = {
           chatType: "CLI_AUTH",
           id: Math.random(),
           tokenType: 0,
           deviceId: localStorage.getItem('UUID'),
           token: localStorage.getItem('token'),
         }
-        socket.send(JSON.stringify(joinMsg));
+        socket.send(JSON.stringify(joinRoomMsg));
       };
       socket.onmessage = function(msg) {
         let msgData = JSON.parse(msg.data)
-        let chatType = JSON.parse(msg.data).chatType
+        let chatType = msgData.chatType
+        console.log(msgData)
         switch (chatType) {
           case "SRV_RECENT_CHAT":
-            let userMsg={
+            let groupRoomMsg = {
               chatType: "CLI_JOIN_ROOM",
               id: Math.random(),
               tokenType: 0,
               fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
-              toChatId: 'r1',
+              toChatId: 'c1',
               deviceId: localStorage.getItem('UUID'),
               token: localStorage.getItem('token'),
-            }
-            socket.send(JSON.stringify(userMsg));
+            } 
+            socket.send(JSON.stringify(groupRoomMsg));
             break;
           default:
             break;
