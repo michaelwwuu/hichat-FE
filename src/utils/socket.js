@@ -21,6 +21,7 @@ const emitter = new Vue({
       };
       socket.onmessage = function(msg) {
         let msgData = JSON.parse(msg.data)
+        console.log(msgData)
         switch (msgData.chatType) {
           case "SRV_RECENT_CHAT":
             socket.send(JSON.stringify({
@@ -28,12 +29,11 @@ const emitter = new Vue({
               "id": Math.random(),
               "tokenType": 0,
               "fromChatId": msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
-              "toChatId": 'c1',
+              "toChatId": 'r1',
               "deviceId": localStorage.getItem('UUID'),
               "token": localStorage.getItem('token'),
             }));
             break;
-        
           default:
             break;
         }

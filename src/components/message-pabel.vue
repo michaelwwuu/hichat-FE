@@ -70,7 +70,7 @@ export default {
       isShowMore: true,
       disDialog:false,
       gotoBottom: gotoBottom,
-      disabledImg: require('./../../static/images/disabled.svg')
+      disabledImg: require('./../../static/images/disabled.svg'),
     };
   },
   watch: {
