@@ -276,8 +276,8 @@ export default {
     },
     resetRegisterForm() {
       this.$nextTick(() => {
-        this.$refs["loginForm","registerForm"].resetFields();
-        // this.$refs["registerForm"].resetFields();
+        this.$refs["loginForm"].resetFields();
+        this.$refs["registerForm"].resetFields();
       });
     },
   },
