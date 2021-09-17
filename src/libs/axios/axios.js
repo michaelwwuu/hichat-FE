@@ -1,6 +1,5 @@
 import axios from 'axios'
 import qs from 'qs'
-// import { Toast } from 'mint-ui'
 import { getToken} from '../utils/utils.js'
 axios.defaults.headers.post['Content-Type'] = "'Content-Type': 'multipart/form-data'";
 //axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -34,7 +33,6 @@ class HttpRequest {
         }
         
         if(getToken){
-          //  config.headers.Authorization = 'Bearer '+`${localStorage.token}`//完整版本
            config.headers.Authorization = `${localStorage.token}`
         }
 

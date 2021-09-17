@@ -81,7 +81,7 @@ import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
 // import { getSearchChat } from "@/api";
-import { getLocal } from "_util/utils.js";
+import { getLocal,getToken } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
@@ -139,7 +139,7 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem("token") === ''){
+    if (getToken("token") === ''){
       this.goBack();
     } else{
       this.advertiseMsg()
@@ -218,12 +218,7 @@ export default {
     /**接收消息-父件需用到資料時**/
     message(response) {
       let chatType = response.chatType
-      switch (chatType) {
-        case "CLI_ROOM_SEND":
-          this.roomMsg.push(response)
-        default:
-          break;
-      }
+      if(chatType === "CLI_ROOM_SEND") this.roomMsg.push(response)
     },
     /**清除聊天室內容**/
     clearChat() {

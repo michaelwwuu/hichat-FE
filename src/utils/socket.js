@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { getLocal,setLocal,getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
@@ -8,15 +9,14 @@ const emitter = new Vue({
     },
     connect() {
       socket = new WebSocket(wsUrl);
-      
       socket.onopen = function (e) {
         console.log("<--【开启连线】------初始化連線以建立-->");
         let joinRoom = {
           chatType: "CLI_AUTH",
           id: Math.random(),
           tokenType: 0,
-          deviceId: localStorage.getItem('UUID'),
-          token: localStorage.getItem('token'),
+          deviceId: getLocal('UUID'),
+          token: getToken('token'),
         }
         socket.send(JSON.stringify(joinRoom));
       };
@@ -32,10 +32,10 @@ const emitter = new Vue({
               tokenType: 0,
               fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
               toChatId: "c1",
-              deviceId: localStorage.getItem('UUID'),
-              token: localStorage.getItem('token'),
+              deviceId: getLocal('UUID'),
+              token: getToken('token'),
             } 
-            localStorage.setItem('toChatId',groupRoomMsg.toChatId)
+            setLocal('toChatId',groupRoomMsg.toChatId)
             socket.send(JSON.stringify(groupRoomMsg));
             break;
           default:

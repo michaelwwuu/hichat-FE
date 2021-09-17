@@ -128,7 +128,7 @@
 <script>
 import { login } from "_api/index.js";
 import { setToken, getToken, setLocal } from "_util/utils.js";
-import { getUserInfo, register } from "@/api";
+import { register } from "@/api";
 export default {
   data() {
     return {
