@@ -12,8 +12,7 @@ export const getLocal = (key) => {
   if (!key) {
     return;
   }
-  const getLocalSth = window.localStorage.getItem(key);
-  return getLocalSth;
+  return window.localStorage.getItem(key);
 }
 
 export const setLocal = (key, value) => {

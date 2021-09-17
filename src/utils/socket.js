@@ -9,7 +9,7 @@ const emitter = new Vue({
     },
     connect() {
       socket = new WebSocket(wsUrl);
-      socket.onopen = function (e) {
+      socket.onopen = function (el) {
         console.log("<--【开启连线】------初始化連線以建立-->");
         let joinRoom = {
           chatType: "CLI_AUTH",
@@ -24,6 +24,12 @@ const emitter = new Vue({
         let msgData = JSON.parse(msg.data)
         let chatType = msgData.chatType
         switch (chatType) {
+          case "SRV_SUCCESS_MSG":
+            console.log("<--【连线成功】------正在跳轉聊天群組-->");
+            break
+          case "SRV_ERROR_MSG":
+            console.log("<--【连线失敗】------請檢察Websocket onopen參數是否正確-->");
+            break
           case "SRV_RECENT_CHAT":
             console.log("<--【聊天群組】------加入群組聊天室------【成功】");
             let groupRoomMsg = {
@@ -37,7 +43,7 @@ const emitter = new Vue({
             } 
             setLocal('toChatId',groupRoomMsg.toChatId)
             socket.send(JSON.stringify(groupRoomMsg));
-            break;
+            break;  
           default:
             break;
         }
