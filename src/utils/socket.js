@@ -35,6 +35,7 @@ const emitter = new Vue({
               deviceId: localStorage.getItem('UUID'),
               token: localStorage.getItem('token'),
             } 
+            localStorage.setItem('toChatId',groupRoomMsg.toChatId)
             socket.send(JSON.stringify(groupRoomMsg));
             break;
           default:

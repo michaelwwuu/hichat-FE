@@ -157,17 +157,7 @@ export default {
     };
   },
   mounted() {
-    // 判斷是否記住我
-    if (this.token) {
-      //驗證token是否過期
-      getUserInfo({}).then((res) => {
-        if (res.code == 200) {
-          this.$router.push({ path: "/Chat" });
-        } else {
-          return false;
-        }
-      });
-    }
+    this.getUUID();
   },
   methods: {
     getUUID() {
@@ -179,18 +169,14 @@ export default {
           return v.toString(16);
         }
       );
-      setLocal("UUID","hiWeb" + number);
+      setLocal("UUID", "hiWeb" + number);
     },
     //登入&&註冊
     submitForm(rules) {
       switch (rules) {
         case "loginForm":
-          if (this.loginForm.username.trim() === "") {
-            this.loginForm.username = "";
-          }
-          if (this.loginForm.password.trim() === "") {
-            this.loginForm.password = "";
-          }
+          if (this.loginForm.username.trim() === "") this.loginForm.username = "";
+          if (this.loginForm.password.trim() === "") this.loginForm.password = "";
           //驗證登入表單是否通過
           this.$refs[rules].validate((valid) => {
             if (!valid) {
@@ -204,10 +190,8 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
-                  this.getUUID();
                   setToken(res.data.tokenHead + res.data.token);
-                  // this.$store.commit("getToken", res.data.token);
-                  this.$router.push({ path: "/Chat"});
+                  this.$router.push({ path: "/Chat" });
                 } else {
                   this.$message({
                     message: "登入驗證失敗，請重新輸入並確認",
@@ -227,12 +211,8 @@ export default {
           });
           break;
         case "registerForm":
-          if (this.registerForm.username.trim() === "") {
-            this.registerForm.username = "";
-          }
-          if (this.registerForm.password.trim() === "") {
-            this.registerForm.password = "";
-          }
+          if (this.registerForm.username.trim() === "") this.registerForm.username = "";
+          if (this.registerForm.password.trim() === "") this.registerForm.password = "";
           //驗證註冊表單是否通過
           this.$refs[rules].validate((valid) => {
             if (!valid) {
@@ -246,13 +226,8 @@ export default {
               .then((res) => {
                 //登入成功
                 if (res.code === 200) {
-                  this.getUUID();
                   setToken(res.data.tokenHead + res.data.token);
-                  // this.$store.commit("getToken", res.data.token);
-                  this.$router.push({
-                    path: "/Chat",
-                    query: { username: this.loginForm.username },
-                  });
+                  this.$router.push({ path: "/Chat" });
                 } else if (res.code === 500) {
                   this.$message({
                     message: res.message,
@@ -352,7 +327,7 @@ $light_gray: #eee;
   /deep/.el-dialog__wrapper {
     .el-input__inner {
       color: #000000;
-       &:-webkit-autofill {
+      &:-webkit-autofill {
         box-shadow: 0 0 1000px 0 #e8e2e2 inset !important;
         -webkit-text-fill-color: #000000 !important;
       }

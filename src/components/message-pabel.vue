@@ -83,9 +83,7 @@ export default {
     }
   },
   mounted() {
-    /**
-     * 当前用户发的消息
-     */
+    /** 当前用户发的消息**/
     Bus.$on("MESSAGE", (response) => {
       if (response.fromChatId === "u120") {
         this.userImg = require("./../../static/avatar/avatar_03.jpg");
@@ -116,9 +114,7 @@ export default {
     });
   },
   methods: {
-    /**
-     * 封禁人員
-     */
+    /**封禁人員**/
     disabled(val) {
       this.disTitle = val;
       this.disDialog = true;
@@ -145,9 +141,7 @@ export default {
           });       
         });
     },
-    /**
-     * 判断Class
-     */
+    /**判断Class**/
     judgeClass(type) {
       if (type === "CLI_ROOM_SEND") {
         return "message-layout-right";
@@ -156,9 +150,7 @@ export default {
       }
     },
 
-    /**
-     * 查看更多
-     */
+    /**查看更多**/
     eyeMore() {
       let obj = {
         id: this.localInfo.id,

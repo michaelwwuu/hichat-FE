@@ -80,8 +80,8 @@ import { mapState,mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-import { getSearchChat } from "@/api";
-
+// import { getSearchChat } from "@/api";
+import { getLocal } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
@@ -123,7 +123,7 @@ export default {
           console.log('<--【成功連線】------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
           this.adminUser = {
-            toChatId: "c1",
+            toChatId: getLocal('toChatId'),
             createTime: 1631327281438,
             id: "0",
             isAdmin: false,
@@ -155,7 +155,7 @@ export default {
         chatType: 'SRV_ROOM_SEND',
         avatar: require("./../../../static/avatar/win.jpg"),
         fromId: "admin",
-        gotoId: "c1",
+        gotoId: getLocal('toChatId'),
         message: { 
           time: +new Date(), 
           content: this.advertise, 
@@ -204,20 +204,18 @@ export default {
           break;
       }
     },
-    onSearch() {
-      getSearchChat(this.searchForm)
-        .then((res) => {
-          if (res.code === 200) {
-            this.searchData = res.data.list;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    /**
-     * 接收消息-父件需用到資料時
-     */
+    // onSearch() {
+    //   getSearchChat(this.searchForm)
+    //     .then((res) => {
+    //       if (res.code === 200) {
+    //         this.searchData = res.data.list;
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
+    /**接收消息-父件需用到資料時**/
     message(response) {
       let chatType = response.chatType
       switch (chatType) {
@@ -227,16 +225,12 @@ export default {
           break;
       }
     },
-    /**
-     * 清除聊天室內容
-     */
+    /**清除聊天室內容**/
     clearChat() {
       this.clearDialog = false;
       this.roomMsg = []
     },
-    /**
-     * 如果沒 token 自動清除暫存跳轉回登入
-     */
+    /**如果沒 token 自動清除暫存跳轉回登入**/
     goBack() {
       localStorage.clear();
       this.$$route.push({ path: "/Login" });

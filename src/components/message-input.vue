@@ -59,15 +59,11 @@ export default {
     })
   },
   methods: {
-    /**
-     * 消息过滤
-     */
+    /**消息过滤**/
     textAreaTran () {
       return this.textArea.replace(/\n/g, '').replace(new RegExp('<', 'gm'), '&lt')
     },
-    /**
-     * 检测空白
-     */
+    /**检测空白**/
     blankTesting () {
       if (this.textArea.replace(/\s+/g, '') === '') {
         this.$alert('不能发送空白消息', '提示', {
@@ -78,28 +74,24 @@ export default {
       return true
     },
 
-    /**
-     * 按Enter发送消息
-     */
+    /**按Enter发送消息**/
     keyUp (event) {
       if (event.key === 'Enter') {
         this.sendMessage()
       }
     },
 
-    /**
-     * 发送消息
-     */
+    /**发送消息**/
     sendMessage () {
       let message = {
         chatType:"CLI_ROOM_SEND",
-        toChatId:"c1",
+        toChatId:getLocal('toChatId'),
         id: Math.random(),
         token: getToken("token"),
         deviceId: getLocal('UUID'),
         fromChatId:this.localInfo.fromChatId,
         tokenType:0,
-        text:  this.obj.replaceFace(this.textAreaTran()),
+        text: this.obj.replaceFace(this.textAreaTran()),
       }
       if (this.blankTesting()) {
         // 发送服务器

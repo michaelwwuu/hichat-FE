@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
   //判斷token是否失效
   let isLogin = false;
   if (to.name !== "Login") {
-    getUserInfo({}).then((res) => {
+    getUserInfo().then((res) => {
       if (res.code == 200) {
         isLogin = true;
         setLocal('username', res.data.username);

@@ -47,9 +47,7 @@ export default {
         return require('./../../static/avatar/avatar_0' + `${index + 1}` + '.jpg')
       }
     },
-    /**
-     * 切换联系对象
-     */
+    /**切换联系对象**/
     switchGroup (index, id) {
       let concats = this.concats
       // 隐藏所有
