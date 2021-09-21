@@ -3,8 +3,7 @@ import { getLocal,setLocal,getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
 
-var deviceId = getLocal('UUID')
-var token = getToken('token')
+
 
 const emitter = new Vue({
   methods: {
@@ -12,7 +11,11 @@ const emitter = new Vue({
       if (socket.readyState === 1) socket.send(JSON.stringify(message));
     },
     connect() {
+      let deviceId = getLocal('UUID')
+      let token = getToken('token')
+
       socket = new WebSocket(wsUrl);
+      
       socket.onopen = function (el) {
         console.log("<--【开启连线】------初始建立连线-->");
         let joinRoom = {
