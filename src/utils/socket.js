@@ -2,6 +2,10 @@ import Vue from "vue";
 import { getLocal,setLocal,getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
+
+var deviceId = getLocal('UUID')
+var token = getToken('token')
+
 const emitter = new Vue({
   methods: {
     send(message) {
@@ -10,13 +14,13 @@ const emitter = new Vue({
     connect() {
       socket = new WebSocket(wsUrl);
       socket.onopen = function (el) {
-        console.log("<--【开启连线】------初始化連線以建立-->");
+        console.log("<--【开启连线】------初始建立连线-->");
         let joinRoom = {
           chatType: "CLI_AUTH",
           id: Math.random(),
           tokenType: 0,
-          deviceId: getLocal('UUID'),
-          token: getToken('token'),
+          deviceId: deviceId,
+          token: token,
         }
         socket.send(JSON.stringify(joinRoom));
       };
@@ -25,23 +29,23 @@ const emitter = new Vue({
         let chatType = msgData.chatType
         switch (chatType) {
           case "SRV_SUCCESS_MSG":
-            console.log("<--【连线成功】------正在跳轉聊天群組-->");
+            console.log("<--【连线成功】------Websocket 连线已建立-->");
             break
           case "SRV_ERROR_MSG":
-            console.log("<--【连线失敗】------請檢察Websocket onopen參數是否正確-->");
+            console.log("<--【连线失敗】------请检察 Websocket onopen 参数是否正确-->");
             break
           case "SRV_RECENT_CHAT":
-            console.log("<--【聊天群組】------加入群組聊天室------【成功】");
+            console.log("<--【连线成功】------加入群组聊天室------【toChatId 聊天室ID】-->");
             let groupRoomMsg = {
               chatType: "CLI_JOIN_ROOM",
               id: Math.random(),
               tokenType: 0,
+              deviceId: deviceId,
+              token: token,
+              toChatId: 'c1', //聊天室ID 暫時先寫死 可動態
               fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
-              toChatId: "c1",
-              deviceId: getLocal('UUID'),
-              token: getToken('token'),
             } 
-            setLocal('toChatId',groupRoomMsg.toChatId)
+            setLocal('toChatId',groupRoomMsg.toChatId ) 
             socket.send(JSON.stringify(groupRoomMsg));
             break;  
           default:

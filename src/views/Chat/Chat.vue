@@ -99,6 +99,7 @@ export default {
         pageNum: 1,
         name: "",
       },
+      toChatId: getLocal('toChatId'),
       advertise:"欢迎大家来到<span style='color: #DD4400; font-weight: 600;'>彩票之神 -- 百投百胜群组</span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span>跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！<span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span>"
     };
   },
@@ -120,10 +121,10 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          console.log('<--【成功連線】------聊天室人員已列表加載-->')
+          console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
           this.adminUser = {
-            toChatId: getLocal('toChatId'),
+            toChatId: this.toChatId,
             createTime: 1631327281438,
             id: "0",
             isAdmin: false,
@@ -132,6 +133,24 @@ export default {
             username: "master-admin",
           },
           this.concats.unshift(this.adminUser)
+          if(StatusCode.fromChatId === "u120"){
+            this.userImg = require("./../../../static/avatar/avatar_03.jpg")
+            this.userRoomName = "jed"
+          }else if(StatusCode.fromChatId === "u146"){
+            this.userImg = require("./../../../static/avatar/avatar_02.jpg")
+            this.userRoomName = "michael"
+          }
+          this.$notify({
+            title: `通知`,
+            dangerouslyUseHTMLString: true,
+            message: `
+              <img class="notify-image" src="${this.userImg}" style="width:50px; height:50px; padding-right:10px;">
+              <div class="notify-content" style="font-size:16px; font-weight:600">
+                <strong class="notify-title">'欢迎:)'</strong>
+                <span><strong>【${this.userRoomName}】进入聊天室 </strong</span>
+              </div>
+            `
+          })
           break;
         default:
           break;
@@ -150,12 +169,13 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+    //TODO 聊天室推播訊息
     advertiseMsg(){
       let adminRoomMsg = {
         chatType: 'SRV_ROOM_SEND',
         avatar: require("./../../../static/avatar/win.jpg"),
         fromId: "admin",
-        gotoId: getLocal('toChatId'),
+        gotoId: this.toChatId,
         message: { 
           time: +new Date(), 
           content: this.advertise, 
@@ -165,6 +185,7 @@ export default {
       };
       this.roomMsg.push(adminRoomMsg)
     },
+    
     // 收取 socket 回來訊息
     handleGetMessage(msg) {
       // 一些全局的動作可以放在這裡
@@ -172,13 +193,13 @@ export default {
       let userInfo = JSON.parse(msg)
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
-          console.log('<--【成功連線】------寫入登入者資訊-->')
+          console.log('<--【连线成功】------写入登入者资讯-->')
           this.localInfo = {
             fromChatId: userInfo.toChatId,
           };
           break;
         case "SRV_ROOM_SEND":
-          console.log('<--【成功連線】------群組內所有人訊息-->',userInfo)
+          console.log('<--【连线成功】------群组内所有人讯息-->',userInfo)
           if(userInfo.fromChatId === "u120"){
             this.userImg = require("./../../../static/avatar/avatar_03.jpg")
             this.userRoomName = "jed"

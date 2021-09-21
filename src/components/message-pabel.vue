@@ -15,17 +15,11 @@
       >
         <img
           class="message-avatar"
-          :src="
-            item.avatar ? item.avatar : './../../../static/avatar/avatar_14.jpg'
-          "
-          :alt="item.nickName ? item.nickName : '我是憨批'"
+          :src="item.avatar"
+          :alt="item.nickName"
         />
-
-        <p class="message-nickname" v-if="item.type !== 'CLI_ROOM_SEND'">
+        <p class="message-nickname">
           {{ item.nickName }} <span class="nickname-time">{{ $root.formatTimeS(item.message.time) }}</span>
-        </p>
-        <p class="message-nickname" v-else>
-          <span class="nickname-time">{{ $root.formatTimeS(item.message.time) }}</span> {{ item.nickName }}
         </p>
         <p class="message-classic" v-html="item.message.content"></p>
         <div
