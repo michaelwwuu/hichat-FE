@@ -105,9 +105,14 @@ export default {
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
+    window.addEventListener('beforeunload', this.webSocketConnet)
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
+    this.closeWebsocket()
+  },
+  destroyed(){
+    window.removeEventListener('beforeunload', this.webSocketConnet)
   },
   computed: {
     ...mapState({
@@ -185,7 +190,13 @@ export default {
       };
       this.roomMsg.push(adminRoomMsg)
     },
-    
+    webSocketConnet() {
+      this.closeWebsocket()
+    },
+    //TODO 關閉socket
+    closeWebsocket(){
+      Socket.onclose()
+    },
     // 收取 socket 回來訊息
     handleGetMessage(msg) {
       // 一些全局的動作可以放在這裡
@@ -195,6 +206,9 @@ export default {
         case "SRV_RECENT_CHAT":
           console.log('<--【连线成功】------写入登入者资讯-->')
           this.localInfo = {
+            toChatId:getLocal('toChatId'),
+            token:getToken("token"),
+            deviceId:getLocal('UUID'),
             fromChatId: userInfo.toChatId,
           };
           break;
