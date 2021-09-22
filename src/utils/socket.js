@@ -2,28 +2,28 @@ import Vue from "vue";
 import { getLocal,setLocal,getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
-
 const emitter = new Vue({
+  data() {
+    return {
+      roomKey: {
+        chatType: "CLI_AUTH",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: getLocal('UUID'),
+        token: getToken('token'),
+      },
+    }
+  },
   methods: {
     send(message) {
       if (1 === socket.readyState ) socket.send(JSON.stringify(message));
     },
     // 初始化websocket 
     connect() {
-      let deviceId = getLocal('UUID')
-      let token = getToken('token')
-
       socket = new WebSocket(wsUrl);
-      
+      let joinRoom = this.roomKey;
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
-        let joinRoom = {
-          chatType: "CLI_AUTH",
-          id: Math.random(),
-          tokenType: 0,
-          deviceId: deviceId,
-          token: token,
-        }
         socket.send(JSON.stringify(joinRoom));
       };
       socket.onmessage = function(msg) {
@@ -64,6 +64,9 @@ const emitter = new Vue({
     },
     onclose(){
       console.log("<--【中断连线】------使用者已离开聊天室-->");
+      let leaveRoom = this.roomKey
+      leaveRoom.chatType = "CLI_LEAVE_ROOM"
+      socket.send(JSON.stringify(leaveRoom));
       socket.close()
     }
   }
