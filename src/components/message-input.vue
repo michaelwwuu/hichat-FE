@@ -85,10 +85,10 @@ export default {
     sendMessage () {
       let message = {
         chatType:"CLI_ROOM_SEND",
-        toChatId:getLocal('toChatId'),
+        toChatId:this.localInfo.toChatId,
         id: Math.random(),
-        token: getToken("token"),
-        deviceId: getLocal('UUID'),
+        token: this.localInfo.token,
+        deviceId: this.localInfo.deviceId,
         fromChatId:this.localInfo.fromChatId,
         tokenType:0,
         text: this.obj.replaceFace(this.textAreaTran()),

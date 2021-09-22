@@ -156,6 +156,9 @@ export default {
       token: getToken("token"),
     };
   },
+  created() {
+    localStorage.clear()
+  },
   mounted() {
     this.getUUID();
   },
