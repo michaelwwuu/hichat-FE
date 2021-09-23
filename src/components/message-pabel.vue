@@ -13,11 +13,6 @@
         :key="index"
         :class="judgeClass(item.chatType)"
       >
-        <img
-          class="message-avatar"
-          :src="item.avatar"
-          :alt="item.nickName"
-        />
         <p class="message-nickname">
           {{ item.nickName }} <span class="nickname-time">{{ $root.formatTimeS(item.message.time) }}</span>
         </p>
@@ -79,17 +74,6 @@ export default {
   mounted() {
     /** 当前用户发的消息**/
     Bus.$on("MESSAGE", (response) => {
-      if (response.fromChatId === "u120") {
-        this.userImg = require("./../../static/avatar/avatar_03.jpg");
-      } else if (response.fromChatId === "u146") {
-        this.userImg = require("./../../static/avatar/avatar_02.jpg");
-      } else {
-        for (let index = 4; index < 25; index++) {
-          this.userImg = require("./../../static/avatar/avatar_0" +
-            `${index}` +
-            ".jpg");
-        }
-      }
       let message = {
         chatType: response.chatType,
         avatar: this.userImg,

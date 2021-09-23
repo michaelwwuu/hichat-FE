@@ -4,14 +4,6 @@
       v-for="(item, index) in concats"
       :key="index"
       class="message-list">
-      <div class="message-left">
-        <el-badge
-          class="item"
-          :max="99">
-          <img class="message-avatar" :src="imgAdmin(item,index)">
-        </el-badge>
-      </div>
-
       <div class="message-right" >
         <div class="message-header">
           <div class="message-title" :class="{'title-admin': item.id === '0'}">{{item.nickname}}</div>
@@ -30,15 +22,6 @@ export default {
     concats: {
       type: Array
     }
-  },
-  methods: {
-    imgAdmin(item,index){
-      if(item.id === '0'){
-        return require("./../../static/avatar/win.jpg")
-      }else{
-        return require('./../../static/avatar/avatar_0' + `${index + 1}` + '.jpg')
-      }
-    },
   },
 }
 </script>

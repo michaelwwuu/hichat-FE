@@ -120,21 +120,13 @@ export default {
             username: "master-admin",
           },
           this.concats.unshift(this.adminUser)
-          if(StatusCode.fromChatId === "u120"){
-            this.userImg = require("./../../../static/avatar/avatar_03.jpg")
-            this.userRoomName = "jed"
-          }else if(StatusCode.fromChatId === "u146"){
-            this.userImg = require("./../../../static/avatar/avatar_02.jpg")
-            this.userRoomName = "michael"
-          }
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
             message: `
-              <img class="notify-image" src="${this.userImg}" style="width:50px; height:50px; padding-right:10px;">
               <div class="notify-content" style="font-size:16px; font-weight:600">
                 <strong class="notify-title">'欢迎:)'</strong>
-                <span><strong>【${this.userRoomName}】进入聊天室 </strong</span>
+                <span><strong>【${StatusCode.fromChatId}】进入聊天室 </strong</span>
               </div>
             `
           })
@@ -160,7 +152,6 @@ export default {
     advertiseMsg(){
       let adminRoomMsg = {
         chatType: 'SRV_ROOM_SEND',
-        avatar: require("./../../../static/avatar/win.jpg"),
         fromId: "admin",
         gotoId: this.toChatId,
         message: { 
@@ -196,16 +187,8 @@ export default {
           break;
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->',userInfo)
-          if(userInfo.fromChatId === "u120"){
-            this.userImg = require("./../../../static/avatar/avatar_03.jpg")
-            this.userRoomName = "jed"
-          }else if(userInfo.fromChatId === "u146"){
-            this.userImg = require("./../../../static/avatar/avatar_02.jpg")
-            this.userRoomName = "michael"
-          }
           let srvRoomMsg = {
             chatType: userInfo.chatType,
-            avatar: this.userImg,
             fromId: userInfo.fromChatId,
             gotoId: userInfo.toChatId,
             message: { 
@@ -213,7 +196,7 @@ export default {
               content: userInfo.text, 
               textContent: userInfo.text 
             },
-            nickName: this.userRoomName,
+            nickName: userInfo.fromChatId,
           };
           this.roomMsg.push(srvRoomMsg)
           break;
