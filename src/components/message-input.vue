@@ -29,7 +29,6 @@
 import Bus from '@/assets/eventBus'
 import Socket from "@/utils/socket";
 import { gotoBottom } from '@/assets/tools'
-import { getLocal,getToken } from "_util/utils.js";
 export default {
   data () {
     return {

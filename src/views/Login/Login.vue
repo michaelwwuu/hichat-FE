@@ -157,9 +157,10 @@ export default {
     };
   },
   created() {
-    localStorage.clear()
+    
   },
   mounted() {
+    localStorage.clear()
     this.getUUID();
   },
   methods: {
@@ -252,6 +253,7 @@ export default {
           break;
       }
     },
+    //清空表格
     resetRegisterForm() {
       this.$nextTick(() => {
         this.$refs["loginForm"].resetFields();
