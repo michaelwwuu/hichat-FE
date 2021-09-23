@@ -1,22 +1,5 @@
 <template>
   <div class="wrapper">
-    <!-- <div class="search">
-      <el-form ref="searchForm" :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item>
-          <el-input v-model="searchForm.name"  placeholder="请输入 不輸入則顯示所有聊天室" style="width: 250px; margin-right: 10px;"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="onSearch">搜寻</el-button>
-        </el-form-item>
-      </el-form>
-      
-    </div>
-    <div class="search-list">
-      <span>聊天室選擇 :</span>
-      <el-row v-for="item in searchData" :key="item.i">
-        <el-button type="primary" plain round>{{item.chatRoomName}}</el-button>
-      </el-row>
-    </div> -->
     <el-container>
       <el-aside width="290px">
         <el-header height="55px">
@@ -80,7 +63,6 @@ import { mapState,mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-// import { getSearchChat } from "@/api";
 import { getLocal,getToken } from "_util/utils.js";
 export default {
   name: "Chat",
@@ -239,17 +221,6 @@ export default {
           break;
       }
     },
-    // onSearch() {
-    //   getSearchChat(this.searchForm)
-    //     .then((res) => {
-    //       if (res.code === 200) {
-    //         this.searchData = res.data.list;
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // },
     /**接收消息-父件需用到資料時**/
     message(response) {
       let chatType = response.chatType

@@ -56,14 +56,7 @@ router.beforeEach((to, from, next) => {
       alert("請注意：由於您過於頻繁跳轉頁面，因此系統判定為惡意行為，即將導向登入頁，謝謝。");
     })
   }
-
-  //在登入狀態下導到其他頁面則返回home頁
-  if (to.path !== "/domain"
-    && to.path !== "/domain/home"
-    && isLogin) {
-    this.$router.push({ path: "/home" });
-  }
-  else next();
+  next();
 });
 
 
