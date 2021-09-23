@@ -15,9 +15,6 @@ const emitter = new Vue({
     }
   },
   methods: {
-    send(message) {
-      if (1 === socket.readyState ) socket.send(JSON.stringify(message));
-    },
     // 初始化websocket 
     connect() {
       socket = new WebSocket(wsUrl);
@@ -58,14 +55,14 @@ const emitter = new Vue({
       socket.onerror = function(err) {
         emitter.$emit("error", err);
       };
-      socket.onclose = function() {
-        emitter.connect();
-      };
+    },
+    send(message) {
+      if (1 === socket.readyState ) socket.send(JSON.stringify(message));
     },
     onclose(){
       console.log("<--【中断连线】------使用者已离开聊天室-->");
-      let leaveRoom = this.roomKey
-      leaveRoom.chatType = "CLI_LEAVE_ROOM"
+      this.roomKey.chatType = "CLI_LEAVE_ROOM"
+      let leaveRoom =this.roomKey
       socket.send(JSON.stringify(leaveRoom));
       socket.close()
     }

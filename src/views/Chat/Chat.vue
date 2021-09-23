@@ -86,7 +86,36 @@ export default {
   name: "Chat",
   data() {
     return {
-      concats: [],
+      // concats: [],
+      concats: [
+        {
+          toChatId: this.toChatId,
+          createTime: 1631327281438,
+          id: "0",
+          isAdmin: true,
+          memberId: "admin",
+          nickname: "彩票之神 -- 百投百胜",
+          username: "master-admin",
+        },
+        {
+          toChatId: this.toChatId,
+          createTime: 1631327281438,
+          id: Math.random(),
+          isAdmin: false,
+          memberId: "admin",
+          nickname: "michael",
+          username: "u146",
+        },
+        {
+          toChatId: this.toChatId,
+          createTime: 1631327281438,
+          id: Math.random(),
+          isAdmin: false,
+          memberId: "admin",
+          nickname: "jed",
+          username: "u120",
+        },
+      ],
       searchData: [],
       roomMsg:[],
       clearDialog: false,
@@ -105,14 +134,14 @@ export default {
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    window.addEventListener('beforeunload', this.webSocketConnet)
+    window.addEventListener('beforeunload', this.closeWebsocket)
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
     this.closeWebsocket()
   },
   destroyed(){
-    window.removeEventListener('beforeunload', this.webSocketConnet)
+    window.removeEventListener('beforeunload', this.closeWebsocket)
   },
   computed: {
     ...mapState({
@@ -128,6 +157,7 @@ export default {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.concats = StatusCode.roomMemberList
+          
           this.adminUser = {
             toChatId: this.toChatId,
             createTime: 1631327281438,
@@ -138,6 +168,7 @@ export default {
             username: "master-admin",
           },
           this.concats.unshift(this.adminUser)
+
           if(StatusCode.fromChatId === "u120"){
             this.userImg = require("./../../../static/avatar/avatar_03.jpg")
             this.userRoomName = "jed"
@@ -163,6 +194,7 @@ export default {
     },
   },
   mounted() {
+    this.addImg()
     if (getToken("token") === ''){
       this.goBack();
     } else{
@@ -171,6 +203,18 @@ export default {
     }
   },
   methods: {
+    //TODO 新增圖片
+    addImg(){
+      let newData = []
+      this.concats.forEach((res,index)=>{
+        this.avatar = require('./../../../static/avatar/avatar_0' + `${index + 1}` + '.jpg')
+        res.avatar = this.avatar
+        newData.push(res)
+      })
+      this.concats = newData
+      console.log(this.concats)
+    },
+    
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
@@ -189,9 +233,6 @@ export default {
         nickName:"彩票之神 -- 百投百胜",
       };
       this.roomMsg.push(adminRoomMsg)
-    },
-    webSocketConnet() {
-      this.closeWebsocket()
     },
     //TODO 關閉socket
     closeWebsocket(){
