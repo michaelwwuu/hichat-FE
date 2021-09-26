@@ -70,13 +70,12 @@ export default {
         })
         return false
       }
+      return true
     },
 
     /**按Enter发送消息**/
     keyUp (event) {
-      if (event.key === 'Enter') {
-        this.sendMessage()
-      }
+      if (event.key === 'Enter') this.sendMessage()
     },
 
     /**发送消息**/
@@ -96,8 +95,6 @@ export default {
         Socket.send(message);
         // // 传递至同级
         Bus.$emit('MESSAGE', message)
-        // 把消息传给父级
-        // this.$emit("message", message);
         // 消息清空
         this.textArea = ''
         // 消息置底

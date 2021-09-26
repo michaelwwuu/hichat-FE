@@ -37,7 +37,7 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, getToken, setLocal,getLocal } from "_util/utils.js";
+import { setToken, setLocal } from "_util/utils.js";
 export default {
   data() {
     return {
@@ -50,8 +50,6 @@ export default {
       loginRules: {
         username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
       },
-      sign:getLocal('sign'),
-      token: getToken("token"),
     };
   },
   created() {
@@ -94,7 +92,9 @@ export default {
             //登入成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              this.$router.push({ path: "/Chat" });
+              this.$router.push({ 
+                path: "/Chat" 
+              });
             } else {
               this.$message({
                 message: res.message,

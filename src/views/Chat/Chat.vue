@@ -75,19 +75,18 @@ export default {
       nowSwitch: 0,
       nowSwitchId: 'group',
       localInfo: {},
-      toChatId: getLocal('toChatId'),
     };
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    window.addEventListener('beforeunload', this.webSocketConnet)
+    window.addEventListener('beforeunload', this.closeWebsocket)
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
     this.closeWebsocket()
   },
   destroyed(){
-    window.removeEventListener('beforeunload', this.webSocketConnet)
+    window.removeEventListener('beforeunload', this.closeWebsocket)
   },
   computed: {
     ...mapState({
@@ -96,17 +95,17 @@ export default {
   },
   watch: {
     wsRes(val) {
-      const StatusCode = val;  
-      if(StatusCode.chatType === "SRV_JOIN_ROOM"){
+      let chatType = val.chatType
+      if(chatType === "SRV_JOIN_ROOM"){
         console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
-        this.concats = StatusCode.roomMemberList
+        this.concats = val.roomMemberList
         this.$notify({
           title: `通知`,
           dangerouslyUseHTMLString: true,
           message: `
             <div class="notify-content" style="font-size:16px; font-weight:600">
               <strong class="notify-title">'欢迎:)'</strong>
-              <span><strong>【${StatusCode.fromChatId}】进入聊天室 </strong</span>
+              <span><strong>【${val.fromChatId}】进入聊天室 </strong</span>
             </div>
           `
         })
@@ -114,9 +113,12 @@ export default {
     },
   },
   mounted() {
-    if (getToken("token") === ''){
-      this.goBack();
-    } else{
+    const params = this.$route.params
+    console.log(params)
+
+    if(getToken("token") === '') {
+      this.goBack()
+    }else{
       Socket.connect();
     }
   },
@@ -124,9 +126,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    webSocketConnet() {
-      this.closeWebsocket()
-    },
+
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onclose()
@@ -167,7 +167,6 @@ export default {
     },
     /**接收消息-父件需用到資料時**/
     message(response) {
-      console.log(response)
       let chatType = response.chatType
       if(chatType === "CLI_ROOM_SEND") this.serverMsg.push(response)
     },

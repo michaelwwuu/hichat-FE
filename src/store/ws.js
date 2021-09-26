@@ -1,5 +1,6 @@
 export const state = {
   wsRes: {}
+  
 };
 export const actions = {};
 
