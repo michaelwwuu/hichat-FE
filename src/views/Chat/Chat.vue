@@ -28,7 +28,7 @@
           </el-row>
         </el-header>
         <message-pabel
-          :roomMsg="roomMsg"
+          :serverMsg="serverMsg"
           :localInfo="localInfo"
           :nowSwitchId="nowSwitchId"
           :checked="checked"
@@ -69,20 +69,13 @@ export default {
   data() {
     return {
       concats: [],
-      searchData: [],
-      roomMsg:[],
+      serverMsg:[],
       clearDialog: false,
       checked: true,
       nowSwitch: 0,
       nowSwitchId: 'group',
       localInfo: {},
-      searchForm: {
-        pageSize: 10,
-        pageNum: 1,
-        name: "",
-      },
       toChatId: getLocal('toChatId'),
-      advertise:"欢迎大家来到<span style='color: #DD4400; font-weight: 600;'>彩票之神 -- 百投百胜群组</span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span><span class='face face79' title='赞'></span>跟着彩票之神投注，百投百胜，就是你们，万中选一，跟着我走必会胜利，机会不等人，赶快下注！ ！<span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span><span class='face face66' title='爱心'></span>"
     };
   },
   created() {
@@ -103,36 +96,20 @@ export default {
   },
   watch: {
     wsRes(val) {
-      const StatusCode = val;
-      StatusCode === 0 && this.$message({ type: "error", message: "查詢失敗" });
-      let chatType = val.chatType;
-      switch (chatType) {
-        case "SRV_JOIN_ROOM":
-          console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
-          this.concats = StatusCode.roomMemberList
-          this.adminUser = {
-            toChatId: this.toChatId,
-            createTime: 1631327281438,
-            id: "0",
-            isAdmin: false,
-            memberId: "admin",
-            nickname: "彩票之神 -- 百投百胜",
-            username: "master-admin",
-          },
-          this.concats.unshift(this.adminUser)
-          this.$notify({
-            title: `通知`,
-            dangerouslyUseHTMLString: true,
-            message: `
-              <div class="notify-content" style="font-size:16px; font-weight:600">
-                <strong class="notify-title">'欢迎:)'</strong>
-                <span><strong>【${StatusCode.fromChatId}】进入聊天室 </strong</span>
-              </div>
-            `
-          })
-          break;
-        default:
-          break;
+      const StatusCode = val;  
+      if(StatusCode.chatType === "SRV_JOIN_ROOM"){
+        console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
+        this.concats = StatusCode.roomMemberList
+        this.$notify({
+          title: `通知`,
+          dangerouslyUseHTMLString: true,
+          message: `
+            <div class="notify-content" style="font-size:16px; font-weight:600">
+              <strong class="notify-title">'欢迎:)'</strong>
+              <span><strong>【${StatusCode.fromChatId}】进入聊天室 </strong</span>
+            </div>
+          `
+        })
       }
     },
   },
@@ -140,7 +117,6 @@ export default {
     if (getToken("token") === ''){
       this.goBack();
     } else{
-      this.advertiseMsg()
       Socket.connect();
     }
   },
@@ -148,21 +124,6 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    //TODO 聊天室推播訊息
-    advertiseMsg(){
-      let adminRoomMsg = {
-        chatType: 'SRV_ROOM_SEND',
-        fromId: "admin",
-        gotoId: this.toChatId,
-        message: { 
-          time: +new Date(), 
-          content: this.advertise, 
-          textContent: this.advertise, 
-        },
-        nickName:"彩票之神 -- 百投百胜",
-      };
-      this.roomMsg.push(adminRoomMsg)
-    },
     webSocketConnet() {
       this.closeWebsocket()
     },
@@ -170,10 +131,10 @@ export default {
     closeWebsocket(){
       Socket.onclose()
     },
-    // 收取 socket 回來訊息
+    // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
-      // 一些全局的動作可以放在這裡
       this.setWsRes(JSON.parse(msg));
+
       let userInfo = JSON.parse(msg)
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
@@ -196,9 +157,9 @@ export default {
               content: userInfo.text, 
               textContent: userInfo.text 
             },
-            nickName: userInfo.fromChatId,
+            userName: userInfo.fromChatId,
           };
-          this.roomMsg.push(srvRoomMsg)
+          this.serverMsg.push(srvRoomMsg)
           break;
         default:
           break;
@@ -206,15 +167,16 @@ export default {
     },
     /**接收消息-父件需用到資料時**/
     message(response) {
+      console.log(response)
       let chatType = response.chatType
-      if(chatType === "CLI_ROOM_SEND") this.roomMsg.push(response)
+      if(chatType === "CLI_ROOM_SEND") this.serverMsg.push(response)
     },
     /**清除聊天室內容**/
     clearChat() {
       this.clearDialog = false;
-      this.roomMsg = []
+      this.serverMsg = []
     },
-    /**如果沒 token 自動清除暫存跳轉回登入**/
+    /**回上一頁**/
     goBack() {
       localStorage.clear();
       this.$$route.push({ path: "/Login" });

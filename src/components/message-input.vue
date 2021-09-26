@@ -29,7 +29,6 @@
 import Bus from '@/assets/eventBus'
 import Socket from "@/utils/socket";
 import { gotoBottom } from '@/assets/tools'
-import { getLocal,getToken } from "_util/utils.js";
 export default {
   data () {
     return {
@@ -71,7 +70,6 @@ export default {
         })
         return false
       }
-      return true
     },
 
     /**按Enter发送消息**/
@@ -96,8 +94,10 @@ export default {
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
-        // 传递至同级
+        // // 传递至同级
         Bus.$emit('MESSAGE', message)
+        // 把消息传给父级
+        // this.$emit("message", message);
         // 消息清空
         this.textArea = ''
         // 消息置底

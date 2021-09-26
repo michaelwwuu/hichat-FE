@@ -11,7 +11,6 @@ const emitter = new Vue({
         tokenType: 0,
         deviceId: getLocal('UUID'),
         token: getToken('token'),
-        // token: '5e09e5e3a55dfa25251741ecbbff78cb',
       },
     }
   },

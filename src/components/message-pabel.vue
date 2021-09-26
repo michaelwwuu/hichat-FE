@@ -14,16 +14,19 @@
         :class="judgeClass(item.chatType)"
       >
         <p class="message-nickname">
-          {{ item.nickName }} <span class="nickname-time">{{ $root.formatTimeS(item.message.time) }}</span>
+          {{ item.userName }}
+          <span class="nickname-time">{{
+            $root.formatTimeS(item.message.time)
+          }}</span>
         </p>
         <p class="message-classic" v-html="item.message.content"></p>
         <div
           v-if="item.chatType === 'SRV_ROOM_SEND' && item.fromId !== 'admin'"
           class="message-disabled"
-          @click="disabled(item.nickName)"
-          :class="disUserNumber === '0'? 'noDis' : 'disUser'"
+          @click="disabled(item.userName)"
+          :class="disUserNumber === '0' ? 'noDis' : 'disUser'"
         >
-          {{disUserNumber === '0'?'封禁':'解封'}}
+          {{ disUserNumber === "0" ? "封禁" : "解封" }}
         </div>
       </li>
     </ul>
@@ -45,7 +48,7 @@ export default {
     localInfo: {
       type: Object,
     },
-    roomMsg: {
+    serverMsg: {
       type: Array,
     },
     checked: true,
@@ -57,26 +60,24 @@ export default {
       disTitle: "",
       page: 0,
       isShowMore: true,
-      disDialog:false,
+      disDialog: false,
       gotoBottom: gotoBottom,
-      disabledImg: require('./../../static/images/disabled.svg'),
+      disabledImg: require("./../../static/images/disabled.svg"),
     };
   },
   watch: {
-    roomMsg(val) {
-      if(this.checked) this.gotoBottom()
+    serverMsg(val) {
       this.message = val;
     },
-    checked(val){
-      if(val) this.gotoBottom()
-    }
+    checked(val) {
+      if (val) this.gotoBottom();
+    },
   },
   mounted() {
     /** 当前用户发的消息**/
     Bus.$on("MESSAGE", (response) => {
       let message = {
         chatType: response.chatType,
-        avatar: this.userImg,
         fromId: response.fromChatId,
         gotoId: response.toChatId,
         message: {
@@ -84,7 +85,7 @@ export default {
           content: response.text,
           textContent: response.text,
         },
-        nickName: getLocal("username"),
+        userName: getLocal("username"),
       };
       this.$forceUpdate();
       // 把消息传给父级
@@ -96,27 +97,34 @@ export default {
     disabled(val) {
       this.disTitle = val;
       this.disDialog = true;
-      const h= this.$createElement;
-      this.$prompt('確定要封禁玩家',`確定要封禁玩家"${this.disTitle}"?`, {
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          inputPlaceholder:'請輸入封禁分鐘',
-          inputPattern: /^[+-]?\d+$/,
-          inputErrorMessage: '※只能輸入數字',
-          center:true,
-          message:h('div',null,[
-            h('div', { style: 'width:100%;height:50px;background-image:url(' + this.disabledImg +');background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;'}),
-          ]),
-        }).then(({ value }) => {
+      const h = this.$createElement;
+      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${this.disTitle}"?`, {
+        cancelButtonText: "取消",
+        confirmButtonText: "确定",
+        inputPlaceholder: "請輸入封禁分鐘",
+        inputPattern: /^[+-]?\d+$/,
+        inputErrorMessage: "※只能輸入數字",
+        center: true,
+        message: h("div", null, [
+          h("div", {
+            style:
+              "width:100%;height:50px;background-image:url(" +
+              this.disabledImg +
+              ");background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;",
+          }),
+        ]),
+      })
+        .then(({ value }) => {
           this.$message({
-            type: 'success',
-            message: '确定封禁' + value + '分钟',
+            type: "success",
+            message: "确定封禁" + value + "分钟",
           });
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
+            type: "info",
+            message: "取消输入",
+          });
         });
     },
     /**判断Class**/
@@ -196,11 +204,11 @@ export default {
         color: #ffffff;
         cursor: pointer;
       }
-      .noDis{
+      .noDis {
         background-image: linear-gradient(#959595, #7e7e7e);
       }
-      .disUser{
-        background-image: linear-gradient(#B4D4FF, #559DFF);
+      .disUser {
+        background-image: linear-gradient(#b4d4ff, #559dff);
       }
       &:hover {
         .message-disabled {
@@ -239,7 +247,7 @@ export default {
     .message-nickname {
       color: #777777;
       font-size: 12px;
-      .nickname-time{
+      .nickname-time {
         padding: 0 10px;
       }
     }
@@ -259,56 +267,55 @@ export default {
     }
   }
 }
-.el-message-box--center{
-  .el-message-box__title{
+.el-message-box--center {
+  .el-message-box__title {
     top: 3rem;
-    span{
-      color: #2F84ED;
+    span {
+      color: #2f84ed;
       font-weight: 600;
     }
   }
-  .el-message-box__content{
+  .el-message-box__content {
     padding-left: 50px;
     padding-right: 50px;
   }
-  .el-message-box__input{
+  .el-message-box__input {
     position: relative;
     top: 2rem;
     padding-bottom: 36px;
-    .el-input{
-      .el-input__inner{
+    .el-input {
+      .el-input__inner {
         text-align: center;
       }
     }
-    &:after{
-      content: '※若填0则封禁999999分钟';
+    &:after {
+      content: "※若填0则封禁999999分钟";
       display: block;
       position: relative;
       top: -10px;
       right: -67px;
     }
-    .el-message-box__errormsg{
+    .el-message-box__errormsg {
       text-align: left;
     }
   }
-  .el-message-box__btns{
+  .el-message-box__btns {
     display: flex;
     justify-content: space-between;
     flex-direction: row-reverse;
     padding: 0 86px;
-    .el-button{
+    .el-button {
       font-size: 15px;
       padding: 8px 27px;
       border-radius: 5px;
-      color: #FFF;
-      &:first-child{
-        background-image: linear-gradient(#BABABA, #7C7C7C);
+      color: #fff;
+      &:first-child {
+        background-image: linear-gradient(#bababa, #7c7c7c);
       }
-      &:last-child{
-        background-image: linear-gradient(#438DFF, #1363FF);
+      &:last-child {
+        background-image: linear-gradient(#438dff, #1363ff);
       }
     }
   }
 }
-
 </style>
