@@ -61,7 +61,7 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function () {
-        emitter.connect();
+        // emitter.connect();
       };
     },
     onclose() {

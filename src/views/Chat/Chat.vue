@@ -63,7 +63,7 @@ import { mapState,mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-import { getLocal,getToken } from "_util/utils.js";
+import { getLocal,getToken,setLocal } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
@@ -119,6 +119,7 @@ export default {
     if(params.id) {
       this.goBack()
     }else{
+      this.getUUID()
       Socket.connect();
     }
   },
@@ -126,6 +127,17 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+    getUUID() {
+      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
+      setLocal("UUID", "hiWeb" + number);
+    },
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onclose()

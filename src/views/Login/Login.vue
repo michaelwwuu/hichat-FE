@@ -38,7 +38,7 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, setLocal } from "_util/utils.js";
+import { setToken } from "_util/utils.js";
 export default {
   data() {
     return {
@@ -55,23 +55,8 @@ export default {
   },
   created() {
     localStorage.clear()
-  
-  },
-  mounted() {
-     this.getUUID()
   },
   methods: {
-    getUUID() {
-      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-        /[xy]/g,
-        function (c) {
-          var r = (Math.random() * 16) | 0,
-            v = c == "x" ? r : (r & 0x3) | 0x8;
-          return v.toString(16);
-        }
-      );
-      setLocal("UUID", "hiWeb" + number);
-    },
     //登入&&註冊
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
