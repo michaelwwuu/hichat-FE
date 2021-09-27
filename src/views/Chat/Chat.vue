@@ -113,9 +113,6 @@ export default {
     },
   },
   mounted() {
-    const params = this.$route.params
-    console.log(params)
-
     if(getToken("token") === '') {
       this.goBack()
     }else{

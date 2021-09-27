@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import moment from 'moment'
+import md5 from 'js-md5';
 import 'element-ui/lib/theme-chalk/index.css'
 
 // 樣式重置
@@ -29,6 +30,7 @@ import './../static/css/face.css'
 import mixins from './mixins/root.js'
 Vue.use(ElementUI);
 
+Vue.prototype.$md5 = md5;
 Vue.prototype.$moment = moment;
 Vue.config.productionTip = false
 

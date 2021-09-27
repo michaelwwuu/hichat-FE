@@ -6,6 +6,7 @@
       :rules="loginRules"
       class="login-form"
       label-position="top"
+      @submit.native.prevent
     >
       <div class="title-container">
         <h3 class="title">{{ headerTitle }}</h3>
@@ -44,7 +45,7 @@ export default {
       headerTitle: "聊天室登入系統",
       loginForm: {
         username: "",
-        sign : "",
+        sign:"",
         platformCode:"dcw", 
       },
       loginRules: {
@@ -73,11 +74,6 @@ export default {
     //登入&&註冊
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
-      if (this.loginForm.username === "michael"){
-        this.loginForm.sign = "c471a4ad19fff65c1082b52d0a1963fd"
-      }else if(this.loginForm.username === "michael2"){
-        this.loginForm.sign = "4e54cd8358f5d01a9f231b9662eaa381"
-      }
       //驗證登入表單是否通過
       this.$refs[rules].validate((valid) => {
         if (!valid) {
@@ -87,14 +83,14 @@ export default {
           });
           return;
         }
+        // md5 加密
+        this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
         login(this.loginForm)
           .then((res) => {
             //登入成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              this.$router.push({ 
-                path: "/Chat" 
-              });
+              this.$router.push({ path: "/Chat" });
             } else {
               this.$message({
                 message: res.message,
