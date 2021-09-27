@@ -90,7 +90,6 @@ export default {
           .then((res) => {
             //登入成功
             if (res.code === 200) {
-              console.log(res)
               setToken(res.data.tokenHead + res.data.token);
               this.$router.push({ 
                 name: "Chat",

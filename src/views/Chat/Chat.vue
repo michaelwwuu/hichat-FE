@@ -74,7 +74,9 @@ export default {
       checked: true,
       nowSwitch: 0,
       nowSwitchId: 'group',
-      localInfo: {},
+      localInfo: {
+        platformCode:'dcw'
+      },
     };
   },
   created() {
@@ -135,12 +137,11 @@ export default {
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
           console.log('<--【连线成功】------写入登入者资讯-->')
-          this.localInfo = {
-            toChatId:getLocal('toChatId'),
-            token:getToken("token"),
-            deviceId:getLocal('UUID'),
-            username:getLocal('username')
-          };
+
+          this.localInfo.toChatId = getLocal('toChatId'),
+          this.localInfo.token = getToken('token'),
+          this.localInfo.deviceId = getLocal('UUID'),
+          this.localInfo.fromChatId = getLocal('username'),
           console.log(this.localInfo)
           break;
         case "SRV_ROOM_SEND":

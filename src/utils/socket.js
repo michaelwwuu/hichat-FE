@@ -1,29 +1,38 @@
 import Vue from "vue";
-import { getLocal,setLocal,getToken } from "_util/utils.js";
+import { getLocal, setLocal, getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
+  data() {
+    return {
+      roomKey: {
+        chatType: "CLI_AUTH",
+        id: '',
+        deviceId: '',
+        token: '',
+        tokenType: 0,
+        platformCode: "dcw",
+      }
+    }
+  },
   methods: {
     send(message) {
-      if (1 === socket.readyState ) socket.send(JSON.stringify(message));
+      if (1 === socket.readyState) socket.send(JSON.stringify(message));
     },
     // 初始化websocket 
     connect() {
       socket = new WebSocket(wsUrl);
-      let joinRoom = {
-        chatType: "CLI_AUTH",
-        id: Math.random(),
-        tokenType: 0,
-        deviceId: getLocal('UUID'),
-        token: getToken('token'),
-        platformCode:"dcw", 
-      };
+      let roomKey = this.roomKey
+      let joinRoom = this.roomKey
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
-        socket.send(JSON.stringify(joinRoom));        
+        roomKey.id = Math.random();
+        roomKey.deviceId = getLocal('UUID');
+        roomKey.token = getToken('token');
+        socket.send(JSON.stringify(roomKey));
       };
-      socket.onmessage = function(msg) {
+      socket.onmessage = function (msg) {
         let msgData = JSON.parse(msg.data)
         let chatType = msgData.chatType
         switch (chatType) {
@@ -35,31 +44,28 @@ const emitter = new Vue({
             break
           case "SRV_RECENT_CHAT":
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
-            let groupRoomMsg = {
-              chatType: "CLI_JOIN_ROOM",
-              id: Math.random(),
-              tokenType: 0,
-              deviceId: joinRoom.deviceId,
-              token: joinRoom.token,
-              toChatId: 'c1', //聊天室ID 暫時先寫死 可動態
-              fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
-            } 
-            setLocal('toChatId',groupRoomMsg.toChatId) 
-            socket.send(JSON.stringify(groupRoomMsg));
-            break;  
+            joinRoom.chatType = "CLI_JOIN_ROOM",
+            joinRoom.id = Math.random(),
+            joinRoom.deviceId = getLocal('UUID'),
+            joinRoom.token = getToken('token'),
+            joinRoom.toChatId = 'c1',
+            joinRoom.fromChatId = msgData.toChatId,
+            setLocal('toChatId', msgData.toChatId)
+            socket.send(JSON.stringify(joinRoom));
+            break;
           default:
             break;
         }
         emitter.$emit("message", msg.data);
       };
-      socket.onerror = function(err) {
+      socket.onerror = function (err) {
         emitter.$emit("error", err);
       };
-      socket.onclose = function() {
-        // emitter.connect();
+      socket.onclose = function () {
+        emitter.connect();
       };
     },
-    onclose(){
+    onclose() {
       console.log("<--【中断连线】------使用者已离开聊天室-->");
       let leaveRoom = {
         chatType: "CLI_LEAVE_ROOM",
@@ -67,11 +73,12 @@ const emitter = new Vue({
         tokenType: 0,
         deviceId: getLocal('UUID'),
         token: getToken('token'),
-        platformCode:"dcw", 
+        platformCode: "dcw",
       };
       socket.send(JSON.stringify(leaveRoom));
       // socket.close()
     }
   }
 });
+// emitter.connect();
 export default emitter;

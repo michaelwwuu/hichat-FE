@@ -150,9 +150,11 @@ export default {
         token: this.localInfo.token,
         fromChatId:this.localInfo.fromChatId,
         toChatId:this.localInfo.toChatId,
+        platformCode:this.localInfo.platformCode,
         pageNum:this.pageNum = 1,
         pageSize:this.pageSize = 50 ,
       }
+      console.log(historyMsg)
       Socket.send(historyMsg);
     },
   },

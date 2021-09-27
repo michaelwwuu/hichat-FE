@@ -90,16 +90,17 @@ export default {
         tokenType:0,
         text: this.obj.replaceFace(this.textAreaTran()),
       }
-      if (this.blankTesting()) {
-        // 发送服务器
-        Socket.send(message);
-        // // 传递至同级
-        Bus.$emit('MESSAGE', message)
-        // 消息清空
-        this.textArea = ''
-        // 消息置底
-        this.gotoBottom()
-      }
+      console.log(message)
+      // if (this.blankTesting()) {
+      //   // 发送服务器
+      //   Socket.send(message);
+      //   // // 传递至同级
+      //   Bus.$emit('MESSAGE', message)
+      //   // 消息清空
+      //   this.textArea = ''
+      //   // 消息置底
+      //   this.gotoBottom()
+      // }
     }
   }
 }
