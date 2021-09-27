@@ -8,12 +8,12 @@ const emitter = new Vue({
     return {
       roomKey: {
         chatType: "CLI_AUTH",
-        id: '',
-        deviceId: '',
-        token: '',
+        id: Math.random(),
+        deviceId: getLocal('UUID'),
+        token: getToken('token'),
         tokenType: 0,
         platformCode: "dcw",
-      }
+      },
     }
   },
   methods: {
@@ -24,12 +24,11 @@ const emitter = new Vue({
     connect() {
       socket = new WebSocket(wsUrl);
       let roomKey = this.roomKey
-      let joinRoom = this.roomKey
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
-        roomKey.id = Math.random();
-        roomKey.deviceId = getLocal('UUID');
-        roomKey.token = getToken('token');
+        // roomKey.id = Math.random();
+        // roomKey.deviceId = getLocal('UUID');
+        // roomKey.token = getToken('token');
         socket.send(JSON.stringify(roomKey));
       };
       socket.onmessage = function (msg) {
@@ -44,14 +43,14 @@ const emitter = new Vue({
             break
           case "SRV_RECENT_CHAT":
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
-            joinRoom.chatType = "CLI_JOIN_ROOM",
-            joinRoom.id = Math.random(),
-            joinRoom.deviceId = getLocal('UUID'),
-            joinRoom.token = getToken('token'),
-            joinRoom.toChatId = 'c1',
-            joinRoom.fromChatId = msgData.toChatId,
+            roomKey.chatType = "CLI_JOIN_ROOM",
+            roomKey.id = Math.random(),
+            // roomKey.deviceId = getLocal('UUID'),
+            // roomKey.token = getToken('token'),
+            roomKey.toChatId = 'c1',
+            roomKey.fromChatId = msgData.toChatId,
             setLocal('toChatId', msgData.toChatId)
-            socket.send(JSON.stringify(joinRoom));
+            socket.send(JSON.stringify(roomKey));
             break;
           default:
             break;
