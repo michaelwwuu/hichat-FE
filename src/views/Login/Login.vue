@@ -76,12 +76,7 @@ export default {
             //登入成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              this.$router.push({ 
-                name: "Chat",
-                params:{
-                  id:res.username
-                }
-              });
+              this.$router.push({ path: "/Chat" });
             } else {
               this.$message({
                 message: res.message,

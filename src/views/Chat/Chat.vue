@@ -115,13 +115,8 @@ export default {
     },
   },
   mounted() {
-   const params = this.$route.params
-    if(params.id) {
-      this.goBack()
-    }else{
-      this.getUUID()
-      Socket.connect();
-    }
+    this.getUUID()
+    Socket.connect();
   },
   methods: {
     ...mapMutations({
@@ -205,8 +200,8 @@ export default {
     },
     /**回上一頁**/
     goBack() {
-      localStorage.clear();
-      this.$$route.push({ path: "/Login" });
+      // localStorage.clear();
+      this.$router.push({ path: "/Login" });
     },
   },
   components: {
