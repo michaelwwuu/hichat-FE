@@ -99,7 +99,6 @@ export default {
       if(chatType === "SRV_JOIN_ROOM"){
         console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
         this.concats = val.roomMemberList
-        this.$store.commit('setRoomList',this.concats)
         this.$notify({
           title: `通知`,
           dangerouslyUseHTMLString: true,
@@ -117,7 +116,7 @@ export default {
    const params = this.$route.params
     if(params.id) {
       this.goBack()
-    } else{
+    }else{
       Socket.connect();
     }
   },
@@ -140,8 +139,9 @@ export default {
             toChatId:getLocal('toChatId'),
             token:getToken("token"),
             deviceId:getLocal('UUID'),
-            fromChatId: userInfo.toChatId,
+            username:getLocal('username')
           };
+          console.log(this.localInfo)
           break;
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->')

@@ -4,17 +4,6 @@ const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
-  data() {
-    return {
-      roomKey: {
-        chatType: "CLI_AUTH",
-        id: Math.random(),
-        tokenType: 0,
-        deviceId: getLocal('UUID'),
-        token: getToken('token'),
-      },
-    }
-  },
   methods: {
     send(message) {
       if (1 === socket.readyState ) socket.send(JSON.stringify(message));
@@ -22,12 +11,17 @@ const emitter = new Vue({
     // 初始化websocket 
     connect() {
       socket = new WebSocket(wsUrl);
-      let joinRoom = this.roomKey;
+      let joinRoom = {
+        chatType: "CLI_AUTH",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: getLocal('UUID'),
+        token: getToken('token'),
+        platformCode:"dcw", 
+      };
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
-        socket.send(JSON.stringify(joinRoom));
-        console.log("<--【开启连线】------心跳監測-->");
-        
+        socket.send(JSON.stringify(joinRoom));        
       };
       socket.onmessage = function(msg) {
         let msgData = JSON.parse(msg.data)
@@ -62,15 +56,21 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function() {
-        emitter.connect();
+        // emitter.connect();
       };
     },
     onclose(){
       console.log("<--【中断连线】------使用者已离开聊天室-->");
-      let leaveRoom = this.roomKey
-      leaveRoom.chatType = "CLI_LEAVE_ROOM"
+      let leaveRoom = {
+        chatType: "CLI_LEAVE_ROOM",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: getLocal('UUID'),
+        token: getToken('token'),
+        platformCode:"dcw", 
+      };
       socket.send(JSON.stringify(leaveRoom));
-      socket.close()
+      // socket.close()
     }
   }
 });

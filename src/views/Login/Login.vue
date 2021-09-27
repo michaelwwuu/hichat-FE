@@ -55,6 +55,10 @@ export default {
   },
   created() {
     localStorage.clear()
+  
+  },
+  mounted() {
+     this.getUUID()
   },
   methods: {
     getUUID() {
@@ -86,14 +90,14 @@ export default {
           .then((res) => {
             //登入成功
             if (res.code === 200) {
+              console.log(res)
               setToken(res.data.tokenHead + res.data.token);
               this.$router.push({ 
                 name: "Chat",
                 params:{
-                  id:res.nickname
+                  id:res.username
                 }
               });
-              this.getUUID();
             } else {
               this.$message({
                 message: res.message,
