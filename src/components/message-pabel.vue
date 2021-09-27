@@ -2,7 +2,7 @@
   <div class="message-pabel-box">
     <el-button
       class="eye-more"
-      @click="eyeMore"
+      @click="eyeMore()"
       v-if="nowSwitchId === 'group' && isShowMore"
       type="text"
       >加载更多历史讯息</el-button
@@ -35,6 +35,7 @@
 
 <script>
 import Bus from "@/assets/eventBus";
+import Socket from "@/utils/socket";
 import { gotoBottom } from "@/assets/tools";
 import { getLocal } from "_util/utils.js";
 export default {
@@ -58,15 +59,17 @@ export default {
       message: [],
       disUserNumber: "0",
       disTitle: "",
-      page: 0,
       isShowMore: true,
       disDialog: false,
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
+      pageNum:0,
+      pageSize:0,
     };
   },
   watch: {
     serverMsg(val) {
+      if(this.checked) this.gotoBottom();
       this.message = val;
     },
     checked(val) {
@@ -93,6 +96,7 @@ export default {
     });
   },
   methods: {
+    
     /**封禁人員**/
     disabled(val) {
       this.disTitle = val;
@@ -138,16 +142,18 @@ export default {
 
     /**查看更多**/
     eyeMore() {
-      let obj = {
-        id: this.localInfo.id,
-        page: (this.page += 1),
-      };
-      this.initMessageArray("group");
-      if (this.message["group"] !== undefined && this.page === 1) {
-        obj.length = this.message["group"].length;
+      let historyMsg = {
+        chatType:"CLI_ROOM_HISTORY_REQ",
+        id: Math.random(),
+        tokenType:0,
+        deviceId: this.localInfo.deviceId,
+        token: this.localInfo.token,
+        fromChatId:this.localInfo.fromChatId,
+        toChatId:this.localInfo.toChatId,
+        pageNum:this.pageNum = 1,
+        pageSize:this.pageSize = 50 ,
       }
-      // 发送查询消息
-      this.$socket.emit("QUERY_PAGE", obj);
+      Socket.send(historyMsg);
     },
   },
 };

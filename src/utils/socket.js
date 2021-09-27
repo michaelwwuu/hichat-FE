@@ -2,6 +2,7 @@ import Vue from "vue";
 import { getLocal,setLocal,getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
+
 const emitter = new Vue({
   data() {
     return {
@@ -25,6 +26,8 @@ const emitter = new Vue({
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
         socket.send(JSON.stringify(joinRoom));
+        console.log("<--【开启连线】------心跳監測-->");
+        
       };
       socket.onmessage = function(msg) {
         let msgData = JSON.parse(msg.data)
@@ -42,8 +45,8 @@ const emitter = new Vue({
               chatType: "CLI_JOIN_ROOM",
               id: Math.random(),
               tokenType: 0,
-              deviceId: deviceId,
-              token: token,
+              deviceId: joinRoom.deviceId,
+              token: joinRoom.token,
               toChatId: 'c1', //聊天室ID 暫時先寫死 可動態
               fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
             } 

@@ -56,9 +56,6 @@ export default {
   created() {
     localStorage.clear()
   },
-  mounted() {
-    this.getUUID();
-  },
   methods: {
     getUUID() {
       let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -90,7 +87,13 @@ export default {
             //登入成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              this.$router.push({ path: "/Chat" });
+              this.$router.push({ 
+                name: "Chat",
+                params:{
+                  id:res.nickname
+                }
+              });
+              this.getUUID();
             } else {
               this.$message({
                 message: res.message,

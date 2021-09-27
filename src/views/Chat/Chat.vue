@@ -99,6 +99,7 @@ export default {
       if(chatType === "SRV_JOIN_ROOM"){
         console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
         this.concats = val.roomMemberList
+        this.$store.commit('setRoomList',this.concats)
         this.$notify({
           title: `通知`,
           dangerouslyUseHTMLString: true,
@@ -113,9 +114,10 @@ export default {
     },
   },
   mounted() {
-    if(getToken("token") === '') {
+   const params = this.$route.params
+    if(params.id) {
       this.goBack()
-    }else{
+    } else{
       Socket.connect();
     }
   },
@@ -123,7 +125,6 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onclose()
@@ -131,7 +132,6 @@ export default {
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
-
       let userInfo = JSON.parse(msg)
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
@@ -144,7 +144,7 @@ export default {
           };
           break;
         case "SRV_ROOM_SEND":
-          console.log('<--【连线成功】------群组内所有人讯息-->',userInfo)
+          console.log('<--【连线成功】------群组内所有人讯息-->')
           let srvRoomMsg = {
             chatType: userInfo.chatType,
             fromId: userInfo.fromChatId,
@@ -157,6 +157,24 @@ export default {
             userName: userInfo.fromChatId,
           };
           this.serverMsg.push(srvRoomMsg)
+          break;
+        case "SRV_ROOM_HISTORY_RSP":
+          console.log('<--【连线成功】------已提取历史讯息-->')
+          let msgData = userInfo.historyMessage.list
+          msgData.forEach(el => {
+            this.dataMsg = {
+              chatType: el.chatType,
+              fromId: el.fromChatId,
+              gotoId: el.toChatId,
+              message: { 
+                time: el.createTime, 
+                content: el.text, 
+                textContent: el.text 
+              },
+              userName: el.fromChatId,
+            }
+            this.serverMsg.unshift(this.dataMsg)
+          });
           break;
         default:
           break;

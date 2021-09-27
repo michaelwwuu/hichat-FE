@@ -1,13 +1,12 @@
 export const state = {
-  wsRes: {}
-  
+  wsRes: {},
 };
 export const actions = {};
 
 export const mutations = {
   setWsRes(state, payload) {
     state.wsRes = payload;
-  }
+  },
 };
 export const getters = {};
 
