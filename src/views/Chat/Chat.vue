@@ -4,6 +4,7 @@
       <el-aside width="290px">
         <el-header height="55px">
           <img src="./../../../static/images/user-group.svg" alt="" />
+          
           <span class="title"
             >聊天室人數
             <img
@@ -98,10 +99,10 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType
-      this.concats = val.roomMemberList
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
+          this.concats = val.roomMemberList
           setLocal('roomList',JSON.stringify(this.concats))
           let onUser = ''
           this.concats.forEach((res)=>{
@@ -120,13 +121,18 @@ export default {
           break;
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者已离开聊天室-->");
+          this.concats = val.roomMemberList
+          let leaveUser = ''
+          this.concats.forEach((res)=>{
+            leaveUser = res.username
+          })
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
             message: `
               <div class="notify-content" style="font-size:16px; font-weight:600">
                 <strong class="notify-title">':)'</strong>
-                <span><strong>【${onUser}】离开聊天室 </strong</span>
+                <span><strong>【${leaveUser}】离开聊天室 </strong</span>
               </div>
             `
           })
@@ -154,9 +160,6 @@ export default {
         }
       );
       setLocal("UUID", "hiWeb" + number);
-    },
-    windowRload() {
-      window.location.reload()
     },
     //TODO 關閉socket
     closeWebsocket(){
