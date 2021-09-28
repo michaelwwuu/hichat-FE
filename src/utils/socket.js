@@ -27,7 +27,7 @@ const emitter = new Vue({
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
         // roomKey.id = Math.random();
-        // roomKey.deviceId = getLocal('UUID');
+        roomKey.deviceId = getLocal('UUID');
         // roomKey.token = getToken('token');
         socket.send(JSON.stringify(roomKey));
       };
@@ -45,11 +45,9 @@ const emitter = new Vue({
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
             roomKey.chatType = "CLI_JOIN_ROOM",
             roomKey.id = Math.random(),
-            // roomKey.deviceId = getLocal('UUID'),
-            // roomKey.token = getToken('token'),
             roomKey.toChatId = 'c1',
             roomKey.fromChatId = msgData.toChatId,
-            setLocal('toChatId', msgData.toChatId)
+            setLocal('toChatId', roomKey.toChatId)
             socket.send(JSON.stringify(roomKey));
             break;
           default:
@@ -65,19 +63,13 @@ const emitter = new Vue({
       };
     },
     onclose() {
-      console.log("<--【中断连线】------使用者已离开聊天室-->");
-      let leaveRoom = {
-        chatType: "CLI_LEAVE_ROOM",
-        id: Math.random(),
-        tokenType: 0,
-        deviceId: getLocal('UUID'),
-        token: getToken('token'),
-        platformCode: "dcw",
-      };
+      let leaveRoom = this.roomKey
+      leaveRoom.chatType = "CLI_LEAVE_ROOM",
+      leaveRoom.id = Math.random(),
       socket.send(JSON.stringify(leaveRoom));
-      // socket.close()
+      socket.close()
     }
   }
 });
-// emitter.connect();
+emitter.connect();
 export default emitter;

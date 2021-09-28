@@ -6,8 +6,8 @@
       class="message-list">
       <div class="message-right" >
         <div class="message-header">
-          <div class="message-title" :class="{'title-admin': item.id === '0'}">{{item.username}}</div>
-          <div class="message-user-type"><el-tag :class="item.id === '0'?'user-admin':'user'">{{item.id === "0"? '專家':'粉絲'}}</el-tag></div>
+          <div class="message-title" :class="{'title-admin': item.isAdmin }">{{item.username}}</div>
+          <div class="message-user-type"><el-tag :class="item.isAdmin ?'user-admin':'user'">{{item.isAdmin ? '專家':'粉絲'}}</el-tag></div>
         </div>
       </div>
     </li>

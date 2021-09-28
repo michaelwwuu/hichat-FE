@@ -87,20 +87,21 @@ export default {
         token: this.localInfo.token,
         deviceId: this.localInfo.deviceId,
         fromChatId:this.localInfo.fromChatId,
+        platformCode:this.localInfo.platformCode,
         tokenType:0,
         text: this.obj.replaceFace(this.textAreaTran()),
       }
       console.log(message)
-      // if (this.blankTesting()) {
-      //   // 发送服务器
-      //   Socket.send(message);
-      //   // // 传递至同级
-      //   Bus.$emit('MESSAGE', message)
-      //   // 消息清空
-      //   this.textArea = ''
-      //   // 消息置底
-      //   this.gotoBottom()
-      // }
+      if (this.blankTesting()) {
+        // 发送服务器
+        Socket.send(message);
+        // // 传递至同级
+        Bus.$emit('MESSAGE', message)
+        // 消息清空
+        this.textArea = ''
+        // 消息置底
+        this.gotoBottom()
+      }
     }
   }
 }

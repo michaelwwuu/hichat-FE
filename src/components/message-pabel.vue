@@ -154,7 +154,6 @@ export default {
         pageNum:this.pageNum = 1,
         pageSize:this.pageSize = 50 ,
       }
-      console.log(historyMsg)
       Socket.send(historyMsg);
     },
   },

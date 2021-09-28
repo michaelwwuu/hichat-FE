@@ -10,7 +10,7 @@
               class="online-img"
               src="./../../../static/images/online.svg"
               alt=""
-            />{{ concats.length }}</span
+            />{{ concats === null ? 0: concats.length }}</span
           >
         </el-header>
         <message-group :concats="concats" />
@@ -98,19 +98,41 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType
-      if(chatType === "SRV_JOIN_ROOM"){
-        console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
-        this.concats = val.roomMemberList
-        this.$notify({
-          title: `通知`,
-          dangerouslyUseHTMLString: true,
-          message: `
-            <div class="notify-content" style="font-size:16px; font-weight:600">
-              <strong class="notify-title">'欢迎:)'</strong>
-              <span><strong>【${val.fromChatId}】进入聊天室 </strong</span>
-            </div>
-          `
-        })
+      this.concats = val.roomMemberList
+      switch (chatType) {
+        case "SRV_JOIN_ROOM":
+          console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
+          setLocal('roomList',JSON.stringify(this.concats))
+          let onUser = ''
+          this.concats.forEach((res)=>{
+            onUser = res.username
+          })
+          this.$notify({
+            title: `通知`,
+            dangerouslyUseHTMLString: true,
+            message: `
+              <div class="notify-content" style="font-size:16px; font-weight:600">
+                <strong class="notify-title">'欢迎:)'</strong>
+                <span><strong>【${onUser}】进入聊天室 </strong</span>
+              </div>
+            `
+          })
+          break;
+        case "SRV_LEAVE_ROOM":
+          console.log("<--【中断连线】------使用者已离开聊天室-->");
+          this.$notify({
+            title: `通知`,
+            dangerouslyUseHTMLString: true,
+            message: `
+              <div class="notify-content" style="font-size:16px; font-weight:600">
+                <strong class="notify-title">':)'</strong>
+                <span><strong>【${onUser}】离开聊天室 </strong</span>
+              </div>
+            `
+          })
+          break;
+        default:
+          break;
       }
     },
   },
@@ -133,9 +155,13 @@ export default {
       );
       setLocal("UUID", "hiWeb" + number);
     },
+    windowRload() {
+      window.location.reload()
+    },
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onclose()
+      window.location.reload()
     },
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
@@ -144,12 +170,10 @@ export default {
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
           console.log('<--【连线成功】------写入登入者资讯-->')
-
-          this.localInfo.toChatId = getLocal('toChatId'),
-          this.localInfo.token = getToken('token'),
-          this.localInfo.deviceId = getLocal('UUID'),
-          this.localInfo.fromChatId = getLocal('username'),
-          console.log(this.localInfo)
+          this.localInfo.toChatId = getLocal('toChatId')
+          this.localInfo.token = getToken('token')
+          this.localInfo.deviceId = getLocal('UUID')
+          this.localInfo.fromChatId = getLocal('username')
           break;
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->')
@@ -197,11 +221,6 @@ export default {
     clearChat() {
       this.clearDialog = false;
       this.serverMsg = []
-    },
-    /**回上一頁**/
-    goBack() {
-      // localStorage.clear();
-      this.$router.push({ path: "/Login" });
     },
   },
   components: {
