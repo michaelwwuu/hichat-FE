@@ -53,10 +53,11 @@ const emitter = new Vue({
         emitter.$emit("message", msg.data);
       };
       socket.onerror = function (err) {
+        console.log('err',err)
         emitter.$emit("error", err);
       };
       socket.onclose = function () {
-        // emitter.connect();
+        emitter.connect();
       };
     },
     onclose() {
@@ -68,5 +69,4 @@ const emitter = new Vue({
     }
   }
 });
-emitter.connect();
 export default emitter;
