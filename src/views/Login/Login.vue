@@ -58,7 +58,6 @@ export default {
 
   },
   methods: {
-
     //登入&&註冊
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";

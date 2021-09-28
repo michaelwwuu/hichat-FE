@@ -11,7 +11,7 @@
       <li
         v-for="(item, index) in message"
         :key="index"
-        :class="judgeClass(item.chatType)"
+        :class="judgeClass(item)"
       >
         <p class="message-nickname">
           {{ item.userName }}
@@ -21,7 +21,6 @@
         </p>
         <p class="message-classic" v-html="item.message.content"></p>
         <div
-          v-if="item.chatType === 'SRV_ROOM_SEND' && item.fromId !== 'admin'"
           class="message-disabled"
           @click="disabled(item.userName)"
           :class="disUserNumber === '0' ? 'noDis' : 'disUser'"
@@ -81,7 +80,6 @@ export default {
     Bus.$on("MESSAGE", (response) => {
       let message = {
         chatType: response.chatType,
-        fromId: response.fromChatId,
         gotoId: response.toChatId,
         message: {
           time: +new Date(),
@@ -132,8 +130,8 @@ export default {
         });
     },
     /**判断Class**/
-    judgeClass(type) {
-      if (type === "CLI_ROOM_SEND") {
+    judgeClass(item) {
+      if (item.chatType === "CLI_ROOM_SEND" || item.fromId === getLocal('username')) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
@@ -242,6 +240,9 @@ export default {
           border-color: transparent transparent transparent
             rgba(55, 126, 200, 0.8);
         }
+      }
+      .message-disabled.noDis {
+        display: none !important;
       }
     }
 

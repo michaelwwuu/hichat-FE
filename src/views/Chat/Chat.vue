@@ -11,7 +11,7 @@
               class="online-img"
               src="./../../../static/images/online.svg"
               alt=""
-            />{{ concats === null ? 0: concats.length }}</span
+            />{{ concats.length }}</span
           >
         </el-header>
         <message-group :concats="concats" />
@@ -104,17 +104,13 @@ export default {
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.concats = val.roomMemberList
           setLocal('roomList',JSON.stringify(this.concats))
-          let onUser = ''
-          this.concats.forEach((res)=>{
-            onUser = res.username
-          })
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
             message: `
               <div class="notify-content" style="font-size:16px; font-weight:600">
                 <strong class="notify-title">'欢迎:)'</strong>
-                <span><strong>【${onUser}】进入聊天室 </strong</span>
+                <span><strong>【${val.username}】进入聊天室 </strong</span>
               </div>
             `
           })
@@ -122,17 +118,13 @@ export default {
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者已离开聊天室-->");
           this.concats = val.roomMemberList
-          let leaveUser = ''
-          this.concats.forEach((res)=>{
-            leaveUser = res.username
-          })
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
             message: `
               <div class="notify-content" style="font-size:16px; font-weight:600">
                 <strong class="notify-title">':)'</strong>
-                <span><strong>【${leaveUser}】离开聊天室 </strong</span>
+                <span><strong>【${val.username}】离开聊天室 </strong</span>
               </div>
             `
           })
@@ -176,7 +168,6 @@ export default {
           this.localInfo.toChatId = getLocal('toChatId')
           this.localInfo.token = getToken('token')
           this.localInfo.deviceId = getLocal('UUID')
-          this.localInfo.fromChatId = getLocal('username')
           break;
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->')

@@ -86,12 +86,10 @@ export default {
         id: Math.random(),
         token: this.localInfo.token,
         deviceId: this.localInfo.deviceId,
-        fromChatId:this.localInfo.fromChatId,
         platformCode:this.localInfo.platformCode,
         tokenType:0,
         text: this.obj.replaceFace(this.textAreaTran()),
       }
-      console.log(message)
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);

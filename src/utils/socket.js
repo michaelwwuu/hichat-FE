@@ -9,7 +9,7 @@ const emitter = new Vue({
       roomKey: {
         chatType: "CLI_AUTH",
         id: Math.random(),
-        deviceId: getLocal('UUID'),
+        deviceId: '',
         token: getToken('token'),
         tokenType: 0,
         platformCode: "dcw",
@@ -26,9 +26,7 @@ const emitter = new Vue({
       let roomKey = this.roomKey
       socket.onopen = function () {
         console.log("<--【开启连线】------初始建立连线-->");
-        // roomKey.id = Math.random();
         roomKey.deviceId = getLocal('UUID');
-        // roomKey.token = getToken('token');
         socket.send(JSON.stringify(roomKey));
       };
       socket.onmessage = function (msg) {
@@ -46,7 +44,6 @@ const emitter = new Vue({
             roomKey.chatType = "CLI_JOIN_ROOM",
             roomKey.id = Math.random(),
             roomKey.toChatId = 'c1',
-            roomKey.fromChatId = msgData.toChatId,
             setLocal('toChatId', roomKey.toChatId)
             socket.send(JSON.stringify(roomKey));
             break;
