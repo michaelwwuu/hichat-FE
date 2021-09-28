@@ -31,7 +31,7 @@
         <message-pabel
           :serverMsg="serverMsg"
           :localInfo="localInfo"
-          :nowSwitchId="nowSwitchId"
+          :showMoreMsg="showMoreMsg"
           :checked="checked"
           @message="message" />
         <message-input
@@ -73,8 +73,8 @@ export default {
       serverMsg:[],
       clearDialog: false,
       checked: true,
+      showMoreMsg:true,
       nowSwitch: 0,
-      nowSwitchId: 'group',
       localInfo: {
         platformCode:'dcw'
       },
@@ -187,13 +187,14 @@ export default {
         case "SRV_ROOM_HISTORY_RSP":
           console.log('<--【连线成功】------已提取历史讯息-->')
           let msgData = userInfo.historyMessage.list
+          if(msgData.length === 0 ) this.showMoreMsg = false
           msgData.forEach(el => {
             this.dataMsg = {
               chatType: el.chatType,
               fromId: el.fromChatId,
               gotoId: el.toChatId,
               message: { 
-                time: el.createTime, 
+                time: el.sendTime, 
                 content: el.text, 
                 textContent: el.text 
               },

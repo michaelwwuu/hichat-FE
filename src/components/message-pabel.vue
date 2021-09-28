@@ -1,9 +1,9 @@
 <template>
   <div class="message-pabel-box">
     <el-button
+      v-if="showMoreMsg"
       class="eye-more"
       @click="eyeMore()"
-      v-if="nowSwitchId === 'group' && isShowMore"
       type="text"
       >加载更多历史讯息</el-button
     >
@@ -40,10 +40,6 @@ import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
   props: {
-    // 选择的联系人ID
-    nowSwitchId: {
-      type: String,
-    },
     // 当前用户
     localInfo: {
       type: Object,
@@ -51,14 +47,18 @@ export default {
     serverMsg: {
       type: Array,
     },
-    checked: true,
+    checked:{
+      type:Boolean,
+    },
+    showMoreMsg:{
+      type:Boolean,
+    },
   },
   data() {
     return {
       message: [],
       disUserNumber: "0",
       disTitle: "",
-      isShowMore: true,
       disDialog: false,
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
@@ -94,7 +94,6 @@ export default {
     });
   },
   methods: {
-    
     /**封禁人員**/
     disabled(val) {
       this.disTitle = val;
@@ -149,8 +148,8 @@ export default {
         fromChatId:this.localInfo.fromChatId,
         toChatId:this.localInfo.toChatId,
         platformCode:this.localInfo.platformCode,
-        pageNum:this.pageNum = 1,
-        pageSize:this.pageSize = 50 ,
+        pageNum:this.pageNum += 1,
+        pageSize:this.pageSize += 50 ,
       }
       Socket.send(historyMsg);
     },

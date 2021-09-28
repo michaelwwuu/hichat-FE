@@ -1,7 +1,7 @@
 <template>
   <div class="message-input-box">
     <div class="input-tools">
-     <el-button class="other-btn" size="mini" round><img src="./../../static/images/red-btn.svg" alt=""> 发红包</el-button>
+     <el-button class="other-btn" size="mini" round @click="sendRed"><img src="./../../static/images/red-btn.svg" alt=""> 发红包</el-button>
      <el-button class="face-other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
     </div>
     <div class="text-send-box">
@@ -34,7 +34,7 @@ export default {
     return {
       textArea: '',
       message: {},
-      gotoBottom: gotoBottom
+      gotoBottom: gotoBottom,
     }
   },
   props: {
@@ -58,6 +58,18 @@ export default {
     })
   },
   methods: {
+    sendRed(){
+      let sendRed = {
+        chatType:"CLI_ROOM_RED",
+        toChatId:this.localInfo.toChatId,
+        id: Math.random(),
+        token: this.localInfo.token,
+        deviceId: this.localInfo.deviceId,
+        platformCode:this.localInfo.platformCode,
+        tokenType:0,
+      }
+      Socket.send(sendRed)
+    },
     /**消息过滤**/
     textAreaTran () {
       return this.textArea.replace(/\n/g, '').replace(new RegExp('<', 'gm'), '&lt')
