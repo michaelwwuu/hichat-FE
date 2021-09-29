@@ -20,16 +20,6 @@ const emitter = new Vue({
     this.connect()
   },
   methods: {
-    timingHeart() {
-      // 心跳检测  每4.5分钟发送一次 
-      if (this.wsHeartflag) {
-        console.log(this.wsHeartflag)
-          // this.webSocketObj.send('123123123');
-      }
-      this.wsHeart = setTimeout(() => {
-          this.timingHeart();
-      }, 100 * 1000); // 100s心跳
-    },
     send(message) {
       if (socket.readyState === 1)socket.send(JSON.stringify(message));
     },
@@ -55,7 +45,7 @@ const emitter = new Vue({
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
             roomKey.chatType = "CLI_JOIN_ROOM",
             roomKey.id = Math.random(),
-            roomKey.toChatId = 'r1',
+            roomKey.toChatId = 'r5',
             setLocal('toChatId', roomKey.toChatId)
             socket.send(JSON.stringify(roomKey));
             break;

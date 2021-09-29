@@ -127,6 +127,9 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+    heartbest(){
+
+    },
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onClose()
