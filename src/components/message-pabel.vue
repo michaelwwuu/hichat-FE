@@ -19,11 +19,15 @@
             $root.formatTimeS(item.message.time)
           }}</span>
         </p>
-        <p class="message-classic" v-html="item.message.content" @click="redImg(item.chatType)"></p>
+        <p
+          class="message-classic"
+          v-html="item.message.content"
+          @click="redImg(item.chatType)"
+        ></p>
         <div
           v-if="item.userName !== sendUser"
           class="message-disabled"
-          @click="disabled(item.userName)"
+          @click="disabled(item)"
           :class="disUserNumber === '0' ? 'noDis' : 'disUser'"
         >
           {{ disUserNumber === "0" ? "封禁" : "解封" }}
@@ -37,23 +41,26 @@
 import Socket from "@/utils/socket";
 import { gotoBottom } from "@/assets/tools";
 import { getLocal } from "_util/utils.js";
-import { banMember } from "@/api"
+import { banMember } from "@/api";
 export default {
   name: "MessagePabel",
   props: {
     // 当前用户
     localInfo: {
-      type: Object
+      type: Object,
     },
     serverMsg: {
       type: Array,
     },
-    checked:{
-      type:Boolean,
+    checked: {
+      type: Boolean,
     },
-    showMoreMsg:{
-      type:Boolean,
+    showMoreMsg: {
+      type: Boolean,
     },
+    userName:{
+      type:String,
+    }
   },
   data() {
     return {
@@ -63,14 +70,14 @@ export default {
       disDialog: false,
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
-      pageNum:0,
-      pageSize:0,
-      sendUser:getLocal('userName')
+      pageNum: 0,
+      pageSize: 0,
+      sendUser: getLocal("userName"),
     };
   },
   watch: {
     serverMsg(val) {
-      if(this.checked) this.gotoBottom();
+      if (this.checked) this.gotoBottom();
       this.message = val;
     },
     checked(val) {
@@ -78,14 +85,14 @@ export default {
     },
   },
   methods: {
-    redImg(type){
-      if(type ==="SRV_ROOM_RED" ) console.log('搶紅包囉')
+    redImg(type) {
+      if (type === "SRV_ROOM_RED") console.log("搶紅包囉");
     },
     /**封禁人員**/
-    disabled(userName) {
+    disabled(item) {
       this.disDialog = true;
       const h = this.$createElement;
-      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${userName}"?`, {
+      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.userName}"?`, {
         cancelButtonText: "取消",
         confirmButtonText: "确定",
         inputPlaceholder: "請輸入封禁分鐘",
@@ -104,25 +111,25 @@ export default {
         .then(({ value }) => {
           let banUser = {
             banTime: value,
-            roomId: this.localInfo.toChatId,
-            username: userName
-          }
+            roomId: item.toChatId,
+            username: item.userName,
+          };
           banMember(banUser)
-          .then((res)=>{
-            if (res.code === 200) {
+            .then((res) => {
+              if (res.code === 200) {
+                this.$message({
+                  type: "success",
+                  message: "确定封禁" + value + "分钟",
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
               this.$message({
-                type: "success",
-                message: "确定封禁" + value + "分钟",
+                type: "info",
+                message: "非管理者无法执行",
               });
-            }
-          })
-          .catch((err)=>{
-            console.log(err)
-            this.$message({
-              type: "info",
-              message: "非管理者无法执行",
             });
-          })
         })
         .catch(() => {
           this.$message({
@@ -133,20 +140,20 @@ export default {
     },
     /**判断Class**/
     judgeClass(item) {
-      if (item.userName === getLocal('username')) {
+      if (item.userName === getLocal("username")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
       }
     },
-    
+
     /**查看更多**/
     eyeMore() {
-      let historyMsg = this.localInfo
-      historyMsg.chatType = "CLI_ROOM_HISTORY_REQ"
-      historyMsg.id = Math.random()
-      historyMsg.pageNum = this.pageNum += 1,
-      historyMsg.pageSize = this.pageSize += 50 ,
+      let historyMsg = this.localInfo;
+      historyMsg.chatType = "CLI_ROOM_HISTORY_REQ";
+      historyMsg.id = Math.random();
+      (historyMsg.pageNum = this.pageNum += 1),
+      (historyMsg.pageSize = this.pageSize += 50),
       Socket.send(historyMsg);
     },
   },
@@ -267,7 +274,7 @@ export default {
       border-radius: 5px;
       white-space: pre-line;
       word-break: break-all;
-      .red{
+      .red {
         height: 1.5em;
       }
     }

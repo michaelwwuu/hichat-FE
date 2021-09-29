@@ -75,13 +75,13 @@ export default {
       showMoreMsg:true,
       nowSwitch: 0,
       localInfo: {
-        toChatId:getLocal('toChatId'),
+        toChatId:'',
         token: getToken('token'),
         deviceId: getLocal('UUID'),        
         platformCode:'dcw',
         tokenType:0,
       },
-      redImg:require("./../../../static/images/envelope.svg")
+      redImg:require("./../../../static/images/envelope.svg"),
     };
   },
   created() {
@@ -149,6 +149,7 @@ export default {
           console.log('<--【连线成功】------群组内有人傳送紅包-->')
           let srvRoomMsg = {
             chatType: userInfo.chatType,
+            toChatId:userInfo.toChatId,
             message: { 
               time: +new Date(), 
               content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
@@ -163,15 +164,16 @@ export default {
           let historyPageSize = userInfo.historyMessage.pageSize
           if(history.length !== historyPageSize ) this.showMoreMsg = false
           history.forEach(el => {
-            this.historyMsg = {
+            let historyMsg = {
               chatType: el.chatType,
+              toChatId:el.toChatId,
               message: { 
                 time: el.sendTime, 
                 content: el.chatType === "SRV_ROOM_RED"? `<img class="red" src=${this.redImg}>` :el.text,   
               },
               userName: el.fromChatId,
             }
-            this.serverMsg.unshift(this.historyMsg)
+            this.serverMsg.unshift(historyMsg)
           });
           break;
       }
