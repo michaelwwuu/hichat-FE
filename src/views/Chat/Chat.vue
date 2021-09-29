@@ -79,6 +79,7 @@ export default {
         token: getToken('token'),
         deviceId: getLocal('UUID'),        
         platformCode:'dcw',
+        tokenType:0,
       },
       redImg:require("./../../../static/images/envelope.svg")
     };
@@ -122,16 +123,13 @@ export default {
       }
     },
   },
-  mounted() {
-    Socket.connect();
-  },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
     //TODO 關閉socket
     closeWebsocket(){
-      Socket.onclose()
+      Socket.onClose()
       window.location.reload()
     },
     // 收取 socket 回來訊息 (全局訊息)

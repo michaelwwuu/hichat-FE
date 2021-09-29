@@ -21,6 +21,7 @@
         </p>
         <p class="message-classic" v-html="item.message.content" @click="redImg(item.chatType)"></p>
         <div
+          v-if="item.userName !== sendUser"
           class="message-disabled"
           @click="disabled(item.userName)"
           :class="disUserNumber === '0' ? 'noDis' : 'disUser'"
@@ -63,11 +64,11 @@ export default {
       disabledImg: require("./../../static/images/disabled.svg"),
       pageNum:0,
       pageSize:0,
+      sendUser:getLocal('userName')
     };
   },
   watch: {
     serverMsg(val) {
-      console.log(val)
       if(this.checked) this.gotoBottom();
       this.message = val;
     },
@@ -120,21 +121,14 @@ export default {
         return "message-layout-left";
       }
     },
-
+    
     /**查看更多**/
     eyeMore() {
-      let historyMsg = {
-        chatType:"CLI_ROOM_HISTORY_REQ",
-        id: Math.random(),
-        tokenType:0,
-        deviceId: this.localInfo.deviceId,
-        token: this.localInfo.token,
-        fromChatId:this.localInfo.fromChatId,
-        toChatId:this.localInfo.toChatId,
-        platformCode:this.localInfo.platformCode,
-        pageNum:this.pageNum += 1,
-        pageSize:this.pageSize += 50 ,
-      }
+      let historyMsg = this.localInfo
+      historyMsg.chatType = "CLI_ROOM_HISTORY_REQ"
+      historyMsg.id = Math.random()
+      historyMsg.pageNum = this.pageNum += 1,
+      historyMsg.pageSize = this.pageSize += 50 ,
       Socket.send(historyMsg);
     },
   },

@@ -16,16 +16,29 @@ const emitter = new Vue({
       },
     }
   },
+  created() {
+    this.connect()
+  },
   methods: {
+    timingHeart() {
+      // 心跳检测  每4.5分钟发送一次 
+      if (this.wsHeartflag) {
+        console.log(this.wsHeartflag)
+          // this.webSocketObj.send('123123123');
+      }
+      this.wsHeart = setTimeout(() => {
+          this.timingHeart();
+      }, 100 * 1000); // 100s心跳
+    },
     send(message) {
-      if (1 === socket.readyState) socket.send(JSON.stringify(message));
+      if (socket.readyState === 1)socket.send(JSON.stringify(message));
     },
     // 初始化websocket 
     connect() {
       socket = new WebSocket(wsUrl);
       let roomKey = this.roomKey
       socket.onopen = function () {
-        console.log("<--【开启连线】------初始建立连线-->",roomKey);
+        console.log("<--【开启连线】------初始建立连线-->");
         socket.send(JSON.stringify(roomKey));
       };
       socket.onmessage = function (msg) {
@@ -42,7 +55,7 @@ const emitter = new Vue({
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
             roomKey.chatType = "CLI_JOIN_ROOM",
             roomKey.id = Math.random(),
-            roomKey.toChatId = 'c1',
+            roomKey.toChatId = 'r1',
             setLocal('toChatId', roomKey.toChatId)
             socket.send(JSON.stringify(roomKey));
             break;
@@ -50,20 +63,19 @@ const emitter = new Vue({
         emitter.$emit("message", msg.data);
       };
       socket.onerror = function (err) {
-        console.log('err',err)
         emitter.$emit("error", err);
       };
       socket.onclose = function () {
         emitter.connect();
       };
     },
-    onclose() {
+    onClose() {
       let leaveRoom = this.roomKey
       leaveRoom.chatType = "CLI_LEAVE_ROOM",
       leaveRoom.id = Math.random(),
       socket.send(JSON.stringify(leaveRoom));
       socket.close()
-    }
+    },
   }
 });
 export default emitter;

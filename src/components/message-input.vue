@@ -4,11 +4,14 @@
      <el-button class="other-btn" size="mini" round @click="sendRed"><img src="./../../static/images/red-btn.svg" alt=""> 发红包</el-button>
      <el-button class="face-other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
     </div>
+
     <div class="text-send-box">
       <el-input
         type="textarea"
         resize="none"
         :autosize="{ minRows: 2, maxRows: 2}"
+
+
         v-model="textArea"
         v-on:keyup.native="keyUp">
       </el-input>
@@ -57,15 +60,9 @@ export default {
   },
   methods: {
     sendRed(){
-      let sendRed = {
-        chatType:"CLI_ROOM_RED",
-        toChatId:this.localInfo.toChatId,
-        id: Math.random(),
-        token: this.localInfo.token,
-        deviceId: this.localInfo.deviceId,
-        platformCode:this.localInfo.platformCode,
-        tokenType:0,
-      }
+      let sendRed = this.localInfo
+      sendRed.id = Math.random()
+      sendRed.chatType = "CLI_ROOM_RED"
       Socket.send(sendRed)
     },
     /**消息过滤**/
@@ -90,16 +87,10 @@ export default {
 
     /**发送消息**/
     sendMessage () {
-      let message = {
-        chatType:"CLI_ROOM_SEND",
-        toChatId:this.localInfo.toChatId,
-        id: Math.random(),
-        token: this.localInfo.token,
-        deviceId: this.localInfo.deviceId,
-        platformCode:this.localInfo.platformCode,
-        tokenType:0,
-        text: this.obj.replaceFace(this.textAreaTran()),
-      }
+      let message = this.localInfo
+      message.chatType = "CLI_ROOM_SEND"
+      message.id = Math.random()
+      message.text = this.obj.replaceFace(this.textAreaTran())
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
