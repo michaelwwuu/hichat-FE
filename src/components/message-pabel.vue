@@ -102,10 +102,27 @@ export default {
         ]),
       })
         .then(({ value }) => {
-          this.$message({
-            type: "success",
-            message: "确定封禁" + value + "分钟",
-          });
+          let banUser = {
+            banTime: value,
+            roomId: this.localInfo.toChatId,
+            username: userName
+          }
+          banMember(banUser)
+          .then((res)=>{
+            if (res.code === 200) {
+              this.$message({
+                type: "success",
+                message: "确定封禁" + value + "分钟",
+              });
+            }
+          })
+          .catch((err)=>{
+            console.log(err)
+            this.$message({
+              type: "info",
+              message: "非管理者无法执行",
+            });
+          })
         })
         .catch(() => {
           this.$message({

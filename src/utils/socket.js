@@ -45,7 +45,7 @@ const emitter = new Vue({
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
             roomKey.chatType = "CLI_JOIN_ROOM",
             roomKey.id = Math.random(),
-            roomKey.toChatId = 'r1',
+            roomKey.toChatId = 'r5',
             setLocal('toChatId', roomKey.toChatId)
             socket.send(JSON.stringify(roomKey));
             break;
