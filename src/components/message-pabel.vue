@@ -37,12 +37,13 @@
 import Socket from "@/utils/socket";
 import { gotoBottom } from "@/assets/tools";
 import { getLocal } from "_util/utils.js";
+import { banMember } from "@/api"
 export default {
   name: "MessagePabel",
   props: {
     // 当前用户
     localInfo: {
-      type: Object,
+      type: Object
     },
     serverMsg: {
       type: Array,

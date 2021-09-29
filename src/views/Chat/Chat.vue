@@ -75,7 +75,7 @@ export default {
       showMoreMsg:true,
       nowSwitch: 0,
       localInfo: {
-        toChatId: getLocal('toChatId'),
+        toChatId:getLocal('toChatId'),
         token: getToken('token'),
         deviceId: getLocal('UUID'),        
         platformCode:'dcw',
