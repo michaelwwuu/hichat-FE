@@ -26,14 +26,12 @@
 </template>
 
 <script>
-import Bus from '@/assets/eventBus'
 import Socket from "@/utils/socket";
 import { gotoBottom } from '@/assets/tools'
 export default {
   data () {
     return {
       textArea: '',
-      message: {},
       gotoBottom: gotoBottom,
     }
   },
@@ -105,8 +103,6 @@ export default {
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
-        // // 传递至同级
-        Bus.$emit('MESSAGE', message)
         // 消息清空
         this.textArea = ''
         // 消息置底

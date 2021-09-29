@@ -32,8 +32,7 @@
           :serverMsg="serverMsg"
           :localInfo="localInfo"
           :showMoreMsg="showMoreMsg"
-          :checked="checked"
-          @message="message" />
+          :checked="checked" />
         <message-input
           :concats="concats"
           :localInfo="localInfo"
@@ -76,8 +75,12 @@ export default {
       showMoreMsg:true,
       nowSwitch: 0,
       localInfo: {
-        platformCode:'dcw'
+        toChatId: getLocal('toChatId'),
+        token: getToken('token'),
+        deviceId: getLocal('UUID'),        
+        platformCode:'dcw',
       },
+      redImg:require("./../../../static/images/envelope.svg")
     };
   },
   created() {
@@ -102,57 +105,30 @@ export default {
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
-          this.concats = val.roomMemberList
-          setLocal('roomList',JSON.stringify(this.concats))
-          this.$notify({
-            title: `通知`,
-            dangerouslyUseHTMLString: true,
-            message: `
-              <div class="notify-content" style="font-size:16px; font-weight:600">
-                <strong class="notify-title">'欢迎:)'</strong>
-                <span><strong>【${val.username}】进入聊天室 </strong</span>
-              </div>
-            `
-          })
-          break;
         case "SRV_LEAVE_ROOM":
-          console.log("<--【中断连线】------使用者已离开聊天室-->");
+          console.log("<--【中断连线】------使用者加入或离开聊天室-->");
           this.concats = val.roomMemberList
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
             message: `
               <div class="notify-content" style="font-size:16px; font-weight:600">
-                <strong class="notify-title">':)'</strong>
-                <span><strong>【${val.username}】离开聊天室 </strong</span>
+                <strong class="notify-title">${chatType === 'SRV_JOIN_ROOM' ?'欢迎':'' }:)</strong>
+                <span><strong>【${val.username}】${chatType === 'SRV_JOIN_ROOM' ?'进入':'离开' }聊天室 </strong</span>
               </div>
             `
           })
-          break;
-        default:
           break;
       }
     },
   },
   mounted() {
-    this.getUUID()
     Socket.connect();
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    getUUID() {
-      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-        /[xy]/g,
-        function (c) {
-          var r = (Math.random() * 16) | 0,
-            v = c == "x" ? r : (r & 0x3) | 0x8;
-          return v.toString(16);
-        }
-      );
-      setLocal("UUID", "hiWeb" + number);
-    },
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onclose()
@@ -165,52 +141,39 @@ export default {
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
           console.log('<--【连线成功】------写入登入者资讯-->')
-          this.localInfo.toChatId = getLocal('toChatId')
-          this.localInfo.token = getToken('token')
-          this.localInfo.deviceId = getLocal('UUID')
-          break;
+          break
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->')
+        case "SRV_ROOM_RED":
+          console.log('<--【连线成功】------群组内有人傳送紅包-->')
           let srvRoomMsg = {
             chatType: userInfo.chatType,
-            fromId: userInfo.fromChatId,
-            gotoId: userInfo.toChatId,
             message: { 
               time: +new Date(), 
-              content: userInfo.text, 
-              textContent: userInfo.text 
+              content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
             },
             userName: userInfo.fromChatId,
           };
           this.serverMsg.push(srvRoomMsg)
-          break;
+          break;  
         case "SRV_ROOM_HISTORY_RSP":
           console.log('<--【连线成功】------已提取历史讯息-->')
-          let msgData = userInfo.historyMessage.list
-          if(msgData.length === 0 ) this.showMoreMsg = false
-          msgData.forEach(el => {
-            this.dataMsg = {
+          let history = userInfo.historyMessage.list
+          let historyPageSize = userInfo.historyMessage.pageSize
+          if(history.length !== historyPageSize ) this.showMoreMsg = false
+          history.forEach(el => {
+            this.historyMsg = {
               chatType: el.chatType,
-              fromId: el.fromChatId,
-              gotoId: el.toChatId,
               message: { 
                 time: el.sendTime, 
-                content: el.text, 
-                textContent: el.text 
+                content: el.chatType === "SRV_ROOM_RED"? `<img class="red" src=${this.redImg}>` :el.text,   
               },
               userName: el.fromChatId,
             }
-            this.serverMsg.unshift(this.dataMsg)
+            this.serverMsg.unshift(this.historyMsg)
           });
           break;
-        default:
-          break;
       }
-    },
-    /**接收消息-父件需用到資料時**/
-    message(response) {
-      let chatType = response.chatType
-      if(chatType === "CLI_ROOM_SEND") this.serverMsg.push(response)
     },
     /**清除聊天室內容**/
     clearChat() {

@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { getLocal, setLocal, getToken } from "_util/utils.js";
+import { getLocal,setLocal, getToken } from "_util/utils.js";
 const wsUrl = "ws://10.99.114.10:8299/im/echo";
 var socket = new WebSocket(wsUrl);
 
@@ -9,7 +9,7 @@ const emitter = new Vue({
       roomKey: {
         chatType: "CLI_AUTH",
         id: Math.random(),
-        deviceId: '',
+        deviceId: getLocal('UUID'),
         token: getToken('token'),
         tokenType: 0,
         platformCode: "dcw",
@@ -25,8 +25,7 @@ const emitter = new Vue({
       socket = new WebSocket(wsUrl);
       let roomKey = this.roomKey
       socket.onopen = function () {
-        console.log("<--【开启连线】------初始建立连线-->");
-        roomKey.deviceId = getLocal('UUID');
+        console.log("<--【开启连线】------初始建立连线-->",roomKey);
         socket.send(JSON.stringify(roomKey));
       };
       socket.onmessage = function (msg) {
@@ -35,10 +34,10 @@ const emitter = new Vue({
         switch (chatType) {
           case "SRV_SUCCESS_MSG":
             console.log("<--【连线成功】------Websocket 连线已建立-->");
-            break
+            break;
           case "SRV_ERROR_MSG":
             console.log("<--【连线失敗】------请检察 Websocket onopen 参数是否正确-->");
-            break
+            break;
           case "SRV_RECENT_CHAT":
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
             roomKey.chatType = "CLI_JOIN_ROOM",
@@ -46,8 +45,6 @@ const emitter = new Vue({
             roomKey.toChatId = 'c1',
             setLocal('toChatId', roomKey.toChatId)
             socket.send(JSON.stringify(roomKey));
-            break;
-          default:
             break;
         }
         emitter.$emit("message", msg.data);

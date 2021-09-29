@@ -19,7 +19,7 @@
             $root.formatTimeS(item.message.time)
           }}</span>
         </p>
-        <p class="message-classic" v-html="item.message.content"></p>
+        <p class="message-classic" v-html="item.message.content" @click="redImg(item.chatType)"></p>
         <div
           class="message-disabled"
           @click="disabled(item.userName)"
@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import Bus from "@/assets/eventBus";
 import Socket from "@/utils/socket";
 import { gotoBottom } from "@/assets/tools";
 import { getLocal } from "_util/utils.js";
@@ -68,6 +67,7 @@ export default {
   },
   watch: {
     serverMsg(val) {
+      console.log(val)
       if(this.checked) this.gotoBottom();
       this.message = val;
     },
@@ -75,31 +75,15 @@ export default {
       if (val) this.gotoBottom();
     },
   },
-  mounted() {
-    /** 当前用户发的消息**/
-    Bus.$on("MESSAGE", (response) => {
-      let message = {
-        chatType: response.chatType,
-        gotoId: response.toChatId,
-        message: {
-          time: +new Date(),
-          content: response.text,
-          textContent: response.text,
-        },
-        userName: getLocal("username"),
-      };
-      this.$forceUpdate();
-      // 把消息传给父级
-      this.$emit("message", message);
-    });
-  },
   methods: {
+    redImg(type){
+      if(type ==="SRV_ROOM_RED" ) console.log('搶紅包囉')
+    },
     /**封禁人員**/
-    disabled(val) {
-      this.disTitle = val;
+    disabled(userName) {
       this.disDialog = true;
       const h = this.$createElement;
-      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${this.disTitle}"?`, {
+      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${userName}"?`, {
         cancelButtonText: "取消",
         confirmButtonText: "确定",
         inputPlaceholder: "請輸入封禁分鐘",
@@ -130,7 +114,7 @@ export default {
     },
     /**判断Class**/
     judgeClass(item) {
-      if (item.chatType === "CLI_ROOM_SEND" || item.fromId === getLocal('username')) {
+      if (item.userName === getLocal('username')) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
@@ -271,6 +255,9 @@ export default {
       border-radius: 5px;
       white-space: pre-line;
       word-break: break-all;
+      .red{
+        height: 1.5em;
+      }
     }
   }
 }
@@ -310,7 +297,7 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-direction: row-reverse;
-    padding: 0 86px;
+    margin: 0 86px;
     .el-button {
       font-size: 15px;
       padding: 8px 27px;
