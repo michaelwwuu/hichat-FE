@@ -25,7 +25,7 @@
           @click="redImg(item.chatType)"
         ></p>
         <div
-          v-if="item.userName !== sendUser"
+          v-if="adminUser"
           class="message-disabled"
           @click="disabled(item)"
           :class="disUserNumber === '0' ? 'noDis' : 'disUser'"
@@ -60,7 +60,10 @@ export default {
     },
     clearDialog:{
       type: Boolean,
-    }
+    },
+    adminUser:{
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -72,7 +75,6 @@ export default {
       disabledImg: require("./../../static/images/disabled.svg"),
       pageNum: 0,
       pageSize: 0,
-      sendUser: getLocal("userName"),
     };
   },
   watch: {

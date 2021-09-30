@@ -14,7 +14,7 @@
             />{{ concats.length }}</span
           >
         </el-header>
-        <message-group :concats="concats" />
+        <message-group :concats="concats" :adminUser="adminUser"/>
       </el-aside>
       <el-main>
         <el-header height="55px">
@@ -33,6 +33,7 @@
           :localInfo="localInfo"
           :clearDialog="clearDialog"
           :showMoreMsg="showMoreMsg"
+          :adminUser="adminUser"
           :checked="checked" />
         <message-input
           :concats="concats"
@@ -79,6 +80,7 @@ export default {
         tokenType:0,
       },
       redImg:require("./../../../static/images/envelope.svg"),
+      adminUser:'',
     };
   },
   created() {
@@ -104,6 +106,11 @@ export default {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.localInfo.toChatId = val.chatRoomId
+          this.joinUser = getLocal('username')
+          this.roomUser = val.roomMemberList.filter((el) =>{
+            return el.username === this.joinUser
+          })
+          this.adminUser = this.roomUser[0].isAdmin
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者加入或离开聊天室-->");
           this.concats = val.roomMemberList

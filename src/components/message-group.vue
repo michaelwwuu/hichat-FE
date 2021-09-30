@@ -1,14 +1,27 @@
 <template>
   <ul class="message-item">
-    <li
-      v-for="(item, index) in concats"
-      :key="index"
-      class="message-list">
-      <div class="message-right" >
+    <li v-for="(item, index) in concats" :key="index" class="message-list">
+      <div class="message-right">
         <div class="message-header">
-          <div class="message-title" :class="{'title-admin': item.isAdmin }">{{item.username}}</div>
-          <div class="message-user-type" v-if="!item.isAdmin"><el-tag :class="item.isAdmin ?'nodis':'disUser'" @click="disabled()">{{item.isAdmin ? '封禁':'解禁'}}</el-tag></div>
-          <div class="message-user-type"><el-tag :class="item.isAdmin ?'user-admin':'user'">{{item.isAdmin ? '專家':'粉絲'}}</el-tag></div>
+          <div class="message-title" :class="{ 'title-admin': item.isAdmin }">
+            {{ item.username }}
+          </div>
+          <div class="message-user-type">
+            <el-tag
+              v-if="adminUser"
+              class="nodis"
+              :class="[
+                { 'admin-user': item.isAdmin },
+              ]"
+              @click="disabled()"
+              >封禁</el-tag
+            >
+          </div>
+          <div class="message-user-type">
+            <el-tag :class="item.isAdmin ? 'user-admin' : 'user'">{{
+              item.isAdmin ? "專家" : "粉絲"
+            }}</el-tag>
+          </div>
         </div>
       </div>
     </li>
@@ -16,25 +29,27 @@
 </template>
 
 <script>
-
 export default {
-  name: 'Message',
+  name: "Message",
   props: {
     concats: {
-      type: Array
-    }
+      type: Array,
+    },
+    adminUser:{
+      type: Boolean,
+    },
   },
   methods: {
-    disabled(){
-      console.log(123)
-    }
+    disabled() {
+      console.log(123);
+    },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .message-active {
-  background: rgba(255, 255, 255, .4);
+  background: rgba(255, 255, 255, 0.4);
 }
 .message-item {
   overflow: auto;
@@ -48,10 +63,10 @@ export default {
     height: 62px;
     font-size: 12px;
     box-sizing: border-box;
-    background-color: #F3F9FF;
-    border-bottom:3px solid #E6F3FF;
+    background-color: #f3f9ff;
+    border-bottom: 3px solid #e6f3ff;
     &:hover {
-      background-color: #F3F9FF;
+      background-color: #f3f9ff;
     }
     .message-left {
       margin-right: 10px;
@@ -77,31 +92,35 @@ export default {
           width: 100%;
           font-size: 14px;
         }
-        .title-admin{
+        .title-admin {
           font-weight: 600;
-          color: #DD4400;
+          color: #dd4400;
         }
         .message-user-type {
           padding-left: 10px;
-          .user-admin{
-            border: 1px solid #FEDA42;
-            background-image: linear-gradient(#FFFBC9, #FFEF2C);
-            color: #DD4400;
+          .user-admin {
+            border: 1px solid #feda42;
+            background-image: linear-gradient(#fffbc9, #ffef2c);
+            color: #dd4400;
           }
-          .user{
-            border: 1px solid #7986CB;
-            background-color: #FFFFFF;
-            color: #7986CB;
+          .user {
+            border: 1px solid #7986cb;
+            background-color: #ffffff;
+            color: #7986cb;
           }
-          .nodis{
+          .nodis {
             background-image: linear-gradient(#959595, #7e7e7e);
             color: #ffffff;
             cursor: pointer;
+            border: none !important;
           }
           .disUser {
             background-image: linear-gradient(#b4d4ff, #559dff);
-            color: #FFFFFF;
+            color: #ffffff;
             cursor: pointer;
+          }
+          .admin-user{
+            display: none;
           }
         }
       }
