@@ -24,6 +24,11 @@ export default {
       type: Array
     }
   },
+  methods: {
+    disabled(){
+      console.log(123)
+    }
+  },
 }
 </script>
 
