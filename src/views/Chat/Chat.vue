@@ -31,6 +31,7 @@
         <message-pabel
           :serverMsg="serverMsg"
           :localInfo="localInfo"
+          :clearDialog="clearDialog"
           :showMoreMsg="showMoreMsg"
           :checked="checked" />
         <message-input
@@ -38,10 +39,6 @@
           :localInfo="localInfo"
         />
       </el-main>
-      <footer class="footer">
-        <a href="https://xiaobaicai.fun/" target="_blank">WeiLin</a> &copy; 2020
-      </footer>
-      <audio id="notify-audio" src="./../../../static/wav/tim.wav"></audio>
     </el-container>
     <el-dialog
       title="聊天室清除"
@@ -63,7 +60,7 @@ import { mapState,mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-import { getLocal,getToken,setLocal } from "_util/utils.js";
+import { getLocal,getToken } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
@@ -106,6 +103,7 @@ export default {
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
+          this.localInfo.toChatId = val.chatRoomId
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者加入或离开聊天室-->");
           this.concats = val.roomMemberList
@@ -182,6 +180,7 @@ export default {
     clearChat() {
       this.clearDialog = false;
       this.serverMsg = []
+
     },
   },
   components: {

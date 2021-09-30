@@ -7,6 +7,7 @@
       <div class="message-right" >
         <div class="message-header">
           <div class="message-title" :class="{'title-admin': item.isAdmin }">{{item.username}}</div>
+          <div class="message-user-type" v-if="!item.isAdmin"><el-tag :class="item.isAdmin ?'nodis':'disUser'" @click="disabled()">{{item.isAdmin ? '封禁':'解禁'}}</el-tag></div>
           <div class="message-user-type"><el-tag :class="item.isAdmin ?'user-admin':'user'">{{item.isAdmin ? '專家':'粉絲'}}</el-tag></div>
         </div>
       </div>
@@ -76,6 +77,7 @@ export default {
           color: #DD4400;
         }
         .message-user-type {
+          padding-left: 10px;
           .user-admin{
             border: 1px solid #FEDA42;
             background-image: linear-gradient(#FFFBC9, #FFEF2C);
@@ -85,6 +87,16 @@ export default {
             border: 1px solid #7986CB;
             background-color: #FFFFFF;
             color: #7986CB;
+          }
+          .nodis{
+            background-image: linear-gradient(#959595, #7e7e7e);
+            color: #ffffff;
+            cursor: pointer;
+          }
+          .disUser {
+            background-image: linear-gradient(#b4d4ff, #559dff);
+            color: #FFFFFF;
+            cursor: pointer;
           }
         }
       }

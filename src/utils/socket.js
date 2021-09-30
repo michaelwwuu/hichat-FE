@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { getLocal,setLocal, getToken } from "_util/utils.js";
-const wsUrl = "ws://10.99.114.10:8299/im/echo";
+// const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
+const wsUrl = "wss://test.hichat.tools/ws/im/echo";//測試機環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
@@ -45,8 +46,7 @@ const emitter = new Vue({
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
             roomKey.chatType = "CLI_JOIN_ROOM",
             roomKey.id = Math.random(),
-            roomKey.toChatId = 'r1',
-            setLocal('toChatId', roomKey.toChatId)
+            roomKey.toChatId = 'r5',
             socket.send(JSON.stringify(roomKey));
             break;
         }

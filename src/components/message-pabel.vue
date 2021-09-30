@@ -58,8 +58,8 @@ export default {
     showMoreMsg: {
       type: Boolean,
     },
-    userName:{
-      type:String,
+    clearDialog:{
+      type: Boolean,
     }
   },
   data() {
@@ -76,6 +76,13 @@ export default {
     };
   },
   watch: {
+    clearDialog(val){
+      if(!val){
+        this.pageNum = 0
+        this.pageSize = 0
+      }
+
+    },
     serverMsg(val) {
       if (this.checked) this.gotoBottom();
       this.message = val;

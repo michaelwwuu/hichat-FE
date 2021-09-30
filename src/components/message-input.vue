@@ -57,16 +57,6 @@ export default {
   },
   methods: {
     sendRed(){
-      
-      // let sendRed = {
-      //   chatType:"CLI_ROOM_RED",
-      //   toChatId:this.localInfo.toChatId,
-      //   id: Math.random(),
-      //   token: this.localInfo.token,
-      //   deviceId: this.localInfo.deviceId,
-      //   platformCode:this.localInfo.platformCode,
-      //   tokenType:this.localInfo.tokenType,
-      // }
       let sendRed = this.localInfo
       sendRed.chatType ="CLI_ROOM_RED"
       sendRed.id = Math.random()
@@ -94,16 +84,6 @@ export default {
 
     /**发送消息**/
     sendMessage () {
-      // let message = {
-      //   chatType:"CLI_ROOM_SEND",
-      //   toChatId:this.localInfo.toChatId,
-      //   id: Math.random(),
-      //   token: this.localInfo.token,
-      //   deviceId: this.localInfo.deviceId,
-      //   platformCode:this.localInfo.platformCode,
-      //   tokenType:this.localInfo.tokenType,
-      //   text: this.obj.replaceFace(this.textAreaTran()),
-      // }
       let message = this.localInfo
       message.chatType = "CLI_ROOM_SEND"
       message.id = Math.random()
