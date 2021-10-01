@@ -34,7 +34,8 @@
           :clearDialog="clearDialog"
           :showMoreMsg="showMoreMsg"
           :adminUser="adminUser"
-          :checked="checked" />
+          :checked="checked"
+          @chebox="chebox" />
         <message-input
           :concats="concats"
           :localInfo="localInfo"
@@ -77,7 +78,7 @@ export default {
         token: getToken('token'),
         deviceId: getLocal('UUID'),        
         platformCode:'dcw',
-        tokenType:0,
+        tokenType:1,
       },
       redImg:require("./../../../static/images/envelope.svg"),
       adminUser:'',
@@ -151,10 +152,10 @@ export default {
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->')
         case "SRV_ROOM_RED":
-          console.log('<--【连线成功】------群组内有人傳送紅包-->')
           let srvRoomMsg = {
             chatType: userInfo.chatType,
             toChatId:userInfo.toChatId,
+            platformCode:userInfo.platformCode,
             message: { 
               time: +new Date(), 
               content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
@@ -172,6 +173,7 @@ export default {
             let historyMsg = {
               chatType: el.chatType,
               toChatId:el.toChatId,
+              platformCode:el.platformCode,
               message: { 
                 time: el.sendTime, 
                 content: el.chatType === "SRV_ROOM_RED"? `<img class="red" src=${this.redImg}>` :el.text,   
@@ -187,8 +189,10 @@ export default {
     clearChat() {
       this.clearDialog = false;
       this.serverMsg = []
-
     },
+    chebox(val){
+      this.checked = val
+    }
   },
   components: {
     MessageGroup,

@@ -19,12 +19,3 @@ export const getUserInfo = (params) => {
   }
   return axios.request(postData)
 }
-// 封禁人員
-export const banMember = data => {
-  let postData = {
-    url: '/chatroom/banMember',
-    method: 'post',
-    data
-  }
-  return axios.request(postData)
-}

@@ -27,12 +27,11 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { gotoBottom } from '@/assets/tools'
 export default {
   data () {
     return {
       textArea: '',
-      gotoBottom: gotoBottom,
+      // gotoBottom: gotoBottom,
     }
   },
   props: {
@@ -93,8 +92,6 @@ export default {
         Socket.send(message);
         // 消息清空
         this.textArea = ''
-        // 消息置底
-        this.gotoBottom()
       }
     }
   }

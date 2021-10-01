@@ -40,8 +40,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { gotoBottom } from "@/assets/tools";
-import { getLocal } from "_util/utils.js";
-import { banMember } from "@/api";
+import { getLocal,getToken } from "_util/utils.js";
 export default {
   name: "MessagePabel",
   props: {
@@ -90,6 +89,7 @@ export default {
       this.message = val;
     },
     checked(val) {
+      console.log(val)
       if (val) this.gotoBottom();
     },
   },
@@ -99,6 +99,7 @@ export default {
     },
     /**封禁人員**/
     disabled(item) {
+      console.log(item)
       this.disDialog = true;
       const h = this.$createElement;
       this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.userName}"?`, {
@@ -118,27 +119,20 @@ export default {
         ]),
       })
         .then(({ value }) => {
+          console.log(value)
           let banUser = {
-            banTime: value,
-            roomId: item.toChatId,
-            username: item.userName,
+            toChatId:item.toChatId,
+            banUser:item.userName,
+            banMinute : value,
+            token :getToken('token'),
+            platformCode:item.platformCode,
           };
-          banMember(banUser)
-            .then((res) => {
-              if (res.code === 200) {
-                this.$message({
-                  type: "success",
-                  message: "确定封禁" + value + "分钟",
-                });
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              this.$message({
-                type: "info",
-                message: "非管理者无法执行",
-              });
-            });
+          console.log(banUser)
+          // this.$message({
+          //   type: "success",
+          //   message: "确定封禁" + value + "分钟",
+          // });
+          // Socket.send(banUser);
         })
         .catch(() => {
           this.$message({
@@ -164,6 +158,7 @@ export default {
       (historyMsg.pageNum = this.pageNum += 1),
       (historyMsg.pageSize = this.pageSize += 50),
       Socket.send(historyMsg);
+      this.$emit('chebox',false)
     },
   },
 };

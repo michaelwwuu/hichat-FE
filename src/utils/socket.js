@@ -41,6 +41,11 @@ const emitter = new Vue({
             break;
           case "SRV_ERROR_MSG":
             console.log("<--【连线失敗】------请检察 Websocket onopen 参数是否正确-->");
+            if(msgData.text === "NEED_AUTH"){
+              roomKey.chatType = "CLI_AUTH",
+              roomKey.id = Math.random(),
+              socket.send(JSON.stringify(roomKey));
+            } 
             break;
           case "SRV_RECENT_CHAT":
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
@@ -56,6 +61,9 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function () {
+        console.log("<--【连线斷開】------自動重新連線-->");
+        roomKey.chatType = "CLI_AUTH",
+        roomKey.id = Math.random(),
         emitter.connect();
       };
     },
