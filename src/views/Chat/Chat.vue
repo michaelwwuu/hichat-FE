@@ -81,7 +81,8 @@ export default {
         tokenType:1,
       },
       redImg:require("./../../../static/images/envelope.svg"),
-      adminUser:'',
+      adminUser:false,
+      tipUser:[],
     };
   },
   created() {
@@ -111,6 +112,10 @@ export default {
           this.roomUser = val.roomMemberList.filter((el) =>{
             return el.username === this.joinUser
           })
+          
+          this.tipUser.push(val.username)
+          console.log(Array.from(new Set(this.tipUser)))
+
           this.adminUser = this.roomUser[0].isAdmin
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者加入或离开聊天室-->");

@@ -68,7 +68,6 @@ export default {
     return {
       message: [],
       disUserNumber: "0",
-      disTitle: "",
       disDialog: false,
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
@@ -82,14 +81,12 @@ export default {
         this.pageNum = 0
         this.pageSize = 0
       }
-
     },
     serverMsg(val) {
       if (this.checked) this.gotoBottom();
       this.message = val;
     },
     checked(val) {
-      console.log(val)
       if (val) this.gotoBottom();
     },
   },
@@ -118,21 +115,20 @@ export default {
           }),
         ]),
       })
-        .then(({ value }) => {
-          console.log(value)
-          let banUser = {
+        .then(({value}) => {
+          let banList = {
+            chatType : 'CLI_ROOM_BAN',
             toChatId:item.toChatId,
             banUser:item.userName,
-            banMinute : value,
-            token :getToken('token'),
+            banMinute: value,
+            token:getToken('token'),
             platformCode:item.platformCode,
           };
-          console.log(banUser)
-          // this.$message({
-          //   type: "success",
-          //   message: "确定封禁" + value + "分钟",
-          // });
-          // Socket.send(banUser);
+          Socket.send(banList);
+          this.$message({
+            type: "success",
+            message: "确定封禁" + value + "分钟",
+          });
         })
         .catch(() => {
           this.$message({

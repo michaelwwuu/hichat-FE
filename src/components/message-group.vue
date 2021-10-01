@@ -13,7 +13,7 @@
               :class="[
                 { 'admin-user': item.isAdmin },
               ]"
-              @click="disabled()"
+              @click="disabled(item)"
               >封禁</el-tag
             >
           </div>
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
+import { getToken,getLocal } from "_util/utils.js";
 export default {
   name: "Message",
   props: {
@@ -39,9 +41,57 @@ export default {
       type: Boolean,
     },
   },
+  data() {
+    return {
+      disDialog: false,
+      disabledImg: require("./../../static/images/disabled.svg"),
+    }
+  },
   methods: {
-    disabled() {
-      console.log(123);
+    disabled(item) {
+      console.log(item)
+      this.disDialog = true;
+      const h = this.$createElement;
+      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
+        cancelButtonText: "取消",
+        confirmButtonText: "确定",
+        inputPlaceholder: "請輸入封禁分鐘",
+        inputPattern: /^[+-]?\d+$/,
+        inputErrorMessage: "※只能輸入數字",
+        center: true,
+        message: h("div", null, [
+          h("div", {
+            style:
+              "width:100%;height:50px;background-image:url(" +
+              this.disabledImg +
+              ");background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;",
+          }),
+        ]),
+      })
+        .then(({value}) => {
+          let banList = {
+            chatType : 'CLI_ROOM_BAN',
+            toChatId:'r5',
+            banUser:item.username,
+            banMinute: value,
+            id: Math.random(),
+            deviceId: getLocal('UUID'),
+            token:getToken('token'),
+            tokenType: 0,
+            platformCode:'dcw',
+          };
+          Socket.send(banList);
+          this.$message({
+            type: "success",
+            message: "确定封禁" + value + "分钟",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入",
+          });
+        });
     },
   },
 };
