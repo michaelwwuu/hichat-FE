@@ -82,7 +82,7 @@ export default {
       },
       redImg:require("./../../../static/images/envelope.svg"),
       adminUser:false,
-      tipUser:[],
+      userList:[]
     };
   },
   created() {
@@ -104,29 +104,56 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType
+      
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.localInfo.toChatId = val.chatRoomId
-          this.joinUser = getLocal('username')
-          this.roomUser = val.roomMemberList.filter((el) =>{
-            return el.username === this.joinUser
-          })
-          
-          this.tipUser.push(val.username)
-          console.log(Array.from(new Set(this.tipUser)))
+          this.concats = val.roomMemberList
+          this.userList.push(val.username)
 
-          this.adminUser = this.roomUser[0].isAdmin
+          this.$nextTick(()=>{
+            setTimeout(()=>{
+              this.joinUser = getLocal('username')
+              this.roomUser = this.concats.filter((el) =>{
+                return el.username === this.joinUser
+              })
+              this.adminUser = true && this.roomUser[0].isAdmin
+
+              // 過濾 socket 斷線不重新Show提示
+              this.roomName = this.userList.filter((el)=>{
+                return el === val.username
+              })
+              if(this.roomName.length === 1){
+                this.$notify({
+                  title: `通知`,
+                  dangerouslyUseHTMLString: true,
+                  message: `
+                    <div class="notify-content" style="font-size:16px; font-weight:600">
+                      <strong class="notify-title">欢迎)</strong>
+                      <span><strong>【${val.username}】进入聊天室</strong</span>
+                    </div>
+                  `
+                })
+              }
+            })
+          })
+          break;
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者加入或离开聊天室-->");
           this.concats = val.roomMemberList
+
+          // 斷線移除此人
+          this.userList = this.userList.filter((el)=>{
+            return el !== val.username
+          })
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
             message: `
               <div class="notify-content" style="font-size:16px; font-weight:600">
-                <strong class="notify-title">${chatType === 'SRV_JOIN_ROOM' ?'欢迎':'' }:)</strong>
-                <span><strong>【${val.username}】${chatType === 'SRV_JOIN_ROOM' ?'进入':'离开' }聊天室 </strong</span>
+                <strong class="notify-title">:)</strong>
+                <span><strong>【${val.username}】离开聊天室</strong</span>
               </div>
             `
           })
@@ -138,9 +165,6 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    heartbest(){
-
-    },
     //TODO 關閉socket
     closeWebsocket(){
       Socket.onClose()
