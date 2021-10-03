@@ -173,7 +173,7 @@ export default {
       margin-bottom: 10px;
       box-shadow: 0px 0 7px #ccc;
       padding: 10px;
-      height: 15em;
+      height: 20em;
       overflow: auto;
       line-height: 30px;
       
