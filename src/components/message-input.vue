@@ -176,7 +176,6 @@ export default {
       height: 20em;
       overflow: auto;
       line-height: 30px;
-      
       .face-box{
         font-size: 18px;
         font-weight:600;

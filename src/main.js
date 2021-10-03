@@ -22,10 +22,6 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 //導入全局樣式
 import './styles.scss'
 
-//導入表情
-import './../static/js/face.js'
-import './../static/css/face.css'
-
 // 引入根组件mixins 日期格式
 import mixins from './mixins/root.js'
 Vue.use(ElementUI);
