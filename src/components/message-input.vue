@@ -2,7 +2,28 @@
   <div class="message-input-box">
     <div class="input-tools">
      <el-button class="other-btn" size="mini" round @click="sendRed"><img src="./../../static/images/red-btn.svg" alt=""> 发红包</el-button>
-     <el-button class="face-other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
+     <emoji-picker @emoji="insert" :search="search" >
+        <div slot="emoji-invoker" slot-scope="{ events: { click: clickEvent } }" @click.stop="clickEvent">
+          <el-button class="face-other-btn" size="mini" round><img src="./../../static/images/face-btn.svg" alt="">表情</el-button>
+        </div>
+        <div slot="emoji-picker" slot-scope="{ emojis, insert, display }" class="face-icon">
+          <div>
+            <div>
+              <div v-for="(emojiGroup, category) in emojis" :key="category" class="face-box">
+                <h5 >{{ emojiChine(category) }}</h5>
+                <div>
+                  <span
+                    v-for="(emoji, emojiName) in emojiGroup"
+                    :key="emojiName"
+                    @click="insert(emoji)"
+  
+                  >{{ emoji }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </emoji-picker>
     </div>
     <div class="text-send-box">
       <el-input
@@ -12,6 +33,7 @@
         v-model="textArea"
         v-on:keyup.native="keyUp">
       </el-input>
+      
       <div class="footer-tools">
         <el-button
           size="mini"
@@ -27,10 +49,12 @@
 
 <script>
 import Socket from "@/utils/socket";
+import EmojiPicker from 'vue-emoji-picker'
 export default {
   data () {
     return {
       textArea: '',
+      search: '',
       // gotoBottom: gotoBottom,
     }
   },
@@ -45,16 +69,27 @@ export default {
     }
   },
   mounted () {
-    // 表情
-    this.obj = new window.Face({
-      el: document.querySelector('.face-other-btn'),
-      callBack: face => {
-        this.textArea += `:${face.title}:`
-        document.querySelector('.face-warp').style.display = 'none'
-      }
-    })
+    // // 表情
+    // this.obj = new window.Face({
+    //   el: document.querySelector('.face-other-btn'),
+    //   callBack: face => {
+    //     this.textArea += `:${face.title}:`
+    //     document.querySelector('.face-warp').style.display = 'none'
+    //   }
+    // })
   },
   methods: {
+    emojiChine(category){
+      if(category === "Frequently used") return "经常使用"
+      if(category === "People") return "笑臉與人物"
+      if(category === "Nature") return "動物與大自然"
+      if(category === "Objects") return "活動與美食"
+      if(category === "Places") return "旅遊與地標"
+      if(category === "Symbols") return "符號"
+    },
+    insert(emoji) {
+      this.textArea += emoji
+    },
     sendRed(){
       let sendRed = this.localInfo
       sendRed.chatType ="CLI_ROOM_RED"
@@ -86,7 +121,7 @@ export default {
       let message = this.localInfo
       message.chatType = "CLI_ROOM_SEND"
       message.id = Math.random()
-      message.text = this.obj.replaceFace(this.textAreaTran())
+      message.text = this.textAreaTran()
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
@@ -94,7 +129,10 @@ export default {
         this.textArea = ''
       }
     }
-  }
+  },
+  components: {
+    EmojiPicker,
+  },
 }
 </script>
 
@@ -117,12 +155,40 @@ export default {
       color: #FFFFFF;
       border: 1px solid #87B3F9;
       background-image: linear-gradient(#B4D4FF, #559DFF);
+      margin-right:10px;
       span{
         display: flex;
         align-items: center;
         img{
           padding-right:5px;
         }
+      }
+    }
+    .face-icon{
+      position: absolute;
+      bottom: 136px;
+      background-color: #fff;
+      max-width: 65%;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      box-shadow: 0px 0 7px #ccc;
+      padding: 10px;
+      height: 15em;
+      overflow: auto;
+      line-height: 30px;
+      
+      .face-box{
+        font-size: 18px;
+        font-weight:600;
+        margin:10px 0 15px 0;
+        h5{
+          margin-bottom:10px;
+        }
+      }
+      span{
+        cursor: pointer;
+        font-size: 20px;
+        margin-right:5px
       }
     }
   }
