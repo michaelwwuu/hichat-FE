@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { getLocal, getToken } from "_util/utils.js";
-const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-// const wsUrl = "wss://test.hichat.tools/ws/im/echo";//測試機環境
+// const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
+const wsUrl = "wss://test.hichat.tools/ws/im/echo";//測試機環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
@@ -63,10 +63,9 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        console.log(e)
-        // console.log("<--【连线斷開】------自動重新連線-->");
-        // roomKey.chatType = "CLI_AUTH",
-        // roomKey.id = Math.random(),
+        console.log("<--【连线斷開】------自動重新連線-->");
+        roomKey.chatType = "CLI_AUTH",
+        roomKey.id = Math.random(),
         emitter.connect();
       };
     },

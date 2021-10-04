@@ -34,8 +34,10 @@
           :clearDialog="clearDialog"
           :showMoreMsg="showMoreMsg"
           :adminUser="adminUser"
+          :historyId="historyId"
           :checked="checked"
-          @chebox="chebox" />
+          @chebox="chebox"
+          @showMoreBtn="showMoreBtn" />
         <message-input
           :concats="concats"
           :localInfo="localInfo"
@@ -82,7 +84,8 @@ export default {
       },
       redImg:require("./../../../static/images/envelope.svg"),
       adminUser:false,
-      userList:[]
+      userList:[],
+      historyId:'',
     };
   },
   created() {
@@ -111,7 +114,6 @@ export default {
           this.localInfo.toChatId = val.chatRoomId
           this.concats = val.roomMemberList
           this.userList.push(val.username)
-
           this.$nextTick(()=>{
             setTimeout(()=>{
               this.joinUser = getLocal('username')
@@ -147,6 +149,7 @@ export default {
           this.userList = this.userList.filter((el)=>{
             return el !== val.username
           })
+
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
@@ -185,6 +188,7 @@ export default {
             chatType: userInfo.chatType,
             toChatId:userInfo.toChatId,
             platformCode:userInfo.platformCode,
+            historyId:userInfo.historyId,
             message: { 
               time: +new Date(), 
               content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
@@ -196,6 +200,7 @@ export default {
         case "SRV_ROOM_HISTORY_RSP":
           console.log('<--【连线成功】------已提取历史讯息-->')
           let history = userInfo.historyMessage.list
+          this.historyId = history.length < 0 ? history[0].historyId : ""
           let historyPageSize = userInfo.historyMessage.pageSize
           if(history.length !== historyPageSize ) this.showMoreMsg = false
           history.forEach(el => {
@@ -203,6 +208,7 @@ export default {
               chatType: el.chatType,
               toChatId:el.toChatId,
               platformCode:el.platformCode,
+              historyId:el.historyId,
               message: { 
                 time: el.sendTime, 
                 content: el.chatType === "SRV_ROOM_RED"? `<img class="red" src=${this.redImg}>` :el.text,   
@@ -213,6 +219,9 @@ export default {
           });
           break;
       }
+    },
+    showMoreBtn(val){
+      this.showMoreMsg = val
     },
     /**清除聊天室內容**/
     clearChat() {

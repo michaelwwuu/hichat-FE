@@ -23,6 +23,7 @@
           class="message-classic"
           v-html="item.message.content"
           @click="redImg(item.chatType)"
+          v-linkified
         ></p>
         <div
           v-if="adminUser"
@@ -63,6 +64,9 @@ export default {
     adminUser:{
       type: Boolean,
     },
+    historyId:{
+      type:String,
+    },
   },
   data() {
     return {
@@ -71,20 +75,22 @@ export default {
       disDialog: false,
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
-      pageNum: 0,
       pageSize: 0,
     };
   },
   watch: {
     clearDialog(val){
       if(!val){
-        this.pageNum = 0
-        this.pageSize = 0
+        this.historyId='';
+        this.pageSize = 0;
+        this.$emit('showMoreBtn',true);
       }
     },
     serverMsg(val) {
       if (this.checked) this.gotoBottom();
-      this.message = val;
+      //去除重複
+      const set = new Set();
+      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
     },
     checked(val) {
       if (val) this.gotoBottom();
@@ -151,7 +157,8 @@ export default {
       let historyMsg = this.localInfo;
       historyMsg.chatType = "CLI_ROOM_HISTORY_REQ";
       historyMsg.id = Math.random();
-      (historyMsg.pageNum = this.pageNum += 1),
+      historyMsg.minute = 10; //分鐘
+      historyMsg.targetId = this.historyId;
       (historyMsg.pageSize = this.pageSize += 50),
       Socket.send(historyMsg);
       this.$emit('chebox',false)
@@ -186,6 +193,9 @@ export default {
         position: absolute;
         border-width: 8px;
         border-style: solid;
+      }
+      .linkified{
+        color:#FFFFFF;
       }
     }
 

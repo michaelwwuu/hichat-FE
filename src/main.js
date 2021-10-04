@@ -15,6 +15,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import linkify from 'vue-linkify'
+Vue.directive('linkified', linkify)
 library.add(fas);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
