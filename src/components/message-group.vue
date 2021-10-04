@@ -12,9 +12,10 @@
               class="nodis"
               :class="[
                 { 'admin-user': item.isAdmin },
+                { 'disUser': item.banTime !== null}
               ]"
               @click="disabled(item)"
-              >封禁</el-tag
+              >{{item.banTime === null ? '封禁' :'解禁'}}</el-tag
             >
           </div>
           <div class="message-user-type">
@@ -40,6 +41,11 @@ export default {
     adminUser:{
       type: Boolean,
     },
+  },
+  watch:{
+    concats(val){
+      // console.log(val)
+    }
   },
   data() {
     return {

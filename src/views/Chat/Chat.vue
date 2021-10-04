@@ -113,7 +113,7 @@ export default {
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.localInfo.toChatId = val.chatRoomId
           this.concats = val.roomMemberList
-          this.userList.push(val.username)
+          
           this.$nextTick(()=>{
             setTimeout(()=>{
               this.joinUser = getLocal('username')
@@ -123,6 +123,9 @@ export default {
               this.adminUser = true && this.roomUser[0].isAdmin
 
               // 過濾 socket 斷線不重新Show提示
+              this.concats.forEach((el)=>{
+                this.userList.push(el.username)
+              })
               this.roomName = this.userList.filter((el)=>{
                 return el === val.username
               })
@@ -136,7 +139,7 @@ export default {
                       <span><strong>【${val.username}】进入聊天室</strong</span>
                     </div>
                   `
-                })
+                })  
               }
             })
           })
@@ -190,7 +193,7 @@ export default {
             platformCode:userInfo.platformCode,
             historyId:userInfo.historyId,
             message: { 
-              time: +new Date(), 
+              time: userInfo.sendTime, 
               content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
             },
             userName: userInfo.fromChatId,

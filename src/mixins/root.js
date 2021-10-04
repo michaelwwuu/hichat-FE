@@ -48,6 +48,9 @@ const rootMixins = {
     formatTimeS(time) {
       return this.$moment(time).format('YYYY-MM-DD HH:mm:ss')
     },
+    formatNowTime(time) {
+      return this.$moment.unix(time).format('YYYY-MM-DD HH:mm:ss')
+    },
     formatTimeX(time) {
       return this.$moment(time).format('YYYY-MM-DD 00:00:00')
     },
@@ -85,6 +88,7 @@ const rootMixins = {
       let str = Number(time) === 0 ? '-' : this.$moment.unix(time).format('YYYY-MM-DD HH:mm:ss')
       return str
     },
+   
     newUnixTime(time) {
       let str = Number(time) === 0 ? '-' : this.$moment.unix(time).format('YYYY-MM-DD HH:mm')
       return str

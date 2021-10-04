@@ -8,8 +8,8 @@ const emitter = new Vue({
   data() {
     return {
       roomKey: {
-        chatType: "CLI_AUTH",
-        id: Math.random(),
+        chatType:"CLI_AUTH",
+        id:Math.random(),
         deviceId: getLocal('UUID'),
         token: getToken('token'),
         tokenType: 0,
@@ -22,11 +22,11 @@ const emitter = new Vue({
       if (socket.readyState === 1)socket.send(JSON.stringify(message));
     },
     onClose() {
-      let leaveRoom = this.roomKey
-      leaveRoom.chatType = "CLI_LEAVE_ROOM",
-      leaveRoom.id = Math.random(),
+      let leaveRoom = this.roomKey;
+      leaveRoom.chatType = "CLI_LEAVE_ROOM";
+      leaveRoom.id = Math.random();
       socket.send(JSON.stringify(leaveRoom));
-      socket.close()
+      socket.close();
     },
     // 初始化websocket 
     connect() {
@@ -44,16 +44,16 @@ const emitter = new Vue({
           case "SRV_ERROR_MSG":
             console.log("<--【连线失敗】------请检察 Websocket onopen 参数是否正确-->");
             if(msgData.text === "NEED_AUTH"){
-              roomKey.chatType = "CLI_AUTH",
-              roomKey.id = Math.random(),
+              roomKey.chatType = "CLI_AUTH";
+              roomKey.id = Math.random();
               socket.send(JSON.stringify(roomKey));
             } 
             break;
           case "SRV_RECENT_CHAT":
             console.log("<--【连线成功】------加入群组聊天室------【toChatId：聊天室ID】-->");
-            roomKey.chatType = "CLI_JOIN_ROOM",
-            roomKey.id = Math.random(),
-            roomKey.toChatId = 'r5',
+            roomKey.chatType = "CLI_JOIN_ROOM";
+            roomKey.id = Math.random();
+            roomKey.toChatId = 'r5';
             socket.send(JSON.stringify(roomKey));
             break;
         }
@@ -64,8 +64,8 @@ const emitter = new Vue({
       };
       socket.onclose = function (e) {
         console.log("<--【连线斷開】------自動重新連線-->");
-        roomKey.chatType = "CLI_AUTH",
-        roomKey.id = Math.random(),
+        roomKey.chatType = "CLI_AUTH";
+        roomKey.id = Math.random();
         emitter.connect();
       };
     },

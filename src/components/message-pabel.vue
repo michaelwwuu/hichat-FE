@@ -16,7 +16,7 @@
         <p class="message-nickname">
           {{ item.userName }}
           <span class="nickname-time">{{
-            $root.formatTimeS(item.message.time)
+            $root.formatNowTime(item.message.time)
           }}</span>
         </p>
         <p
@@ -194,9 +194,6 @@ export default {
         border-width: 8px;
         border-style: solid;
       }
-      .linkified{
-        color:#FFFFFF;
-      }
     }
 
     .message-layout-left {
@@ -209,6 +206,9 @@ export default {
         line-height: 1.4rem;
         font-weight: 500;
         letter-spacing: 0.5px;
+        .linkified{
+          color: #333333;
+        }
         &::before {
           left: -16px;
           border-color: transparent rgb(243, 249, 255) transparent transparent;
@@ -251,6 +251,9 @@ export default {
           right: -16px;
           border-color: transparent transparent transparent
             rgba(55, 126, 200, 0.8);
+        }
+        .linkified{
+          color:#FFFFFF;
         }
       }
       .message-disabled.noDis {
