@@ -16,7 +16,7 @@
         <p class="message-nickname">
           {{ item.userName }}
           <span class="nickname-time">{{
-            $root.formatNowTime(item.message.time)
+            $root.formatTimeS(item.message.time)
           }}</span>
         </p>
         <p

@@ -46,7 +46,7 @@ const rootMixins = {
     },
     // 转换时间为YYY-MM-DD HH:mm-SS
     formatTimeS(time) {
-      return this.$moment(time).format('YYYY-MM-DD HH:mm:ss')
+      return this.$moment(time).format('YYYY/MM/DD HH:mm:ss')
     },
     formatNowTime(time) {
       return this.$moment.unix(time).format('YYYY-MM-DD HH:mm:ss')
