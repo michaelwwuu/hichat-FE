@@ -29,7 +29,7 @@
       <el-input
         type="textarea"
         resize="none"
-        :autosize="{ minRows: 2, maxRows: 2}"
+        :autosize="{ minRows: 2.5, maxRows: 2.5}"
         v-model="textArea"
         v-on:keyup.native="keyUp">
       </el-input>
@@ -44,6 +44,7 @@
         </el-button>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -200,7 +201,7 @@ export default {
     background-color: #F4F4F4;
     .el-textarea {
       .el-textarea__inner {
-        padding: 20px 20px !important;
+        padding: 10px !important;
         border-radius: 0;
         border: 0;
         background-color: transparent;

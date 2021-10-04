@@ -112,8 +112,10 @@ export default {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
           this.localInfo.toChatId = val.chatRoomId
-          this.concats = val.roomMemberList
-          
+          this.concats = val.roomMemberList.sort((a,b)=> {
+            return b.isAdmin - a.isAdmin
+          });
+
           this.$nextTick(()=>{
             setTimeout(()=>{
               this.joinUser = getLocal('username')

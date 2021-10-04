@@ -42,11 +42,6 @@ export default {
       type: Boolean,
     },
   },
-  watch:{
-    concats(val){
-      // console.log(val)
-    }
-  },
   data() {
     return {
       disDialog: false,
