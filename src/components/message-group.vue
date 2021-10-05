@@ -14,7 +14,7 @@
                 { 'admin-user': item.isAdmin },
                 { 'disUser': item.banTime !== null}
               ]"
-              @click="disabled(item)"
+              @click="[item.banTime === null ? disabled(item):unBlock(item)]"
               >{{item.banTime === null ? '封禁' :'解禁'}}</el-tag
             >
           </div>
@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     disabled(item) {
-      console.log(item)
       this.disDialog = true;
       const h = this.$createElement;
       this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
@@ -74,11 +73,11 @@ export default {
             chatType : 'CLI_ROOM_BAN',
             toChatId:'r5',
             banUser:item.username,
-            banMinute: value,
+            minute: value,
             id: Math.random(),
             deviceId: getLocal('UUID'),
             token:getToken('token'),
-            tokenType: 0,
+            tokenType: 1,
             platformCode:'dcw',
           };
           Socket.send(banList);
@@ -94,6 +93,20 @@ export default {
           });
         });
     },
+    unBlock(item){
+      console.log(item)
+      let unBlock = {
+        chatType : 'CLI_ROOM_LIFT_BAN',
+        toChatId:'r5',
+        banUser:item.username,
+        id: Math.random(),
+        deviceId: getLocal('UUID'),
+        token:getToken('token'),
+        tokenType: 1,
+        platformCode:'dcw',
+      };
+      Socket.send(unBlock);
+    }
   },
 };
 </script>

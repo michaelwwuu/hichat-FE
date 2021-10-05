@@ -12,7 +12,7 @@ const emitter = new Vue({
         id:Math.random(),
         deviceId: getLocal('UUID'),
         token: getToken('token'),
-        tokenType: 0,
+        tokenType: 1,
         platformCode: "dcw",
       },
     }

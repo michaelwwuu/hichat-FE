@@ -44,7 +44,6 @@
         </el-button>
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -69,15 +68,10 @@ export default {
       type: Object
     }
   },
-  mounted () {
-    // // 表情
-    // this.obj = new window.Face({
-    //   el: document.querySelector('.face-other-btn'),
-    //   callBack: face => {
-    //     this.textArea += `:${face.title}:`
-    //     document.querySelector('.face-warp').style.display = 'none'
-    //   }
-    // })
+  watch:{
+    concats(val){
+      console.log(val)
+    }
   },
   methods: {
     emojiChine(category){

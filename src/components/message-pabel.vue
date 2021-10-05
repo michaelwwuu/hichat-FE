@@ -126,7 +126,7 @@ export default {
             chatType : 'CLI_ROOM_BAN',
             toChatId:item.toChatId,
             banUser:item.userName,
-            banMinute: value,
+            minute: value,
             token:getToken('token'),
             platformCode:item.platformCode,
           };
@@ -143,6 +143,7 @@ export default {
           });
         });
     },
+
     /**判断Class**/
     judgeClass(item) {
       if (item.userName === getLocal("username")) {

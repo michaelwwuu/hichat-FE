@@ -38,10 +38,13 @@
           :checked="checked"
           @chebox="chebox"
           @showMoreBtn="showMoreBtn" />
-        <message-input
-          :concats="concats"
-          :localInfo="localInfo"
-        />
+
+          <div class="disUser" v-show="disUser"></div>
+
+          <message-input
+            :concats="concats"
+            :localInfo="localInfo"
+          />
       </el-main>
     </el-container>
     <el-dialog
@@ -86,6 +89,7 @@ export default {
       adminUser:false,
       userList:[],
       historyId:'',
+      disUser:false,
     };
   },
   created() {
@@ -107,7 +111,6 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType
-      
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
@@ -223,6 +226,16 @@ export default {
             this.serverMsg.unshift(historyMsg)
           });
           break;
+        case "SRV_ROOM_LIFT_BAN":  
+        case "SRV_ROOM_BAN":
+          this.concats.filter((el)=>{
+            if(el.username === userInfo.banUser ) return el.banTime = userInfo.banTime
+          })
+          if(userInfo.chatType ==="SRV_ROOM_BAN" && userInfo.banUser === getLocal('username')) {
+            this.disUser = true
+          } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
+            this.disUser = false
+          break  
       }
     },
     showMoreBtn(val){
@@ -355,6 +368,14 @@ export default {
         letter-spacing: 1px;
       }
     }
+  }
+  .disUser{
+    background: #0000007d;
+    height: 144px;
+    position: relative;
+    bottom: -145px;
+    cursor: not-allowed;
+    z-index: 9999;
   }
   .footer {
     position: absolute;
