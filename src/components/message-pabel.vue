@@ -87,11 +87,11 @@ export default {
       }
     },
     serverMsg(val) {
-      console.log('val',val)
-      this.message = val
+      // console.log('val',val)
+      // this.message = val
       //去除重複
-      // const set = new Set();
-      // this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
+      const set = new Set();
+      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.checked) this.gotoBottom();
     },
     checked(val) {
@@ -124,7 +124,7 @@ export default {
       .then(({value}) => {
         let banList = {
           chatType : 'CLI_ROOM_BAN',
-          toChatId:'r5',
+          toChatId:item.chatRoomId,
           banUser:item.username,
           minute: value,
           id: Math.random(),
@@ -149,7 +149,7 @@ export default {
     unBlock(item){
       let unBlock = {
         chatType : 'CLI_ROOM_LIFT_BAN',
-        toChatId:'r5',
+        toChatId:item.chatRoomId,
         banUser:item.username,
         id: Math.random(),
         deviceId: getLocal('UUID'),

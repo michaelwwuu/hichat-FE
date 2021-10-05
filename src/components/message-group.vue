@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     disabled(item) {
+      console.log(item)
       this.disDialog = true;
       const h = this.$createElement;
       this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
@@ -71,7 +72,7 @@ export default {
         .then(({value}) => {
           let banList = {
             chatType : 'CLI_ROOM_BAN',
-            toChatId:'r5',
+            toChatId:item.chatRoomId,
             banUser:item.username,
             minute: value,
             id: Math.random(),
@@ -97,7 +98,7 @@ export default {
     unBlock(item){
       let unBlock = {
         chatType : 'CLI_ROOM_LIFT_BAN',
-        toChatId:'r5',
+        toChatId:item.chatRoomId,
         banUser:item.username,
         id: Math.random(),
         deviceId: getLocal('UUID'),

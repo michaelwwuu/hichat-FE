@@ -219,7 +219,7 @@ export default {
           this.historyId = history.length < 0 ? history[0].historyId : ""
           let historyPageSize = userInfo.historyMessage.pageSize
           if(history.length !== historyPageSize ) this.showMoreMsg = false
-          history.forEach(el => {
+          history.forEach((el) => {
             this.concats.forEach((list)=>{
               if(el.fromChatId === list.username) return el.banTime = list.banTime
             })
