@@ -41,7 +41,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { gotoBottom } from "@/assets/tools";
-import { getLocal,getToken } from "_util/utils.js";
+import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
   props: {
@@ -87,8 +87,6 @@ export default {
       }
     },
     serverMsg(val) {
-      // console.log('val',val)
-      // this.message = val
       //去除重複
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
@@ -122,17 +120,12 @@ export default {
         ]),
       })
       .then(({value}) => {
-        let banList = {
-          chatType : 'CLI_ROOM_BAN',
-          toChatId:item.chatRoomId,
-          banUser:item.username,
-          minute: value,
-          id: Math.random(),
-          deviceId: getLocal('UUID'),
-          token:getToken('token'),
-          tokenType: 1,
-          platformCode:'dcw',
-        };
+        let banList  = this.localInfo;
+        banList.chatType = "CLI_ROOM_BAN";
+        banList.toChatId = item.chatRoomId;
+        banList.banUser = item.username;
+        banList.minute = value;
+        banList.id = Math.random();
         Socket.send(banList);
         this.$message({
           type: "success",
@@ -147,16 +140,11 @@ export default {
       });
     },
     unBlock(item){
-      let unBlock = {
-        chatType : 'CLI_ROOM_LIFT_BAN',
-        toChatId:item.chatRoomId,
-        banUser:item.username,
-        id: Math.random(),
-        deviceId: getLocal('UUID'),
-        token:getToken('token'),
-        tokenType: 1,
-        platformCode:'dcw',
-      };
+      let unBlock  = this.localInfo;
+      unBlock.chatType = "CLI_ROOM_LIFT_BAN";
+      unBlock.toChatId = item.chatRoomId;
+      unBlock.banUser = item.username;
+      unBlock.id = Math.random();
       Socket.send(unBlock);      
     },
     /**判断Class**/

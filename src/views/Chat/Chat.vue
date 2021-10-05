@@ -4,7 +4,7 @@
       <el-aside width="290px">
         <el-header height="55px">
           <img src="./../../../static/images/user-group.svg" alt="" />
-          
+
           <span class="title"
             >聊天室人數
             <img
@@ -14,7 +14,11 @@
             />{{ concats.length }}</span
           >
         </el-header>
-        <message-group :concats="concats" :adminUser="adminUser"/>
+        <message-group
+          :concats="concats"
+          :adminUser="adminUser"
+          :localInfo="localInfo"
+        />
       </el-aside>
       <el-main>
         <el-header height="55px">
@@ -37,14 +41,12 @@
           :historyId="historyId"
           :checked="checked"
           @chebox="chebox"
-          @showMoreBtn="showMoreBtn" />
+          @showMoreBtn="showMoreBtn"
+        />
 
-          <div class="disUser" v-show="disUser"></div>
+        <div class="disUser" v-show="disUser"></div>
 
-          <message-input
-            :concats="concats"
-            :localInfo="localInfo"
-          />
+        <message-input :concats="concats" :localInfo="localInfo" />
       </el-main>
     </el-container>
     <el-dialog
@@ -63,45 +65,45 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { mapState,mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-import { getLocal,getToken } from "_util/utils.js";
+import { getLocal, getToken } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
     return {
       concats: [],
-      serverMsg:[],
+      serverMsg: [],
       clearDialog: false,
       checked: true,
       showMoreMsg: true,
       nowSwitch: 0,
       localInfo: {
-        toChatId:'',
-        token: getToken('token'),
-        deviceId: getLocal('UUID'),        
-        platformCode:'dcw',
-        tokenType:1,
+        toChatId: "",
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
+        platformCode: "dcw",
+        tokenType: 1,
       },
-      redImg:require("./../../../static/images/envelope.svg"),
-      adminUser:false,
-      userList:[],
-      historyId:'',
-      disUser:false,
+      redImg: require("./../../../static/images/envelope.svg"),
+      adminUser: false,
+      userList: [],
+      historyId: "",
+      disUser: false,
     };
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    window.addEventListener('beforeunload', this.closeWebsocket)
+    window.addEventListener("beforeunload", this.closeWebsocket);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
-    this.closeWebsocket()
+    this.closeWebsocket();
   },
-  destroyed(){
-    window.removeEventListener('beforeunload', this.closeWebsocket)
+  destroyed() {
+    window.removeEventListener("beforeunload", this.closeWebsocket);
   },
   computed: {
     ...mapState({
@@ -110,35 +112,37 @@ export default {
   },
   watch: {
     wsRes(val) {
-      let chatType = val.chatType
+      let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
-          if(val.username === 'guest') {
-            this.showMoreMsg = false
-            this.disUser = true
+          console.log(
+            "<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->"
+          );
+          if (val.username === "guest") {
+            this.showMoreMsg = false;
+            this.disUser = true;
           }
-          this.localInfo.toChatId = val.chatRoomId
-          this.concats = val.roomMemberList.sort((a,b)=> {
-            return b.isAdmin - a.isAdmin
+          this.localInfo.toChatId = val.chatRoomId;
+          this.concats = val.roomMemberList.sort((a, b) => {
+            return b.isAdmin - a.isAdmin;
           });
-          
-          this.$nextTick(()=>{
-            setTimeout(()=>{
-              this.joinUser = getLocal('username')
-              this.roomUser = this.concats.filter((el) =>{
-                return el.username === this.joinUser
-              })
-              this.adminUser = true && this.roomUser[0].isAdmin
+
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this.joinUser = getLocal("username");
+              this.roomUser = this.concats.filter((el) => {
+                return el.username === this.joinUser;
+              });
+              this.adminUser = true && this.roomUser[0].isAdmin;
 
               // 過濾 socket 斷線不重新Show提示
-              this.concats.forEach((el)=>{
-                this.userList.push(el.username)
-              })
-              this.roomName = this.userList.filter((el)=>{
-                return el === val.username
-              })
-              if(this.roomName.length === 1){
+              this.concats.forEach((el) => {
+                this.userList.push(el.username);
+              });
+              this.roomName = this.userList.filter((el) => {
+                return el === val.username;
+              });
+              if (this.roomName.length === 1) {
                 this.$notify({
                   title: `通知`,
                   dangerouslyUseHTMLString: true,
@@ -147,20 +151,20 @@ export default {
                       <strong class="notify-title">欢迎)</strong>
                       <span><strong>【${val.username}】进入聊天室</strong</span>
                     </div>
-                  `
-                })  
+                  `,
+                });
               }
-            })
-          })
+            });
+          });
           break;
         case "SRV_LEAVE_ROOM":
           console.log("<--【中断连线】------使用者加入或离开聊天室-->");
-          this.concats = val.roomMemberList
+          this.concats = val.roomMemberList;
 
           // 斷線移除此人
-          this.userList = this.userList.filter((el)=>{
-            return el !== val.username
-          })
+          this.userList = this.userList.filter((el) => {
+            return el !== val.username;
+          });
 
           this.$notify({
             title: `通知`,
@@ -170,8 +174,8 @@ export default {
                 <strong class="notify-title">:)</strong>
                 <span><strong>【${val.username}】离开聊天室</strong</span>
               </div>
-            `
-          })
+            `,
+          });
           break;
       }
     },
@@ -181,90 +185,103 @@ export default {
       setWsRes: "ws/setWsRes",
     }),
     //TODO 關閉socket
-    closeWebsocket(){
-      Socket.onClose()
-      window.location.reload()
+    closeWebsocket() {
+      Socket.onClose();
+      window.location.reload();
     },
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
-      let userInfo = JSON.parse(msg)
+      let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
-          console.log('<--【连线成功】------写入登入者资讯-->')
-          break
+          console.log("<--【连线成功】------写入登入者资讯-->");
+          break;
         case "SRV_ROOM_SEND":
-          console.log('<--【连线成功】------群组内所有人讯息-->')
+          console.log("<--【连线成功】------群组内所有人讯息-->");
         case "SRV_ROOM_RED":
-          this.concats.forEach((list)=>{
-            if(userInfo.fromChatId === list.username) return userInfo.banTime = list.banTime
-          })
+          this.concats.forEach((list) => {
+            if (userInfo.fromChatId === list.username) return (userInfo.banTime = list.banTime);
+          });
           let srvRoomMsg = {
-            banTime:userInfo.banTime,
+            banTime: userInfo.banTime,
             chatType: userInfo.chatType,
-            toChatId:userInfo.toChatId,
-            platformCode:userInfo.platformCode,
-            historyId:userInfo.historyId,
-            message: { 
-              time: userInfo.sendTime, 
-              content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
+            toChatId: userInfo.toChatId,
+            platformCode: userInfo.platformCode,
+            historyId: userInfo.historyId,
+            message: {
+              time: userInfo.sendTime,
+              content:
+                userInfo.chatType === "SRV_ROOM_RED"
+                  ? `<img class="red" src=${this.redImg}>`
+                  : userInfo.text,
             },
             username: userInfo.fromChatId,
           };
-          this.serverMsg.push(srvRoomMsg)
-          break;  
+          this.serverMsg.push(srvRoomMsg);
+          break;
         case "SRV_ROOM_HISTORY_RSP":
-          console.log('<--【连线成功】------已提取历史讯息-->')
-          let history = userInfo.historyMessage.list
-          this.historyId = history.length < 0 ? history[0].historyId : ""
-          let historyPageSize = userInfo.historyMessage.pageSize
-          if(history.length !== historyPageSize ) this.showMoreMsg = false
+          console.log("<--【连线成功】------已提取历史讯息-->");
+          let history = userInfo.historyMessage.list;
+          let historyPageSize = userInfo.historyMessage.pageSize;
+          this.historyId = history.length < 0 ? history[0].historyId : "";
+
+          if (history.length !== historyPageSize) this.showMoreMsg = false;
+
           history.forEach((el) => {
-            this.concats.forEach((list)=>{
-              if(el.fromChatId === list.username) return el.banTime = list.banTime
-            })
+            this.concats.forEach((list) => {
+              if (el.fromChatId === list.username) return (el.banTime = list.banTime);
+            });
             let historyMsg = {
-              banTime:el.banTime,
+              banTime: el.banTime,
               chatType: el.chatType,
-              toChatId:el.toChatId,
-              platformCode:el.platformCode,
-              historyId:el.historyId,
-              message: { 
-                time: el.sendTime, 
-                content: el.chatType === "SRV_ROOM_RED"? `<img class="red" src=${this.redImg}>` :el.text,   
+              toChatId: el.toChatId,
+              platformCode: el.platformCode,
+              historyId: el.historyId,
+              message: {
+                time: el.sendTime,
+                content:
+                  el.chatType === "SRV_ROOM_RED"
+                    ? `<img class="red" src=${this.redImg}>`
+                    : el.text,
               },
               username: el.fromChatId,
-            }
-            this.serverMsg.unshift(historyMsg)
+            };
+            this.serverMsg.unshift(historyMsg);
           });
-          console.log(history)
           break;
-        case "SRV_ROOM_LIFT_BAN": 
+        case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
-          this.concats.filter((el)=>{
-            if(el.username === userInfo.banUser ) return el.banTime = userInfo.banTime
-          })
-          this.serverMsg.forEach((el)=>{
-            if(el.username === userInfo.banUser ) return el.banTime = userInfo.banTime
-          })
-          if(userInfo.chatType ==="SRV_ROOM_BAN" && userInfo.banUser === getLocal('username')) {
-            this.disUser = true
-          } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
-            this.disUser = false
-          break;    
+          this.concats.filter((el) => {
+            if (el.username === userInfo.banUser) return (el.banTime = userInfo.banTime);
+          });
+          this.serverMsg.forEach((el) => {
+            if (el.username === userInfo.banUser) return (el.banTime = userInfo.banTime);
+          });
+          if (
+            userInfo.chatType === "SRV_ROOM_BAN" &&
+            userInfo.banUser === getLocal("username")
+          ) {
+            this.disUser = true;
+          } else if (
+            userInfo.chatType === "SRV_ROOM_LIFT_BAN" &&
+            userInfo.banUser === getLocal("username")
+          )
+            this.disUser = false;
+          break;
       }
     },
-    showMoreBtn(val){
-      this.showMoreMsg = val
+    showMoreBtn(val) {
+      this.showMoreMsg = val;
     },
     /**清除聊天室內容**/
     clearChat() {
       this.clearDialog = false;
-      this.serverMsg = []
+      this.serverMsg = [];
     },
-    chebox(val){
-      this.checked = val
-    }
+    chebox(val) {
+      this.checked = val;
+    },
   },
   components: {
     MessageGroup,
@@ -385,7 +402,7 @@ export default {
       }
     }
   }
-  .disUser{
+  .disUser {
     background: #0000007d;
     height: 144px;
     position: relative;

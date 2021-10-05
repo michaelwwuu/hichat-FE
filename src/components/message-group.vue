@@ -12,10 +12,10 @@
               class="nodis"
               :class="[
                 { 'admin-user': item.isAdmin },
-                { 'disUser': item.banTime !== null}
+                { disUser: item.banTime !== null },
               ]"
-              @click="item.banTime === null ? disabled(item):unBlock(item)"
-              >{{item.banTime === null ? '封禁' :'解封'}}</el-tag
+              @click="item.banTime === null ? disabled(item) : unBlock(item)"
+              >{{ item.banTime === null ? "封禁" : "解封" }}</el-tag
             >
           </div>
           <div class="message-user-type">
@@ -31,14 +31,17 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { getToken,getLocal } from "_util/utils.js";
 export default {
   name: "Message",
   props: {
     concats: {
       type: Array,
     },
-    adminUser:{
+    // 当前用户
+    localInfo: {
+      type: Object,
+    },
+    adminUser: {
       type: Boolean,
     },
   },
@@ -46,11 +49,11 @@ export default {
     return {
       disDialog: false,
       disabledImg: require("./../../static/images/disabled.svg"),
-    }
+    };
   },
   methods: {
     disabled(item) {
-      console.log(item)
+      console.log(item);
       this.disDialog = true;
       const h = this.$createElement;
       this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
@@ -69,18 +72,13 @@ export default {
           }),
         ]),
       })
-        .then(({value}) => {
-          let banList = {
-            chatType : 'CLI_ROOM_BAN',
-            toChatId:item.chatRoomId,
-            banUser:item.username,
-            minute: value,
-            id: Math.random(),
-            deviceId: getLocal('UUID'),
-            token:getToken('token'),
-            tokenType: 1,
-            platformCode:'dcw',
-          };
+        .then(({ value }) => {
+          let banList = this.localInfo;
+          banList.chatType = "CLI_ROOM_BAN";
+          banList.toChatId = item.chatRoomId;
+          banList.banUser = item.username;
+          banList.minute = value;
+          banList.id = Math.random();
           Socket.send(banList);
           this.$message({
             type: "success",
@@ -93,21 +91,15 @@ export default {
             message: "取消输入",
           });
         });
-      
     },
-    unBlock(item){
-      let unBlock = {
-        chatType : 'CLI_ROOM_LIFT_BAN',
-        toChatId:item.chatRoomId,
-        banUser:item.username,
-        id: Math.random(),
-        deviceId: getLocal('UUID'),
-        token:getToken('token'),
-        tokenType: 1,
-        platformCode:'dcw',
-      };
+    unBlock(item) {
+      let unBlock = this.localInfo;
+      unBlock.chatType = "CLI_ROOM_LIFT_BAN";
+      unBlock.toChatId = item.chatRoomId;
+      unBlock.banUser = item.username;
+      unBlock.id = Math.random();
       Socket.send(unBlock);
-    }
+    },
   },
 };
 </script>
@@ -184,7 +176,7 @@ export default {
             color: #ffffff;
             cursor: pointer;
           }
-          .admin-user{
+          .admin-user {
             display: none;
           }
         }
