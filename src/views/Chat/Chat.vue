@@ -76,7 +76,7 @@ export default {
       serverMsg:[],
       clearDialog: false,
       checked: true,
-      showMoreMsg:true,
+      showMoreMsg: true,
       nowSwitch: 0,
       localInfo: {
         toChatId:'',
@@ -114,6 +114,10 @@ export default {
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           console.log('<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->')
+          if(val.username === 'guest') {
+            this.showMoreMsg = false
+            this.disUser = true
+          }
           this.localInfo.toChatId = val.chatRoomId
           this.concats = val.roomMemberList.sort((a,b)=> {
             return b.isAdmin - a.isAdmin
@@ -171,6 +175,17 @@ export default {
           break;
       }
     },
+    concats(val){
+      console.log(val)
+    },
+    // serverMsg(val){
+    //   val.forEach((el) => {
+    //     this.concats.forEach((list) =>{
+    //       console.log('list',list)
+    //       if(el.username === list.username) return el.banTime = list.banTime
+    //     })
+    //   });
+    // }
   },
   methods: {
     ...mapMutations({
@@ -201,7 +216,7 @@ export default {
               time: userInfo.sendTime, 
               content: userInfo.chatType ==="SRV_ROOM_RED" ? `<img class="red" src=${this.redImg}>`:userInfo.text
             },
-            userName: userInfo.fromChatId,
+            username: userInfo.fromChatId,
           };
           this.serverMsg.push(srvRoomMsg)
           break;  
@@ -221,21 +236,37 @@ export default {
                 time: el.sendTime, 
                 content: el.chatType === "SRV_ROOM_RED"? `<img class="red" src=${this.redImg}>` :el.text,   
               },
-              userName: el.fromChatId,
+              username: el.fromChatId,
             }
             this.serverMsg.unshift(historyMsg)
           });
           break;
-        case "SRV_ROOM_LIFT_BAN":  
+        case "SRV_ROOM_LIFT_BAN": 
         case "SRV_ROOM_BAN":
           this.concats.filter((el)=>{
             if(el.username === userInfo.banUser ) return el.banTime = userInfo.banTime
           })
-          if(userInfo.chatType ==="SRV_ROOM_BAN" && userInfo.banUser === getLocal('username')) {
-            this.disUser = true
-          } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
-            this.disUser = false
-          break  
+          this.serverMsg = this.serverMsg.forEach((el)=>{
+            console.log('el',el)
+            this.concats.forEach((list) =>{
+              if(el.username === list.username) return el.banTime = list.banTime
+            })
+          })
+          console.log('this.serverMsg',this.serverMsg)
+          console.log(this.concats)
+          // this.serverMsg.forEach((el)=>{
+          //   this.concats.forEach((list) =>{
+          //     if(el.username === list.username) return el.banTime = list.banTime
+          //   })
+          // })
+          // console.log('concats',this.concats)
+
+          // console.log('serverMsg',this.serverMsg)
+          // if(userInfo.chatType ==="SRV_ROOM_BAN" && userInfo.banUser === getLocal('username')) {
+          //   this.disUser = true
+          // } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
+          //   this.disUser = false
+        break
       }
     },
     showMoreBtn(val){

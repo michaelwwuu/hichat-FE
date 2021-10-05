@@ -68,11 +68,6 @@ export default {
       type: Object
     }
   },
-  watch:{
-    concats(val){
-      console.log(val)
-    }
-  },
   methods: {
     emojiChine(category){
       if(category === "Frequently used") return "经常使用"

@@ -14,7 +14,7 @@
         :class="judgeClass(item)"
       >
         <p class="message-nickname">
-          {{ item.userName }}
+          {{ item.username }}
           <span class="nickname-time">{{
             $root.formatTimeS(item.message.time)
           }}</span>
@@ -28,10 +28,10 @@
         <div
           v-if="adminUser"
           class="message-disabled"
-          @click="disabled(item)"
-          :class="disUserNumber === '0' ? 'noDis' : 'disUser'"
+          @click="item.banTime === null ? disabled(item) : unBlock(item)"
+          :class="item.banTime === null ? 'noDis' : 'disUser'"
         >
-          {{ disUserNumber === "0" ? "封禁" : "解封" }}
+          {{ item.banTime === null ? "封禁" : "解封" }}
         </div>
       </li>
     </ul>
@@ -87,10 +87,11 @@ export default {
       }
     },
     serverMsg(val) {
-      if (this.checked) this.gotoBottom();
       //去除重複
-      const set = new Set();
-      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
+      this.message = val
+      // const set = new Set();
+      // this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
+      if (this.checked) this.gotoBottom();
     },
     checked(val) {
       if (val) this.gotoBottom();
@@ -102,10 +103,8 @@ export default {
     },
     /**封禁人員**/
     disabled(item) {
-      console.log(item)
-      this.disDialog = true;
       const h = this.$createElement;
-      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.userName}"?`, {
+      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
         cancelButtonText: "取消",
         confirmButtonText: "确定",
         inputPlaceholder: "請輸入封禁分鐘",
@@ -121,32 +120,47 @@ export default {
           }),
         ]),
       })
-        .then(({value}) => {
-          let banList = {
-            chatType : 'CLI_ROOM_BAN',
-            toChatId:item.toChatId,
-            banUser:item.userName,
-            minute: value,
-            token:getToken('token'),
-            platformCode:item.platformCode,
-          };
-          Socket.send(banList);
-          this.$message({
-            type: "success",
-            message: "确定封禁" + value + "分钟",
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消输入",
-          });
+      .then(({value}) => {
+        let banList = {
+          chatType : 'CLI_ROOM_BAN',
+          toChatId:'r5',
+          banUser:item.username,
+          minute: value,
+          id: Math.random(),
+          deviceId: getLocal('UUID'),
+          token:getToken('token'),
+          tokenType: 1,
+          platformCode:'dcw',
+        };
+        Socket.send(banList);
+        this.$message({
+          type: "success",
+          message: "确定封禁" + value + "分钟",
         });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "取消输入",
+        });
+      });
     },
-
+    unBlock(item){
+      let unBlock = {
+        chatType : 'CLI_ROOM_LIFT_BAN',
+        toChatId:'r5',
+        banUser:item.username,
+        id: Math.random(),
+        deviceId: getLocal('UUID'),
+        token:getToken('token'),
+        tokenType: 1,
+        platformCode:'dcw',
+      };
+      Socket.send(unBlock);      
+    },
     /**判断Class**/
     judgeClass(item) {
-      if (item.userName === getLocal("username")) {
+      if (item.username === getLocal("username")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";

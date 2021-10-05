@@ -14,8 +14,8 @@
                 { 'admin-user': item.isAdmin },
                 { 'disUser': item.banTime !== null}
               ]"
-              @click="[item.banTime === null ? disabled(item):unBlock(item)]"
-              >{{item.banTime === null ? '封禁' :'解禁'}}</el-tag
+              @click="item.banTime === null ? disabled(item):unBlock(item)"
+              >{{item.banTime === null ? '封禁' :'解封'}}</el-tag
             >
           </div>
           <div class="message-user-type">
@@ -92,9 +92,9 @@ export default {
             message: "取消输入",
           });
         });
+      
     },
     unBlock(item){
-      console.log(item)
       let unBlock = {
         chatType : 'CLI_ROOM_LIFT_BAN',
         toChatId:'r5',

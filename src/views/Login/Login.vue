@@ -44,6 +44,7 @@ export default {
     return {
       headerTitle: "聊天室登入系統",
       loginForm: {
+        isGuest:false,
         username: "",
         sign:"",
         platformCode:"dcw", 
@@ -72,6 +73,7 @@ export default {
     //登入&&註冊
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
+      if (this.loginForm.username === "guset") this.loginForm.isGuest = true;
       //驗證登入表單是否通過
       this.$refs[rules].validate((valid) => {
         if (!valid) {
