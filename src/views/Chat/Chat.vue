@@ -122,7 +122,7 @@ export default {
           this.concats = val.roomMemberList.sort((a,b)=> {
             return b.isAdmin - a.isAdmin
           });
-
+          
           this.$nextTick(()=>{
             setTimeout(()=>{
               this.joinUser = getLocal('username')
@@ -175,17 +175,6 @@ export default {
           break;
       }
     },
-    concats(val){
-      console.log(val)
-    },
-    // serverMsg(val){
-    //   val.forEach((el) => {
-    //     this.concats.forEach((list) =>{
-    //       console.log('list',list)
-    //       if(el.username === list.username) return el.banTime = list.banTime
-    //     })
-    //   });
-    // }
   },
   methods: {
     ...mapMutations({
@@ -207,7 +196,11 @@ export default {
         case "SRV_ROOM_SEND":
           console.log('<--【连线成功】------群组内所有人讯息-->')
         case "SRV_ROOM_RED":
+          this.concats.forEach((list)=>{
+            if(userInfo.fromChatId === list.username) return userInfo.banTime = list.banTime
+          })
           let srvRoomMsg = {
+            banTime:userInfo.banTime,
             chatType: userInfo.chatType,
             toChatId:userInfo.toChatId,
             platformCode:userInfo.platformCode,
@@ -227,7 +220,11 @@ export default {
           let historyPageSize = userInfo.historyMessage.pageSize
           if(history.length !== historyPageSize ) this.showMoreMsg = false
           history.forEach(el => {
+            this.concats.forEach((list)=>{
+              if(el.fromChatId === list.username) return el.banTime = list.banTime
+            })
             let historyMsg = {
+              banTime:el.banTime,
               chatType: el.chatType,
               toChatId:el.toChatId,
               platformCode:el.platformCode,
@@ -240,33 +237,20 @@ export default {
             }
             this.serverMsg.unshift(historyMsg)
           });
+          console.log(history)
           break;
         case "SRV_ROOM_LIFT_BAN": 
         case "SRV_ROOM_BAN":
           this.concats.filter((el)=>{
             if(el.username === userInfo.banUser ) return el.banTime = userInfo.banTime
           })
-          this.serverMsg = this.serverMsg.forEach((el)=>{
-            console.log('el',el)
-            this.concats.forEach((list) =>{
-              if(el.username === list.username) return el.banTime = list.banTime
-            })
+          this.serverMsg.forEach((el)=>{
+            if(el.username === userInfo.banUser ) return el.banTime = userInfo.banTime
           })
-          console.log('this.serverMsg',this.serverMsg)
-          console.log(this.concats)
-          // this.serverMsg.forEach((el)=>{
-          //   this.concats.forEach((list) =>{
-          //     if(el.username === list.username) return el.banTime = list.banTime
-          //   })
-          // })
-          // console.log('concats',this.concats)
-
-          // console.log('serverMsg',this.serverMsg)
-          // if(userInfo.chatType ==="SRV_ROOM_BAN" && userInfo.banUser === getLocal('username')) {
-          //   this.disUser = true
-          // } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
-          //   this.disUser = false
-        break
+          if(userInfo.chatType ==="SRV_ROOM_BAN" && userInfo.banUser === getLocal('username')) {
+            this.disUser = true
+          } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
+            this.disUser = false
       }
     },
     showMoreBtn(val){

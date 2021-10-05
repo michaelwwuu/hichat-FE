@@ -87,8 +87,9 @@ export default {
       }
     },
     serverMsg(val) {
-      //去除重複
+      console.log('val',val)
       this.message = val
+      //去除重複
       // const set = new Set();
       // this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.checked) this.gotoBottom();
