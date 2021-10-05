@@ -98,7 +98,7 @@ export default {
       let sendRed = this.localInfo;
       sendRed.chatType = "CLI_ROOM_RED";
       sendRed.id = Math.random();
-      sendRed.text = ''
+      sendRed.text = this.textAreaTran();
       Socket.send(sendRed);
     },
     /**消息过滤**/
