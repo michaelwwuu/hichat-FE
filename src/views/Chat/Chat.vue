@@ -251,6 +251,7 @@ export default {
             this.disUser = true
           } else if( userInfo.chatType ==="SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal('username'))
             this.disUser = false
+          break;    
       }
     },
     showMoreBtn(val){
