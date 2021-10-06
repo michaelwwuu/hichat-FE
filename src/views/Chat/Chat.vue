@@ -153,6 +153,7 @@ export default {
                   `,
                 });
               }
+              
               //最高使用者
               this.joinUser = getLocal('username')
               this.roomUser = this.concats.filter((el) => {
@@ -264,21 +265,30 @@ export default {
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
           this.concats.filter((el) => {
-            if (el.username === userInfo.banUser) return (el.banTime = userInfo.banTime);
+            if (el.username === userInfo.banUser) {
+              el.banTime = userInfo.banTime
+              if(el.banTime !== null){
+                let endTime = new Date(el.banTime)
+                let nowTime = new Date()
+                let catchTime = endTime - nowTime
+                let disTime = catchTime/(100*60)
+                console.log(disTime)
+                console.log(endTime)
+                console.log(nowTime)
+              }
+            }
           });
           this.serverMsg.forEach((el) => {
-            if (el.username === userInfo.banUser) return (el.banTime = userInfo.banTime);
+            if (el.username === userInfo.banUser) {
+              return (el.banTime = userInfo.banTime)
+            }
           });
-          if (
-            userInfo.chatType === "SRV_ROOM_BAN" &&
-            userInfo.banUser === getLocal("username")
-          ) {
+          if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
             this.disUser = true;
-          } else if (
-            userInfo.chatType === "SRV_ROOM_LIFT_BAN" &&
-            userInfo.banUser === getLocal("username")
-          )
+          } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" &&userInfo.banUser === getLocal("username")){
             this.disUser = false;
+          }
+            
           break;
       }
     },

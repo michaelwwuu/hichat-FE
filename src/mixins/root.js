@@ -21,7 +21,7 @@ const rootMixins = {
     },
     // 获取当前对应格式的时间
     newstartTime() {
-      return this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss')
+      return this.$moment().startOf('day').format('YYYY/MM/DD HH:mm:ss')
     },
     endTime(type) {
       type = type === 1 ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'

@@ -121,7 +121,6 @@ export default {
         ]),
       })
       .then(({value}) => {
-        console.log(item)
         let banList  = this.localInfo;
         banList.chatType = "CLI_ROOM_BAN";
         banList.toChatId = item.toChatId;
