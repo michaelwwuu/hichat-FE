@@ -128,11 +128,6 @@ export default {
           });
           this.$nextTick(() => {
             setTimeout(() => {
-              this.roomUser = this.concats.filter((el) => {
-                if(el.isAdmin) return el.username;
-              });
-              this.adminUser = true && this.roomUser[0].isAdmin;
-
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userList.push(el.username);
@@ -158,6 +153,12 @@ export default {
                   `,
                 });
               }
+              //最高使用者
+              this.joinUser = getLocal('username')
+              this.roomUser = this.concats.filter((el) => {
+                return el.username === this.joinUser
+              });
+              this.adminUser = true && this.roomUser[0].isAdmin;
             });
           });
           break;
