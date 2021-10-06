@@ -1,5 +1,6 @@
 <template>
   <div class="message-pabel-box">
+
     <el-button
       v-if="showMoreMsg"
       class="eye-more"
@@ -120,12 +121,14 @@ export default {
         ]),
       })
       .then(({value}) => {
+        console.log(item)
         let banList  = this.localInfo;
         banList.chatType = "CLI_ROOM_BAN";
-        banList.toChatId = item.chatRoomId;
+        banList.toChatId = item.toChatId;
         banList.banUser = item.username;
         banList.minute = value;
         banList.id = Math.random();
+        delete banList.targetId
         Socket.send(banList);
         this.$message({
           type: "success",
@@ -142,9 +145,10 @@ export default {
     unBlock(item){
       let unBlock  = this.localInfo;
       unBlock.chatType = "CLI_ROOM_LIFT_BAN";
-      unBlock.toChatId = item.chatRoomId;
+      unBlock.toChatId = item.toChatId;
       unBlock.banUser = item.username;
       unBlock.id = Math.random();
+      delete unBlock.targetId
       Socket.send(unBlock);      
     },
     /**判断Class**/

@@ -19,3 +19,12 @@ export const getUserInfo = (params) => {
   }
   return axios.request(postData)
 }
+// 搜尋聊天室
+export const getRoomList = (params) => {
+  let postData = {
+    url: '/chatroom/searchByName',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}

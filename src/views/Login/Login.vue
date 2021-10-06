@@ -32,6 +32,15 @@
         @click="submitForm('loginForm')"
         >登入</el-button
       >
+      
+       <el-select v-model="loginValue" placeholder="登入方式">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </el-form>
   </div>
 </template>
@@ -52,6 +61,17 @@ export default {
       loginRules: {
         username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
       },
+      loginValue:'',
+      options: [
+        {
+          value: '',
+          label: '会员登入'
+        }, 
+        {
+          value: 'guest',
+          label: '访客登入'
+        },
+      ],
     };
   },
   created() {
@@ -73,7 +93,10 @@ export default {
     //登入&&註冊
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
-      if (this.loginForm.username === "guset") this.loginForm.isGuest = true;
+      if (this.loginValue === "guest"){
+        this.loginForm.username = "guest"
+        this.loginForm.isGuest = true;
+      }
       //驗證登入表單是否通過
       this.$refs[rules].validate((valid) => {
         if (!valid) {
@@ -91,7 +114,7 @@ export default {
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
               this.getUUID()
-              this.$router.push({ path: "/Chat" });
+              this.$router.push({ path: "/Room" });
             } else {
               this.$message({
                 message: res.message,
@@ -156,6 +179,13 @@ $cursor: #fff;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
+  }
+  .el-select{
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    color: #454545;
+    float: right;
   }
 }
 </style>

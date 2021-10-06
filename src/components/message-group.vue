@@ -79,6 +79,7 @@ export default {
           banList.banUser = item.username;
           banList.minute = value;
           banList.id = Math.random();
+          delete banList.targetId
           Socket.send(banList);
           this.$message({
             type: "success",
@@ -98,6 +99,7 @@ export default {
       unBlock.toChatId = item.chatRoomId;
       unBlock.banUser = item.username;
       unBlock.id = Math.random();
+      delete unBlock.targetId
       Socket.send(unBlock);
     },
   },

@@ -43,10 +43,9 @@
           @chebox="chebox"
           @showMoreBtn="showMoreBtn"
         />
-
         <div class="disUser" v-show="disUser"></div>
+        <message-input :localInfo="localInfo" />
 
-        <message-input :concats="concats" :localInfo="localInfo" />
       </el-main>
     </el-container>
     <el-dialog
@@ -123,6 +122,7 @@ export default {
             this.disUser = true;
           }
           this.localInfo.toChatId = val.chatRoomId;
+ 
           this.concats = val.roomMemberList.sort((a, b) => {
             return b.isAdmin - a.isAdmin;
           });
@@ -138,7 +138,13 @@ export default {
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userList.push(el.username);
+                if(el.username === getLocal("username") && el.banTime === null){
+                  this.disUser = false;
+                } else if(el.username === getLocal("username") && el.banTime !== null){
+                  this.disUser = true;
+                }
               });
+
               this.roomName = this.userList.filter((el) => {
                 return el === val.username;
               });
@@ -189,6 +195,15 @@ export default {
       Socket.onClose();
       window.location.reload();
     },
+    redImgIcon(userInfo){
+      if(userInfo.chatType === "SRV_ROOM_RED" && getLocal('username') !== "guest") {
+        return `<img class="red" src=${this.redImg}>`
+      } else if(getLocal('username') === "guest"){
+        return '***'
+      } else{
+        return userInfo.text
+      }
+    },
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -211,10 +226,7 @@ export default {
             historyId: userInfo.historyId,
             message: {
               time: userInfo.sendTime,
-              content:
-                userInfo.chatType === "SRV_ROOM_RED"
-                  ? `<img class="red" src=${this.redImg}>`
-                  : userInfo.text,
+              content: this.redImgIcon(userInfo)
             },
             username: userInfo.fromChatId,
           };
@@ -406,7 +418,7 @@ export default {
     background: #0000007d;
     height: 144px;
     position: relative;
-    bottom: -145px;
+    margin-bottom: -145px;
     cursor: not-allowed;
     z-index: 9999;
   }
