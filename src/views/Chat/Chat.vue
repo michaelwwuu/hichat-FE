@@ -18,6 +18,8 @@
           :concats="concats"
           :adminUser="adminUser"
           :localInfo="localInfo"
+          @showMoreBtn="showMoreBtn"
+          @handleGetMessage="handleGetMessage"
         />
       </el-aside>
       <el-main>
@@ -41,7 +43,6 @@
           :historyId="historyId"
           :checked="checked"
           @chebox="chebox"
-          @showMoreBtn="showMoreBtn"
         />
         <div class="disUser" v-show="disUser"></div>
         <message-input :localInfo="localInfo" />
@@ -204,6 +205,7 @@ export default {
         return userInfo.text
       }
     },
+
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -262,20 +264,29 @@ export default {
             this.serverMsg.unshift(historyMsg);
           });
           break;
+        case "CLI_ROOM_BAN":
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
+          
           this.concats.filter((el) => {
             if (el.username === userInfo.banUser) {
               el.banTime = userInfo.banTime
               if(el.banTime !== null){
-
-                let endTime = new Date(this.$root.formatTimeS(el.banTime))
-                let nowTime = new Date(this.$root.formatTimeS(new Date()))
-                let catchTime = Math.abs(endTime - nowTime)
-                let disTime = catchTime*2/(1000*60)
-                console.log(disTime)
-                console.log(endTime)
-                console.log(nowTime)
+                // let banTime = new Date(el.banTime);
+                // let nowTime = new Date();
+                // var s1 = nowTime.getTime(),s2 = banTime.getTime();
+                // var total = (s2 - s1)/1000;
+                // var day = parseInt(total / (24*60*60));//计算整数天数
+                // var afterDay = total - day*24*60*60;//取得算出天数后剩余的秒数
+                // console.log(` ${Math.ceil(afterDay)}`)
+                if(userInfo.chatType === "CLI_ROOM_BAN"){
+                  this.untieTime = userInfo.minute*60*1000
+                  this.concats.filter((el) =>{
+                    setTimeout(() => {
+                      if(el.username === userInfo.banUser) return el.banTime = null
+                    },this.untieTime);
+                  })
+                }
               }
             }
           });

@@ -80,6 +80,7 @@ export default {
           banList.minute = value;
           banList.id = Math.random();
           delete banList.targetId
+          this.$emit('handleGetMessage',JSON.stringify(banList));
           Socket.send(banList);
           this.$message({
             type: "success",
