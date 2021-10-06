@@ -268,10 +268,11 @@ export default {
             if (el.username === userInfo.banUser) {
               el.banTime = userInfo.banTime
               if(el.banTime !== null){
-                let endTime = new Date(el.banTime)
-                let nowTime = new Date()
-                let catchTime = endTime - nowTime
-                let disTime = catchTime/(100*60)
+
+                let endTime = new Date(this.$root.formatTimeS(el.banTime))
+                let nowTime = new Date(this.$root.formatTimeS(new Date()))
+                let catchTime = Math.abs(endTime - nowTime)
+                let disTime = catchTime*2/(1000*60)
                 console.log(disTime)
                 console.log(endTime)
                 console.log(nowTime)
