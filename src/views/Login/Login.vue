@@ -96,6 +96,8 @@ export default {
       if (this.loginValue === "guest"){
         this.loginForm.username = "guest"
         this.loginForm.isGuest = true;
+      } else{
+        this.loginForm.isGuest = false;
       }
       //驗證登入表單是否通過
       this.$refs[rules].validate((valid) => {
@@ -108,11 +110,13 @@ export default {
         }
         // md5 加密
         this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
+            
         login(this.loginForm)
           .then((res) => {
             //登入成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
+              localStorage.setItem('isGuest',this.loginForm.isGuest)
               this.getUUID()
               this.$router.push({ path: "/Room" });
             } else {

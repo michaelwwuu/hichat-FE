@@ -43,6 +43,7 @@ export default {
     };
   },
   mounted() {
+    localStorage.removeItem('toChatId')
     this.getRoom(this.params)
   },
   methods: {
@@ -73,7 +74,6 @@ export default {
           setLocal('toChatId','r'+item.id)
           this.$router.push({ path: "/Chat" });
         }
-        console.log(item)
       })
       .catch((err)=>{
         this.$message({

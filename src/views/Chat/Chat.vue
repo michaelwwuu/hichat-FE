@@ -126,12 +126,10 @@ export default {
           this.concats = val.roomMemberList.sort((a, b) => {
             return b.isAdmin - a.isAdmin;
           });
-
           this.$nextTick(() => {
             setTimeout(() => {
-              this.joinUser = getLocal("username");
               this.roomUser = this.concats.filter((el) => {
-                return el.username === this.joinUser;
+                if(el.isAdmin) return el.username;
               });
               this.adminUser = true && this.roomUser[0].isAdmin;
 

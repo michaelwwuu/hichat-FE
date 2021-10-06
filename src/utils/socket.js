@@ -55,7 +55,6 @@ const emitter = new Vue({
             roomKey.id = Math.random();
             roomKey.toChatId = getLocal('toChatId');
             socket.send(JSON.stringify(roomKey));
-            console.log(roomKey)
             break;
         }
         emitter.$emit("message", msg.data);
