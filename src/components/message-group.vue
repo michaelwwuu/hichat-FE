@@ -12,10 +12,10 @@
               class="nodis"
               :class="[
                 { 'admin-user': item.isAdmin },
-                { disUser: item.banTime !== null },
+                { disUser: item.banRemainTime !== null },
               ]"
-              @click="item.banTime === null ? disabled(item) : unBlock(item)"
-              >{{ item.banTime === null ? "封禁" : "解封" }}</el-tag
+              @click="item.banRemainTime === null ? disabled(item) : unBlock(item)"
+              >{{ item.banRemainTime === null ? "封禁" : "解封" }}</el-tag
             >
           </div>
           <div class="message-user-type">
@@ -53,15 +53,22 @@ export default {
   },
   methods: {
     disabled(item) {
-      console.log(item);
       this.disDialog = true;
       const h = this.$createElement;
-      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
+      this.$prompt( `確定要封禁玩家"${item.username}"?`, {
+        title:`確定要封禁玩家"${item.username}"?`,
         cancelButtonText: "取消",
         confirmButtonText: "确定",
         inputPlaceholder: "請輸入封禁分鐘",
-        inputPattern: /^[+-]?\d+$/,
-        inputErrorMessage: "※只能輸入數字",
+        inputPattern: /^[0-9]*$/,
+        inputErrorMessage:'※只能輸入數字',       
+        inputValidator:(val)=>{
+          if(val=== null){
+            return true
+          }else if(val.length > 6){
+            return this.message = '※字數不可超過六個'
+          }
+        },
         center: true,
         message: h("div", null, [
           h("div", {
@@ -77,10 +84,9 @@ export default {
           banList.chatType = "CLI_ROOM_BAN";
           banList.toChatId = item.chatRoomId;
           banList.banUser = item.username;
-          banList.minute = value;
+          banList.minute = value==="0" ? "999999" : value;
           banList.id = Math.random();
           delete banList.targetId
-          this.$emit('handleGetMessage',JSON.stringify(banList));
           Socket.send(banList);
           this.$message({
             type: "success",

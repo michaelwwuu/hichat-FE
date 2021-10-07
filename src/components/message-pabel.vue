@@ -29,10 +29,10 @@
         <div
           v-if="adminUser"
           class="message-disabled"
-          @click="item.banTime === null ? disabled(item) : unBlock(item)"
-          :class="item.banTime === null ? 'noDis' : 'disUser'"
+          @click="item.banRemainTime === null ? disabled(item) : unBlock(item)"
+          :class="item.banRemainTime === null ? 'noDis' : 'disUser'"
         >
-          {{ item.banTime === null ? "封禁" : "解封" }}
+          {{ item.banRemainTime === null ? "封禁" : "解封" }}
         </div>
       </li>
     </ul>
@@ -110,6 +110,7 @@ export default {
         inputPlaceholder: "請輸入封禁分鐘",
         inputPattern: /^[+-]?\d+$/,
         inputErrorMessage: "※只能輸入數字",
+        inputValidator:6,
         center: true,
         message: h("div", null, [
           h("div", {
@@ -125,7 +126,7 @@ export default {
         banList.chatType = "CLI_ROOM_BAN";
         banList.toChatId = item.toChatId;
         banList.banUser = item.username;
-        banList.minute = value;
+        banList.minute = value==="0" ? "999999" : value;
         banList.id = Math.random();
         delete banList.targetId
         Socket.send(banList);
@@ -158,7 +159,6 @@ export default {
         return "message-layout-left";
       }
     },
-
     /**查看更多**/
     eyeMore() {
       let historyMsg = this.localInfo;

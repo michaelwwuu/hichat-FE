@@ -115,27 +115,33 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          console.log(
-            "<--【连线成功】------加入群組聊天室------【成功】------聊天室人員已列表加載-->"
-          );
           if (val.username === "guest") {
             this.showMoreMsg = false;
             this.disUser = true;
           }
           this.localInfo.toChatId = val.chatRoomId;
- 
+          //排序
           this.concats = val.roomMemberList.sort((a, b) => {
             return b.isAdmin - a.isAdmin;
           });
+
           this.$nextTick(() => {
             setTimeout(() => {
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userList.push(el.username);
-                if(el.username === getLocal("username") && el.banTime === null){
+                let untieUserTime = el.banRemainTime
+                setTimeout(() => {
+                  return el.banRemainTime = null
+                },untieUserTime)
+                if(el.username === getLocal("username") && el.banRemainTime === null){
                   this.disUser = false;
-                } else if(el.username === getLocal("username") && el.banTime !== null){
+                } else if(el.username === getLocal("username") && el.banRemainTime !== null){
                   this.disUser = true;
+                  let untieUserTime = el.banRemainTime
+                  setTimeout(() => {
+                    return this.disUser = false;
+                  },untieUserTime)
                 }
               });
 
@@ -155,7 +161,7 @@ export default {
                 });
               }
               
-              //最高使用者
+              // 判斷房主
               this.joinUser = getLocal('username')
               this.roomUser = this.concats.filter((el) => {
                 return el.username === this.joinUser
@@ -163,16 +169,14 @@ export default {
               this.adminUser = true && this.roomUser[0].isAdmin;
             });
           });
+          
           break;
         case "SRV_LEAVE_ROOM":
-          console.log("<--【中断连线】------使用者加入或离开聊天室-->");
           this.concats = val.roomMemberList;
-
           // 斷線移除此人
           this.userList = this.userList.filter((el) => {
             return el !== val.username;
           });
-
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
@@ -215,13 +219,12 @@ export default {
           console.log("<--【连线成功】------写入登入者资讯-->");
           break;
         case "SRV_ROOM_SEND":
-          console.log("<--【连线成功】------群组内所有人讯息-->");
         case "SRV_ROOM_RED":
           this.concats.forEach((list) => {
-            if (userInfo.fromChatId === list.username) return (userInfo.banTime = list.banTime);
+            if (userInfo.fromChatId === list.username) return (userInfo.banRemainTime = list.banRemainTime);
           });
           let srvRoomMsg = {
-            banTime: userInfo.banTime,
+            banRemainTime: userInfo.banRemainTime,
             chatType: userInfo.chatType,
             toChatId: userInfo.toChatId,
             platformCode: userInfo.platformCode,
@@ -235,7 +238,6 @@ export default {
           this.serverMsg.push(srvRoomMsg);
           break;
         case "SRV_ROOM_HISTORY_RSP":
-          console.log("<--【连线成功】------已提取历史讯息-->");
           let history = userInfo.historyMessage.list;
           let historyPageSize = userInfo.historyMessage.pageSize;
           this.historyId = history.length < 0 ? history[0].historyId : "";
@@ -244,10 +246,10 @@ export default {
 
           history.forEach((el) => {
             this.concats.forEach((list) => {
-              if (el.fromChatId === list.username) return (el.banTime = list.banTime);
+              if (el.fromChatId === list.username) return (el.banRemainTime = list.banRemainTime);
             });
             let historyMsg = {
-              banTime: el.banTime,
+              banRemainTime: el.banRemainTime,
               chatType: el.chatType,
               toChatId: el.toChatId,
               platformCode: el.platformCode,
@@ -264,37 +266,28 @@ export default {
             this.serverMsg.unshift(historyMsg);
           });
           break;
-        case "CLI_ROOM_BAN":
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
-          
           this.concats.filter((el) => {
             if (el.username === userInfo.banUser) {
-              el.banTime = userInfo.banTime
-              if(el.banTime !== null){
-                // let banTime = new Date(el.banTime);
-                // let nowTime = new Date();
-                // var s1 = nowTime.getTime(),s2 = banTime.getTime();
-                // var total = (s2 - s1)/1000;
-                // var day = parseInt(total / (24*60*60));//计算整数天数
-                // var afterDay = total - day*24*60*60;//取得算出天数后剩余的秒数
-                // console.log(` ${Math.ceil(afterDay)}`)
-                if(userInfo.chatType === "CLI_ROOM_BAN"){
-                  this.untieTime = userInfo.minute*60*1000
-                  this.concats.filter((el) =>{
-                    setTimeout(() => {
-                      if(el.username === userInfo.banUser) return el.banTime = null
-                    },this.untieTime);
-                  })
-                }
-              }
+              el.banRemainTime = userInfo.banRemainTime
+              let untieTime = userInfo.banRemainTime
+              setTimeout(() => {
+                return el.banRemainTime = null
+              },untieTime);
             }
           });
+
           this.serverMsg.forEach((el) => {
             if (el.username === userInfo.banUser) {
-              return (el.banTime = userInfo.banTime)
+              el.banRemainTime = userInfo.banRemainTime
+              let untieTime = userInfo.banRemainTime
+              setTimeout(() => {
+                return el.banRemainTime = null
+              },untieTime);
             }
           });
+
           if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
             this.disUser = true;
           } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" &&userInfo.banUser === getLocal("username")){
