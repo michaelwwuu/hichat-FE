@@ -73,7 +73,6 @@ export default {
     return {
       textArea: "",
       search: "",
-      // gotoBottom: gotoBottom,
     };
   },
   props: {

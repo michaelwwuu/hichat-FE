@@ -34,12 +34,11 @@ import Socket from "@/utils/socket";
 export default {
   name: "Message",
   props: {
-    concats: {
-      type: Array,
-    },
-    // 当前用户
     localInfo: {
       type: Object,
+    },
+    concats: {
+      type: Array,
     },
     adminUser: {
       type: Boolean,
@@ -47,29 +46,22 @@ export default {
   },
   data() {
     return {
-      disDialog: false,
       disabledImg: require("./../../static/images/disabled.svg"),
     };
   },
   methods: {
     disabled(item) {
-      this.disDialog = true;
       const h = this.$createElement;
-      this.$prompt( `確定要封禁玩家"${item.username}"?`, {
-        title:`確定要封禁玩家"${item.username}"?`,
+      this.$prompt( '請輸入封禁分鐘', `確定要封禁玩家"${item.username}"?`, {
+        center: true,
         cancelButtonText: "取消",
         confirmButtonText: "确定",
         inputPlaceholder: "請輸入封禁分鐘",
         inputPattern: /^[0-9]*$/,
         inputErrorMessage:'※只能輸入數字',       
-        inputValidator:(val)=>{
-          if(val=== null){
-            return true
-          }else if(val.length > 6){
-            return this.message = '※字數不可超過六個'
-          }
+        inputValidator:(val)=>{ 
+          if(val.length > 6) return "※輸入字數不可超過6個字";
         },
-        center: true,
         message: h("div", null, [
           h("div", {
             style:
@@ -79,21 +71,21 @@ export default {
           }),
         ]),
       })
-        .then(({ value }) => {
-          let banList = this.localInfo;
-          banList.chatType = "CLI_ROOM_BAN";
-          banList.toChatId = item.chatRoomId;
-          banList.banUser = item.username;
-          banList.minute = value==="0" ? "999999" : value;
-          banList.id = Math.random();
-          delete banList.targetId
-          Socket.send(banList);
-          this.$message({
-            type: "success",
-            message: "确定封禁" + value + "分钟",
-          });
-        })
-        .catch(() => {
+      .then(({ value }) => {
+        let banList = this.localInfo;
+        banList.chatType = "CLI_ROOM_BAN";
+        banList.toChatId = item.chatRoomId;
+        banList.banUser = item.username;
+        banList.minute = value==="0" ? "999999" : value;
+        banList.id = Math.random();
+        delete banList.targetId
+        Socket.send(banList);
+        this.$message({
+          type: "success",
+          message: "确定封禁" + value + "分钟",
+        });
+      })
+      .catch(() => {
           this.$message({
             type: "info",
             message: "取消输入",

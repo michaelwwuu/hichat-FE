@@ -18,10 +18,12 @@
                   </el-row>
                 </div>
               </div>
-              
             </li>
           </ul>
         </div>
+         <el-row style="margin:35px auto">
+            <el-button type="danger" plain @click="leaveChat">回聊天室登入頁面</el-button>
+          </el-row>
       </el-aside>
     </el-container>
   </div>
@@ -81,6 +83,10 @@ export default {
           message: "取消输入",
         });
       })
+    },
+    leaveChat(){
+      localStorage.clear()
+      this.$router.push({ path: "/Login" });
     }
   },
 };

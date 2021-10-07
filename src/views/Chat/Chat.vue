@@ -76,22 +76,21 @@ export default {
     return {
       concats: [],
       serverMsg: [],
-      clearDialog: false,
-      checked: true,
-      showMoreMsg: true,
-      nowSwitch: 0,
+      userList: [],
       localInfo: {
-        toChatId: "",
+        toChatId: getLocal("toChatId"),
         token: getToken("token"),
         deviceId: getLocal("UUID"),
         platformCode: "dcw",
         tokenType: 1,
       },
       redImg: require("./../../../static/images/envelope.svg"),
-      adminUser: false,
-      userList: [],
-      historyId: "",
+      historyId: "",      
+      checked: true,
       disUser: false,
+      adminUser: false,
+      showMoreMsg: true,
+      clearDialog: false,
     };
   },
   created() {
@@ -119,8 +118,9 @@ export default {
             this.showMoreMsg = false;
             this.disUser = true;
           }
-          this.localInfo.toChatId = val.chatRoomId;
-          //排序
+          // this.localInfo.toChatId = val.chatRoomId; //TODO 暫時保留
+
+          //排序房主在第一
           this.concats = val.roomMemberList.sort((a, b) => {
             return b.isAdmin - a.isAdmin;
           });
@@ -130,25 +130,27 @@ export default {
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userList.push(el.username);
-                let untieUserTime = el.banRemainTime
+                // 封禁人員 自動解開
+                let untieTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
                 setTimeout(() => {
                   return el.banRemainTime = null
-                },untieUserTime)
-                if(el.username === getLocal("username") && el.banRemainTime === null){
-                  this.disUser = false;
-                } else if(el.username === getLocal("username") && el.banRemainTime !== null){
+                },untieTime)
+                if(el.username === val.username && el.banRemainTime !== null){
                   this.disUser = true;
-                  let untieUserTime = el.banRemainTime
                   setTimeout(() => {
                     return this.disUser = false;
-                  },untieUserTime)
+                  },untieTime)
+                } else if(el.username === val.username && el.banRemainTime === null){
+                  this.disUser = false;
                 }
               });
 
-              this.roomName = this.userList.filter((el) => {
+              // 新陣列 比對自己進入次數 長度大於一就不 Show 提示
+              this.ownUser = this.userList.filter((el) => {
                 return el === val.username;
               });
-              if (this.roomName.length === 1) {
+
+              if (this.ownUser.length === 1) {
                 this.$notify({
                   title: `通知`,
                   dangerouslyUseHTMLString: true,
@@ -214,6 +216,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
+
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
           console.log("<--【连线成功】------写入登入者资讯-->");

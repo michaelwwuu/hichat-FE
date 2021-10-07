@@ -46,7 +46,6 @@ import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
   props: {
-    // 当前用户
     localInfo: {
       type: Object,
     },
@@ -73,7 +72,6 @@ export default {
     return {
       message: [],
       disUserNumber: "0",
-      disDialog: false,
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
       pageSize: 0,
@@ -103,15 +101,17 @@ export default {
     },
     /**封禁人員**/
     disabled(item) {
-      const h = this.$createElement;
-      this.$prompt("確定要封禁玩家", `確定要封禁玩家"${item.username}"?`, {
+    const h = this.$createElement;
+     this.$prompt('請輸入封禁分鐘', `確定要封禁玩家"${item.username}"?`, {
+        center: true,
         cancelButtonText: "取消",
         confirmButtonText: "确定",
         inputPlaceholder: "請輸入封禁分鐘",
-        inputPattern: /^[+-]?\d+$/,
-        inputErrorMessage: "※只能輸入數字",
-        inputValidator:6,
-        center: true,
+        inputPattern: /^[0-9]*$/,
+        inputErrorMessage:'※只能輸入數字',       
+        inputValidator:(val)=>{ 
+          if(val.length > 6) return "※輸入字數不可超過6個字"
+        },
         message: h("div", null, [
           h("div", {
             style:
@@ -230,9 +230,11 @@ export default {
       }
       .noDis {
         background-image: linear-gradient(#959595, #7e7e7e);
+        font-size: 12px;
       }
       .disUser {
         background-image: linear-gradient(#b4d4ff, #559dff);
+        font-size: 12px;
       }
       &:hover {
         .message-disabled {
@@ -326,11 +328,10 @@ export default {
       display: block;
       position: relative;
       top: -10px;
-      right: -67px;
+      text-align: right;
+      font-size: 14px;
     }
-    .el-message-box__errormsg {
-      text-align: left;
-    }
+ 
   }
   .el-message-box__btns {
     display: flex;

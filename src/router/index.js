@@ -44,11 +44,9 @@ const router = new VueRouter({
 //導航守衛
 router.beforeEach((to, from, next) => {
   //判斷token是否失效
-  let isLogin = false;
-  if (to.name !== "Login") {
+  if (to.name === "Room") {
     getUserInfo().then((res) => {
-      if (res.code == 200) {
-        isLogin = true;
+      if (res.code === 200) {
         setLocal('username', res.data.username);
       } else {
         next({ path: '/login' });
