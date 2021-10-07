@@ -32,6 +32,7 @@ Vue.prototype.$md5 = md5;
 Vue.prototype.$moment = moment;
 Vue.config.productionTip = false
 
+
 new Vue({
   mixins: [mixins],
   router,
