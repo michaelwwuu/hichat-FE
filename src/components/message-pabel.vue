@@ -71,7 +71,6 @@ export default {
   data() {
     return {
       message: [],
-      disUserNumber: "0",
       gotoBottom: gotoBottom,
       disabledImg: require("./../../static/images/disabled.svg"),
       pageSize: 0,
@@ -132,7 +131,7 @@ export default {
         Socket.send(banList);
         this.$message({
           type: "success",
-          message: "确定封禁" + value + "分钟",
+          message: "确定封禁" + `${value === "0" ? "999999" : value}` + "分钟",
         });
       })
       .catch(() => {

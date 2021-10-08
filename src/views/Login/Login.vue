@@ -32,8 +32,7 @@
         @click="submitForm('loginForm')"
         >登入</el-button
       >
-      
-       <el-select v-model="loginValue" placeholder="登入方式">
+      <el-select v-model="loginValue" :placeholder="loginValue">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -51,6 +50,7 @@ import { setLocal,setToken } from "_util/utils.js";
 export default {
   data() {
     return {
+      loginValue:'登入方式',
       headerTitle: "聊天室登入系統",
       loginForm: {
         isGuest:false,
@@ -61,7 +61,6 @@ export default {
       loginRules: {
         username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
       },
-      loginValue:'',
       options: [
         {
           value: '',
@@ -95,12 +94,14 @@ export default {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
       if (this.loginValue === "guest"){
         this.loginForm.username = "guest"
-        this.loginForm.isGuest = true;
-      } else{
-        this.loginForm.isGuest = false;
-      }
+        this.loginForm.isGuest = !this.loginForm.isGuest;
+      } 
+      let params = this.loginForm
+      // md5 加密
+      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
+
       //驗證登入表單是否通過
-      this.$refs[rules].validate((valid) => {
+      this.$refs[rules].validate(valid => {
         if (!valid) {
           this.$message({
             message: "登入驗證失敗，請重新輸入並確認",
@@ -108,10 +109,7 @@ export default {
           });
           return;
         }
-        // md5 加密
-        this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
-            
-        login(this.loginForm)
+        login(params)
           .then((res) => {
             //登入成功
             if (res.code === 200) {

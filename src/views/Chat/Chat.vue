@@ -135,12 +135,13 @@ export default {
                 setTimeout(() => {
                   return el.banRemainTime = null
                 },untieTime)
-                if(el.username === val.username && el.banRemainTime !== null){
+                
+                if(el.username === getLocal('username') && el.banRemainTime !== null){
                   this.disUser = true;
                   setTimeout(() => {
                     return this.disUser = false;
                   },untieTime)
-                } else if(el.username === val.username && el.banRemainTime === null){
+                } else if(el.username === getLocal('username') && el.banRemainTime === null){
                   this.disUser = false;
                 }
               });
@@ -216,11 +217,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-
       switch (userInfo.chatType) {
-        case "SRV_RECENT_CHAT":
-          console.log("<--【连线成功】------写入登入者资讯-->");
-          break;
         case "SRV_ROOM_SEND":
         case "SRV_ROOM_RED":
           this.concats.forEach((list) => {
@@ -274,7 +271,7 @@ export default {
           this.concats.filter((el) => {
             if (el.username === userInfo.banUser) {
               el.banRemainTime = userInfo.banRemainTime
-              let untieTime = userInfo.banRemainTime
+              let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
               setTimeout(() => {
                 return el.banRemainTime = null
               },untieTime);
@@ -284,7 +281,7 @@ export default {
           this.serverMsg.forEach((el) => {
             if (el.username === userInfo.banUser) {
               el.banRemainTime = userInfo.banRemainTime
-              let untieTime = userInfo.banRemainTime
+              let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
               setTimeout(() => {
                 return el.banRemainTime = null
               },untieTime);
@@ -293,10 +290,12 @@ export default {
 
           if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
             this.disUser = true;
-          } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" &&userInfo.banUser === getLocal("username")){
+            setTimeout(() => {
+              return this.disUser = false;
+            },untieTime);
+          } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal("username")){
             this.disUser = false;
           }
-            
           break;
       }
     },
@@ -456,5 +455,28 @@ export default {
       }
     }
   }
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+
+  // border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(180deg,rgb(138, 138, 138), rgb(138, 138, 138));
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(180deg,rgb(138, 138, 138), rgb(138, 138, 138));
+
 }
 </style>
