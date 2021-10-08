@@ -114,6 +114,11 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
+          let HeartTeat ={ chatType: "CLI_HEARTBEAT"}
+          setInterval(()=>{
+            Socket.send(HeartTeat)
+          },25000)
+        
           if (val.username === "guest") {
             this.showMoreMsg = false;
             this.disUser = true;
@@ -135,7 +140,7 @@ export default {
                 setTimeout(() => {
                   return el.banRemainTime = null
                 },untieTime)
-                
+
                 if(el.username === getLocal('username') && el.banRemainTime !== null){
                   this.disUser = true;
                   setTimeout(() => {
