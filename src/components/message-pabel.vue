@@ -49,7 +49,7 @@ export default {
     localInfo: {
       type: Object,
     },
-    serverMsg: {
+    msgData: {
       type: Array,
     },
     checked: {
@@ -84,7 +84,7 @@ export default {
         this.$emit('showMoreBtn',true);
       }
     },
-    serverMsg(val) {
+    msgData(val) {
       //去除重複
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);

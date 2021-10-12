@@ -35,7 +35,7 @@
           </el-row>
         </el-header>
         <message-pabel
-          :serverMsg="serverMsg"
+          :msgData="msgData"
           :localInfo="localInfo"
           :clearDialog="clearDialog"
           :showMoreMsg="showMoreMsg"
@@ -76,7 +76,7 @@ export default {
   data() {
     return {
       concats: [],
-      serverMsg: [],
+      msgData: [],
       userList: [],
       localInfo: {
         toChatId: getLocal("toChatId"),
@@ -221,7 +221,7 @@ export default {
       }
     },
     msgList(data) {
-      this.srvRoomMsg = {
+      this.roomMsg = {
         banRemainTime: data.banRemainTime,
         chatType: data.chatType,
         toChatId: data.toChatId,
@@ -264,7 +264,7 @@ export default {
             if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
           });
           this.msgList(userInfo)
-          this.serverMsg.push(this.srvRoomMsg);
+          this.msgData.push(this.roomMsg);
           break;
         case "SRV_ROOM_HISTORY_RSP":
           let historymsgList = userInfo.historyMessage.list;
@@ -272,19 +272,18 @@ export default {
           this.historyId = historymsgList.length < 0 ? historymsgList[0].historyId : "";
 
           if (historymsgList.length !== historyPageSize) this.showMoreMsg = false;
-
           historymsgList.forEach((el) => {
             this.concats.forEach((res) => {
               if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
             });
             this.msgList(el)
-            this.serverMsg.unshift(this.srvRoomMsg);
+            this.msgData.unshift(this.roomMsg);
           });
           break;
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
           this.concats.forEach((el) => this.banUserInput(el,userInfo));
-          this.serverMsg.forEach((el) => this.banUserInput(el,userInfo));
+          this.msgData.forEach((el) => this.banUserInput(el,userInfo));
           break;
       }
     },
@@ -295,7 +294,7 @@ export default {
     /**清除聊天室內容**/
     clearChat() {
       this.clearDialog = false;
-      this.serverMsg = [];
+      this.msgData = [];
     },
     chebox(val) {
       this.checked = val;
