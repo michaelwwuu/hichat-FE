@@ -17,10 +17,9 @@
         <message-group
           :concats="concats"
           :adminUser="adminUser"
-          :localInfo="localInfo"
-          
           @handleGetMessage="handleGetMessage"
         />
+          <!-- :localInfo="localInfo" -->
       </el-aside>
       <el-main>
         <el-header height="55px">
@@ -45,7 +44,7 @@
           :checked="checked"
           @chebox="chebox"
         />
-        <div class="disUser" v-show="disUser"></div>
+        <div class="disUser" v-show="banUserInputMask"></div>
         <message-input :localInfo="localInfo" />
 
       </el-main>
@@ -79,7 +78,7 @@ export default {
       msgData: [],
       userList: [],
       localInfo: {
-        toChatId: getLocal("toChatId"),
+        toChatId: getLocal("chatRoomId"),
         token: getToken("token"),
         deviceId: getLocal("UUID"),
         platformCode: "dcw",
@@ -88,11 +87,14 @@ export default {
       redImg: require("./../../../static/images/envelope.svg"),
       historyId: "",      
       checked: true,
-      disUser: false,
+      banUserInputMask: false,
       adminUser: false,
       showMoreMsg: true,
       clearDialog: false,
     };
+  },
+  mounted() {
+    if(!getToken("token")) return this.$router.push({ path: "/Login" });
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
@@ -113,6 +115,7 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType;
+      
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           let HeartTeat ={ chatType: "CLI_HEARTBEAT"}
@@ -136,29 +139,13 @@ export default {
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userList.push(el.username);
-
-
                 // 封禁人員 自動解開
-                let untieTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
-                setTimeout(() => {
-                  return el.banRemainTime = null
-                },untieTime)
-
-                if(el.username === getLocal('username') && el.banRemainTime !== null){
-                  this.banUserInputMask = true;
-                  setTimeout(() => {
-                    return this.banUserInputMask = false;
-                  },untieTime)
-                } else if(el.username === getLocal('username') && el.banRemainTime === null){
-                  this.banUserInputMask = false;
-                }
+                this.banUserMsg(el)
               });
 
               // 新陣列 比對自己進入次數 長度大於一就不 Show 提示
-              this.ownUser = this.userList.filter((el) => {
-                return el === val.username;
-              });
-
+              this.ownUser = this.userList.filter(el => el === val.username);
+     
               if (this.ownUser.length === 1) {
                 this.$notify({
                   title: `通知`,
@@ -173,10 +160,7 @@ export default {
               }
               
               // 判斷房主
-              this.joinUser = getLocal('username')
-              this.roomUser = this.concats.filter((el) => {
-                return el.username === this.joinUser
-              });
+              this.roomUser = this.concats.filter(el => el.username === getLocal('username'));
               this.adminUser = true && this.roomUser[0].isAdmin;
             });
           });
@@ -185,9 +169,8 @@ export default {
         case "SRV_LEAVE_ROOM":
           this.concats = val.roomMemberList;
           // 斷線移除此人
-          this.userList = this.userList.filter((el) => {
-            return el !== val.username;
-          });
+          this.userList = this.userList.filter(el => el !== val.username);
+
           this.$notify({
             title: `通知`,
             dangerouslyUseHTMLString: true,
@@ -221,10 +204,11 @@ export default {
       }
     },
     msgList(data) {
+      console.log(data)
       this.roomMsg = {
         banRemainTime: data.banRemainTime,
         chatType: data.chatType,
-        toChatId: data.toChatId,
+        chatRoomId: data.toChatId,
         platformCode: data.platformCode,
         historyId: data.historyId,
         message: {
@@ -234,7 +218,20 @@ export default {
         username: data.fromChatId,
       };
     },
-
+    banUserMsg(el){
+      let untieTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
+      setTimeout(() => {
+        return el.banRemainTime = null
+      },untieTime);
+      if (el.username === getLocal('username') && el.banRemainTime !== null){
+        this.banUserInputMask = true;
+        setTimeout(() => {
+          return this.banUserInputMask = false;
+        },untieTime)
+      } else if (el.username === getLocal('username') && el.banRemainTime === null){
+        this.banUserInputMask = false;
+      }
+    },
     banUserInput(el,userInfo){
       let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
       if (el.username === userInfo.banUser) {
@@ -243,7 +240,6 @@ export default {
           return el.banRemainTime = null
         },untieTime);
       }
-      
       if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
         this.banUserInputMask = true;
         setTimeout(() => {
@@ -277,6 +273,7 @@ export default {
               if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
             });
             this.msgList(el)
+            this.banUserMsg(el)
             this.msgData.unshift(this.roomMsg);
           });
           break;

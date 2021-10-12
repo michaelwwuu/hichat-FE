@@ -52,7 +52,7 @@ const emitter = new Vue({
           case "SRV_RECENT_CHAT":
             roomKey.chatType = "CLI_JOIN_ROOM";
             roomKey.id = Math.random();
-            roomKey.toChatId = getLocal('toChatId');
+            roomKey.toChatId = getLocal('chatRoomId');
             socket.send(JSON.stringify(roomKey));
             break;
         }

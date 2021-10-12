@@ -10,7 +10,7 @@
     >
     <ul class="message-styles-box">
       <li
-        v-for="(item, index) in message"
+        v-for="(item, index) in msgData"
         :key="index"
         :class="judgeClass(item)"
       >
@@ -41,7 +41,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { gotoBottom } from "@/assets/tools";
+import { gotoBottom,disabled,unBlock } from "@/assets/tools";
 import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
@@ -72,6 +72,8 @@ export default {
     return {
       message: [],
       gotoBottom: gotoBottom,
+      disabled:disabled,
+      unBlock:unBlock,
       disabledImg: require("./../../static/images/disabled.svg"),
       pageSize: 0,
     };
@@ -89,7 +91,7 @@ export default {
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.checked) this.gotoBottom();
-      val.forEach((el) => this.banUserInput(el));
+      val.forEach(el => this.banUserInput(el));
     },
     checked(val) {
       if (val) this.gotoBottom();
@@ -106,57 +108,57 @@ export default {
       if (type === "SRV_ROOM_RED") console.log("搶紅包囉");
     },
     /**封禁人員**/
-    disabled(item) {
-    const h = this.$createElement;
-     this.$prompt('請輸入封禁分鐘', `確定要封禁玩家"${item.username}"?`, {
-        center: true,
-        cancelButtonText: "取消",
-        confirmButtonText: "确定",
-        inputPlaceholder: "請輸入封禁分鐘",
-        inputPattern: /^[0-9]*$/,
-        inputErrorMessage:'※只能輸入數字',       
-        inputValidator:(val)=>{ 
-          if(val.length > 6) return "※輸入字數不可超過6個字"
-        },
-        message: h("div", null, [
-          h("div", {
-            style:
-              "width:100%;height:50px;background-image:url(" +
-              this.disabledImg +
-              ");background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;",
-          }),
-        ]),
-      })
-      .then(({value}) => {
-        let banList  = this.localInfo;
-        banList.chatType = "CLI_ROOM_BAN";
-        banList.toChatId = item.toChatId;
-        banList.banUser = item.username;
-        banList.minute = value==="0" ? "999999" : value;
-        banList.id = Math.random();
-        delete banList.targetId
-        Socket.send(banList);
-        this.$message({
-          type: "success",
-          message: "确定封禁" + `${value === "0" ? "999999" : value}` + "分钟",
-        });
-      })
-      .catch(() => {
-        this.$message({
-          type: "info",
-          message: "取消输入",
-        });
-      });
-    },
-    unBlock(item){
-      let unBlock  = this.localInfo;
-      unBlock.chatType = "CLI_ROOM_LIFT_BAN";
-      unBlock.toChatId = item.toChatId;
-      unBlock.banUser = item.username;
-      unBlock.id = Math.random();
-      delete unBlock.targetId
-      Socket.send(unBlock);      
-    },
+    // disabled(item) {
+    //   const h = this.$createElement;
+    //   this.$prompt('請輸入封禁分鐘', `確定要封禁玩家"${item.username}"?`, {
+    //     center: true,
+    //     cancelButtonText: "取消",
+    //     confirmButtonText: "确定",
+    //     inputPlaceholder: "請輸入封禁分鐘",
+    //     inputPattern: /^[0-9]*$/,
+    //     inputErrorMessage:'※只能輸入數字',       
+    //     inputValidator:(val)=>{ 
+    //       if(val.length > 6) return "※輸入字數不可超過6個字"
+    //     },
+    //     message: h("div", null, [
+    //       h("div", {
+    //         style:
+    //           "width:100%;height:50px;background-image:url(" +
+    //           this.disabledImg +
+    //           ");background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;",
+    //       }),
+    //     ]),
+    //   })
+    //   .then(({value}) => {
+    //     let banList  = this.localInfo;
+    //     banList.chatType = "CLI_ROOM_BAN";
+    //     banList.toChatId = item.toChatId;
+    //     banList.banUser = item.username;
+    //     banList.minute = value==="0" ? "999999" : value;
+    //     banList.id = Math.random();
+    //     delete banList.targetId
+    //     Socket.send(banList);
+    //     this.$message({
+    //       type: "success",
+    //       message: "确定封禁" + `${value === "0" ? "999999" : value}` + "分钟",
+    //     });
+    //   })
+    //   .catch(() => {
+    //     this.$message({
+    //       type: "info",
+    //       message: "取消输入",
+    //     });
+    //   });
+    // },
+    // unBlock(item){
+    //   let unBlock  = this.localInfo;
+    //   unBlock.chatType = "CLI_ROOM_LIFT_BAN";
+    //   unBlock.toChatId = item.toChatId;
+    //   unBlock.banUser = item.username;
+    //   unBlock.id = Math.random();
+    //   delete unBlock.targetId
+    //   Socket.send(unBlock);      
+    // },
     /**判断Class**/
     judgeClass(item) {
       if (item.username === getLocal("username")) {
