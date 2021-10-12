@@ -62,7 +62,7 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        console.log("<--【连线斷開】------自動重新連線-->",e);
+        console.log("<--【连线斷開】------自動重新連線-->");
         roomKey.chatType = "CLI_AUTH";
         roomKey.id = Math.random();
         emitter.connect();
