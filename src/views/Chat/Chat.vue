@@ -220,7 +220,7 @@ export default {
         return userInfo.text
       }
     },
-    msgData(data) {
+    msgList(data) {
       this.srvRoomMsg = {
         banRemainTime: data.banRemainTime,
         chatType: data.chatType,
@@ -263,21 +263,21 @@ export default {
           this.concats.forEach((res) => {
             if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
           });
-          this.msgData(userInfo)
+          this.msgList(userInfo)
           this.serverMsg.push(this.srvRoomMsg);
           break;
         case "SRV_ROOM_HISTORY_RSP":
-          let historyMsgData = userInfo.historyMessage.list;
+          let historymsgList = userInfo.historyMessage.list;
           let historyPageSize = userInfo.historyMessage.pageSize;
-          this.historyId = historyMsgData.length < 0 ? historyMsgData[0].historyId : "";
+          this.historyId = historymsgList.length < 0 ? historymsgList[0].historyId : "";
 
-          if (historyMsgData.length !== historyPageSize) this.showMoreMsg = false;
+          if (historymsgList.length !== historyPageSize) this.showMoreMsg = false;
 
-          historyMsgData.forEach((el) => {
+          historymsgList.forEach((el) => {
             this.concats.forEach((res) => {
               if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
             });
-            this.msgData(el)
+            this.msgList(el)
             this.serverMsg.unshift(this.srvRoomMsg);
           });
           break;
