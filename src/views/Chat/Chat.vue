@@ -327,9 +327,6 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   height: 100vh;
-  background-image: url("/static/images/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
   .search {
     display: inline-flex;
     align-content: center;

@@ -1,8 +1,8 @@
 import Vue from "vue";
 import { getLocal, getToken } from "_util/utils.js";
-// const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
+const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
 // const wsUrl = "wss://test.hichat.tools/ws/im/echo";//測試機環境
-const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre環境
+// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
