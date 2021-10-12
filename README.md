@@ -7,7 +7,7 @@ npm install
 ```
 npm run serve
 ```
-### 打包方式
+### 打包方式 ( 打包完會有dist檔 需要server 才能正常運行 )
 ```
 npm run build
 ```

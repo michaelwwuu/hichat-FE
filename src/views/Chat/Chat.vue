@@ -18,7 +18,7 @@
           :concats="concats"
           :adminUser="adminUser"
           :localInfo="localInfo"
-          @showMoreBtn="showMoreBtn"
+          
           @handleGetMessage="handleGetMessage"
         />
       </el-aside>
@@ -41,6 +41,7 @@
           :showMoreMsg="showMoreMsg"
           :adminUser="adminUser"
           :historyId="historyId"
+          @showMoreBtn="showMoreBtn"
           :checked="checked"
           @chebox="chebox"
         />
@@ -121,7 +122,7 @@ export default {
         
           if (val.username === "guest") {
             this.showMoreMsg = false;
-            this.disUser = true;
+            this.banUserInputMask = true;
           }
           // this.localInfo.toChatId = val.chatRoomId; //TODO 暫時保留
 
@@ -135,6 +136,8 @@ export default {
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userList.push(el.username);
+
+
                 // 封禁人員 自動解開
                 let untieTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
                 setTimeout(() => {
@@ -142,12 +145,12 @@ export default {
                 },untieTime)
 
                 if(el.username === getLocal('username') && el.banRemainTime !== null){
-                  this.disUser = true;
+                  this.banUserInputMask = true;
                   setTimeout(() => {
-                    return this.disUser = false;
+                    return this.banUserInputMask = false;
                   },untieTime)
                 } else if(el.username === getLocal('username') && el.banRemainTime === null){
-                  this.disUser = false;
+                  this.banUserInputMask = false;
                 }
               });
 
@@ -197,7 +200,7 @@ export default {
           });
           break;
       }
-    },
+    }, 
   },
   methods: {
     ...mapMutations({
@@ -217,7 +220,39 @@ export default {
         return userInfo.text
       }
     },
+    msgData(data) {
+      this.srvRoomMsg = {
+        banRemainTime: data.banRemainTime,
+        chatType: data.chatType,
+        toChatId: data.toChatId,
+        platformCode: data.platformCode,
+        historyId: data.historyId,
+        message: {
+          time: data.sendTime,
+          content: this.redImgIcon(data)
+        },
+        username: data.fromChatId,
+      };
+    },
 
+    banUserInput(el,userInfo){
+      let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
+      if (el.username === userInfo.banUser) {
+        el.banRemainTime = userInfo.banRemainTime
+        setTimeout(() => {
+          return el.banRemainTime = null
+        },untieTime);
+      }
+      
+      if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
+        this.banUserInputMask = true;
+        setTimeout(() => {
+          return this.banUserInputMask = false;
+        },untieTime);
+      } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal("username")){
+        this.banUserInputMask = false;
+      }
+    },
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -225,87 +260,37 @@ export default {
       switch (userInfo.chatType) {
         case "SRV_ROOM_SEND":
         case "SRV_ROOM_RED":
-          this.concats.forEach((list) => {
-            if (userInfo.fromChatId === list.username) return (userInfo.banRemainTime = list.banRemainTime);
+          this.concats.forEach((res) => {
+            if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
           });
-          let srvRoomMsg = {
-            banRemainTime: userInfo.banRemainTime,
-            chatType: userInfo.chatType,
-            toChatId: userInfo.toChatId,
-            platformCode: userInfo.platformCode,
-            historyId: userInfo.historyId,
-            message: {
-              time: userInfo.sendTime,
-              content: this.redImgIcon(userInfo)
-            },
-            username: userInfo.fromChatId,
-          };
-          this.serverMsg.push(srvRoomMsg);
+          this.msgData(userInfo)
+          this.serverMsg.push(this.srvRoomMsg);
           break;
         case "SRV_ROOM_HISTORY_RSP":
-          let history = userInfo.historyMessage.list;
+          let historyMsgData = userInfo.historyMessage.list;
           let historyPageSize = userInfo.historyMessage.pageSize;
-          this.historyId = history.length < 0 ? history[0].historyId : "";
+          this.historyId = historyMsgData.length < 0 ? historyMsgData[0].historyId : "";
 
-          if (history.length !== historyPageSize) this.showMoreMsg = false;
+          if (historyMsgData.length !== historyPageSize) this.showMoreMsg = false;
 
-          history.forEach((el) => {
-            this.concats.forEach((list) => {
-              if (el.fromChatId === list.username) return (el.banRemainTime = list.banRemainTime);
+          historyMsgData.forEach((el) => {
+            this.concats.forEach((res) => {
+              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
             });
-            let historyMsg = {
-              banRemainTime: el.banRemainTime,
-              chatType: el.chatType,
-              toChatId: el.toChatId,
-              platformCode: el.platformCode,
-              historyId: el.historyId,
-              message: {
-                time: el.sendTime,
-                content:
-                  el.chatType === "SRV_ROOM_RED"
-                    ? `<img class="red" src=${this.redImg}>`
-                    : el.text,
-              },
-              username: el.fromChatId,
-            };
-            this.serverMsg.unshift(historyMsg);
+            this.msgData(el)
+            this.serverMsg.unshift(this.srvRoomMsg);
           });
           break;
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
-          this.concats.filter((el) => {
-            if (el.username === userInfo.banUser) {
-              el.banRemainTime = userInfo.banRemainTime
-              let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
-              setTimeout(() => {
-                return el.banRemainTime = null
-              },untieTime);
-            }
-          });
-
-          this.serverMsg.forEach((el) => {
-            if (el.username === userInfo.banUser) {
-              el.banRemainTime = userInfo.banRemainTime
-              let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
-              setTimeout(() => {
-                return el.banRemainTime = null
-              },untieTime);
-            }
-          });
-
-          if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
-            this.disUser = true;
-            setTimeout(() => {
-              return this.disUser = false;
-            },untieTime);
-          } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal("username")){
-            this.disUser = false;
-          }
+          this.concats.forEach((el) => this.banUserInput(el,userInfo));
+          this.serverMsg.forEach((el) => this.banUserInput(el,userInfo));
           break;
       }
     },
     showMoreBtn(val) {
       this.showMoreMsg = val;
+      this.checked = val;
     },
     /**清除聊天室內容**/
     clearChat() {

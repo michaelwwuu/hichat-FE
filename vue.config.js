@@ -14,9 +14,6 @@ module.exports = {
         // target: 'https://pre.hichat.tools/', // pre環境
         ws: false,     // 如果要代理 websockets
         changOrigin: true,  //允許跨域
-        //  pathRewrite: {
-        //   '^/api': '' //請求的時候使用這個api就可以
-        //  }
       },
     }
   },

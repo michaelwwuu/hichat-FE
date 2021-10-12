@@ -89,12 +89,19 @@ export default {
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.checked) this.gotoBottom();
+      val.forEach((el) => this.banUserInput(el));
     },
     checked(val) {
       if (val) this.gotoBottom();
     },
   },
   methods: {
+    banUserInput(data){
+      let untieTime = data.banRemainTime > 49392123903 ? 49392123903: data.banRemainTime 
+      setTimeout(() => {
+        return data.banRemainTime = null
+      },untieTime)
+    },
     redImg(type) {
       if (type === "SRV_ROOM_RED") console.log("搶紅包囉");
     },
