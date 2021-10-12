@@ -19,7 +19,6 @@
           :adminUser="adminUser"
           @handleGetMessage="handleGetMessage"
         />
-          <!-- :localInfo="localInfo" -->
       </el-aside>
       <el-main>
         <el-header height="55px">
@@ -115,7 +114,6 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType;
-      
       switch (chatType) {
         case "SRV_JOIN_ROOM":
           let HeartTeat ={ chatType: "CLI_HEARTBEAT"}
@@ -127,7 +125,6 @@ export default {
             this.showMoreMsg = false;
             this.banUserInputMask = true;
           }
-          // this.localInfo.toChatId = val.chatRoomId; //TODO 暫時保留
 
           //排序房主在第一
           this.concats = val.roomMemberList.sort((a, b) => {
@@ -204,7 +201,6 @@ export default {
       }
     },
     msgList(data) {
-      console.log(data)
       this.roomMsg = {
         banRemainTime: data.banRemainTime,
         chatType: data.chatType,
@@ -279,8 +275,8 @@ export default {
           break;
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
-          this.concats.forEach((el) => this.banUserInput(el,userInfo));
-          this.msgData.forEach((el) => this.banUserInput(el,userInfo));
+          this.concats.forEach(el => this.banUserInput(el,userInfo));
+          this.msgData.forEach(el => this.banUserInput(el,userInfo));
           break;
       }
     },
