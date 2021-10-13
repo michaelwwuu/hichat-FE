@@ -48,6 +48,7 @@
 import { login } from "_api/index.js";
 import { setLocal,setToken } from "_util/utils.js";
 export default {
+  name: "Login",
   data() {
     return {
       loginValue:'登入方式',
@@ -77,7 +78,7 @@ export default {
     localStorage.clear()
   },
   methods: {
-    //生成 deviceId 32編碼 
+    // 生成 deviceId 32編碼 
     getUUID() {
       let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
         /[xy]/g,
@@ -89,7 +90,8 @@ export default {
       );
       setLocal("UUID", "hiWeb" + number);
     },
-    //登入&&註冊
+
+    // 登入按鈕事件
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
       if (this.loginValue === "guest"){
@@ -100,7 +102,7 @@ export default {
       // md5 加密
       this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
 
-      //驗證登入表單是否通過
+      // 驗證登入表單是否通過
       this.$refs[rules].validate(valid => {
         if (!valid) {
           this.$message({
@@ -111,20 +113,20 @@ export default {
         }
         login(params)
           .then((res) => {
-            //登入成功
             if (res.code === 200) {
+              // 登入成功
               setToken(res.data.tokenHead + res.data.token);
               localStorage.setItem('isGuest',this.loginForm.isGuest)
               this.getUUID()
               this.$router.push({ path: "/Room" });
             } else {
+              // 登入失敗
               this.$message({
                 message: res.message,
                 type: "error",
               });
               return false;
             }
-            //登入失敗
           })
           .catch((err) => {
             this.$message({

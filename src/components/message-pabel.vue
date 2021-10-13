@@ -2,15 +2,15 @@
   <div class="message-pabel-box">
 
     <el-button
-      v-if="showMoreMsg"
+      v-if="isShowMoreMsg"
       class="eye-more"
-      @click="eyeMore()"
+      @click="seeMoreHistoryMsgData()"
       type="text"
       >加载更多历史讯息</el-button
     >
     <ul class="message-styles-box">
       <li
-        v-for="(item, index) in msgData"
+        v-for="(item, index) in message"
         :key="index"
         :class="judgeClass(item)"
       >
@@ -23,11 +23,11 @@
         <p
           class="message-classic"
           v-html="item.message.content"
-          @click="redImg(item.chatType)"
+          @click="redEnvelope(item.chatType)"
           v-linkified
         ></p>
         <div
-          v-if="adminUser"
+          v-if="isAdmin"
           class="message-disabled"
           @click="item.banRemainTime === null ? disabled(item) : unBlock(item)"
           :class="item.banRemainTime === null ? 'noDis' : 'disUser'"
@@ -46,22 +46,22 @@ import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
   props: {
-    localInfo: {
+    userInfoData: {
       type: Object,
     },
-    msgData: {
+    messageData: {
       type: Array,
     },
-    checked: {
+    isChecked: {
       type: Boolean,
     },
-    showMoreMsg: {
+    isShowMoreMsg: {
       type: Boolean,
     },
     clearDialog:{
       type: Boolean,
     },
-    adminUser:{
+    isAdmin:{
       type: Boolean,
     },
     historyId:{
@@ -83,31 +83,34 @@ export default {
       if(!val){
         this.historyId='';
         this.pageSize = 0;
-        this.$emit('showMoreBtn',true);
+        this.$emit('isShowMoreBtn',true);
       }
     },
-    msgData(val) {
+    messageData(val) {
       //去除重複
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
-      if (this.checked) this.gotoBottom();
-      val.forEach(el => this.banUserInput(el));
+      if (this.isChecked) this.gotoBottom();
     },
-    checked(val) {
+    isChecked(val) {
       if (val) this.gotoBottom();
     },
   },
   methods: {
+    // 封禁列表 輸入框
     banUserInput(data){
-      let untieTime = data.banRemainTime > 49392123903 ? 49392123903: data.banRemainTime 
+      let banUserTime = data.banRemainTime > 49392123903 ? 49392123903: data.banRemainTime 
       setTimeout(() => {
         return data.banRemainTime = null
-      },untieTime)
+      },banUserTime)
     },
-    redImg(type) {
+
+    // 紅包
+    redEnvelope(type) {
       if (type === "SRV_ROOM_RED") console.log("搶紅包囉");
     },
-    /**判断Class**/
+
+    // 判断訊息Class名稱
     judgeClass(item) {
       if (item.username === getLocal("username")) {
         return "message-layout-right";
@@ -115,16 +118,17 @@ export default {
         return "message-layout-left";
       }
     },
-    /**查看更多**/
-    eyeMore() {
-      let historyMsg = this.localInfo;
-      historyMsg.chatType = "CLI_ROOM_HISTORY_REQ";
-      historyMsg.id = Math.random();
-      historyMsg.minute = 10; //分鐘
-      historyMsg.targetId = this.historyId;
-      (historyMsg.pageSize = this.pageSize += 50),
-      Socket.send(historyMsg);
-      this.$emit('chebox',false)
+    
+    // 查看更多歷史訊息
+    seeMoreHistoryMsgData() {
+      let historyMsgList = this.userInfoData;
+      historyMsgList.chatType = "CLI_ROOM_HISTORY_REQ";
+      historyMsgList.id = Math.random();
+      historyMsgList.minute = 10; //分鐘
+      historyMsgList.targetId = this.historyId;
+      (historyMsgList.pageSize = this.pageSize += 50),
+      Socket.send(historyMsgList);
+      this.$emit('checkBox',false)
     },
   },
 };

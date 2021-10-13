@@ -1,5 +1,6 @@
 
 import Socket from "@/utils/socket";
+
 /* 返回底部 */
 function gotoBottom () {
   const box = document.getElementsByClassName('message-pabel-box')[0]
@@ -9,7 +10,6 @@ function gotoBottom () {
 }
 
 function disabled(item) {
-  console.log(item)
   const h = this.$createElement;
   this.$prompt( '請輸入封禁分鐘', `確定要封禁玩家"${item.username}"?`, {
     center: true,

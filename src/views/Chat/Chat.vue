@@ -4,7 +4,6 @@
       <el-aside width="290px">
         <el-header height="55px">
           <img src="./../../../static/images/user-group.svg" alt="" />
-
           <span class="title"
             >聊天室人數
             <img
@@ -16,7 +15,7 @@
         </el-header>
         <message-group
           :concats="concats"
-          :adminUser="adminUser"
+          :isAdmin="isAdmin"
           @handleGetMessage="handleGetMessage"
         />
       </el-aside>
@@ -29,22 +28,23 @@
               @click="clearDialog = true"
               >清频</el-button
             >
-            <el-checkbox v-model="checked">滚动</el-checkbox>
+            <el-checkbox v-model="isChecked">滚动</el-checkbox>
           </el-row>
         </el-header>
         <message-pabel
-          :msgData="msgData"
-          :localInfo="localInfo"
-          :clearDialog="clearDialog"
-          :showMoreMsg="showMoreMsg"
-          :adminUser="adminUser"
+          :messageData="messageData"
+          :isAdmin="isAdmin"
+          :userInfoData="userInfoData"
+          :isChecked="isChecked"
           :historyId="historyId"
-          @showMoreBtn="showMoreBtn"
-          :checked="checked"
-          @chebox="chebox"
+          :clearDialog="clearDialog"
+          :isShowMoreMsg="isShowMoreMsg"
+          @isShowMoreBtn="isShowMoreBtn"
+          @handleGetMessage="handleGetMessage"
+          @checkBox="checkBox"
         />
         <div class="disUser" v-show="banUserInputMask"></div>
-        <message-input :localInfo="localInfo" />
+        <message-input :userInfoData="userInfoData" />
 
       </el-main>
     </el-container>
@@ -56,7 +56,7 @@
     >
       <span>確定要清除聊天室</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="clearChat">确 定</el-button>
+        <el-button type="primary" @click="clearChatScreen">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -73,23 +73,23 @@ export default {
   name: "Chat",
   data() {
     return {
+      historyId: "",      
       concats: [],
-      msgData: [],
-      userList: [],
-      localInfo: {
+      messageData: [],
+      userMemberList: [],
+      userInfoData: {
         toChatId: getLocal("chatRoomId"),
         token: getToken("token"),
         deviceId: getLocal("UUID"),
         platformCode: "dcw",
         tokenType: 1,
       },
-      redImg: require("./../../../static/images/envelope.svg"),
-      historyId: "",      
-      checked: true,
-      banUserInputMask: false,
-      adminUser: false,
-      showMoreMsg: true,
+      isChecked: true,
+      isAdmin: false,
       clearDialog: false,
+      isShowMoreMsg: true,
+      banUserInputMask: false,
+      redEnvelopeImg: require("./../../../static/images/envelope.svg"),
     };
   },
   mounted() {
@@ -116,68 +116,29 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          let HeartTeat ={ chatType: "CLI_HEARTBEAT"}
-          setInterval(()=>{
-            Socket.send(HeartTeat)
-          },25000)
-        
-          if (val.username === "guest") {
-            this.showMoreMsg = false;
-            this.banUserInputMask = true;
-          }
-
-          //排序房主在第一
-          this.concats = val.roomMemberList.sort((a, b) => {
-            return b.isAdmin - a.isAdmin;
-          });
-
           this.$nextTick(() => {
             setTimeout(() => {
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
-                this.userList.push(el.username);
+                this.userMemberList.push(el.username);
                 // 封禁人員 自動解開
                 this.banUserMsg(el)
               });
-
-              // 新陣列 比對自己進入次數 長度大於一就不 Show 提示
-              this.ownUser = this.userList.filter(el => el === val.username);
-     
-              if (this.ownUser.length === 1) {
-                this.$notify({
-                  title: `通知`,
-                  dangerouslyUseHTMLString: true,
-                  message: `
-                    <div class="notify-content" style="font-size:16px; font-weight:600">
-                      <strong class="notify-title">欢迎)</strong>
-                      <span><strong>【${val.username}】进入聊天室</strong</span>
-                    </div>
-                  `,
-                });
-              }
-              
-              // 判斷房主
-              this.roomUser = this.concats.filter(el => el.username === getLocal('username'));
-              this.adminUser = true && this.roomUser[0].isAdmin;
+              // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
+              this.statisticalData = this.userMemberList.filter(el => el === val.username);
+              if (this.statisticalData.length === 1) this.promptPopup(val)
+              this.userMemberList = Array.from(new Set(this.userMemberList))
             });
-          });
-          
+          });  
           break;
         case "SRV_LEAVE_ROOM":
-          this.concats = val.roomMemberList;
           // 斷線移除此人
-          this.userList = this.userList.filter(el => el !== val.username);
-
-          this.$notify({
-            title: `通知`,
-            dangerouslyUseHTMLString: true,
-            message: `
-              <div class="notify-content" style="font-size:16px; font-weight:600">
-                <strong class="notify-title">:)</strong>
-                <span><strong>【${val.username}】离开聊天室</strong</span>
-              </div>
-            `,
-          });
+          this.userMemberList = this.userMemberList.filter(el => el !== val.username);
+          this.promptPopup(val)
+          break;
+        case "SRV_ROOM_HISTORY_RSP":
+          let historyMsgList = val.historyMessage.list;
+          historyMsgList.forEach(el => this.banUserMsg(el));
           break;
       }
     }, 
@@ -186,21 +147,39 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    //TODO 關閉socket
+    // 關閉socket
     closeWebsocket() {
       Socket.onClose();
       window.location.reload();
     },
-    redImgIcon(userInfo){
+
+    // 通知加入
+    promptPopup(data){
+      this.$notify({
+        title: `通知`,
+        dangerouslyUseHTMLString: true,
+        message: `
+          <div class="notify-content" style="font-size:16px; font-weight:600">
+            <strong class="notify-title">${data.chatType === 'SRV_JOIN_ROOM' ? '欢迎':''}:)</strong>
+            <span><strong>【${data.username}】${data.chatType === 'SRV_JOIN_ROOM' ? '进入':'离开'}聊天室</strong</span>
+          </div>
+        `,
+      });
+    },
+
+    // 紅包
+    redEnvelopeIcon(userInfo){
       if(userInfo.chatType === "SRV_ROOM_RED" && getLocal('username') !== "guest") {
-        return `<img class="red" src=${this.redImg}>`
+        return `<img class="red" src=${this.redEnvelopeImg}>`
       } else if(getLocal('username') === "guest"){
         return '***'
       } else{
         return userInfo.text
       }
     },
-    msgList(data) {
+    
+    // 訊息統一格式
+    messageList(data) {
       this.roomMsg = {
         banRemainTime: data.banRemainTime,
         chatType: data.chatType,
@@ -209,88 +188,109 @@ export default {
         historyId: data.historyId,
         message: {
           time: data.sendTime,
-          content: this.redImgIcon(data)
+          content: this.redEnvelopeIcon(data)
         },
         username: data.fromChatId,
       };
     },
+
+    // 封禁列表 訊息內
     banUserMsg(el){
-      let untieTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
+      let banUserTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
       setTimeout(() => {
         return el.banRemainTime = null
-      },untieTime);
-      if (el.username === getLocal('username') && el.banRemainTime !== null){
+      },banUserTime);
+
+      if(el.username === getLocal('username') && el.banRemainTime !== null){
         this.banUserInputMask = true;
         setTimeout(() => {
           return this.banUserInputMask = false;
-        },untieTime)
-      } else if (el.username === getLocal('username') && el.banRemainTime === null){
+        },banUserTime)
+      }else if(el.username === getLocal('username') && el.banRemainTime === null){
         this.banUserInputMask = false;
       }
     },
+
+    // 封禁列表 輸入框
     banUserInput(el,userInfo){
-      let untieTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
+      let banUserTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
       if (el.username === userInfo.banUser) {
         el.banRemainTime = userInfo.banRemainTime
         setTimeout(() => {
           return el.banRemainTime = null
-        },untieTime);
+        },banUserTime);
       }
-      if (userInfo.chatType === "SRV_ROOM_BAN" && userInfo.banUser === getLocal("username")){
+      if(userInfo.banUser === getLocal("username") && userInfo.chatType === "SRV_ROOM_BAN"){
         this.banUserInputMask = true;
         setTimeout(() => {
           return this.banUserInputMask = false;
-        },untieTime);
-      } else if (userInfo.chatType === "SRV_ROOM_LIFT_BAN" && userInfo.banUser === getLocal("username")){
+        },banUserTime);
+      }else if(userInfo.banUser === getLocal("username") && userInfo.chatType === "SRV_ROOM_LIFT_BAN"){
         this.banUserInputMask = false;
       }
     },
+
     // 收取 socket 回來訊息 (全局訊息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
+        case "SRV_JOIN_ROOM":
+        case "SRV_LEAVE_ROOM":
+          if (userInfo.username === "guest") {
+            this.isShowMoreMsg = !this.isShowMoreMsg
+            this.banUserInputMask = !this.banUserInputMask
+          }
+          // 房主排序第一
+          this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
+          // 判斷房主
+          this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
+          this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+          break
         case "SRV_ROOM_SEND":
         case "SRV_ROOM_RED":
           this.concats.forEach((res) => {
             if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
           });
-          this.msgList(userInfo)
-          this.msgData.push(this.roomMsg);
-          break;
-        case "SRV_ROOM_HISTORY_RSP":
-          let historymsgList = userInfo.historyMessage.list;
-          let historyPageSize = userInfo.historyMessage.pageSize;
-          this.historyId = historymsgList.length < 0 ? historymsgList[0].historyId : "";
-
-          if (historymsgList.length !== historyPageSize) this.showMoreMsg = false;
-          historymsgList.forEach((el) => {
-            this.concats.forEach((res) => {
-              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
-            });
-            this.msgList(el)
-            this.banUserMsg(el)
-            this.msgData.unshift(this.roomMsg);
-          });
+          this.messageList(userInfo)
+          this.messageData.push(this.roomMsg);
           break;
         case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
           this.concats.forEach(el => this.banUserInput(el,userInfo));
-          this.msgData.forEach(el => this.banUserInput(el,userInfo));
+          this.messageData.forEach(el => this.banUserInput(el,userInfo));
           break;
+        case "SRV_ROOM_HISTORY_RSP":
+          let historyMsgList = userInfo.historyMessage.list;
+          let historyPageSize = userInfo.historyMessage.pageSize;
+          this.historyId = historyMsgList.length < 0 ? historyMsgList[0].historyId : "";
+          if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
+          historyMsgList.forEach((el) => {
+            this.concats.forEach((res) => {
+              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
+            });
+            this.messageList(el)
+            this.messageData.unshift(this.roomMsg);
+          });
+          break;  
       }
     },
-    showMoreBtn(val) {
-      this.showMoreMsg = val;
-      this.checked = val;
+
+    // 歷史訊息查看按鈕
+    isShowMoreBtn(val) {
+      this.isChecked = val;
+      this.isShowMoreMsg = val;
     },
-    /**清除聊天室內容**/
-    clearChat() {
+
+    // 清除聊天室內容
+    clearChatScreen() {
       this.clearDialog = false;
-      this.msgData = [];
+      this.messageData = [];
     },
-    chebox(val) {
-      this.checked = val;
+
+    // 頁面滾動事件
+    checkBox(val) {
+      this.isChecked = val;
     },
   },
   components: {

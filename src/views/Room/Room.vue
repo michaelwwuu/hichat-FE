@@ -14,7 +14,7 @@
                 <span class="room-list-title">{{item.chatRoomName}}</span>
                 <div>
                   <el-row>
-                    <el-button type="primary" plain @click="joinRoom(item)">加入</el-button>
+                    <el-button type="primary" plain @click="joinChatRoom(item)">加入</el-button>
                   </el-row>
                 </div>
               </div>
@@ -22,7 +22,7 @@
           </ul>
         </div>
          <el-row style="margin:35px auto">
-            <el-button type="danger" plain @click="leaveChat">返回聊天室登入首頁</el-button>
+            <el-button type="danger" plain @click="leaveChatRoom">返回聊天室登入首頁</el-button>
           </el-row>
       </el-aside>
     </el-container>
@@ -33,7 +33,7 @@
 import { getRoomList } from "_api/index.js";
 import { setLocal } from "_util/utils.js";
 export default {
-  name: "room",
+  name: "Room",
   data() {
     return {
       roomList:[],
@@ -46,10 +46,11 @@ export default {
   },
   mounted() {
     localStorage.removeItem('chatRoomId')
-    this.getRoom(this.params)
+    this.getChatRoomList(this.params)
   },
   methods: {
-    getRoom(params){
+    // 取得聊天室清單
+    getChatRoomList(params){
       getRoomList(params)
       .then((res) => {
         if (res.code == 200) {
@@ -67,7 +68,9 @@ export default {
         return false;
       })
     },
-    joinRoom(item){
+
+    // 加入聊天室
+    joinChatRoom(item){
       this.$alert(`確定要加入【<strong style="font-weight:bold;color:#F00">${item.chatRoomName}</strong>】的聊天室嗎?`, '提示', {
         dangerouslyUseHTMLString: true
       })
@@ -84,7 +87,9 @@ export default {
         });
       })
     },
-    leaveChat(){
+    
+    // 離開聊天室
+    leaveChatRoom(){
       localStorage.clear()
       this.$router.push({ path: "/Login" });
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="message-input-box">
     <div class="input-tools">
-      <el-button class="other-btn" size="mini" round @click="sendRed"
+      <el-button class="other-btn" size="mini" round @click="sendMessage('redEnvelope')"
         ><img src="./../../static/images/red-btn.svg" alt="" />
         发红包</el-button
       >
@@ -56,7 +56,7 @@
       </el-input>
 
       <div class="footer-tools">
-        <el-button size="mini" @click="sendMessage" class="send-button">
+        <el-button size="mini" class="send-button" @click="sendMessage('message')">
           <img src="./../../static/images/send-btn.svg" alt="" />
           发送
         </el-button>
@@ -69,6 +69,7 @@
 import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 export default {
+  name: "MessageInput",
   data() {
     return {
       textArea: "",
@@ -77,11 +78,12 @@ export default {
   },
   props: {
     // 当前用户
-    localInfo: {
+    userInfoData: {
       type: Object,
     },
   },
   methods: {
+    // 表情內容文字轉中
     emojiChine(category) {
       if (category === "Frequently used") return "经常使用";
       if (category === "People") return "笑臉與人物";
@@ -90,23 +92,20 @@ export default {
       if (category === "Places") return "旅遊與地標";
       if (category === "Symbols") return "符號";
     },
+
+    // 表情符號
     insert(emoji) {
       this.textArea += emoji;
     },
-    sendRed() {
-      let sendRed = this.localInfo;
-      sendRed.chatType = "CLI_ROOM_RED";
-      sendRed.id = Math.random();
-      sendRed.text = this.textAreaTran();
-      Socket.send(sendRed);
-    },
-    /**消息过滤**/
+
+    // 消息过滤
     textAreaTran() {
       return this.textArea
         .replace(/\n/g, "")
         .replace(new RegExp("<", "gm"), "&lt");
     },
-    /**检测空白**/
+    
+    // 检测空白
     blankTesting() {
       if (this.textArea.replace(/\s+/g, "") === "") {
         this.$alert("不能发送空白消息", "提示", {
@@ -117,23 +116,31 @@ export default {
       return true;
     },
 
-    /**按Enter发送消息**/
+    // 按Enter发送消息
     keyUp(event) {
-      if (event.key === "Enter") this.sendMessage();
+      if (event.key === "Enter") this.sendMessage('message');
     },
 
-    /**发送消息**/
-    sendMessage() {
-      let message = this.localInfo;
-      message.chatType = "CLI_ROOM_SEND";
-      message.id = Math.random();
-      message.text = this.textAreaTran();
-      if (this.blankTesting()) {
-        // 发送服务器
+    // 发送消息 紅包
+    sendMessage(type) {
+      let message = this.userInfoData;
+      if(type === "redEnvelope"){
+        message.chatType = "CLI_ROOM_RED";
+        message.id = Math.random();
+        message.text = this.textAreaTran();
         Socket.send(message);
-        // 消息清空
-        this.textArea = "";
+      } else if(type === "message"){
+        message.chatType = "CLI_ROOM_SEND";
+        message.id = Math.random();
+        message.text = this.textAreaTran();
+        if (this.blankTesting()) {
+          // 发送服务器
+          Socket.send(message);
+          // 消息清空
+          this.textArea = "";
+        }
       }
+
     },
   },
   components: {

@@ -8,7 +8,7 @@
           </div>
           <div class="message-user-type">
             <el-tag
-              v-if="adminUser"
+              v-if="isAdmin"
               class="nodis"
               :class="[
                 { 'admin-user': item.isAdmin },
@@ -32,12 +32,12 @@
 <script>
 import { disabled,unBlock } from "@/assets/tools";
 export default {
-  name: "Message",
+  name: "MessageGroup",
   props: {
     concats: {
       type: Array,
     },
-    adminUser: {
+    isAdmin: {
       type: Boolean,
     },
   },
