@@ -32,15 +32,14 @@
           </el-row>
         </el-header>
         <message-pabel
-          :messageData="messageData"
           :isAdmin="isAdmin"
-          :userInfoData="userInfoData"
-          :isChecked="isChecked"
           :historyId="historyId"
+          :isChecked="isChecked"
           :clearDialog="clearDialog"
+          :messageData="messageData"
+          :userInfoData="userInfoData"
           :isShowMoreMsg="isShowMoreMsg"
           @isShowMoreBtn="isShowMoreBtn"
-          @handleGetMessage="handleGetMessage"
           @checkBox="checkBox"
         />
         <div class="disUser" v-show="banUserInputMask"></div>
@@ -126,8 +125,14 @@ export default {
               });
               // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
               this.statisticalData = this.userMemberList.filter(el => el === val.username);
+
               if (this.statisticalData.length === 1) this.promptPopup(val)
               this.userMemberList = Array.from(new Set(this.userMemberList))
+              // 房主排序第一
+              this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
+              // 判斷房主
+              this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
+              this.isAdmin = true && this.chatAdminUser[0].isAdmin;
             });
           });  
           break;
@@ -135,10 +140,6 @@ export default {
           // 斷線移除此人
           this.userMemberList = this.userMemberList.filter(el => el !== val.username);
           this.promptPopup(val)
-          break;
-        case "SRV_ROOM_HISTORY_RSP":
-          let historyMsgList = val.historyMessage.list;
-          historyMsgList.forEach(el => this.banUserMsg(el));
           break;
       }
     }, 
@@ -180,7 +181,7 @@ export default {
     
     // 訊息統一格式
     messageList(data) {
-      this.roomMsg = {
+      this.chatRoomMsg = {
         banRemainTime: data.banRemainTime,
         chatType: data.chatType,
         chatRoomId: data.toChatId,
@@ -197,6 +198,7 @@ export default {
     // 封禁列表 訊息內
     banUserMsg(el){
       let banUserTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
+      console.log(banUserTime)
       setTimeout(() => {
         return el.banRemainTime = null
       },banUserTime);
@@ -241,11 +243,7 @@ export default {
             this.isShowMoreMsg = !this.isShowMoreMsg
             this.banUserInputMask = !this.banUserInputMask
           }
-          // 房主排序第一
-          this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
-          // 判斷房主
-          this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
-          this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+
           break
         case "SRV_ROOM_SEND":
         case "SRV_ROOM_RED":
@@ -253,10 +251,10 @@ export default {
             if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
           });
           this.messageList(userInfo)
-          this.messageData.push(this.roomMsg);
+          this.messageData.push(this.chatRoomMsg);
           break;
-        case "SRV_ROOM_LIFT_BAN":
         case "SRV_ROOM_BAN":
+        case "SRV_ROOM_LIFT_BAN":
           this.concats.forEach(el => this.banUserInput(el,userInfo));
           this.messageData.forEach(el => this.banUserInput(el,userInfo));
           break;
@@ -269,9 +267,11 @@ export default {
             this.concats.forEach((res) => {
               if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
             });
+            this.banUserMsg(el)
             this.messageList(el)
-            this.messageData.unshift(this.roomMsg);
+            this.messageData.unshift(this.chatRoomMsg);
           });
+          console.log('historyMsgList',historyMsgList)
           break;  
       }
     },

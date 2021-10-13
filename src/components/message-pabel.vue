@@ -91,6 +91,7 @@ export default {
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.isChecked) this.gotoBottom();
+      val.forEach(el => this.banUserInput(el))
     },
     isChecked(val) {
       if (val) this.gotoBottom();
@@ -118,7 +119,7 @@ export default {
         return "message-layout-left";
       }
     },
-    
+
     // 查看更多歷史訊息
     seeMoreHistoryMsgData() {
       let historyMsgList = this.userInfoData;
