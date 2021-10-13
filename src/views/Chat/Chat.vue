@@ -125,14 +125,8 @@ export default {
               });
               // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
               this.statisticalData = this.userMemberList.filter(el => el === val.username);
-
               if (this.statisticalData.length === 1) this.promptPopup(val)
               this.userMemberList = Array.from(new Set(this.userMemberList))
-              // 房主排序第一
-              this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
-              // 判斷房主
-              this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
-              this.isAdmin = true && this.chatAdminUser[0].isAdmin;
             });
           });  
           break;
@@ -198,7 +192,6 @@ export default {
     // 封禁列表 訊息內
     banUserMsg(el){
       let banUserTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
-      console.log(banUserTime)
       setTimeout(() => {
         return el.banRemainTime = null
       },banUserTime);
@@ -243,7 +236,15 @@ export default {
             this.isShowMoreMsg = !this.isShowMoreMsg
             this.banUserInputMask = !this.banUserInputMask
           }
-
+          this.$nextTick(() => {
+            setTimeout(() => {
+              // 房主排序第一
+              this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
+              // 判斷房主
+              this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
+              this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+            })
+          })
           break
         case "SRV_ROOM_SEND":
         case "SRV_ROOM_RED":
@@ -271,7 +272,6 @@ export default {
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });
-          console.log('historyMsgList',historyMsgList)
           break;  
       }
     },

@@ -91,7 +91,7 @@ export default {
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.isChecked) this.gotoBottom();
-      val.forEach(el => this.banUserInput(el))
+      // val.forEach(el => this.banUserInput(el))
     },
     isChecked(val) {
       if (val) this.gotoBottom();
