@@ -119,6 +119,10 @@ export default {
           this.concats = val.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
           this.$nextTick(() => {
             setTimeout(() => {
+              if(getLocal('isGuest')) {
+                this.isShowMoreMsg = false
+                this.banUserInputMask = true
+              }
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userMemberList.push(el.username);
@@ -181,10 +185,6 @@ export default {
         case "SRV_LEAVE_ROOM": 
           this.$nextTick(() => {
             setTimeout(() => {
-              if(getLocal('isGuest')) {
-                this.isShowMoreMsg = false
-                this.banUserInputMask = true
-              }
               this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
               this.isAdmin = true && this.chatAdminUser[0].isAdmin;
             })
