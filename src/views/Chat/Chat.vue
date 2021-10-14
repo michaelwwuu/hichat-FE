@@ -115,6 +115,8 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
+          // 房主排序第一
+          this.concats = val.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
           this.$nextTick(() => {
             setTimeout(() => {
               // 過濾 socket 斷線不重新Show提示
@@ -142,37 +144,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    // 關閉socket
-    closeWebsocket() {
-      Socket.onClose();
-      window.location.reload();
-    },
-
-    // 通知加入
-    promptPopup(data){
-      this.$notify({
-        title: `通知`,
-        dangerouslyUseHTMLString: true,
-        message: `
-          <div class="notify-content" style="font-size:16px; font-weight:600">
-            <strong class="notify-title">${data.chatType === 'SRV_JOIN_ROOM' ? '欢迎':''}:)</strong>
-            <span><strong>【${data.username}】${data.chatType === 'SRV_JOIN_ROOM' ? '进入':'离开'}聊天室</strong</span>
-          </div>
-        `,
-      });
-    },
-
-    // 紅包
-    redEnvelopeIcon(userInfo){
-      if(userInfo.chatType === "SRV_ROOM_RED" && getLocal('username') !== "guest") {
-        return `<img class="red" src=${this.redEnvelopeImg}>`
-      } else if(getLocal('username') === "guest"){
-        return '***'
-      } else{
-        return userInfo.text
-      }
-    },
-    
+   
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -189,13 +161,86 @@ export default {
       };
     },
 
+    // 紅包
+    redEnvelopeIcon(userInfo){
+      if(userInfo.chatType === "SRV_ROOM_RED" && getLocal('username') !== "guest") {
+        return `<img class="red" src=${this.redEnvelopeImg}>`
+      } else if(getLocal('username') === "guest"){
+        return '***'
+      } else{
+        return userInfo.text
+      }
+    },
+
+    // 收取 socket 回來訊息 (全局訊息)
+    handleGetMessage(msg) {
+      this.setWsRes(JSON.parse(msg));
+      let userInfo = JSON.parse(msg);
+      switch (userInfo.chatType) {
+        case "SRV_JOIN_ROOM":
+        case "SRV_LEAVE_ROOM": 
+          this.$nextTick(() => {
+            setTimeout(() => {
+              if(getLocal('isGuest')) {
+                this.isShowMoreMsg = false
+                this.banUserInputMask = true
+              }
+              this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
+              this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+            })
+          })
+          break
+        case "SRV_ROOM_SEND":
+        case "SRV_ROOM_RED":
+          this.concats.forEach((res) => {
+            if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
+          });
+          this.messageList(userInfo)
+          this.messageData.push(this.chatRoomMsg);
+          break;
+        case "SRV_ROOM_BAN":
+        case "SRV_ROOM_LIFT_BAN":
+          this.concats.forEach(el => this.banUserInput(el,userInfo));
+          this.messageData.forEach(el => this.banUserInput(el,userInfo));
+          break;
+        case "SRV_ROOM_HISTORY_RSP":
+          let historyMsgList = userInfo.historyMessage.list;
+          let historyPageSize = userInfo.historyMessage.pageSize;
+          this.historyId = historyMsgList.length < 0 ? historyMsgList[0].historyId : "";
+          if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
+          historyMsgList.forEach((el) => {
+            this.concats.forEach((res) => {
+              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
+            });
+            this.banUserMsg(el)
+            this.messageList(el)
+            this.messageData.unshift(this.chatRoomMsg);
+          });
+          break;  
+      }
+    },
+
+    // 通知加入
+    promptPopup(data){
+      this.$notify({
+        title: `通知`,
+        dangerouslyUseHTMLString: true,
+        message: `
+          <div class="notify-content" style="font-size:16px; font-weight:600">
+            <strong class="notify-title">${data.chatType === 'SRV_JOIN_ROOM' ? '欢迎':''}:)</strong>
+            <span><strong>【${data.username}】${data.chatType === 'SRV_JOIN_ROOM' ? '进入':'离开'}聊天室</strong</span>
+          </div>
+        `,
+      });
+    },
+
+
     // 封禁列表 訊息內
     banUserMsg(el){
       let banUserTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
       setTimeout(() => {
         return el.banRemainTime = null
       },banUserTime);
-      
       if(el.username === getLocal('username')){
         if(el.banRemainTime !== null){
           this.banUserInputMask = true;
@@ -232,59 +277,6 @@ export default {
 
     },
 
-    // 收取 socket 回來訊息 (全局訊息)
-    handleGetMessage(msg) {
-      this.setWsRes(JSON.parse(msg));
-      let userInfo = JSON.parse(msg);
-      switch (userInfo.chatType) {
-        case "SRV_JOIN_ROOM":
-        case "SRV_LEAVE_ROOM":
-          this.$nextTick(() => {
-            setTimeout(() => {
-              if (localStorage.getItem('isGuest')) {
-                this.isShowMoreMsg = !this.isShowMoreMsg
-                this.banUserInputMask = !this.banUserInputMask
-              }
-              // 房主排序第一
-              this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
-              // 判斷房主
-              if(!localStorage.getItem('isGuest')){
-                this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
-                this.isAdmin = true && this.chatAdminUser[0].isAdmin;
-              }
-            })
-          })
-          break
-        case "SRV_ROOM_SEND":
-        case "SRV_ROOM_RED":
-          this.concats.forEach((res) => {
-            if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
-          });
-          this.messageList(userInfo)
-          this.messageData.push(this.chatRoomMsg);
-          break;
-        case "SRV_ROOM_BAN":
-        case "SRV_ROOM_LIFT_BAN":
-          this.concats.forEach(el => this.banUserInput(el,userInfo));
-          this.messageData.forEach(el => this.banUserInput(el,userInfo));
-          break;
-        case "SRV_ROOM_HISTORY_RSP":
-          let historyMsgList = userInfo.historyMessage.list;
-          let historyPageSize = userInfo.historyMessage.pageSize;
-          this.historyId = historyMsgList.length < 0 ? historyMsgList[0].historyId : "";
-          if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
-          historyMsgList.forEach((el) => {
-            this.concats.forEach((res) => {
-              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
-            });
-            this.banUserMsg(el)
-            this.messageList(el)
-            this.messageData.unshift(this.chatRoomMsg);
-          });
-          break;  
-      }
-    },
-
     // 歷史訊息查看按鈕
     isShowMoreBtn(val) {
       this.isChecked = val;
@@ -300,6 +292,12 @@ export default {
     // 頁面滾動事件
     checkBox(val) {
       this.isChecked = val;
+    },
+
+    // 關閉socket
+    closeWebsocket() {
+      Socket.onClose();
+      window.location.reload();
     },
   },
   components: {
