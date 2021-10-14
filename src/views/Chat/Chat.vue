@@ -195,14 +195,16 @@ export default {
       setTimeout(() => {
         return el.banRemainTime = null
       },banUserTime);
-
-      if(el.username === getLocal('username') && el.banRemainTime !== null){
-        this.banUserInputMask = true;
-        setTimeout(() => {
-          return this.banUserInputMask = false;
-        },banUserTime)
-      }else if(el.username === getLocal('username') && el.banRemainTime === null){
-        this.banUserInputMask = false;
+      
+      if(el.username === getLocal('username')){
+        if(el.banRemainTime !== null){
+          this.banUserInputMask = true;
+          setTimeout(() => {
+            return this.banUserInputMask = false;
+          },banUserTime)
+        }else if(el.banRemainTime === null){
+          this.banUserInputMask = false;
+        }
       }
     },
 
@@ -215,14 +217,19 @@ export default {
           return el.banRemainTime = null
         },banUserTime);
       }
-      if(userInfo.banUser === getLocal("username") && userInfo.chatType === "SRV_ROOM_BAN"){
-        this.banUserInputMask = true;
-        setTimeout(() => {
-          return this.banUserInputMask = false;
-        },banUserTime);
-      }else if(userInfo.banUser === getLocal("username") && userInfo.chatType === "SRV_ROOM_LIFT_BAN"){
-        this.banUserInputMask = false;
+      
+      let chatType = userInfo.chatType
+      if(userInfo.banUser === getLocal("username")){
+        if(chatType === "SRV_ROOM_BAN"){
+          this.banUserInputMask = true;
+          setTimeout(() => {
+            return this.banUserInputMask = false;
+          },banUserTime);
+        }else if(chatType === "SRV_ROOM_LIFT_BAN"){
+          this.banUserInputMask = false;
+        }
       }
+
     },
 
     // 收取 socket 回來訊息 (全局訊息)
@@ -232,17 +239,19 @@ export default {
       switch (userInfo.chatType) {
         case "SRV_JOIN_ROOM":
         case "SRV_LEAVE_ROOM":
-          if (userInfo.username === "guest") {
-            this.isShowMoreMsg = !this.isShowMoreMsg
-            this.banUserInputMask = !this.banUserInputMask
-          }
           this.$nextTick(() => {
             setTimeout(() => {
+              if (localStorage.getItem('isGuest')) {
+                this.isShowMoreMsg = !this.isShowMoreMsg
+                this.banUserInputMask = !this.banUserInputMask
+              }
               // 房主排序第一
               this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
               // 判斷房主
-              this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
-              this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+              if(!localStorage.getItem('isGuest')){
+                this.chatAdminUser = this.concats.filter(el => el.username === getLocal('username'));
+                this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+              }
             })
           })
           break
