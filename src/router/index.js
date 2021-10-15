@@ -48,6 +48,7 @@ router.beforeEach((to, from, next) => {
     getUserInfo().then((res) => {
       if (res.code === 200) {
         setLocal('username', res.data.username);
+        setLocal('isGuest', res.data.isGuest);
       } else {
         next({ path: '/login' });
       }

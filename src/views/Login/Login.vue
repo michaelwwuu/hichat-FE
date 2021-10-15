@@ -116,7 +116,6 @@ export default {
             if (res.code === 200) {
               // 登入成功
               setToken(res.data.tokenHead + res.data.token);
-              localStorage.setItem('isGuest',this.loginForm.isGuest)
               this.getUUID()
               this.$router.push({ path: "/Room" });
             } else {

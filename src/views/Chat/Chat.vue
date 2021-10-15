@@ -89,14 +89,20 @@ export default {
       isShowMoreMsg: true,
       banUserInputMask: false,
       redEnvelopeImg: require("./../../../static/images/envelope.svg"),
+      isGuest:getLocal('isGuest'),
     };
   },
   mounted() {
-    if(!getToken("token")) return this.$router.push({ path: "/Login" });
+    if(!getToken("token")) return this.$router.push({ path: "/Login" });  
+    if(this.isGuest) {
+      this.isShowMoreMsg = false
+      this.banUserInputMask = true
+    }
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
     window.addEventListener("beforeunload", this.closeWebsocket);
+
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -115,14 +121,8 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          // 房主排序第一
-          this.concats = val.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
           this.$nextTick(() => {
             setTimeout(() => {
-              if(getLocal('isGuest')) {
-                this.isShowMoreMsg = false
-                this.banUserInputMask = true
-              }
               // 過濾 socket 斷線不重新Show提示
               this.concats.forEach((el) => {
                 this.userMemberList.push(el.username);
@@ -183,10 +183,14 @@ export default {
       switch (userInfo.chatType) {
         case "SRV_JOIN_ROOM":
         case "SRV_LEAVE_ROOM": 
+          // 房主排序第一
+          this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
           this.$nextTick(() => {
             setTimeout(() => {
-              this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
-              this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+              if(!getLocal('isGuest')){
+                this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
+                this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+              }
             })
           })
           break
