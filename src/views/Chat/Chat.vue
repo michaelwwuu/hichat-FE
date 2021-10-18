@@ -33,7 +33,6 @@
         </el-header>
         <message-pabel
           :isAdmin="isAdmin"
-          :historyId="historyId"
           :isChecked="isChecked"
           :clearDialog="clearDialog"
           :messageData="messageData"
@@ -72,7 +71,6 @@ export default {
   name: "Chat",
   data() {
     return {
-      historyId: "",      
       concats: [],
       messageData: [],
       userMemberList: [],
@@ -208,9 +206,8 @@ export default {
           this.messageData.forEach(el => this.banUserInput(el,userInfo));
           break;
         case "SRV_ROOM_HISTORY_RSP":
-          let historyMsgList = userInfo.historyMessage.list;
-          let historyPageSize = userInfo.historyMessage.pageSize;
-          this.historyId = historyMsgList.length < 0 ? historyMsgList[0].historyId : "";
+          let historyMsgList = userInfo.historyMessage;
+          let historyPageSize = userInfo.pageSize;
           if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
             this.concats.forEach((res) => {

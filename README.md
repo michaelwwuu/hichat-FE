@@ -24,6 +24,7 @@ npm run build
 -- message-pabel.vue 頁面中間+對話框
 ```
 
+## tokenType 0 = app, 1 = web
 ## 事件命名
 ```
 ## 小駝峰式命名法

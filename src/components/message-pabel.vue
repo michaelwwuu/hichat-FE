@@ -64,9 +64,6 @@ export default {
     isAdmin:{
       type: Boolean,
     },
-    historyId:{
-      type:String,
-    },
   },
   data() {
     return {
@@ -75,21 +72,18 @@ export default {
       disabled:disabled,
       unBlock:unBlock,
       disabledImg: require("./../../static/images/disabled.svg"),
-      pageSize: 0,
     };
   },
   watch: {
     clearDialog(val){
       if(!val){
-        this.historyId='';
-        this.pageSize = 0;
+        this.historyId = ''
         this.$emit('isShowMoreBtn',true);
       }
     },
     messageData(val) {
-      //去除重複
-      const set = new Set();
-      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
+      this.historyId = val.length > 0 ? val[0].historyId : "";
+      this.message = val
       if (this.isChecked) this.gotoBottom();
       val.forEach(el => this.banUserInput(el))
     },
@@ -127,7 +121,7 @@ export default {
       historyMsgList.id = Math.random();
       historyMsgList.minute = 10; //分鐘
       historyMsgList.targetId = this.historyId;
-      (historyMsgList.pageSize = this.pageSize += 50),
+      historyMsgList.pageSize = 50;
       Socket.send(historyMsgList);
       this.$emit('checkBox',false)
     },
