@@ -83,9 +83,11 @@ export default {
     },
     messageData(val) {
       this.historyId = val.length > 0 ? val[0].historyId : "";
-      this.message = val
+      val.forEach(el => {
+        this.banUserInput(el)
+        this.message.push(el)
+      })
       if (this.isChecked) this.gotoBottom();
-      val.forEach(el => this.banUserInput(el))
     },
     isChecked(val) {
       if (val) this.gotoBottom();
