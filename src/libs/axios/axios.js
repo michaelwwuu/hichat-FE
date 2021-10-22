@@ -5,7 +5,7 @@ axios.defaults.headers.post['Content-Type'] = "'Content-Type': 'multipart/form-d
 //axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.timeout = 48000
 
-// 前端的axios添加withCredentials属性
+// 前端axios添加withCredentials属性
 axios.defaults.withCredentials = true
 
 class HttpRequest {

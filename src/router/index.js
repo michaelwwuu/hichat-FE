@@ -41,9 +41,9 @@ const router = new VueRouter({
   routes
 })
 
-//導航守衛
+//导航守卫
 router.beforeEach((to, from, next) => {
-  //判斷token是否失效
+  //判断token是否失效
   if (to.name === "Room") {
     getUserInfo().then((res) => {
       if (res.code === 200) {
@@ -56,7 +56,7 @@ router.beforeEach((to, from, next) => {
       setTimeout(() => {
         next({ path: '/login' });
       }, 2000);
-      alert("請注意：由於您過於頻繁跳轉頁面，因此系統判定為惡意行為，即將導向登入頁，謝謝。");
+      alert("请注意：由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登入页，谢谢。");
     })
   }
   next();

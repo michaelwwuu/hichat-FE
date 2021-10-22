@@ -1,5 +1,5 @@
-# hichat(多彩網)
-### 安裝方法
+# hichat(多彩网)
+### 安装方法
 ```
 npm install
 ```
@@ -23,6 +23,17 @@ npm run build
 -- message-input.vue 頁面下方輸入框
 -- message-pabel.vue 頁面中間+對話框
 ```
+## 多彩網 串接 username
+```
+-- uesername需放入 Login.vue頁面 submitForm // 登入按鈕事件中的 
+loginForm: {
+  isGuest:false,
+  username: "",  <------ 這個位置 即可使用平台接入
+  sign:"",
+  platformCode:"dcw", 
+},
+```
+
 
 ## tokenType 0 = app, 1 = web
 ## 事件命名

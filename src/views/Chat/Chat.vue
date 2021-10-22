@@ -174,12 +174,14 @@ export default {
       }
     },
 
-    // 收取 socket 回來訊息 (全局訊息)
+    // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
+        // 加入房间成功
         case "SRV_JOIN_ROOM":
+        // 离开房间成功
         case "SRV_LEAVE_ROOM": 
           // 房主排序第一
           this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
@@ -192,7 +194,9 @@ export default {
             })
           })
           break
+        // 发送讯息成功
         case "SRV_ROOM_SEND":
+        // 发送红包成功 目前只有事件 没有功能
         case "SRV_ROOM_RED":
           this.concats.forEach((res) => {
             if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
@@ -200,11 +204,14 @@ export default {
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
           break;
+        // 封禁成功   
         case "SRV_ROOM_BAN":
+        // 解除封禁
         case "SRV_ROOM_LIFT_BAN":
           this.concats.forEach(el => this.banUserInput(el,userInfo));
           this.messageData.forEach(el => this.banUserInput(el,userInfo));
           break;
+        // 历史讯息
         case "SRV_ROOM_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage;
           let historyPageSize = userInfo.pageSize;
@@ -236,7 +243,7 @@ export default {
     },
 
 
-    // 封禁列表 訊息內
+    // 封禁列表 讯息内
     banUserMsg(el){
       let banUserTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
       setTimeout(() => {
@@ -254,7 +261,7 @@ export default {
       }
     },
 
-    // 封禁列表 輸入框
+    // 封禁列表 输入框
     banUserInput(el,userInfo){
       let banUserTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
       if (el.username === userInfo.banUser) {
@@ -278,24 +285,24 @@ export default {
 
     },
 
-    // 歷史訊息查看按鈕
+    // 历史讯息查看按钮
     isShowMoreBtn(val) {
       this.isChecked = val;
       this.isShowMoreMsg = val;
     },
 
-    // 清除聊天室內容
+    // 清除聊天室内容
     clearChatScreen() {
       this.clearDialog = false;
       this.messageData = [];
     },
 
-    // 頁面滾動事件
+    // 页面滚动事件
     checkBox(val) {
       this.isChecked = val;
     },
 
-    // 關閉socket
+    // 关闭socket
     closeWebsocket() {
       Socket.onClose();
       window.location.reload();

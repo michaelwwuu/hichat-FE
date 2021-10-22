@@ -60,7 +60,7 @@ export default {
         platformCode:"dcw", 
       },
       loginRules: {
-        username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
+        username: [{ required: true, message: "请输入帐号", trigger: "blur" }],
       },
       options: [
         {
@@ -78,7 +78,7 @@ export default {
     localStorage.clear()
   },
   methods: {
-    // 生成 deviceId 32編碼 
+    // 生成 deviceId 32 编码
     getUUID() {
       let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
         /[xy]/g,
@@ -91,7 +91,7 @@ export default {
       setLocal("UUID", "hiWeb" + number);
     },
 
-    // 登入按鈕事件
+    // 登入按钮事件
     submitForm(rules) {
       if (this.loginForm.username.trim() === "") this.loginForm.username = "";
       if (this.loginValue === "guest"){
@@ -102,7 +102,7 @@ export default {
       // md5 加密
       this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
 
-      // 驗證登入表單是否通過
+      // 验证登入表单是否通过
       this.$refs[rules].validate(valid => {
         if (!valid) {
           this.$message({

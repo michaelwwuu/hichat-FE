@@ -1,7 +1,6 @@
 import Vue from "vue";
-const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-// const wsUrl = "wss://test.hichat.tools/ws/im/echo";//測試機環境
-// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre環境
+// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
+const wsUrl = "ws://test.hichat.tools/ws/im/echo";//pre 環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
@@ -28,7 +27,7 @@ const emitter = new Vue({
       socket.send(JSON.stringify(leaveChat));
       socket.close();
     },
-    // 初始化websocket 
+    // 初始化 websocket 
     connect() {
       socket = new WebSocket(wsUrl);
       let chatDataKey = this.chatDataKey
@@ -36,9 +35,11 @@ const emitter = new Vue({
         let messageData = JSON.parse(msg.data)
         let chatType = messageData.chatType
         switch (chatType) {
+          // 连线成功
           case "SRV_SUCCESS_MSG":
             socket.send(JSON.stringify(chatDataKey));
             break;
+          // 连线失敗
           case "SRV_ERROR_MSG":
             console.log(`<--【连线失敗】------訊息發送失敗${messageData.text}-->`);
             if(messageData.text === "NEED_AUTH"){
@@ -47,12 +48,14 @@ const emitter = new Vue({
               socket.send(JSON.stringify(chatDataKey));
             } 
             break;
+          // 验证身份返回
           case "SRV_RECENT_CHAT":
             chatDataKey.chatType = "CLI_JOIN_ROOM";
             chatDataKey.id = Math.random();
             chatDataKey.toChatId = localStorage.getItem('chatRoomId');
             socket.send(JSON.stringify(chatDataKey));
             break;
+          // 加入房间  
           case "SRV_JOIN_ROOM":
             let heartBeat ={ chatType: "CLI_HEARTBEAT"}
             setInterval(()=> socket.send(JSON.stringify(heartBeat)),25000)

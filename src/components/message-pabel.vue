@@ -83,18 +83,19 @@ export default {
     },
     messageData(val) {
       this.historyId = val.length > 0 ? val[0].historyId : "";
-      val.forEach(el => {
-        this.banUserInput(el)
-        this.message.push(el)
-      })
+      val.forEach(el => this.banUserInput(el))
+      //去除重复
+      const set = new Set();
+      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       if (this.isChecked) this.gotoBottom();
+      
     },
     isChecked(val) {
       if (val) this.gotoBottom();
     },
   },
   methods: {
-    // 封禁列表 輸入框
+    // 封禁列表 输入匡
     banUserInput(data){
       let banUserTime = data.banRemainTime > 49392123903 ? 49392123903: data.banRemainTime 
       setTimeout(() => {
@@ -102,12 +103,12 @@ export default {
       },banUserTime)
     },
 
-    // 紅包
+    // 红包
     redEnvelope(type) {
       if (type === "SRV_ROOM_RED") console.log("搶紅包囉");
     },
 
-    // 判断訊息Class名稱
+    // 判断讯息Class名称
     judgeClass(item) {
       if (item.username === getLocal("username")) {
         return "message-layout-right";
@@ -116,7 +117,7 @@ export default {
       }
     },
 
-    // 查看更多歷史訊息
+    // 查看历史讯息
     seeMoreHistoryMsgData() {
       let historyMsgList = this.userInfoData;
       historyMsgList.chatType = "CLI_ROOM_HISTORY_REQ";

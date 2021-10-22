@@ -1,7 +1,7 @@
 <template>
   <div class="message-input-box">
     <div class="input-tools">
-      <el-button class="other-btn" size="mini" round @click="sendMessage('redEnvelope')"
+      <el-button class="other-btn" size="mini" round @click="redEnvelopeShow = true"
         ><img src="./../../static/images/red-btn.svg" alt="" />
         发红包</el-button
       >
@@ -62,6 +62,39 @@
         </el-button>
       </div>
     </div>
+    <el-dialog
+      title="发红包"
+      :visible.sync="redEnvelopeShow"
+      class="redEnvelope-box"
+      width="50"
+      center
+      append-to-body
+    >
+      <el-dialog
+        width="50"
+        title="提示"
+        class="redEnvelope-box"
+        :visible.sync="redEnvelopeDialog"
+        center
+        append-to-body>
+        <div :style="redEnvelopeRadio === '1' ? 'text-align: center' : ''">{{redEnvelopeMsg}}</div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="danger" @click="closeRedEnvelope(redEnvelopeRadio)">确 定</el-button>
+        </span>
+      </el-dialog>
+      <div class="redEnvelope-title">请选择你所要发放的红包，每次发放只会发出一包，一包红包可让10位会员索取</div>
+      <div class="redEnvelope-style">
+        <el-radio v-model="redEnvelopeRadio" label="0">金紅包</el-radio>
+        <span>数量 : 0</span>
+      </div>
+      <div class="redEnvelope-style">
+        <el-radio v-model="redEnvelopeRadio" label="1">银红包</el-radio>
+        <span>数量 : 1</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="danger" @click="redEnvelopeSubbmit(redEnvelopeRadio)">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -74,6 +107,10 @@ export default {
     return {
       textArea: "",
       search: "",
+      redEnvelopeShow:false,
+      redEnvelopeDialog:false,
+      redEnvelopeRadio:'0',
+      redEnvelopeMsg:'',
     };
   },
   props: {
@@ -83,7 +120,7 @@ export default {
     },
   },
   methods: {
-    // 表情內容文字轉中
+    // 表情符号转简中
     emojiChine(category) {
       if (category === "Frequently used") return "经常使用";
       if (category === "People") return "笑臉與人物";
@@ -93,7 +130,7 @@ export default {
       if (category === "Symbols") return "符號";
     },
 
-    // 表情符號
+    // 表情符号
     insert(emoji) {
       this.textArea += emoji;
     },
@@ -120,19 +157,31 @@ export default {
     keyUp(event) {
       if (event.key === "Enter") this.sendMessage('message');
     },
-
+    redEnvelopeSubbmit(redEnvelopeRadio){
+      this.redEnvelopeDialog = true;
+      this.redEnvelopeMsg = redEnvelopeRadio === '0' ? '红发数量不足，请参阅会员中心首页钱包说明，有更多红包获取资讯' : '发放成功！'
+    },
+    closeRedEnvelope(redEnvelopeRadio){
+      console.log(redEnvelopeRadio)
+      this.redEnvelopeShow = false
+      this.redEnvelopeDialog = false;
+      if(redEnvelopeRadio === '1') {
+        let message = this.userInfoData;
+        message.id = Math.random();
+        message.text = this.textAreaTran();
+        message.chatType = "CLI_ROOM_RED"
+        Socket.send(message)
+      };
+    },
     // 发送消息 紅包
     sendMessage(type) {
       let message = this.userInfoData;
+      message.id = Math.random();
+      message.text = this.textAreaTran();
+      message.chatType = type === "redEnvelope" ? "CLI_ROOM_RED" : "CLI_ROOM_SEND"
       if(type === "redEnvelope"){
-        message.chatType = "CLI_ROOM_RED";
-        message.id = Math.random();
-        message.text = this.textAreaTran();
-        Socket.send(message);
+        //  Socket.send(message);
       } else if(type === "message"){
-        message.chatType = "CLI_ROOM_SEND";
-        message.id = Math.random();
-        message.text = this.textAreaTran();
         if (this.blankTesting()) {
           // 发送服务器
           Socket.send(message);
@@ -140,7 +189,6 @@ export default {
           this.textArea = "";
         }
       }
-
     },
   },
   components: {
@@ -243,6 +291,24 @@ export default {
     display: inline-block;
     width: 20px;
     height: 20px;
+  }
+}
+.redEnvelope-box{
+  .el-dialog__header{
+    font-weight: 600;
+    border-bottom:0.01em solid #b3b3b3 ;
+  }
+  .el-dialog__body{
+    width:80%;
+    margin: 0 auto;
+    .redEnvelope-title{
+      line-height: 1.5em; 
+      font-weight: 700;
+    }
+    .redEnvelope-style{
+      text-align:center;
+      margin: 15px 0;
+    }
   }
 }
 </style>
