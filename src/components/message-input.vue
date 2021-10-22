@@ -56,7 +56,7 @@
       </el-input>
 
       <div class="footer-tools">
-        <el-button size="mini" class="send-button" @click="sendMessage('message')">
+        <el-button size="mini" class="send-button" @click="sendMessage">
           <img src="./../../static/images/send-btn.svg" alt="" />
           发送
         </el-button>
@@ -66,33 +66,29 @@
       title="发红包"
       :visible.sync="redEnvelopeShow"
       class="redEnvelope-box"
-      width="50"
+      width="30%"
       center
       append-to-body
     >
       <el-dialog
-        width="50"
         title="提示"
-        class="redEnvelope-box"
         :visible.sync="redEnvelopeDialog"
+        class="redEnvelope-box"
+        width="30%"
         center
         append-to-body>
-        <div :style="redEnvelopeRadio === '1' ? 'text-align: center' : ''">{{redEnvelopeMsg}}</div>
+        <div class="redEnvelope-title" :style="redEnvelopeRadio === 1 ? 'text-align: center' : ''">{{redEnvelopeMsg}}</div>
         <span slot="footer" class="dialog-footer">
           <el-button type="danger" @click="closeRedEnvelope(redEnvelopeRadio)">确 定</el-button>
         </span>
       </el-dialog>
-      <div class="redEnvelope-title">请选择你所要发放的红包，每次发放只会发出一包，一包红包可让10位会员索取</div>
-      <div class="redEnvelope-style">
-        <el-radio v-model="redEnvelopeRadio" label="0">金紅包</el-radio>
-        <span>数量 : 0</span>
-      </div>
-      <div class="redEnvelope-style">
-        <el-radio v-model="redEnvelopeRadio" label="1">银红包</el-radio>
-        <span>数量 : 1</span>
+      <div class="redEnvelope-title">请选择你所要发放的红包，每次发放只会发出一包，一包红包可让 10 位会员索取</div>
+      <div class="redEnvelope-style" v-for="(item,index) in redEnvelope" :key="index">
+        <el-radio v-model="redEnvelopeRadio" :label="item.redEnvelopeNumber">{{item.redEnvelopeType}}</el-radio>
+        <span>数量 : {{item.redEnvelopeNumber}}</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="redEnvelopeSubbmit(redEnvelopeRadio)">确 定</el-button>
+        <el-button type="danger" @click="redEnvelopeSubmit(redEnvelopeRadio)">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -109,8 +105,19 @@ export default {
       search: "",
       redEnvelopeShow:false,
       redEnvelopeDialog:false,
-      redEnvelopeRadio:'0',
+      redEnvelopeRadio:'',
       redEnvelopeMsg:'',
+      redEnvelope:[
+        {
+          redEnvelopeType:'金紅包',
+          redEnvelopeNumber:0,
+        },
+        {
+          redEnvelopeType:'银红包',
+          redEnvelopeNumber:1,
+        }
+
+      ]
     };
   },
   props: {
@@ -155,39 +162,38 @@ export default {
 
     // 按Enter发送消息
     keyUp(event) {
-      if (event.key === "Enter") this.sendMessage('message');
+      if (event.key === "Enter") this.sendMessage();
     },
-    redEnvelopeSubbmit(redEnvelopeRadio){
-      this.redEnvelopeDialog = true;
-      this.redEnvelopeMsg = redEnvelopeRadio === '0' ? '红发数量不足，请参阅会员中心首页钱包说明，有更多红包获取资讯' : '发放成功！'
-    },
-    closeRedEnvelope(redEnvelopeRadio){
+
+    // 发送紅包
+    redEnvelopeSubmit(redEnvelopeRadio){
       console.log(redEnvelopeRadio)
-      this.redEnvelopeShow = false
+      this.redEnvelopeDialog = true;
+      this.redEnvelopeMsg = redEnvelopeRadio === 0 ? '红发数量不足，请参阅会员中心首页钱包说明，有更多红包获取资讯' : '发放成功！'
+    },
+    // 发送紅包
+    closeRedEnvelope(redEnvelopeRadio){
       this.redEnvelopeDialog = false;
-      if(redEnvelopeRadio === '1') {
+      if(redEnvelopeRadio === 1) {
+        this.redEnvelopeShow = false
         let message = this.userInfoData;
+        message.chatType = "CLI_ROOM_RED"
         message.id = Math.random();
         message.text = this.textAreaTran();
-        message.chatType = "CLI_ROOM_RED"
         Socket.send(message)
       };
     },
-    // 发送消息 紅包
-    sendMessage(type) {
+    // 发送消息
+    sendMessage() {
       let message = this.userInfoData;
+      message.chatType = "CLI_ROOM_SEND"
       message.id = Math.random();
       message.text = this.textAreaTran();
-      message.chatType = type === "redEnvelope" ? "CLI_ROOM_RED" : "CLI_ROOM_SEND"
-      if(type === "redEnvelope"){
-        //  Socket.send(message);
-      } else if(type === "message"){
-        if (this.blankTesting()) {
-          // 发送服务器
-          Socket.send(message);
-          // 消息清空
-          this.textArea = "";
-        }
+      if (this.blankTesting()) {
+        // 发送服务器
+        Socket.send(message);
+        // 消息清空
+        this.textArea = "";
       }
     },
   },

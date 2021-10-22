@@ -166,7 +166,7 @@ export default {
     // 紅包
     redEnvelopeIcon(userInfo){
       if(userInfo.chatType === "SRV_ROOM_RED" && getLocal('username') !== "guest") {
-        return `<img class="red" src=${this.redEnvelopeImg}>`
+        return `<div style="cursor: pointer;"><img class="red" src=${this.redEnvelopeImg}><span style="position: relative; top: -3px; padding-left: 5px;">搶紅包囉！！</span></div>`
       } else if(getLocal('username') === "guest"){
         return '***'
       } else{
