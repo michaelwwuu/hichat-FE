@@ -174,7 +174,7 @@ export default {
     // 发送紅包
     closeRedEnvelope(redEnvelopeRadio){
       this.redEnvelopeDialog = false;
-      if(redEnvelopeRadio === 1) {
+      if(redEnvelopeRadio !== 0) {
         this.redEnvelopeShow = false
         let message = this.userInfoData;
         message.chatType = "CLI_ROOM_RED"
