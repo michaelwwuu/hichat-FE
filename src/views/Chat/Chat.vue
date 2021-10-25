@@ -85,7 +85,7 @@ export default {
       userInfoData: {
         toChatId: getLocal("chatRoomId"),
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: '',
         platformCode: "dcw",
         tokenType: 1,
       },
@@ -159,7 +159,8 @@ export default {
           return v.toString(16);
         }
       );
-      setLocal("UUID", "hiWeb" + number);
+      this.userInfoData.deviceId = "hiWeb" + number
+      // setLocal("UUID", "hiWeb" + number);
     },
     userLogin(){
       this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
@@ -176,7 +177,7 @@ export default {
           setToken(res.data.tokenHead + res.data.token);
           localStorage.setItem('isGuest', res.data.isGuest);
           localStorage.setItem('chatRoomId',this.$route.query.chatRoomId)
-          let deviceId = getLocal('UUID')
+          let deviceId = this.userInfoData.deviceId
           let token = res.data.tokenHead + res.data.token
           let chatRoomId = this.$route.query.chatRoomId
           Socket.connect(token,deviceId,chatRoomId)
