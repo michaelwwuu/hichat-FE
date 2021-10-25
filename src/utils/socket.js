@@ -29,7 +29,7 @@ const emitter = new Vue({
       socket.close();
     },
     // 初始化 websocket 
-    connect() {
+    connect(token,deviceId,chatRoomId) {
       socket = new WebSocket(wsUrl);
       let chatDataKey = this.chatDataKey
       socket.onmessage = function (msg) {
@@ -38,6 +38,8 @@ const emitter = new Vue({
         switch (chatType) {
           // 连线成功
           case "SRV_SUCCESS_MSG":
+            chatDataKey.deviceId = deviceId
+            chatDataKey.token = token
             socket.send(JSON.stringify(chatDataKey));
             break;
           // 连线失敗
@@ -46,14 +48,14 @@ const emitter = new Vue({
             if(messageData.text === "NEED_AUTH"){
               chatDataKey.chatType = "CLI_AUTH";
               chatDataKey.id = Math.random();
-              socket.send(JSON.stringify(chatDataKey));
+              setTimeout(()=> socket.send(JSON.stringify(chatDataKey)),20000);
             } 
             break;
           // 验证身份返回
           case "SRV_RECENT_CHAT":
             chatDataKey.chatType = "CLI_JOIN_ROOM";
             chatDataKey.id = Math.random();
-            chatDataKey.toChatId = localStorage.getItem('chatRoomId');
+            chatDataKey.toChatId = chatRoomId;
             socket.send(JSON.stringify(chatDataKey));
             break;
           // 加入房间  
@@ -76,5 +78,5 @@ const emitter = new Vue({
     },
   }
 });
-emitter.connect();
+// emitter.connect();
 export default emitter;

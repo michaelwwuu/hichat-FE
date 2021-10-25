@@ -61,16 +61,24 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
+import { login } from "_api/index.js";
 import { mapState, mapMutations } from "vuex";
 import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-import { getLocal, getToken } from "_util/utils.js";
+import Socket from "@/utils/socket";
+import { getLocal, getToken,setToken,setLocal } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
     return {
+      // 登入資訊
+      loginForm: {
+        isGuest:this.$route.query.isGuest,
+        username: this.$route.query.username,
+        sign:"",
+        platformCode:"dcw", 
+      },
       concats: [],
       messageData: [],
       userMemberList: [],
@@ -90,17 +98,12 @@ export default {
       isGuest:getLocal('isGuest'),
     };
   },
-  mounted() {
-    if(!getToken("token")) return this.$router.push({ path: "/Login" });  
-    if(this.isGuest) {
-      this.isShowMoreMsg = false
-      this.banUserInputMask = true
-    }
-  },
   created() {
+    this.userLogin()
+  },
+  mounted() {
     Socket.$on("message", this.handleGetMessage);
-    window.addEventListener("beforeunload", this.closeWebsocket);
-
+    window.addEventListener("beforeunload", this.closeWebsocket); 
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -146,7 +149,41 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-   
+    // 生成 deviceId 32 编码
+    getUUID() {
+      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
+      setLocal("UUID", "hiWeb" + number);
+    },
+    userLogin(){
+      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
+      
+      let params = this.loginForm
+      login(params).then((res) => {
+        if (res.code === 200) {
+          if(res.data.isGuest) {
+            this.isShowMoreMsg = false
+            this.banUserInputMask = true
+          }
+          this.getUUID()
+          setLocal('username', res.data.username)
+          setToken(res.data.tokenHead + res.data.token);
+          localStorage.setItem('isGuest', res.data.isGuest);
+          localStorage.setItem('chatRoomId',this.$route.query.chatRoomId)
+          let deviceId = getLocal('UUID')
+          let token = res.data.tokenHead + res.data.token
+          let chatRoomId = this.$route.query.chatRoomId
+          Socket.connect(token,deviceId,chatRoomId)
+        }
+      })
+    },
+
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -187,7 +224,7 @@ export default {
           this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
           this.$nextTick(() => {
             setTimeout(() => {
-              if(!getLocal('isGuest')){
+              if(getLocal('isGuest') !== false) {
                 this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
                 this.isAdmin = true && this.chatAdminUser[0].isAdmin;
               }
