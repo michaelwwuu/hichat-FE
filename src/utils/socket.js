@@ -5,41 +5,39 @@ const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
-  data() {
-    return {
-      chatDataKey: {
+  methods: {
+    send(message) {
+      if (socket.readyState === 1)socket.send(JSON.stringify(message));
+    },
+    onClose() {
+      let leaveChat = {
+        chatType:"CLI_LEAVE_ROOM",
+        id:Math.random(),
+        deviceId: localStorage.getItem('UUID'),
+        token: localStorage.getItem('token'),
+        tokenType: 1,
+        platformCode: "dcw",
+      }
+      socket.send(JSON.stringify(leaveChat));
+      socket.close();
+    },
+    // 初始化 websocket 
+    connect() {
+      socket = new WebSocket(wsUrl);
+      let chatDataKey = {
         chatType:"CLI_AUTH",
         id:Math.random(),
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 1,
         platformCode: "dcw",
-      },
-    }
-  },
-  methods: {
-    send(message) {
-      if (socket.readyState === 1)socket.send(JSON.stringify(message));
-    },
-    onClose() {
-      let leaveChat = this.chatDataKey;
-      leaveChat.chatType = "CLI_LEAVE_ROOM";
-      leaveChat.id = Math.random();
-      socket.send(JSON.stringify(leaveChat));
-      socket.close();
-    },
-    // 初始化 websocket 
-    connect(token,deviceId,chatRoomId) {
-      socket = new WebSocket(wsUrl);
-      let chatDataKey = this.chatDataKey
+      }
       socket.onmessage = function (msg) {
         let messageData = JSON.parse(msg.data)
         let chatType = messageData.chatType
         switch (chatType) {
           // 连线成功
           case "SRV_SUCCESS_MSG":
-            chatDataKey.deviceId = deviceId
-            chatDataKey.token = token
             socket.send(JSON.stringify(chatDataKey));
             break;
           // 连线失敗
@@ -48,14 +46,14 @@ const emitter = new Vue({
             if(messageData.text === "NEED_AUTH"){
               chatDataKey.chatType = "CLI_AUTH";
               chatDataKey.id = Math.random();
-              setTimeout(()=> socket.send(JSON.stringify(chatDataKey)),20000);
+              socket.send(JSON.stringify(chatDataKey));
             } 
             break;
           // 验证身份返回
           case "SRV_RECENT_CHAT":
             chatDataKey.chatType = "CLI_JOIN_ROOM";
             chatDataKey.id = Math.random();
-            chatDataKey.toChatId = chatRoomId;
+            chatDataKey.toChatId = localStorage.getItem('chatRoomId');
             socket.send(JSON.stringify(chatDataKey));
             break;
           // 加入房间  

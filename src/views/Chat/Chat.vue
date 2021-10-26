@@ -67,7 +67,7 @@ import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
 import Socket from "@/utils/socket";
-import { getLocal, getToken,setToken,setLocal } from "_util/utils.js";
+import { getLocal } from "_util/utils.js";
 export default {
   name: "Chat",
   data() {
@@ -83,8 +83,8 @@ export default {
       messageData: [],
       userMemberList: [],
       userInfoData: {
-        toChatId: getLocal("chatRoomId"),
-        token: getToken("token"),
+        toChatId: '',
+        token: '',
         deviceId: '',
         platformCode: "dcw",
         tokenType: 1,
@@ -95,7 +95,8 @@ export default {
       isShowMoreMsg: true,
       banUserInputMask: false,
       redEnvelopeImg: require("./../../../static/images/envelope.svg"),
-      isGuest:getLocal('isGuest'),
+      isGuest: getLocal('isGuest'),
+      userName: getLocal('username'),
     };
   },
   created() {
@@ -159,12 +160,12 @@ export default {
           return v.toString(16);
         }
       );
-      this.userInfoData.deviceId = "hiWeb" + number
-      // setLocal("UUID", "hiWeb" + number);
+      // this.userInfoData.deviceId = "hiWeb" + number
+      localStorage.setItem("UUID", "hiWeb" + number);
+      return "hiWeb" + number
     },
     userLogin(){
       this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
-      
       let params = this.loginForm
       login(params).then((res) => {
         if (res.code === 200) {
@@ -172,15 +173,16 @@ export default {
             this.isShowMoreMsg = false
             this.banUserInputMask = true
           }
-          this.getUUID()
-          setLocal('username', res.data.username)
-          setToken(res.data.tokenHead + res.data.token);
+          
+          this.userInfoData.deviceId = this.getUUID()
+          console.log(this.userInfoData.deviceId)
+          this.userInfoData.token = res.data.tokenHead + res.data.token
+          this.userInfoData.toChatId = this.$route.query.chatRoomId
+          localStorage.setItem('username', res.data.username)
           localStorage.setItem('isGuest', res.data.isGuest);
+          localStorage.setItem('token',res.data.tokenHead + res.data.token);
           localStorage.setItem('chatRoomId',this.$route.query.chatRoomId)
-          let deviceId = this.userInfoData.deviceId
-          let token = res.data.tokenHead + res.data.token
-          let chatRoomId = this.$route.query.chatRoomId
-          Socket.connect(token,deviceId,chatRoomId)
+          Socket.connect()
         }
       })
     },
@@ -203,9 +205,9 @@ export default {
 
     // 紅包
     redEnvelopeIcon(userInfo){
-      if(userInfo.chatType === "SRV_ROOM_RED" && getLocal('username') !== "guest") {
+      if(userInfo.chatType === "SRV_ROOM_RED" && this.userName !== "guest") {
         return `<div style="cursor: pointer;"><img class="red" src=${this.redEnvelopeImg}><span style="position: relative; top: -3px; padding-left: 5px;">搶紅包囉！！</span></div>`
-      } else if(getLocal('username') === "guest"){
+      } else if(this.userName === "guest"){
         return '***'
       } else{
         return userInfo.text
@@ -225,8 +227,8 @@ export default {
           this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
           this.$nextTick(() => {
             setTimeout(() => {
-              if(getLocal('isGuest') !== false) {
-                this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
+              if(this.isGuest !== false) {
+                this.chatAdminUser = this.concats.filter(el => el.username === this.userName)
                 this.isAdmin = true && this.chatAdminUser[0].isAdmin;
               }
             })
@@ -287,7 +289,7 @@ export default {
       setTimeout(() => {
         return el.banRemainTime = null
       },banUserTime);
-      if(el.username === getLocal('username')){
+      if(el.username === this.userName){
         if(el.banRemainTime !== null){
           this.banUserInputMask = true;
           setTimeout(() => {
@@ -310,7 +312,7 @@ export default {
       }
       
       let chatType = userInfo.chatType
-      if(userInfo.banUser === getLocal("username")){
+      if(userInfo.banUser === this.userName){
         if(chatType === "SRV_ROOM_BAN"){
           this.banUserInputMask = true;
           setTimeout(() => {
