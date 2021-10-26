@@ -67,6 +67,9 @@ import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
 import Socket from "@/utils/socket";
+
+import Crypto from '@/utils/crypto.js';
+
 import { getLocal } from "_util/utils.js";
 export default {
   name: "Chat",
@@ -160,7 +163,6 @@ export default {
           return v.toString(16);
         }
       );
-      // this.userInfoData.deviceId = "hiWeb" + number
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
@@ -173,9 +175,7 @@ export default {
             this.isShowMoreMsg = false
             this.banUserInputMask = true
           }
-          
           this.userInfoData.deviceId = this.getUUID()
-          console.log(this.userInfoData.deviceId)
           this.userInfoData.token = res.data.tokenHead + res.data.token
           this.userInfoData.toChatId = this.$route.query.chatRoomId
           localStorage.setItem('username', res.data.username)
