@@ -46,6 +46,21 @@
         >
         </el-input>
       </el-form-item>
+      <el-form-item prop="verificationCode">
+        <span class="svg-container">
+          <font-awesome-icon icon="key" />
+        </span>
+        <el-input
+          ref="verificationCode"
+          placeholder="请输入密码"
+          v-model="loginForm.verificationCode"
+          name="verificationCode"
+          type="verificationCode"
+          tabindex="2"
+          @keyup.enter.native="submitForm('loginForm')"
+        >
+        </el-input>
+      </el-form-item>
       <el-button
         type="primary"
         style="width: 100%; margin-bottom: 30px"
@@ -143,6 +158,7 @@ export default {
       loginForm: {
         username: "",
         password: "",
+        verificationCode:"",
       },
       loginRules: {
         username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
@@ -154,6 +170,7 @@ export default {
       registerForm: {
         username: "",
         password: "",
+        verificationCode:"",
         countryCallingCode: "",
         email: "",
         telephone: "",
@@ -295,13 +312,13 @@ $light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container-pc .el-input input {
+  .login-container-pc .el-input input,.login-container-moblie .el-input input {
     color: $cursor;
   }
 }
 
 /* reset element-ui css */
-.login-container-pc {
+.login-container-pc, .login-container-moblie{
   .el-input {
     display: inline-block;
     height: 47px;
@@ -425,5 +442,19 @@ $light_gray: #eee;
       display: none;
     }
   }
+}
+.login-container-moblie{
+  min-height: 100%;
+  width: 100%;
+  background-color: $bg;
+  overflow: hidden;
+   .login-form {
+      position: relative;
+      width: 70vw;
+      max-width: 100%;
+      padding: 160px 35px 0;
+      margin: 0 auto;
+      overflow: hidden;
+    }
 }
 </style>
