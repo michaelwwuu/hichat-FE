@@ -1,6 +1,10 @@
 <template>
-<div class="login-container">
-  <div v-if="device === 'moblie'" >
+  <div
+    :class="[
+      { 'login-container-pc': device === 'pc' },
+      { 'login-container-moblie': device === 'moblie' }
+    ]"
+  >
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -124,9 +128,6 @@
       </el-form>
     </el-dialog>
   </div>
-  <div v-else></div>
-</div>
-
 </template>
 
 <script>
@@ -158,7 +159,7 @@ export default {
         telephone: "",
       },
       token: getToken("token"),
-      device:''
+      device: "",
     };
   },
   created() {
@@ -171,10 +172,10 @@ export default {
       navigator.userAgent.match(/BlackBerry/i) ||
       navigator.userAgent.match(/Windows Phone/i)
     ) {
-      this.device = 'moblie' 
-      console.log(this.device)
+      this.device = "moblie";
+      console.log(this.device);
     } else {
-      this.device = 'pc' 
+      this.device = "pc";
     }
   },
   mounted() {
@@ -294,13 +295,13 @@ $light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
+  .login-container-pc .el-input input {
     color: $cursor;
   }
 }
 
 /* reset element-ui css */
-.login-container {
+.login-container-pc {
   .el-input {
     display: inline-block;
     height: 47px;
@@ -337,7 +338,7 @@ $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
-.login-container {
+.login-container-pc {
   min-height: 100%;
   width: 100%;
   background-color: $bg;
