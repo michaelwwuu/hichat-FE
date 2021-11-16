@@ -1,5 +1,6 @@
 <template>
-  <div class="login-container">
+<div class="login-container">
+  <div v-if="device === 'moblie'" >
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -123,6 +124,9 @@
       </el-form>
     </el-dialog>
   </div>
+  <div v-else></div>
+</div>
+
 </template>
 
 <script>
@@ -154,13 +158,27 @@ export default {
         telephone: "",
       },
       token: getToken("token"),
+      device:''
     };
   },
   created() {
-    
+    if (
+      navigator.userAgent.match(/Android/i) ||
+      navigator.userAgent.match(/webOS/i) ||
+      navigator.userAgent.match(/iPhone/i) ||
+      navigator.userAgent.match(/iPad/i) ||
+      navigator.userAgent.match(/iPod/i) ||
+      navigator.userAgent.match(/BlackBerry/i) ||
+      navigator.userAgent.match(/Windows Phone/i)
+    ) {
+      this.device = 'moblie' 
+      console.log(this.device)
+    } else {
+      this.device = 'pc' 
+    }
   },
   mounted() {
-    localStorage.clear()
+    localStorage.clear();
     this.getUUID();
   },
   methods: {
@@ -179,8 +197,10 @@ export default {
     submitForm(rules) {
       switch (rules) {
         case "loginForm":
-          if (this.loginForm.username.trim() === "") this.loginForm.username = "";
-          if (this.loginForm.password.trim() === "") this.loginForm.password = "";
+          if (this.loginForm.username.trim() === "")
+            this.loginForm.username = "";
+          if (this.loginForm.password.trim() === "")
+            this.loginForm.password = "";
           //驗證登入表單是否通過
           this.$refs[rules].validate((valid) => {
             if (!valid) {
@@ -215,8 +235,10 @@ export default {
           });
           break;
         case "registerForm":
-          if (this.registerForm.username.trim() === "") this.registerForm.username = "";
-          if (this.registerForm.password.trim() === "") this.registerForm.password = "";
+          if (this.registerForm.username.trim() === "")
+            this.registerForm.username = "";
+          if (this.registerForm.password.trim() === "")
+            this.registerForm.password = "";
           //驗證註冊表單是否通過
           this.$refs[rules].validate((valid) => {
             if (!valid) {
