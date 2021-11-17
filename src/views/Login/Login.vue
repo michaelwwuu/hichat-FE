@@ -152,7 +152,7 @@ export default {
     loginForm: {
       handler(val) {
         if (
-          Object.values(val).every((el) => el !== "") &&
+          Object.values(val).every(el => el !== "") &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) 
         ) {
           this.disabled = false;

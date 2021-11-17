@@ -192,7 +192,7 @@ export default {
     loginForm: {
       handler(val) {
         if (
-          Object.values(val).every((el) => el !== "") &&
+          Object.values(val).every(el => el !== "") &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.passwordAganin) &&
           /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-]).{5,}$/.test(val.username) 
@@ -232,7 +232,7 @@ export default {
     //登入&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
-      this.$refs[rules].validate((valid) => {
+      this.$refs[rules].validate(valid => {
         if (!valid) {
           this.$message({
             message: "註冊失敗，請重新輸入並確認",
