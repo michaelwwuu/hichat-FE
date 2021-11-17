@@ -1,6 +1,6 @@
 import HttpRequest from '../axios/axios.js'
 
-// var baseUrl = process.env.NODE_ENV === 'production'? '/':'/api';
-var baseUrl = '/api';
+// var baseUrl = process.env.NODE_ENV === 'production'? '/':'/';
+var baseUrl = '/';
 
 export const axios = new HttpRequest(baseUrl)

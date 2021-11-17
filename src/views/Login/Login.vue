@@ -1,84 +1,165 @@
 <template>
-  <div class="login-container">
+  <div
+    :class="[
+      { 'login-container-pc': device === 'pc' },
+      { 'login-container-moblie': device === 'moblie' }
+    ]"
+  >
     <el-form
       ref="loginForm"
       :model="loginForm"
-      :rules="loginRules"
       class="login-form"
       label-position="top"
-      @submit.native.prevent
     >
       <div class="title-container">
-        <h3 class="title">{{ headerTitle }}</h3>
+        <img src="./../../../static/images/material_ic_logo.png" alt="">
       </div>
-      <el-form-item prop="username">
+      <el-form-item prop="email">
         <span class="svg-container">
-          <font-awesome-icon icon="user" />
+          <img src="./../../../static/images/mail.png" alt="">
         </span>
         <el-input
-          ref="username"
-          placeholder="请输入用户名称"
-          v-model="loginForm.username"
-          name="username"
+          ref="email"
+          placeholder="電子郵箱"
+          v-model="loginForm.email"
+          name="email"
           type="text"
           tabindex="1"
           @keyup.enter.native="submitForm('loginForm')"
         >
         </el-input>
       </el-form-item>
-      <el-button
-        type="primary"
-        style="width: 100%; margin-bottom: 30px"
-        @click="submitForm('loginForm')"
-        >登入</el-button
-      >
-      <el-select v-model="loginValue" :placeholder="loginValue">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
+
+      <el-form-item prop="password">
+        <span class="svg-container">
+          <img src="./../../../static/images/lock.png" alt="">
+        </span>
+        <el-input
+          ref="password"
+          placeholder="登入密碼"
+          v-model="loginForm.password"
+          name="password"
+          :type="passwordType === 'password'?'password':'text'"
+          tabindex="2"
+          @keyup.enter.native="submitForm('loginForm')"
+        >
+        </el-input>
+        <span class="show-pwd" @click="showPwd">
+          <img :src="passwordType === 'password' ? require('../../../static/images/eye_closed.png') : require('./../../../static/images/eye-solid.svg')" alt="">
+        </span>
+      </el-form-item>
+      <el-form-item prop="authCode">
+        <span class="svg-container">
+          <img src="./../../../static/images/code.png" alt="">
+        </span>
+        <el-input
+          ref="authCode"
+          placeholder="驗證碼"
+          v-model="loginForm.authCode"
+          name="authCode"
+          type="authCode"
+          tabindex="2"
+          @keyup.enter.native="submitForm('loginForm')"
+        >
+        </el-input>
+        <span class="verification-style"  @click="getAuthCode(loginForm.email)">获取驗證碼</span>
+      </el-form-item>
+      <div class="remember-style">
+        <el-switch
+          v-model="remember"
+          active-color="#fd5f3f"
+          inactive-color="#ff4949"
+          active-text="記住帳號">
+        </el-switch>
+        <router-link :to="'/ForgetPassword'" style="text-decoration: none;">
+          <span>忘記密碼</span>
+        </router-link>  
+      </div>
+      <div>
+        <el-button
+          style="width: 100%; margin-bottom: 30px"
+          @click="submitForm('loginForm')"
+          >登入</el-button
+        >
+      </div>
+      <div>
+        <router-link :to="'/Register'">
+          <el-button
+            style="width: 100%; margin-bottom: 30px;background-color:#67c23a00; border:1px solid #fd5f3f; color:#fd5f3f;"
+            >註冊</el-button
+          >
+        </router-link>
+      </div>
     </el-form>
   </div>
 </template>
 
 <script>
 import { login } from "_api/index.js";
-import { setLocal,setToken } from "_util/utils.js";
+import { setToken, getToken, setLocal } from "_util/utils.js";
+import { getAuthCode } from "@/api";
 export default {
-  name: "Login",
   data() {
     return {
-      loginValue:'登入方式',
-      headerTitle: "聊天室登入系統",
       loginForm: {
-        isGuest:false,
-        username: "",
-        sign:"",
-        platformCode:"dcw", 
+        email: "",
+        password: "",
+        authCode:"",
       },
-      loginRules: {
-        username: [{ required: true, message: "请输入帐号", trigger: "blur" }],
-      },
-      options: [
-        {
-          value: '',
-          label: '会员登入'
-        }, 
-        {
-          value: 'guest',
-          label: '访客登入'
-        },
-      ],
+      token: getToken("token"),
+      passwordType: 'password',
+      device: "",
+      remember:true,
+      disabled:true,
     };
   },
   created() {
-    localStorage.clear()
+    if (
+      navigator.userAgent.match(/Android/i) ||
+      navigator.userAgent.match(/webOS/i) ||
+      navigator.userAgent.match(/iPhone/i) ||
+      navigator.userAgent.match(/iPad/i) ||
+      navigator.userAgent.match(/iPod/i) ||
+      navigator.userAgent.match(/BlackBerry/i) ||
+      navigator.userAgent.match(/Windows Phone/i)
+    ) {
+      this.device = "moblie";
+    } else {
+      this.device = "pc";
+    }
+  },
+  watch:{
+    'loginForm':{
+      handler(val){
+        if(val.authCode !==''&& val.email !==''&& val.password !==''){
+          this.disabled = false
+        }
+      },
+      deep:true
+    }
+  },
+  mounted() {
+    localStorage.clear();
+    this.getUUID();
   },
   methods: {
-    // 生成 deviceId 32 编码
+    getAuthCode(email){
+      if (email === '') {
+        this.$message({
+          message: "資料尚未輸入完全",
+          type: "error",
+        });
+        return;
+      }
+      getAuthCode({email}).then((res)=>{
+        console.log(res)
+      })
+      .catch((err)=>{})
+    },
+    showPwd() {
+      this.passwordType = this.passwordType === 'password' ? '': 'password'
+      this.$nextTick(() => this.$refs.password.focus())
+    },
     getUUID() {
       let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
         /[xy]/g,
@@ -90,42 +171,32 @@ export default {
       );
       setLocal("UUID", "hiWeb" + number);
     },
-
-    // 登入按钮事件
+    //登入&&註冊
     submitForm(rules) {
-      if (this.loginForm.username.trim() === "") this.loginForm.username = "";
-      if (this.loginValue === "guest"){
-        this.loginForm.username = "guest"
-        this.loginForm.isGuest = !this.loginForm.isGuest;
-      } 
-      let params = this.loginForm
-      // md5 加密
-      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
-
-      // 验证登入表单是否通过
+      //驗證登入表單是否通過
       this.$refs[rules].validate(valid => {
-        if (!valid) {
+
+        if (this.disabled) {
           this.$message({
-            message: "登入驗證失敗，請重新輸入並確認",
+            message: "資料尚未輸入完全",
             type: "error",
           });
           return;
         }
-        login(params)
+        login(this.loginForm)
           .then((res) => {
+            //登入成功
             if (res.code === 200) {
-              // 登入成功
               setToken(res.data.tokenHead + res.data.token);
-              this.getUUID()
               this.$router.push({ path: "/Room" });
             } else {
-              // 登入失敗
               this.$message({
-                message: res.message,
+                message: "登入驗證失敗，請重新輸入並確認",
                 type: "error",
               });
               return false;
             }
+            //登入失敗
           })
           .catch((err) => {
             this.$message({
@@ -143,18 +214,18 @@ export default {
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-$bg: #283443;
-$light_gray: #fff;
+$bg: #eaf5fa;
+$light_gray: #666666;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
+  .login-container-pc .el-input input,.login-container-moblie .el-input input {
     color: $cursor;
   }
 }
 
 /* reset element-ui css */
-.login-container {
+.login-container-pc, .login-container-moblie{
   .el-input {
     display: inline-block;
     height: 47px;
@@ -171,34 +242,26 @@ $cursor: #fff;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        box-shadow: 0 0 0px 1000px $cursor inset !important;
       }
     }
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    background: #FFFFFF;
+    border-radius: 10px;
     color: #454545;
-  }
-  .el-select{
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-    float: right;
+    margin-bottom: 20px;
   }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #eaf5fa;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
-.login-container {
+.login-container-pc {
   min-height: 100%;
   width: 100%;
   background-color: $bg;
@@ -245,10 +308,7 @@ $light_gray: #eee;
 
   .title-container {
     position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
+    img {
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
@@ -286,4 +346,81 @@ $light_gray: #eee;
     }
   }
 }
+
+.login-container-moblie{
+  min-height: 100%;
+  width: 100%;
+  background-color: $bg;
+  overflow: hidden;
+  .title-container {
+    display: flex;
+    img {
+      height: 5em;
+      margin: 0px auto 40px auto;
+      text-align: center;
+    }
+  }
+  .login-form {
+    position: relative;
+    width: 80vw;
+    max-width: 100%;
+    padding: 7em 0;
+    margin: 0 auto;
+    overflow: hidden;
+
+    .verification-style{
+      width: 6em;
+      height:2.1em;
+      line-height: 2.1em;
+      font-size: 12px;
+      position: absolute;
+      top:1em;
+      right: 1em;
+      text-align: center;
+      border: 1px solid #fd5f3f;
+      color:#fd5f3f;
+      border-radius:5px;
+    }
+    .show-pwd{
+      height:2.1em;
+      line-height: 2.1em;
+      position: absolute;
+      top:1em;
+      right: 1em;
+      img{
+        height:1.2em;
+      }
+    }
+    .remember-style{
+      margin: 1em 0 5em 0;
+      display: flex;
+      justify-content: space-between;
+      /deep/.is-checked{
+        .is-active{
+          color: #303133;
+        }
+      }
+      span{
+        font-size:14px;
+        color: #fd5f3f ;
+      }
+    }
+    .el-button{
+      background-color: #fd5f3f;
+      color:#FFF;
+    }
+  }
+  .svg-container {
+    padding: 6px 0 6px 15px;
+    color: $dark_gray;
+    vertical-align: middle;
+    width: 20px;
+    font-size: 22px;
+    display: inline-block;
+    img{
+      height:17px
+    }
+  }
+}
 </style>
+
