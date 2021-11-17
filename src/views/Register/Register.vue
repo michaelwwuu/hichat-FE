@@ -254,7 +254,6 @@ export default {
           return;
         }
         delete this.registerForm.password2
-
         register(this.registerForm)
           .then((res) => {
             //登入成功
