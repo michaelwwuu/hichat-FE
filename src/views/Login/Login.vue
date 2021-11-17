@@ -16,7 +16,7 @@
       </div>
       <el-form-item prop="email">
         <span class="svg-container">
-          <img src="./../../../static/images/mail.png" alt="">
+          <img src="./../../../static/images/mail.png" alt="" />
         </span>
         <el-input
           ref="email"
@@ -25,32 +25,45 @@
           name="email"
           type="text"
           tabindex="1"
-          @keyup.enter.native="submitForm('loginForm')"
+          maxLength="30"
+          @input="
+            (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+          "
         >
         </el-input>
       </el-form-item>
-
       <el-form-item prop="password">
         <span class="svg-container">
-          <img src="./../../../static/images/lock.png" alt="">
+          <img src="./../../../static/images/lock.png" alt="" />
         </span>
         <el-input
           ref="password"
           placeholder="登入密碼"
           v-model="loginForm.password"
           name="password"
-          :type="passwordType === 'password'?'password':'text'"
+          :type="passwordType === 'password' ? 'password' : 'text'"
           tabindex="2"
-          @keyup.enter.native="submitForm('loginForm')"
+          maxLength="12"
+          @input="
+            (v) =>
+              (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+          "
         >
         </el-input>
         <span class="show-pwd" @click="showPwd">
-          <img :src="passwordType === 'password' ? require('../../../static/images/eye_closed.png') : require('./../../../static/images/eye-solid.svg')" alt="">
+          <img
+            :src="
+              passwordType === 'password'
+                ? require('../../../static/images/eye_closed.png')
+                : require('./../../../static/images/eye-solid.svg')
+            "
+            alt=""
+          />
         </span>
       </el-form-item>
       <el-form-item prop="authCode">
         <span class="svg-container">
-          <img src="./../../../static/images/code.png" alt="">
+          <img src="./../../../static/images/code.png" alt="" />
         </span>
         <el-input
           ref="authCode"
@@ -59,10 +72,15 @@
           name="authCode"
           type="authCode"
           tabindex="2"
-          @keyup.enter.native="submitForm('loginForm')"
+          maxLength="6"
+          @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
         >
         </el-input>
-        <span class="verification-style"  @click="getAuthCode(loginForm.email)">获取驗證碼</span>
+        <span
+          class="verification-style"
+          @click="getAuthCode(loginForm.email)"
+          >获取驗證碼</span
+        >
       </el-form-item>
       <div class="remember-style">
         <el-switch
@@ -106,9 +124,9 @@ export default {
         password: "",
         authCode:"",
       },
+      device: "",
       token: getToken("token"),
       passwordType: 'password',
-      device: "",
       remember:true,
       disabled:true,
     };
@@ -128,15 +146,20 @@ export default {
       this.device = "pc";
     }
   },
-  watch:{
-    'loginForm':{
-      handler(val){
-        if(val.authCode !==''&& val.email !==''&& val.password !==''){
-          this.disabled = false
+  watch: {
+    loginForm: {
+      handler(val) {
+        if (
+          Object.values(val).every((el) => el !== "") &&
+          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) 
+        ) {
+          this.disabled = false;
+        } else {
+          this.disabled = true;
         }
       },
-      deep:true
-    }
+      deep: true,
+    },
   },
   mounted() {
     localStorage.clear();
@@ -364,7 +387,7 @@ $light_gray: #eee;
     position: relative;
     width: 80vw;
     max-width: 100%;
-    padding: 7em 0;
+    padding: 4em 0;
     margin: 0 auto;
     overflow: hidden;
 

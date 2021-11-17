@@ -8,26 +8,26 @@
     </div>
     <div class="register-content">
       <el-form
-        ref="forgetForm"
-        :model="forgetForm"
+        ref="loginForm"
+        :model="loginForm"
         :rules="forgetRules"
         class="login-form"
         label-position="top"
       >
         <el-form-item prop="email">
           <span class="svg-container">
-            <img src="./../../../static/images/mail.png" alt="">
+            <img src="./../../../static/images/mail.png" alt="" />
           </span>
           <el-input
             ref="email"
             placeholder="電子郵箱"
-            v-model="forgetForm.email"
+            v-model="loginForm.email"
             name="email"
             type="text"
             tabindex="1"
             maxLength="30"
             @input="
-              (v) => (forgetForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -39,22 +39,22 @@
           <el-input
             ref="authCode"
             placeholder="驗證碼"
-            v-model="forgetForm.authCode"
+            v-model="loginForm.authCode"
             name="authCode"
             type="authCode"
             tabindex="2"
             maxLength="6"
-            @input="(v) => (forgetForm.authCode = v.replace(/[^\d]/g, ''))"
+            @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          <span class="verification-style" @click="getAuthCode(forgetForm.email)">获取驗證碼</span>
+          <span class="verification-style" @click="getAuthCode(loginForm.email)">获取驗證碼</span>
         </el-form-item>
         <div class="register-footer">
           <el-button
             style="width: 100%; margin-bottom: 30px"
             :class="disabled ? 'gray-btn':'orange-btn'"
             :disabled="disabled"
-            @click="submitForm('forgetForm')"
+            @click="submitForm('loginForm')"
             >提交</el-button
           >
         </div>
@@ -69,28 +69,25 @@ import { getAuthCode } from "@/api";
 export default {
   data() {
     return {
-      forgetForm: {
+      loginForm: {
         email: "",
         authCode:"",
-      },
-      forgetRules: {
-        email: [{ required: false, message: "請輸入電子郵箱", trigger: "blur" }],
-        password: [{ required: false, message: "請輸入登入密碼", trigger: "blur" }],
-        authCode: [{ required: false, message: "請輸入驗證碼", trigger: "blur" }],
       },
       device:'',
       disabled:true,
     };
   },
-  watch:{
-    'forgetForm':{
-      handler(val){
-        if(val.authCode !==''&& val.email !==''){
-          this.disabled = false
+  watch: {
+    loginForm: {
+      handler(val) {
+        if (Object.values(val).every((el) => el !== "")) {
+          this.disabled = false;
+        } else {
+          this.disabled = true;
         }
       },
-      deep:true
-    }
+      deep: true,
+    },
   },
   created() {
     if (
@@ -132,19 +129,19 @@ export default {
           });
           return;
         }
-        register(this.forgetForm)
+        register(this.loginForm)
           .then((res) => {
             //登入成功
-            if (res.code === 200) {
-              setToken(res.data.tokenHead + res.data.token);
-              this.$router.push({ path: "/Chat" });
-            } else if (res.code === 500) {
-              this.$message({
-                message: res.message,
-                type: "error",
-              });
-              return false;
-            }
+            // if (res.code === 200) {
+            //   setToken(res.data.tokenHead + res.data.token);
+            //   this.$router.push({ path: "/Chat" });
+            // } else if (res.code === 500) {
+            //   this.$message({
+            //     message: res.message,
+            //     type: "error",
+            //   });
+            //   return false;
+            // }
           })
           .catch((err) => {
             this.$message({

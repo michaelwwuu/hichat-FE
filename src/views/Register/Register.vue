@@ -8,9 +8,8 @@
     </div>
     <div class="register-content">
       <el-form
-        ref="registerForm"
-        :model="registerForm"
-        :rules="registerRules"
+        ref="loginForm"
+        :model="loginForm"
         class="login-form"
         label-position="top"
       >
@@ -21,13 +20,13 @@
           <el-input
             ref="email"
             placeholder="電子郵箱"
-            v-model="registerForm.email"
+            v-model="loginForm.email"
             name="email"
             type="text"
             tabindex="1"
             maxLength="30"
             @input="
-              (v) => (registerForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -39,14 +38,14 @@
           <el-input
             ref="password"
             placeholder="登入密碼"
-            v-model="registerForm.password"
+            v-model="loginForm.password"
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
             tabindex="2"
             maxLength="12"
             @input="
               (v) =>
-                (registerForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -64,29 +63,29 @@
         <span class="tip-text"
           >密碼長度為8至12個字元，允許混用英文字母、數字和符號。</span
         >
-        <el-form-item prop="password2">
+        <el-form-item prop="passwordAganin">
           <span class="svg-container">
             <img src="./../../../static/images/lock.png" alt="" />
           </span>
           <el-input
-            ref="password2"
+            ref="passwordAganin"
             placeholder="再次確認登入密碼"
-            v-model="registerForm.password2"
-            name="password2"
-            :type="passwordType2 === 'password' ? 'password' : 'text'"
+            v-model="loginForm.passwordAganin"
+            name="passwordAganin"
+            :type="passwordTypeAganin === 'password' ? 'password' : 'text'"
             tabindex="2"
             minLength="8"
             maxLength="12"
             @input="
               (v) =>
-                (registerForm.password2 = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
           <span class="show-pwd" @click="showPwd2">
             <img
               :src="
-                passwordType2 === 'password'
+                passwordTypeAganin === 'password'
                   ? require('../../../static/images/eye_closed.png')
                   : require('./../../../static/images/eye-solid.svg')
               "
@@ -101,7 +100,7 @@
           <el-input
             ref="username"
             placeholder="使用者ID"
-            v-model="registerForm.username"
+            v-model="loginForm.username"
             name="username"
             type="text"
             tabindex="1"
@@ -109,7 +108,7 @@
             maxLength="18"
             @input="
               (v) =>
-                (registerForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -124,7 +123,7 @@
           <el-input
             ref="nickname"
             placeholder="暱稱"
-            v-model="registerForm.nickname"
+            v-model="loginForm.nickname"
             name="nickname"
             type="text"
             tabindex="1"
@@ -140,17 +139,17 @@
           <el-input
             ref="authCode"
             placeholder="驗證碼"
-            v-model="registerForm.authCode"
+            v-model="loginForm.authCode"
             name="authCode"
             type="authCode"
             tabindex="2"
             maxLength="6"
-            @input="(v) => (registerForm.authCode = v.replace(/[^\d]/g, ''))"
+            @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
           <span
             class="verification-style"
-            @click="getAuthCode(registerForm.email)"
+            @click="getAuthCode(loginForm.email)"
             >获取驗證碼</span
           >
         </el-form-item>
@@ -159,7 +158,7 @@
             style="width: 100%; margin-bottom: 30px"
             :class="disabled ? 'gray-btn' : 'orange-btn'"
             :disabled="disabled"
-            @click="submitForm('registerForm')"
+            @click="submitForm('loginForm')"
             >提交</el-button
           >
         </div>
@@ -170,41 +169,30 @@
 
 <script>
 import { getAuthCode, register } from "@/api";
-
 export default {
   data() {
     return {
-      registerForm: {
+      loginForm: {
         email: "",
         password: "",
         authCode: "",
         nickname: "",
         username: "",
       },
-      registerRules: {
-        email: [
-          { required: false, message: "請輸入電子郵箱", trigger: "blur" },
-        ],
-        password: [
-          { required: false, message: "請輸入登入密碼", trigger: "blur" },
-        ],
-        authCode: [
-          { required: false, message: "請輸入驗證碼", trigger: "blur" },
-        ],
-      },
       device: "",
       passwordType: "password",
-      passwordType2: "password",
+      passwordTypeAganin: "password",
       disabled: true,
     };
   },
   watch: {
-    registerForm: {
+    loginForm: {
       handler(val) {
+        console.log(val)
         if (
           Object.values(val).every((el) => el !== "") &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) &&
-          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password2) &&
+          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.passwordAganin) &&
           /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-]).{5,}$/.test(val.username) 
         ) {
           this.disabled = false;
@@ -236,7 +224,7 @@ export default {
       this.$nextTick(() => this.$refs.password.focus());
     },
     showPwd2() {
-      this.passwordType2 = this.passwordType2 === "password" ? "" : "password";
+      this.passwordTypeAganin = this.passwordTypeAganin === "password" ? "" : "password";
       this.$nextTick(() => this.$refs.password.focus());
     },
     getAuthCode(email) {
@@ -266,8 +254,8 @@ export default {
           });
           return;
         }
-        delete this.registerForm.password2;
-        register(this.registerForm)
+        delete this.loginForm.passwordAganin;
+        register(this.loginForm)
           .then((res) => {
             //登入成功
             // if (res.code === 200) {
