@@ -65,7 +65,6 @@
 </template>
 
 <script>
-// import { getAuthCode } from "@/api";
 import { getAuthCodeData } from "@/assets/tools";
 export default {
   data() {
@@ -107,19 +106,6 @@ export default {
     }
   },
   methods: {
-    // getAuthCodeData(data){
-    //   if (data === '') {
-    //     this.$message({
-    //       message: "資料尚未輸入完全",
-    //       type: "error",
-    //     });
-    //     return;
-    //   }
-    //   getAuthCode(data).then((res)=>{
-    //     console.log(res)
-    //   })
-    //   .catch((err)=>{})
-    // },
     //登入&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過

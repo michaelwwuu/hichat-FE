@@ -81,9 +81,14 @@ function getAuthCodeData(email){
     return;
   }
   getAuthCode({email}).then((res)=>{
-    console.log(res)
+    if(res.code === 200){
+      this.$message({
+        message: "請至郵件信箱獲取驗證碼",
+        type: "error",
+      });
+      return;
+    }
   })
-  .catch((err)=>{})
 }
 
 export {

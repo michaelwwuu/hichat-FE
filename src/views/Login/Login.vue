@@ -115,7 +115,6 @@
 <script>
 import { login } from "_api/index.js";
 import { setToken, getToken, setLocal } from "_util/utils.js";
-// import { getAuthCode } from "@/api";
 import { getAuthCodeData } from "@/assets/tools";
 
 export default {
@@ -169,19 +168,6 @@ export default {
     this.getUUID();
   },
   methods: {
-    // getAuthCodeData(email){
-    //   if (email === '') {
-    //     this.$message({
-    //       message: "資料尚未輸入完全",
-    //       type: "error",
-    //     });
-    //     return;
-    //   }
-    //   getAuthCode({email}).then((res)=>{
-    //     console.log(res)
-    //   })
-    //   .catch((err)=>{})
-    // },
     showPwd() {
       this.passwordType = this.passwordType === 'password' ? '': 'password'
       this.$nextTick(() => this.$refs.password.focus())
