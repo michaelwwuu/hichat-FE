@@ -1,5 +1,7 @@
 
 import Socket from "@/utils/socket";
+import { getAuthCode } from "@/api";
+
 
 /* 返回底部 */
 function gotoBottom () {
@@ -70,8 +72,23 @@ function unBlock(item) {
   Socket.send(unBlock);
 }
 
+function getAuthCodeData(email){
+  if (email === '') {
+    this.$message({
+      message: "資料尚未輸入完全",
+      type: "error",
+    });
+    return;
+  }
+  getAuthCode({email}).then((res)=>{
+    console.log(res)
+  })
+  .catch((err)=>{})
+}
+
 export {
   gotoBottom,
   disabled,
-  unBlock
+  unBlock,
+  getAuthCodeData
 }

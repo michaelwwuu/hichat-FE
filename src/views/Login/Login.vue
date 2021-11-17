@@ -78,7 +78,7 @@
         </el-input>
         <span
           class="verification-style"
-          @click="getAuthCode(loginForm.email)"
+          @click="getAuthCodeData(loginForm.email)"
           >获取驗證碼</span
         >
       </el-form-item>
@@ -115,7 +115,9 @@
 <script>
 import { login } from "_api/index.js";
 import { setToken, getToken, setLocal } from "_util/utils.js";
-import { getAuthCode } from "@/api";
+// import { getAuthCode } from "@/api";
+import { getAuthCodeData } from "@/assets/tools";
+
 export default {
   data() {
     return {
@@ -124,6 +126,7 @@ export default {
         password: "",
         authCode:"",
       },
+      getAuthCodeData:getAuthCodeData,
       device: "",
       token: getToken("token"),
       passwordType: 'password',
@@ -166,19 +169,19 @@ export default {
     this.getUUID();
   },
   methods: {
-    getAuthCode(email){
-      if (email === '') {
-        this.$message({
-          message: "資料尚未輸入完全",
-          type: "error",
-        });
-        return;
-      }
-      getAuthCode({email}).then((res)=>{
-        console.log(res)
-      })
-      .catch((err)=>{})
-    },
+    // getAuthCodeData(email){
+    //   if (email === '') {
+    //     this.$message({
+    //       message: "資料尚未輸入完全",
+    //       type: "error",
+    //     });
+    //     return;
+    //   }
+    //   getAuthCode({email}).then((res)=>{
+    //     console.log(res)
+    //   })
+    //   .catch((err)=>{})
+    // },
     showPwd() {
       this.passwordType = this.passwordType === 'password' ? '': 'password'
       this.$nextTick(() => this.$refs.password.focus())
@@ -198,7 +201,6 @@ export default {
     submitForm(rules) {
       //驗證登入表單是否通過
       this.$refs[rules].validate(valid => {
-
         if (this.disabled) {
           this.$message({
             message: "資料尚未輸入完全",

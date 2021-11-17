@@ -47,7 +47,7 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          <span class="verification-style" @click="getAuthCode(loginForm.email)">获取驗證碼</span>
+          <span class="verification-style" @click="getAuthCodeData(loginForm.email)">获取驗證碼</span>
         </el-form-item>
         <div class="register-footer">
           <el-button
@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import { getAuthCode } from "@/api";
+// import { getAuthCode } from "@/api";
+import { getAuthCodeData } from "@/assets/tools";
 export default {
   data() {
     return {
@@ -75,6 +76,7 @@ export default {
       },
       device:'',
       disabled:true,
+      getAuthCodeData:getAuthCodeData,
     };
   },
   watch: {
@@ -105,19 +107,19 @@ export default {
     }
   },
   methods: {
-    getAuthCode(data){
-      if (data === '') {
-        this.$message({
-          message: "資料尚未輸入完全",
-          type: "error",
-        });
-        return;
-      }
-      getAuthCode(data).then((res)=>{
-        console.log(res)
-      })
-      .catch((err)=>{})
-    },
+    // getAuthCodeData(data){
+    //   if (data === '') {
+    //     this.$message({
+    //       message: "資料尚未輸入完全",
+    //       type: "error",
+    //     });
+    //     return;
+    //   }
+    //   getAuthCode(data).then((res)=>{
+    //     console.log(res)
+    //   })
+    //   .catch((err)=>{})
+    // },
     //登入&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過

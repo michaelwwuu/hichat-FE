@@ -168,7 +168,9 @@
 </template>
 
 <script>
-import { getAuthCode, register } from "@/api";
+import { register } from "@/api";
+import { getAuthCodeData } from "@/assets/tools";
+
 export default {
   data() {
     return {
@@ -183,6 +185,7 @@ export default {
       passwordType: "password",
       passwordTypeAganin: "password",
       disabled: true,
+      getAuthCodeData:getAuthCodeData,
     };
   },
   watch: {
@@ -226,20 +229,20 @@ export default {
       }
       this.$nextTick(() => this.$refs.password.focus());
     },
-    getAuthCodeData(email) {
-      if (email === "") {
-        this.$message({
-          message: "資料尚未輸入完全",
-          type: "error",
-        });
-        return;
-      }
-      getAuthCode({ email })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {});
-    },
+    // getAuthCodeData(email) {
+    //   if (email === "") {
+    //     this.$message({
+    //       message: "資料尚未輸入完全",
+    //       type: "error",
+    //     });
+    //     return;
+    //   }
+    //   getAuthCode({ email })
+    //     .then((res) => {
+    //       console.log(res);
+    //     })
+    //     .catch((err) => {});
+    // },
     //登入&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
