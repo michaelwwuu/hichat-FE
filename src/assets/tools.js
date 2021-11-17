@@ -81,13 +81,7 @@ function getAuthCodeData(email){
     return;
   }
   getAuthCode({email}).then((res)=>{
-    if(res.code === 200){
-      this.$message({
-        message: "請至郵件信箱獲取驗證碼",
-        type: "error",
-      });
-      return;
-    }
+    if(res.code === 200) this.$message({ message: "請至郵件信箱獲取驗證碼", type: "success"});
   })
 }
 

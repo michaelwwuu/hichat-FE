@@ -81,7 +81,7 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        if (Object.values(val).every((el) => el !== "")) {
+        if (Object.values(val).every(el => el !== "")) {
           this.disabled = false;
         } else {
           this.disabled = true;
