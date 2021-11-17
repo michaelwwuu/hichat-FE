@@ -49,7 +49,7 @@
             "
           >
           </el-input>
-          <span class="show-pwd" @click="showPwd">
+          <span class="show-pwd" @click="showPwd('password')">
             <img
               :src="
                 passwordType === 'password'
@@ -82,7 +82,7 @@
             "
           >
           </el-input>
-          <span class="show-pwd" @click="showPwd2">
+          <span class="show-pwd" @click="showPwd('passwordAgain')">
             <img
               :src="
                 passwordTypeAganin === 'password'
@@ -149,7 +149,7 @@
           </el-input>
           <span
             class="verification-style"
-            @click="getAuthCode(loginForm.email)"
+            @click="getAuthCodeData(loginForm.email)"
             >获取驗證碼</span
           >
         </el-form-item>
@@ -188,7 +188,6 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        console.log(val)
         if (
           Object.values(val).every((el) => el !== "") &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) &&
@@ -219,15 +218,15 @@ export default {
     }
   },
   methods: {
-    showPwd() {
-      this.passwordType = this.passwordType === "password" ? "" : "password";
+    showPwd(value) {
+      if(value === 'password'){
+        this.passwordType = this.passwordType === "password" ? "" : "password";
+      } else if(value === 'passwordAgain'){
+        this.passwordTypeAganin = this.passwordTypeAganin === "password" ? "" : "password";
+      }
       this.$nextTick(() => this.$refs.password.focus());
     },
-    showPwd2() {
-      this.passwordTypeAganin = this.passwordTypeAganin === "password" ? "" : "password";
-      this.$nextTick(() => this.$refs.password.focus());
-    },
-    getAuthCode(email) {
+    getAuthCodeData(email) {
       if (email === "") {
         this.$message({
           message: "資料尚未輸入完全",
@@ -243,8 +242,6 @@ export default {
     },
     //登入&&註冊
     submitForm(rules) {
-      console.log(rules);
-
       //驗證註冊表單是否通過
       this.$refs[rules].validate((valid) => {
         if (!valid) {
