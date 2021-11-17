@@ -25,7 +25,10 @@
             name="email"
             type="text"
             tabindex="1"
-            @keyup.enter.native="submitForm('forgetForm')"
+            maxLength="30"
+            @input="
+              (v) => (forgetForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
           >
           </el-input>
         </el-form-item>
@@ -40,7 +43,8 @@
             name="authCode"
             type="authCode"
             tabindex="2"
-            @keyup.enter.native="submitForm('forgetForm')"
+            maxLength="6"
+            @input="(v) => (forgetForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
           <span class="verification-style" @click="getAuthCode(forgetForm.email)">获取驗證碼</span>

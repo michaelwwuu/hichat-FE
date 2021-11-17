@@ -25,7 +25,6 @@
             name="email"
             type="text"
             tabindex="1"
-            minLength="5"
             maxLength="30"
             @input="
               (v) => (registerForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
@@ -44,7 +43,6 @@
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
             tabindex="2"
-            minLength="8"
             maxLength="12"
             @input="
               (v) =>
@@ -146,8 +144,8 @@
             name="authCode"
             type="authCode"
             tabindex="2"
-            @input="(v) => (registerForm.authCode = v.replace(/[^\d]/g, ''))"
             maxLength="6"
+            @input="(v) => (registerForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
           <span
