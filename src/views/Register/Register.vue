@@ -25,9 +25,11 @@
             name="email"
             type="text"
             tabindex="1"
-            minLength='5'
-            maxLength='30'
-            @input="v=>registerForm.email = v.replace(/^[\u4E00-\u9FA5]+$/,'')"
+            minLength="5"
+            maxLength="30"
+            @input="
+              (v) => (registerForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
           >
           </el-input>
         </el-form-item>
@@ -42,9 +44,12 @@
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
             tabindex="2"
-            minLength='8'
-            maxLength='12'
-            @input="v=>registerForm.password = v.replace(/^[\u4E00-\u9FA5]+$/,'')"
+            minLength="8"
+            maxLength="12"
+            @input="
+              (v) =>
+                (registerForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
           >
           </el-input>
           <span class="show-pwd" @click="showPwd">
@@ -72,9 +77,12 @@
             name="password2"
             :type="passwordType2 === 'password' ? 'password' : 'text'"
             tabindex="2"
-            minLength='8'
-            maxLength='12'
-            @input="v=>registerForm.password2 = v.replace(/^[\u4E00-\u9FA5]+$/,'')"
+            minLength="8"
+            maxLength="12"
+            @input="
+              (v) =>
+                (registerForm.password2 = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
           >
           </el-input>
           <span class="show-pwd" @click="showPwd2">
@@ -99,9 +107,12 @@
             name="username"
             type="text"
             tabindex="1"
-            minLength='5'
-            maxLength='18'
-            @input="v=>registerForm.username = v.replace(/^[\u4E00-\u9FA5]+$/,'')"
+            minLength="5"
+            maxLength="18"
+            @input="
+              (v) =>
+                (registerForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
           >
           </el-input>
         </el-form-item>
@@ -119,8 +130,8 @@
             name="nickname"
             type="text"
             tabindex="1"
-            minLength='5'
-            maxLength='18'
+            minLength="5"
+            maxLength="18"
           >
           </el-input>
         </el-form-item>
@@ -135,8 +146,8 @@
             name="authCode"
             type="authCode"
             tabindex="2"
-            @input="v=>registerForm.authCode = v.replace(/[^\d]/g,'')"
-            maxLength='6'
+            @input="(v) => (registerForm.authCode = v.replace(/[^\d]/g, ''))"
+            maxLength="6"
           >
           </el-input>
           <span
@@ -160,7 +171,7 @@
 </template>
 
 <script>
-import { getAuthCode,register } from "@/api";
+import { getAuthCode, register } from "@/api";
 
 export default {
   data() {
@@ -192,12 +203,16 @@ export default {
   watch: {
     registerForm: {
       handler(val) {
-        if(Object.values(val).every(el => el !== '')){
-          this.disabled = false
-        } else{
-          this.disabled = true
+        if (
+          Object.values(val).every((el) => el !== "") &&
+          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) &&
+          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password2) &&
+          /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-]).{5,}$/.test(val.username) 
+        ) {
+          this.disabled = false;
+        } else {
+          this.disabled = true;
         }
-
       },
       deep: true,
     },
@@ -242,10 +257,10 @@ export default {
     },
     //登入&&註冊
     submitForm(rules) {
-      console.log(rules)
+      console.log(rules);
 
       //驗證註冊表單是否通過
-      this.$refs[rules].validate(valid => {
+      this.$refs[rules].validate((valid) => {
         if (!valid) {
           this.$message({
             message: "註冊失敗，請重新輸入並確認",
@@ -253,7 +268,7 @@ export default {
           });
           return;
         }
-        delete this.registerForm.password2
+        delete this.registerForm.password2;
         register(this.registerForm)
           .then((res) => {
             //登入成功
