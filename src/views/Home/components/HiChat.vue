@@ -22,6 +22,11 @@
 
 export default {
   name: "HiChat",
+  data() {
+    return {
+      searchKey:"",
+    }
+  },
 };
 </script>
 

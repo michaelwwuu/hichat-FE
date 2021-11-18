@@ -15,7 +15,7 @@
       </el-input>
     </div>
     <div class="home-content-tag">
-      <span>聯絡人 <span class="number">{{contactList.length}}</span></span>
+      <span>聯絡人 <span class="number">{{contactList.length || 0}}</span></span>
       <span>群組</span>
     </div>
   </div>    
@@ -40,7 +40,7 @@ export default {
       getContactList()
       .then((res)=>{
         console.log(res)
-        this.contactList = res.list
+        this.contactList = res.data.list
       })
     },
     userMemberShow(){
