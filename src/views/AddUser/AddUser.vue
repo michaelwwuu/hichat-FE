@@ -21,8 +21,8 @@
     </div>
 
     <div v-if="Object.keys(addUser).length !== 0">
-      <div>
-        <img :src="avatarImg" alt="">
+      <div class="user-data">
+        <span><img :src="avatarImg" alt=""></span>
         <span>{{addUser.username}}</span>
       </div>
     </div>
@@ -130,6 +130,18 @@ export default {
       &:nth-child(2){
         color: #b3b3b3;
         font-size:14px;
+      }
+    }
+  }
+  .user-data{
+    margin: 2.5em auto;
+    
+    span{
+      display: block;
+      text-align: center;
+      height:3.5em;
+      img{
+        height:3em;
       }
     }
   }
