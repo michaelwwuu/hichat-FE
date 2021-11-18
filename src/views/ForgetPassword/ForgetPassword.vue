@@ -10,7 +10,6 @@
       <el-form
         ref="loginForm"
         :model="loginForm"
-        :rules="forgetRules"
         class="login-form"
         label-position="top"
       >
@@ -47,7 +46,7 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          <span class="verification-style" @click="getAuthCodeData(loginForm.email)">获取驗證碼</span>
+          <span class="verification-style" @click="getAuthCodeData(loginForm.email,false)">获取驗證碼</span>
         </el-form-item>
         <div class="register-footer">
           <el-button
@@ -66,6 +65,7 @@
 
 <script>
 import { getAuthCodeData } from "@/assets/tools";
+
 export default {
   data() {
     return {

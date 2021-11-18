@@ -149,7 +149,7 @@
           </el-input>
           <span
             class="verification-style"
-            @click="getAuthCodeData(loginForm.email)"
+            @click="getAuthCodeData(loginForm.email,true)"
             >获取驗證碼</span
           >
         </el-form-item>
@@ -164,12 +164,27 @@
         </div>
       </el-form>
     </div>
+    <el-dialog
+      :visible.sync="dialogShow"
+      class="dialog-style"
+      width="90%"
+      :show-close="false"
+      center>
+      <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
+      <div align="center">註冊完成，請重新登入</div>
+      <span slot="footer" class="dialog-footer">
+        <router-link to="/Login">
+          <el-button @click="dialogShow">确 定</el-button>
+        </router-link>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { register } from "@/api";
 import { getAuthCodeData } from "@/assets/tools";
+import { setToken } from "_util/utils.js";
 
 export default {
   data() {
@@ -185,6 +200,7 @@ export default {
       passwordType: "password",
       passwordTypeAganin: "password",
       disabled: true,
+      dialogShow:false,
       getAuthCodeData:getAuthCodeData,
     };
   },
@@ -195,7 +211,7 @@ export default {
           Object.values(val).every(el => el !== "") &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) &&
           /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.passwordAganin) &&
-          /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-]).{5,}$/.test(val.username) 
+          /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[_]).{5,}$/.test(val.username) 
         ) {
           this.disabled = false;
         } else {
@@ -244,16 +260,10 @@ export default {
         register(this.loginForm)
           .then((res) => {
             //登入成功
-            // if (res.code === 200) {
-            //   setToken(res.data.tokenHead + res.data.token);
-            //   this.$router.push({ path: "/Chat" });
-            // } else if (res.code === 500) {
-            //   this.$message({
-            //     message: res.message,
-            //     type: "error",
-            //   });
-            //   return false;
-            // }
+            if (res.code === 200) {
+              setToken(res.data.tokenHead + res.data.token);
+              this.dialogShow = true
+            } 
           })
           .catch((err) => {
             this.$message({
@@ -264,7 +274,7 @@ export default {
           });
       });
     },
-    //清空表格
+    
   },
 };
 </script>
@@ -372,6 +382,32 @@ export default {
       bottom: 0;
       width: 100%;
     }
+  }
+  .dialog-style{
+    /deep/.el-dialog{
+      border-radius: 10px;
+      .el-dialog__body{
+        margin-top:-2.5em;
+        margin-bottom:-1.5em;
+        div{
+          margin: 2em 0;
+          img{
+            height:5em;
+          }
+        }
+      }
+      .el-dialog__footer{
+        width: 100%;
+        .dialog-footer{
+          .el-button{
+            width: 90%;
+            background-color: #fd5f3f;
+            color: #FFF;
+          }
+        }
+      }
+    }
+    
   }
 }
 </style>

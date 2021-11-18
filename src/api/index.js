@@ -38,9 +38,19 @@ export const getRoomList = (params) => {
 }
 
 // 獲取驗證碼
-export const getAuthCode = (params) => {
+// export const getAuthCode = (params) => {
+//   let postData = {
+//     url: '/sso/getAuthCode',
+//     method: 'get',
+//     params
+//   }
+//   return axios.request(postData)
+// }
+
+// 產生驗證碼
+export const genAuthCode = (params) => {
   let postData = {
-    url: '/sso/getAuthCode',
+    url: '/sso/genAuthCode',
     method: 'get',
     params
   }

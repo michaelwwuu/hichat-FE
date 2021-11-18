@@ -1,6 +1,6 @@
 
 import Socket from "@/utils/socket";
-import { getAuthCode } from "@/api";
+import { genAuthCode } from "@/api";
 
 
 /* 返回底部 */
@@ -72,7 +72,7 @@ function unBlock(item) {
   Socket.send(unBlock);
 }
 
-function getAuthCodeData(email){
+function getAuthCodeData(email,key) {
   if (email === '') {
     this.$message({
       message: "資料尚未輸入完全",
@@ -80,7 +80,12 @@ function getAuthCodeData(email){
     });
     return;
   }
-  getAuthCode({email}).then((res)=>{
+  let params = {
+    email:email,
+    forRegister:key
+  }
+  console.log(params)
+  genAuthCode(params).then((res)=>{
     if(res.code === 200) this.$message({ message: "請至郵件信箱獲取驗證碼", type: "success"});
   })
 }

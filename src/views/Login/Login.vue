@@ -78,7 +78,7 @@
         </el-input>
         <span
           class="verification-style"
-          @click="getAuthCodeData(loginForm.email)"
+          @click="getAuthCodeData(loginForm.email,false)"
           >获取驗證碼</span
         >
       </el-form-item>
@@ -199,7 +199,7 @@ export default {
             //登入成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              this.$router.push({ path: "/Room" });
+              this.$router.push({ path: "/Home" });
             } else {
               this.$message({
                 message: "登入驗證失敗，請重新輸入並確認",

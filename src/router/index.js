@@ -31,6 +31,34 @@ const routes = [
     component: () => import(/* webpackChunkName: "ForgetPassword" */ '@/views/ForgetPassword/ForgetPassword.vue'),
   },
   {
+    path: "/Home",
+    name: "Home",
+    component: () => import(/* webpackChunkName: "Home" */ '@/views/Home/Home.vue'),
+    redirect: '/Address',//页面默认加载的路由
+    children: [
+      {
+        path: "/Address",
+        name: "Address",
+        component: () => import("@/views/Home/components/Address.vue")
+      },
+      {
+        path: "/HiChat",
+        name: "HiChat",
+        component: () => import("@/views/Home/components/HiChat.vue")
+      },
+      {
+        path: "/Setting",
+        name: "Setting",
+        component: () => import("@/views/Home/components/Setting.vue")
+      }
+    ]
+  },
+  {
+    path: "/AddUser",
+    name: "AddUser",
+    component: () => import(/* webpackChunkName: "AddUser" */ '@/views/AddUser/AddUser.vue'),
+  },
+  {
     path: "/Room",
     name: "Room",
     component: () => import(/* webpackChunkName: "Room" */ '@/views/Room/Room.vue'),
