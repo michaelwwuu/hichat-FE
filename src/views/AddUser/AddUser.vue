@@ -20,17 +20,24 @@
       <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
     </div>
 
-    <div v-if="Object.keys(addUser).length !== 0">
+    <div v-if="Object.keys(addUser).length !== 0" class="add-content">
       <div class="user-data">
         <span><img :src="avatarImg" alt=""></span>
         <span>{{addUser.username}}</span>
       </div>
+      <div class="address-footer">
+        <el-button
+        @click="joinUserButtom(searchKey)"
+          >加入</el-button
+        >
+      </div>
     </div>
+    
   </div>
 </template>
 
 <script>
-import { searchByEmailUsername } from "@/api";
+import { searchByEmailUsername,addContactUser } from "@/api";
 
 export default {
   name: "AddUser",
@@ -60,6 +67,19 @@ export default {
           this.addUser = res.data
 
         }
+      })
+      .catch((res)=>{
+
+      })
+    },
+    joinUserButtom(data){
+      let parmas = {
+          contactId: 0,
+          name: data
+      }
+      addContactUser(parmas)
+      .then((res)=>{
+        console.log(res)
       })
       .catch((res)=>{
 
@@ -133,17 +153,32 @@ export default {
       }
     }
   }
-  .user-data{
-    margin: 2.5em auto;
-    
-    span{
-      display: block;
-      text-align: center;
-      height:3.5em;
-      img{
-        height:3em;
+  .add-content{
+    height: 65vh;
+    .user-data{
+      margin: 2.5em auto;
+      span{
+        display: block;
+        text-align: center;
+        height:3.5em;
+        img{
+          height:3em;
+        }
+      }
+    }
+    .address-footer{
+      position: relative;
+      top:  6em;
+      width: 95%;
+      margin: 0 auto;
+      display: flex;
+      .el-button{
+        width:100%;
+        background-color: #fe5f3f;
+        color: #fff;
       }
     }
   }
+
 }
 </style>

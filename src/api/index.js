@@ -66,3 +66,23 @@ export const searchByEmailUsername = (params) => {
   }
   return axios.request(postData)
 }
+
+// 獲取會員訊息
+export const getContactList = (params) => {
+  let postData = {
+    url: '/member/contact/list',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+// 添加好友
+export const addContactUser = data => {
+  let postData = {
+    url: '/member/contact/add',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

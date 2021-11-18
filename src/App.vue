@@ -12,11 +12,13 @@ export default {
 
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap');
 #app {
   max-width: 100vw;
   height: 100vh;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑","Regular", Arial, sans-serif;
+  // font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+  //   "Microsoft YaHei", "微软雅黑","Regular", Arial, sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;
 }
 .el-notification__content {
   margin-top: 20px;
