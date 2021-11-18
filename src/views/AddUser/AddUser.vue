@@ -154,7 +154,6 @@ export default {
     }
   }
   .add-content{
-    height: 65vh;
     .user-data{
       margin: 2.5em auto;
       span{
@@ -167,11 +166,9 @@ export default {
       }
     }
     .address-footer{
+      margin: 1em;
       position: relative;
-      top:  6em;
-      width: 95%;
-      margin: 0 auto;
-      display: flex;
+      top: 10em;
       .el-button{
         width:100%;
         background-color: #fe5f3f;
