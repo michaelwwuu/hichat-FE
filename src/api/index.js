@@ -56,3 +56,13 @@ export const genAuthCode = (params) => {
   }
   return axios.request(postData)
 }
+
+// 搜尋用戶
+export const searchByEmailUsername = (params) => {
+  let postData = {
+    url: '/member/profile/searchByEmailUsername',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}

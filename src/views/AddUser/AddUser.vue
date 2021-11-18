@@ -11,22 +11,60 @@
       <el-input
         placeholder="输入欲搜寻的邮箱或帐号ID"
         prefix-icon="el-icon-search"
-        v-model="searchKey">
+        v-model="searchKey"
+        @keyup.native.enter="searchUserData(searchKey)">
       </el-input>
+    </div>
+    <div class="no-data" v-show="noData">
+      <span>此用户不存在</span>
+      <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
+    </div>
+
+    <div v-if="Object.keys(addUser).length !== 0">
+      <div>
+        <img :src="avatarImg" alt="">
+        <span>{{addUser.username}}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { searchByEmailUsername } from "@/api";
+
 export default {
   name: "AddUser",
   data() {
     return {
       searchKey:'',
+      noData:false,
+      addUser:{},
+      avatarImg:require("./../../../static/images/image_user_defult.png")
     }
   },
   methods: {
+    searchUserData(token){
+      this.noData = false
+      if(token === '') {
+        this.addUser = {}
+        this.noData = true
+        return
+      }
+      
+      this.addUser = {}
+      searchByEmailUsername({token})
+      .then((res)=>{
+        if(res.data === undefined) {
+          this.noData = true
+        } else if(res.data !=={}){
+          this.addUser = res.data
 
+        }
+      })
+      .catch((res)=>{
+
+      })
+    }
   },
 };
 </script>
@@ -82,6 +120,18 @@ export default {
       }
     }
     
+  }
+  .no-data{
+    margin: 2em 0;
+    span{
+      display: block;
+      text-align: center;
+      height:2em;
+      &:nth-child(2){
+        color: #b3b3b3;
+        font-size:14px;
+      }
+    }
   }
 }
 </style>
