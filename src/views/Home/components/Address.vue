@@ -14,10 +14,18 @@
         v-model="searchKey">
       </el-input>
     </div>
-    <div class="home-content-tag">
-      <span>聯絡人 <span class="number">{{contactList.length || 0}}</span></span>
-      <span>群組</span>
-    </div>
+
+    <el-tabs v-model="activeName" >
+      <el-tab-pane :label="`聯絡人 ${contactList.length || 0}`" name="address">
+        <div  class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
+          <img :src="item.avatarImg" alt="">
+          <span>{{item.name}}</span>
+        </div>
+      </el-tab-pane>
+      <!-- <el-tab-pane label="群組" name="group">
+        <div></div>
+      </el-tab-pane> -->
+    </el-tabs>
   </div>    
 </template>
 
@@ -30,6 +38,7 @@ export default {
     return {
       searchKey:'',
       contactList:[],
+      activeName:'address'
     }
   },
   mounted() {
@@ -39,12 +48,17 @@ export default {
     getAddressList(){
       getContactList()
       .then((res)=>{
-        console.log(res)
         this.contactList = res.data.list
+        this.contactList.forEach((res)=>{
+          res.avatarImg = require("./../../../../static/images/image_user_defult.png")
+        })
       })
     },
     userMemberShow(){
       console.log(123)
+    },
+    goContactPage(data){
+      this.$router.push({ name: "ContactPage",params:data });
     }
   },
 };
@@ -96,18 +110,57 @@ export default {
   }
   
 }
-.home-content-tag{
-  display: flex;
-  justify-content: space-between;
+
+/deep/.el-tabs__header{
   background-color: #e2e0e0;
-  padding: 0.7em 5em;
-  span{
-    font-size: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  margin:0;
+  .el-tabs__nav-wrap{
+    &:after {
+      content: "";
+      display:none;
+    }
+    .el-tabs__active-bar{
+      display: none;
+    }
+    .el-tabs__item.is-active{
+      color: #303133;
+    }
+    .el-tabs__nav{
+      display: flex;
+      width: 13em;
+      justify-content: center;
+      .el-tabs__item{
+        font-size: 15px;
+        padding: 0;
+      }
+    }
   }
-  .number{
-    padding-left: 1px;
-  }
+  
 }
+.address-box{
+  background-color: #FFFFFF;
+  padding: 0.8em 1em;
+  display: flex;
+  align-items: center;
+  img{
+    height:2em;
+  }
+  span{
+    padding-left: 1em;
+    font-size:14px;
+  }
+  ::after{
+    content: "";
+    display: block;
+    position: absolute;
+    margin-top: 1.5em;
+    width:100%;
+    border-bottom: 0.02em solid #b3b3b3;
+  }
+  }
+
 
 </style>
 

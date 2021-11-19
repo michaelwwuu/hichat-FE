@@ -69,6 +69,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "Chat" */ '@/views/Chat/Chat.vue'),
   },
   {
+    path: "/ContactPage",
+    name: "ContactPage",
+    component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
+  },
+  {
     path: "*",
     redirect: "/login"
   }
@@ -82,11 +87,10 @@ const router = new VueRouter({
 //导航守卫
 router.beforeEach((to, from, next) => {
   //判断token是否失效
-  if (to.name === "Room") {
+  if (to.name === "Address") {
     getUserInfo().then((res) => {
       if (res.code === 200) {
         setLocal('username', res.data.username);
-        setLocal('isGuest', res.data.isGuest);
       } else {
         next({ path: '/login' });
       }

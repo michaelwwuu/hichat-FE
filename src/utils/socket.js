@@ -13,7 +13,6 @@ const emitter = new Vue({
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 1,
-        platformCode: "dcw",
       },
     }
   },

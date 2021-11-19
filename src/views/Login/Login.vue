@@ -86,8 +86,8 @@
         <el-switch
           v-model="remember"
           active-color="#fd5f3f"
-          inactive-color="#ff4949"
-          active-text="記住帳號">
+          inactive-color="#666666"
+          active-text="記住帳號">        
         </el-switch>
         <router-link :to="'/ForgetPassword'" style="text-decoration: none;">
           <span>忘記密碼</span>

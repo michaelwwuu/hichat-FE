@@ -25,10 +25,10 @@
         <span><img :src="avatarImg" alt=""></span>
         <span>{{addUser.username}}</span>
       </div>
-      <div class="address-footer">
+      <div class="home-footer-btn">
         <el-button
         @click="joinUserButtom(searchKey)"
-          >加入</el-button
+          >加入聯絡人</el-button
         >
       </div>
     </div>
@@ -165,12 +165,15 @@ export default {
         }
       }
     }
-    .address-footer{
-      margin: 1em;
-      position: relative;
-      top: 10em;
+    .home-footer-btn{
+      margin: 1em 0;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
       .el-button{
-        width:100%;
+        width:93%;
         background-color: #fe5f3f;
         color: #fff;
       }

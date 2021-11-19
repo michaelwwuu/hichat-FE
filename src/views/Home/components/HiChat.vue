@@ -49,7 +49,7 @@ export default {
       height: 2em;
       border-radius: 10px;
       background-color: #fff;
-      // background-image: url("./../../../static/images/add_user.png");
+      background-image: url("./../../../../static/images/add_chat.png");
       background-size: 50%;
       background-position: center;
       background-repeat: no-repeat;
@@ -59,7 +59,7 @@ export default {
     margin: 1em;
     /deep/.el-input{
       .el-input__inner{
-        background-color: #e2e0e0;
+        background-color: #e9e8e8;
         color: #666666;
       }
       .el-input__prefix{
