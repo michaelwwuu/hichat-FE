@@ -48,6 +48,10 @@ const rootMixins = {
     formatTimeS(time) {
       return this.$moment(time).format('YYYY/MM/DD HH:mm:ss')
     },
+    formatTimeDay(time) {
+      return this.$moment(time).format('MM-DD')
+    },
+
     formatNowTime(time) {
       return this.$moment.unix(time).format('YYYY-MM-DD HH:mm:ss')
     },

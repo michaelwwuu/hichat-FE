@@ -41,6 +41,9 @@ export default {
       num:0,
     };
   },
+  created() {
+    this.num = this.$route.fullPath === "/HiChat"? 1 : this.$route.fullPath === "/Setting" ? 2:0
+  },
   methods: {
     changeImg(index){
       this.num = index
