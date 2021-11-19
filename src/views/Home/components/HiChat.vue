@@ -48,29 +48,50 @@ export default {
       wsRes: (state) => state.ws.wsRes,
     }),
   },
-  watch: {
-    wsRes(val) {
-      let chatType = val.chatType;
-      switch (chatType) {
-      case "SRV_RECENT_CHAT":
-        this.hiChatDataList = val.recentChat
-        this.hiChatDataList.forEach((res)=>{
-          if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
-        })
-        console.log(this.hiChatDataList)
-        break
-       }
-    }
+  mounted() {
+    this.getHiChatDataList()
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+     
+    getHiChatDataList(){
+      if(this.wsRes.recentChat !== undefined){
+        this.hiChatDataList = this.wsRes.recentChat 
+        this.hiChatDataList.forEach((res)=>{
+          if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
+        })
+      }
+    },
+    // 訊息統一格式
+    messageList(data) {
+      this.chatRoomMsg = {
+        banRemainTime: data.banRemainTime,
+        chatType: data.chatType,
+        chatRoomId: data.toChatId,
+        platformCode: data.platformCode,
+        historyId: data.historyId,
+        message: {
+          time: data.sendTime,
+          content: this.redEnvelopeIcon(data)
+        },
+        username: data.fromChatId,
+      };
+    },
+
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg){
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-
+      switch (userInfo.chatType) {
+        case "SRV_RECENT_CHAT":
+          this.hiChatDataList = userInfo.recentChat
+          this.hiChatDataList.forEach((res)=>{
+            if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
+          })
+          break
+       }
     }
   }   
 };
