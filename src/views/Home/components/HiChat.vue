@@ -13,7 +13,7 @@
       </el-input>
     </div>
     <div class="home-content">
-      <div class="address-box" v-for="(item,index) in hiChatDataList" :key="index">
+      <div class="address-box" v-for="(item,index) in hiChatDataList" :key="index" @click="goChatRoom(item)">
         <img :src="item.icon" alt="">
         <div class="msg-box">
           <span>{{item.name}}</span>
@@ -55,43 +55,33 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-     
     getHiChatDataList(){
-      if(this.wsRes.recentChat !== undefined){
-        this.hiChatDataList = this.wsRes.recentChat 
-        this.hiChatDataList.forEach((res)=>{
-          if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
-        })
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id:Math.random(),
+        tokenType: 0,
+        fromChatId:localStorage.getItem('toChatId'),
+        deviceId: localStorage.getItem('UUID'),
+        token: localStorage.getItem('token'),
       }
+      Socket.send(chatMsgKey)
     },
-    // 訊息統一格式
-    messageList(data) {
-      this.chatRoomMsg = {
-        banRemainTime: data.banRemainTime,
-        chatType: data.chatType,
-        chatRoomId: data.toChatId,
-        platformCode: data.platformCode,
-        historyId: data.historyId,
-        message: {
-          time: data.sendTime,
-          content: this.redEnvelopeIcon(data)
-        },
-        username: data.fromChatId,
-      };
-    },
-
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg){
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
         case "SRV_RECENT_CHAT":
+          localStorage.setItem('toChatId',userInfo.toChatId)
           this.hiChatDataList = userInfo.recentChat
           this.hiChatDataList.forEach((res)=>{
             if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
           })
           break
        }
+    },
+    goChatRoom(data){
+      console.log(data)
     }
   }   
 };

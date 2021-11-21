@@ -69,6 +69,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "Chat" */ '@/views/Chat/Chat.vue'),
   },
   {
+    path: "/ChatMsg",
+    name: "ChatMsg",
+    component: () => import(/* webpackChunkName: "ChatMsg" */ '@/views/Chat/ChatMsg.vue'),
+  },    
+  {
     path: "/ContactPage",
     name: "ContactPage",
     component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
@@ -85,24 +90,24 @@ const router = new VueRouter({
 })
 
 //导航守卫
-router.beforeEach((to, from, next) => {
-  //判断token是否失效
-  if (to.name === "Address") {
-    getUserInfo().then((res) => {
-      if (res.code === 200) {
-        setLocal('username', res.data.username);
-      } else {
-        next({ path: '/login' });
-      }
-    }).catch((err) => {
-      setTimeout(() => {
-        next({ path: '/login' });
-      }, 2000);
-      alert("请注意：由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登入页，谢谢。");
-    })
-  }
-  next();
-});
+// router.beforeEach((to, from, next) => {
+//   //判断token是否失效
+//   if (to.name === "Address") {
+//     getUserInfo().then((res) => {
+//       if (res.code === 200) {
+//         setLocal('username', res.data.username);
+//       } else {
+//         next({ path: '/login' });
+//       }
+//     }).catch((err) => {
+//       setTimeout(() => {
+//         next({ path: '/login' });
+//       }, 2000);
+//       alert("请注意：由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登入页，谢谢。");
+//     })
+//   }
+//   next();
+// });
 
 
 export default router

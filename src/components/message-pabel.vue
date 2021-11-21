@@ -138,8 +138,6 @@ export default {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: rgba(255, 255, 255, 0.8);
-
   .eye-more {
     width: 100%;
     padding: 10px 0;
