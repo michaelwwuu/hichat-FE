@@ -4,8 +4,14 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <div class="home-user" @click="userMemberShow"></div>
+            <router-link :to="'/HiChat'">
+              <div class="home-user"></div>
+            </router-link>
             <span class="home-header-title">通訊錄</span>
+            <router-link :to="'/AddUser'">
+              <div class="home-add-user">
+              </div>
+            </router-link>
             <router-link :to="'/AddUser'">
               <div class="home-add-user"></div>
             </router-link>
@@ -308,7 +314,7 @@ export default {
           height: 2em;
           border-radius: 10px;
           background-color: #fff;
-          // background-image: url("./../../../../static/images/add_user.png");
+          // background-image: url("./../../../static/images/add_user.png");
           background-size: 50%;
           background-position: center;
           background-repeat: no-repeat;
