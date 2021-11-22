@@ -8,10 +8,7 @@
               <div class="home-user"></div>
             </router-link>
             <span class="home-header-title">通訊錄</span>
-            <router-link :to="'/AddUser'">
-              <div class="home-add-user">
-              </div>
-            </router-link>
+            <div class="home-user-search"></div>
             <router-link :to="'/AddUser'">
               <div class="home-add-user"></div>
             </router-link>
@@ -32,9 +29,8 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import MessageGroup from "@/components/message-group";
 import MessagePabel from "@/components/message-pabel";
-import MessageInput from "@/components/message-input";
+import MessageInput from "@/components/message-input-moblie";
 import { getLocal, getToken } from "_util/utils.js";
 export default {
   name: "ChatMsg",
@@ -224,7 +220,6 @@ export default {
     },
   },
   components: {
-    MessageGroup,
     MessagePabel,
     MessageInput,
   },
@@ -305,19 +300,27 @@ export default {
           background-repeat: no-repeat;
         }
         .home-header-title {
-          margin: 0 auto;
+          margin: 0 auto 0 8em;
           color: #10686e;
           font-weight: 600;
         }
-        .home-add-user{
+        .home-add-user,.home-user-search{
           width: 2em;
           height: 2em;
           border-radius: 10px;
           background-color: #fff;
-          // background-image: url("./../../../static/images/add_user.png");
           background-size: 50%;
           background-position: center;
           background-repeat: no-repeat;
+        }
+        .home-user-search{
+          margin-right: 10px;
+          background-image: url("./../../../static/images/search_icon.png");
+
+        }
+        .home-add-user{
+          background-image: url("./../../../static/images/add_user.png");
+
         }
       }
       img {
