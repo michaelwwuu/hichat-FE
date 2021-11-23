@@ -70,7 +70,8 @@ export default {
     .home-footer-btn{
       text-align: center;
       font-size: 12px;
-      padding: 0 4em;
+      padding: 0;
+      margin: 0 auto;
       a{
         text-decoration: none;
         color: #999999;

@@ -55,8 +55,8 @@ export default {
       searchKey:'',
       contactList:[],
       activeName:'address',
-      centerDialogVisible:true,
-      qrCodeConfig:"userName:'123'"
+      centerDialogVisible : false,
+      qrCodeConfig:"userName:'123'",
     }
   },
   mounted() {
@@ -73,7 +73,7 @@ export default {
       })
     },
     userMemberShow(){
-      console.log(123)
+      this.centerDialogVisible = true
     },
     goContactPage(data){
       this.$router.push({ name: "ContactPage",params:data });
@@ -182,10 +182,12 @@ export default {
   }
 }
 /deep/.el-dialog__wrapper{
-  top: auto;
+  overflow: hidden;
   .el-dialog{
     margin: 0 auto;
     border-radius: 20px 20px 0 0;
+    position: absolute;
+    bottom: 0;
     .el-dialog__header{
       .el-dialog__title{
         color: #10686e;
