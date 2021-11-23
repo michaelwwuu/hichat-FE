@@ -61,7 +61,7 @@ export default {
         },
         {
           name:"在对话中搜寻",
-          icon:require("./../../../static/images/search_icon.png"),
+          icon:require("./../../../static/images/search.png"),
           path:"",
         },
         {

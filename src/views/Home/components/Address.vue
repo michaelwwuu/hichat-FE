@@ -26,11 +26,27 @@
         <div></div>
       </el-tab-pane> -->
     </el-tabs>
+    <el-dialog
+      title="我的帐号"
+      :visible.sync="centerDialogVisible"
+      width="100%"
+      center>
+      <div class="qrcode-box">
+        <vue-qr :correctLevel="3" :autoColor="false" colorDark="#333333" :text="qrCodeConfig"  :size="100" :margin="0" :logoMargin="3"></vue-qr>
+      </div>
+      <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
+      <span slot="footer" class="dialog-footer">
+        <img src="./../../../../static/images/scan.png" alt="">
+        <img src="./../../../../static/images/share.png" alt="">
+        <img src="./../../../../static/images/download.png" alt="">
+      </span>
+    </el-dialog>
   </div>    
 </template>
 
 <script>
 import { getContactList } from "@/api";
+import VueQr from 'vue-qr'
 
 export default {
   name: "Address",
@@ -38,7 +54,9 @@ export default {
     return {
       searchKey:'',
       contactList:[],
-      activeName:'address'
+      activeName:'address',
+      centerDialogVisible:true,
+      qrCodeConfig:"userName:'123'"
     }
   },
   mounted() {
@@ -60,6 +78,9 @@ export default {
     goContactPage(data){
       this.$router.push({ name: "ContactPage",params:data });
     }
+  },
+  components: {
+    VueQr,
   },
 };
 </script>
@@ -160,7 +181,71 @@ export default {
     border-bottom: 0.02em solid #b3b3b3;
   }
 }
+/deep/.el-dialog__wrapper{
+  top: auto;
+  .el-dialog{
+    margin: 0 auto;
+    border-radius: 20px 20px 0 0;
+    .el-dialog__header{
+      .el-dialog__title{
+        color: #10686e;
+        font-weight: 600;
+      }
+      .el-dialog__headerbtn{
+        left: 20px;
+        .el-dialog__close{
+          color: #F60;
 
+        } 
+      }
+    }
+    .el-dialog__body{
+      text-align: center;
+      .qrcode-box{
+        width: 15em;
+        height: 15em;
+        border: 2px solid #333;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img{
+          height: 14em;
+        }
+        &::after{
+          content: '';
+          display: block;
+          width: 2.5em;
+          height: 2.5em;
+          background-color: #FFF;
+          background-image: url('./../../../../static/images/material_ic_logo.png');
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 70%;
+          position: absolute;
+          margin: 0 auto;
+          border-radius:10px;
+        }
+      }
+      .qrcode-box-text{
+        color: #0c0d0d;
+        font-weight: 600;
+        margin-top: 2em;
+        display: block;
+      }
+    }
+    .el-dialog__footer{
+      padding: 20px 30px 20px 30px;
+      .dialog-footer{
+        display: flex;
+        justify-content: space-between;
+        img{
+          height: 1em;
+        }
+      }
+    }
+  }
+}
 
 </style>
 

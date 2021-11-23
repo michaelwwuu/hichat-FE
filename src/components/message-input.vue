@@ -13,7 +13,6 @@
         >
           <el-button class="face-other-btn" size="mini" round
             ><img
-              src="./../../static/images/face-btn.svg"
               alt=""
             />表情</el-button
           >
@@ -57,7 +56,7 @@
 
       <div class="footer-tools">
         <el-button size="mini" class="send-button" @click="sendMessage">
-          <img src="./../../static/images/send-btn.svg" alt="" />
+          <!-- <img src="./../../static/images/send-btn.svg" alt="" /> -->
           发送
         </el-button>
       </div>

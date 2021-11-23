@@ -1,15 +1,21 @@
 <template>
   <div class="message-input-box">
-    <div class="input-tools">
-      <img src="./../../static/images/plus.png" alt="">
-      <img src="./../../static/images/image.png" alt="">
-      <img src="./../../static/images/camera.png" alt="">
+    <div class="input-tools-right" :style="textArea !== '' ? 'left: 0px':'left: 7px'">
+      <div v-if="textArea === ''">
+        <img src="./../../static/images/plus.png" alt="">
+        <img src="./../../static/images/image.png" alt="">
+        <img src="./../../static/images/camera.png" alt="">
+      </div>
+      <div v-else>
+        <img src="./../../static/images/next.png" alt="" style="margin-right: 0;">
+      </div>
     </div>
-    <div class="text-send-box">
+    <div class="text-send-box" :style="textArea === '' ? 'width: 60%;':'width: 76%;'">
       <el-input
         type="textarea"
         resize="none"
         :autosize="{ minRows: 1, maxRows: 1 }"
+        placeholder="Aa"
         v-model="textArea"
         v-on:keyup.native="keyUp"
       >
@@ -23,7 +29,7 @@
           >
             <div class="face-other-btn">
               <img
-                src="./../../static/images/face-btn.svg"
+                src="./../../static/images/emoji.png"
                 alt=""
               />
             </div>
@@ -55,14 +61,14 @@
           </div>
         </emoji-picker>
       </div>
-      <!-- <div class="footer-tools">
-        <el-button size="mini" class="send-button" @click="sendMessage">
-          <img src="./../../static/images/send-btn.svg" alt="" />
-        </el-button>
-      </div> -->
     </div>
-    <div class="input-tools">
-      <img src="./../../static/images/audio.png" alt="">
+    <div class="input-tools-left">
+      <div v-if="textArea === ''">
+        <img src="./../../static/images/audio.png" alt="">
+      </div>
+      <div v-else>
+        <img src="./../../static/images/send.png" alt="">
+      </div>
     </div>
   </div>
 </template>
@@ -74,7 +80,7 @@ export default {
   name: "MessageInput",
   data() {
     return {
-      textArea: "Aa",
+      textArea: "",
       search: "",
     };
   },
@@ -83,6 +89,11 @@ export default {
     userInfoData: {
       type: Object,
     },
+  },
+  watch:{
+    textArea(val){
+      console.log(val)
+    }
   },
   methods: {
     // 表情符号转简中
@@ -145,32 +156,44 @@ export default {
 
 <style lang="scss" >
 .message-input-box {
-  height: 46px;
+  height: 55px;
   background-color: rgba(255, 255, 255, 0.85);
   border-top: 1px solid #dddddd;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .input-tools {
-    // width: 97%;
+  .input-tools-right {
     padding: 15px 0 ;
     display: flex;
     align-items: center;
     margin: 0 auto;
+    position: relative;
+    left: 7px;
     img{
-      height: 1em;
-      margin-right:5px ;
+      height: 1.1em;
+      margin-right:10px;
     }
-
+  }
+  .input-tools-left {
+    padding: 15px 0 ;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    position: relative;
+    left: 3px;
+    img{
+      height: 1.1em;
+      margin-right:10px;
+    }
   }
   .text-send-box {
-    width: 73%;
-    height: 30px;
+    width: 60%;
+    height: 35px;
     display: flex;
     align-items: center;
     // margin: 0 auto;
     background-color: #f4f4f4;
-    border-radius:10px;
+    border-radius:20px;
     .el-textarea {
       .el-textarea__inner {
         padding: 10px !important;

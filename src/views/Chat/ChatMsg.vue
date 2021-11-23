@@ -4,13 +4,15 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <router-link :to="'/HiChat'">
+            <router-link :to="'/HiChat'" class="home-user-link">
               <div class="home-user"></div>
             </router-link>
-            <span class="home-header-title">通訊錄</span>
+            <span class="home-header-title">michel_1231</span>
             <div class="home-user-search"></div>
-            <router-link :to="'/AddUser'">
-              <div class="home-add-user"></div>
+            <router-link :to="'/AddUser'" class="home-photo-link">
+              <div class="home-user-photo">
+                <img src="./../../../static/images/image_user_defult.png" alt="">
+              </div>
             </router-link>
           </div>
         </el-header>
@@ -99,7 +101,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-   
+
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -286,25 +288,29 @@ export default {
       overflow: hidden;
       border-right: 1px solid #ffffff;
       .home-header {
-        margin: 1em;
+        margin: 1.5em 1em 1em 1em;
         display: flex;
         align-items: center;
-        .home-user {
-          width: 2em;
-          height: 2em;
-          border-radius: 10px;
-          background-color: #fff;
-          background-image: url("./../../../static/images/back.png");
-          background-size: 50%;
-          background-position: center;
-          background-repeat: no-repeat;
+        .home-user-link{
+          position: absolute;
+          .home-user {
+            width: 2em;
+            height: 2em;
+            border-radius: 10px;
+            background-color: #fff;
+            background-image: url("./../../../static/images/back.png");
+            background-size: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
         }
+        
         .home-header-title {
-          margin: 0 auto 0 8em;
+          margin: 0 auto;
           color: #10686e;
           font-weight: 600;
         }
-        .home-add-user,.home-user-search{
+        .home-user-photo,.home-user-search{
           width: 2em;
           height: 2em;
           border-radius: 10px;
@@ -315,12 +321,20 @@ export default {
         }
         .home-user-search{
           margin-right: 10px;
+          position: absolute;
+          right: 50px;
           background-image: url("./../../../static/images/search_icon.png");
-
         }
-        .home-add-user{
-          background-image: url("./../../../static/images/add_user.png");
-
+        .home-photo-link{
+          position: absolute;
+          right: 14px;
+          .home-user-photo{
+            text-align: center;
+            img{
+              top:0;
+              height: 2em;
+            }
+          }
         }
       }
       img {
