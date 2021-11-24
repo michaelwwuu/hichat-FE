@@ -140,12 +140,12 @@ export default {
         span{
           display: block;
           padding-left: 1em;
-          font-size:14px;
+          font-size:16px;
           &:nth-child(1){
             margin-bottom: 7px;
           }
           &:nth-child(2){
-            font-size: 12px;
+            font-size: 14px;
             opacity: 0.5;
             &::after{
               content: "";
@@ -163,10 +163,11 @@ export default {
         position: absolute;
         right: 1.5em;
         top: 1em;
-        font-size: 12px;
+        font-size: 14px;
       }    
       img{
-        height:2em;
+        height:3em;
+        border-radius: 10px;
       }
     }
   }

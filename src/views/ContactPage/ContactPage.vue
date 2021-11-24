@@ -12,7 +12,7 @@
       </div>
 
       <div class="setting-button" v-for="(item,index) in settingData" :key="index">
-        <span @click="goChatRoom(userData)">
+        <span @click="goChatRoom(userData,item.path)">
           <div class="setting-button-left">
             <img :src="item.icon" alt="">
             <span>{{item.name}}</span>        
@@ -55,7 +55,7 @@ export default {
         {
           name:"传送讯息",
           icon:require("./../../../static/images/chat_icon.png"),
-          path:"/ChatMsg",
+          path:"ChatMsg",
         },
         {
           name:"在对话中搜寻",
@@ -73,20 +73,20 @@ export default {
   },
   created() {
     this.userData = this.$route.params
-    console.log(this.$route)
-    if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/Address' }); 
+    // if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/Address' }); 
   },
   methods: {
-    goChatRoom(data){
-      this.$router.push({ name:'ChatMsg',params:data,query:{from:'ContactPage'} }); 
+    goChatRoom(data,path){
+      this.$router.push({ name:path,params:data}); 
     },
     back(){
-      console.log(this.$route.query)
-      if(Object.keys(this.$route.query).length === 0){
-        this.$router.go(-3)
-      } else{
-        this.$router.push({ name: this.$route.query.from,params:this.$route.params });
-      }
+      this.$router.back(-1)
+      // console.log(this.$route.query)
+      // if(Object.keys(this.$route.query).length === 0){
+      //   this.$router.go(-3)
+      // } else{
+      //   this.$router.push({ name: this.$route.query.from,params:this.$route.params });
+      // }
     }
   },
 };
@@ -138,6 +138,7 @@ export default {
         font-weight: 600;
         img{
           height:4em;
+          border-radius: 10px;
         }
       }
     }

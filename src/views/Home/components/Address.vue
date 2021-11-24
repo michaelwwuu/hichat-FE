@@ -68,12 +68,14 @@ export default {
       .then((res)=>{
         this.contactList = res.data.list
         this.contactList.forEach((res)=>{
-          res.icon = require("./../../../../static/images/image_user_defult.png")
+          if(res.icon === undefined){
+            res.icon = require("./../../../../static/images/image_user_defult.png")
+          }
         })
       })
     },
     goContactPage(data){
-      this.$router.push({ name: "ContactPage",params:data,query:{from:'Address'}});
+      this.$router.push({ name: "ContactPage",params:data});
     }
   },
   components: {
@@ -163,7 +165,8 @@ export default {
   display: flex;
   align-items: center;
   img{
-    height:2em;
+    height:3em;
+    border-radius: 10px;
   }
   span{
     padding-left: 1em;

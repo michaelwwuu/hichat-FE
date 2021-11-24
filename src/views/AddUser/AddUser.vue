@@ -22,12 +22,12 @@
 
     <div v-if="Object.keys(addUser).length !== 0" class="add-content">
       <div class="user-data">
-        <span><img :src="avatarImg" alt=""></span>
+        <span><img :src="addUser.icon" alt=""></span>
         <span>{{addUser.username}}</span>
       </div>
       <div class="home-footer-btn">
         <el-button
-        @click="joinUserButtom(searchKey)"
+        @click="joinUserButtom(addUser)"
           >加入聯絡人</el-button
         >
       </div>
@@ -57,7 +57,6 @@ export default {
         this.noData = true
         return
       }
-      
       this.addUser = {}
       searchByEmailUsername({token})
       .then((res)=>{
@@ -65,7 +64,6 @@ export default {
           this.noData = true
         } else if(res.data !=={}){
           this.addUser = res.data
-
         }
       })
       .catch((res)=>{
@@ -74,15 +72,12 @@ export default {
     },
     joinUserButtom(data){
       let parmas = {
-          contactId: 0,
-          name: data
+          contactId: data.id,
+          name: data.username
       }
       addContactUser(parmas)
       .then((res)=>{
-        console.log(res)
-      })
-      .catch((res)=>{
-
+        if(res.code === 200) this.$router.push({ path:'/Address' });
       })
     }
   },
@@ -159,9 +154,10 @@ export default {
       span{
         display: block;
         text-align: center;
-        height:3.5em;
+        height:5.5em;
         img{
-          height:3em;
+          height:5em;
+          border-radius: 10px;
         }
       }
     }

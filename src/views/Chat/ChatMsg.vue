@@ -17,10 +17,8 @@
           </div>
         </el-header>
         <message-pabel
-          :isAdmin="isAdmin"
           :messageData="messageData"
           :userInfoData="userInfoData"
-          @isShowMoreBtn="isShowMoreBtn"
         />
         <message-input :userInfoData="userInfoData" />
       </el-main>
@@ -40,19 +38,17 @@ export default {
     return {
       concats: [],
       messageData: [],
-      userMemberList: [],
       userInfoData: {
         token: getToken("token"),
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      isAdmin: false,
       userData:{}
     };
   },
   mounted() {
     this.userData = this.$route.params
-    if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/HiChat' });
+    // if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/HiChat' });
     this.getChatHistoryMessage()
   },
   created() {
@@ -74,29 +70,6 @@ export default {
   watch: {
     wsRes(val) {
       let chatType = val.chatType;
-      switch (chatType) {
-        case "SRV_JOIN_ROOM":
-          this.$nextTick(() => {
-            setTimeout(() => {
-              // 過濾 socket 斷線不重新Show提示
-              this.concats.forEach((el) => {
-                this.userMemberList.push(el.username);
-                // 封禁人員 自動解開
-                this.banUserMsg(el)
-              });
-              // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
-              this.statisticalData = this.userMemberList.filter(el => el === val.username);
-              if (this.statisticalData.length === 1) this.promptPopup(val)
-              this.userMemberList = Array.from(new Set(this.userMemberList))
-            });
-          });  
-          break;
-        case "SRV_LEAVE_ROOM":
-          // 斷線移除此人
-          this.userMemberList = this.userMemberList.filter(el => el !== val.username);
-          this.promptPopup(val)
-          break;
-      }
     }, 
   },
   methods: {
@@ -104,14 +77,16 @@ export default {
       setWsRes: "ws/setWsRes",
     }),
     goUserMsg(userData){
-      this.$router.push({ name: "ContactPage",params:userData,query:{from:'ChatMsg'} });
+      this.$router.push({ name: "ContactPage",params:userData });
     },
     back(){
-      if(Object.keys(this.$route.query).length === 0){
-        this.$router.go(-3)
-      } else{
-        this.$router.push({ name: this.$route.query.from,params:this.$route.params });
-      }
+      // if(Object.keys(this.$route.query).length === 0){
+      //   this.$router.go(-3)
+      // } else{
+      //   this.$router.push({ name: this.$route.query.from,params:this.$route.params });
+      // }
+      this.$router.back(-1)
+
     },
     // 訊息統一格式
     messageList(data) {
@@ -144,39 +119,7 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-      //   // 加入房间成功
-      //   case "SRV_JOIN_ROOM":
-      //   // 离开房间成功
-      //   case "SRV_LEAVE_ROOM": 
-      //     // 房主排序第一
-      //     this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
-      //     this.$nextTick(() => {
-      //       setTimeout(() => {
-      //         if(!getLocal('isGuest')){
-      //           this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
-      //           this.isAdmin = true && this.chatAdminUser[0].isAdmin;
-      //         }
-      //       })
-      //     })
-      //     break
-      //   // 发送讯息成功
-      //   case "SRV_ROOM_SEND":
-      //   // 发送红包成功 目前只有事件 没有功能
-      //   case "SRV_ROOM_RED":
-      //     this.concats.forEach((res) => {
-      //       if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
-      //     });
-      //     this.messageList(userInfo)
-      //     this.messageData.push(this.chatRoomMsg);
-      //     break;
-      //   // 封禁成功   
-      //   case "SRV_ROOM_BAN":
-      //   // 解除封禁
-      //   case "SRV_ROOM_LIFT_BAN":
-      //     this.concats.forEach(el => this.banUserInput(el,userInfo));
-      //     this.messageData.forEach(el => this.banUserInput(el,userInfo));
-      //     break;
-      //   // 历史讯息
+      // 历史讯息
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
@@ -187,32 +130,6 @@ export default {
       }
     },
 
-
-    // 封禁列表 讯息内
-    banUserMsg(el){
-      let banUserTime = el.banRemainTime > 49392123903 ? 49392123903: el.banRemainTime 
-      setTimeout(() => {
-        return el.banRemainTime = null
-      },banUserTime);
-    },
-
-    // 封禁列表 输入框
-    banUserInput(el,userInfo){
-      let banUserTime = userInfo.banRemainTime > 49392123903 ? 49392123903: userInfo.banRemainTime;
-      if (el.username === userInfo.banUser) {
-        el.banRemainTime = userInfo.banRemainTime
-        setTimeout(() => {
-          return el.banRemainTime = null
-        },banUserTime);
-      }
-      
-
-    },
-
-    // 历史讯息查看按钮
-    isShowMoreBtn(val) {
-      this.isShowMoreMsg = val;
-    },
 
 
     // 关闭socket

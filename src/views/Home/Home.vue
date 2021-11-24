@@ -1,6 +1,9 @@
 <template>
   <div class="home-wrapper">
-    <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>	
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>	
     <div class="home-footer">
       <div class="home-footer-btn" v-for="(item,index) in routerNav" :key="index" @click="changeImg(index)">
         <router-link :to="item.path">

@@ -31,11 +31,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "ForgetPassword" */ '@/views/ForgetPassword/ForgetPassword.vue'),
   },
   {
-    path: "/ContactPage",
-    name: "ContactPage",
-    component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
-  },
-  {
     path: "/Home",
     name: "Home",
     component: () => import(/* webpackChunkName: "Home" */ '@/views/Home/Home.vue'),
@@ -44,17 +39,18 @@ const routes = [
       {
         path: "/Address",
         name: "Address",
-        component: () => import("@/views/Home/components/Address.vue")
+        component: () => import("@/views/Home/components/Address.vue"),
+        meta: { keepAlive: true },
       },
       {
         path: "/HiChat",
         name: "HiChat",
-        component: () => import("@/views/Home/components/HiChat.vue")
+        component: () => import("@/views/Home/components/HiChat.vue"),
       },
       {
         path: "/Setting",
         name: "Setting",
-        component: () => import("@/views/Home/components/Setting.vue")
+        component: () => import("@/views/Home/components/Setting.vue"),
       }
     ]
   },
@@ -78,8 +74,14 @@ const routes = [
     path: "/ChatMsg",
     name: "ChatMsg",
     component: () => import(/* webpackChunkName: "ChatMsg" */ '@/views/Chat/ChatMsg.vue'),
+    meta: { keepAlive: true },
   },    
- 
+  {
+    path: "/ContactPage",
+    name: "ContactPage",
+    component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
+    meta: { keepAlive: true },
+  }, 
   {
     path: "*",
     redirect: "/login"

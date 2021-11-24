@@ -2,9 +2,9 @@
   <div class="message-input-box">
     <div class="input-tools-right">
       <div>
-        <img src="./../../static/images/plus.png" alt="">
+        <!-- <img src="./../../static/images/plus.png" alt=""> -->
         <img src="./../../static/images/image.png" alt="">
-        <img src="./../../static/images/camera.png" alt="">
+        <!-- <img src="./../../static/images/camera.png" alt=""> -->
       </div>
     </div>
     <div class="text-send-box">
@@ -185,7 +185,7 @@ export default {
     }
   }
   .text-send-box {
-    width: 16em;
+    width: 20em;
     height: 35px;
     display: flex;
     align-items: center;
