@@ -3,11 +3,11 @@
     <div class="home-header">
       <div class="home-user" @click="centerDialogVisible = true"></div>
       <span class="home-header-title">設定</span>
-      <div class="home-add-user"></div>
+      <div class="home-add-user" @click="goEditUserPage(userData)"></div>
     </div>
     <div class="address-content">
       <div class="user-data">
-        <span><img :src="userData.avatarImg" alt="" /></span>
+        <span><img :src="userData.icon" alt="" /></span>
         <span>{{ userData.username }}</span>
         <span class="user-data-id">{{ userData.id }}</span>
       </div>
@@ -109,9 +109,12 @@ export default {
     getUserData() {
       getUserInfo().then((res) => {
         this.userData = res.data;
-        if (this.userData.avatarImg === undefined)
-          this.userData.avatarImg = require("./../../../../static/images/image_user_defult.png");
+        if (this.userData.icon === undefined)
+          this.userData.icon = require("./../../../../static/images/image_user_defult.png");
       });
+    },
+    goEditUserPage(userData){
+      this.$router.push({ name:'EditUser',params:userData}); 
     },
   },
   components: {

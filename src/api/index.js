@@ -86,3 +86,13 @@ export const addContactUser = data => {
   }
   return axios.request(postData)
 }
+
+// 修改暱稱
+export const updateNickname = data => {
+  let postData = {
+    url: '/member/profile/updateNickname/my',
+    method: 'put',
+    data
+  }
+  return axios.request(postData)
+}

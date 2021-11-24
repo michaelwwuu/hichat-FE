@@ -46,11 +46,13 @@ const routes = [
         path: "/HiChat",
         name: "HiChat",
         component: () => import("@/views/Home/components/HiChat.vue"),
+        meta: { keepAlive: true },
       },
       {
         path: "/Setting",
         name: "Setting",
         component: () => import("@/views/Home/components/Setting.vue"),
+        meta: { keepAlive: true },
       }
     ]
   },
@@ -82,6 +84,13 @@ const routes = [
     component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
     meta: { keepAlive: true },
   }, 
+  {
+    path: "/EditUser",
+    name: "EditUser",
+    component: () => import(/* webpackChunkName: "EditUser" */ '@/views/EditUser/EditUser.vue'),
+    meta: { keepAlive: true },
+  }, 
+
   {
     path: "*",
     redirect: "/login"
