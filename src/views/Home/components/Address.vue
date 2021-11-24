@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="home-header">
-      <div class="home-user" @click="userMemberShow"></div>
+      <div class="home-user" @click="centerDialogVisible = true"></div>
       <span class="home-header-title">通訊錄</span>
       <router-link :to="'/AddUser'">
         <div class="home-add-user"></div>
@@ -18,7 +18,7 @@
     <el-tabs v-model="activeName" >
       <el-tab-pane :label="`聯絡人 ${contactList.length || 0}`" name="address">
         <div  class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
-          <img :src="item.avatarImg" alt="">
+          <img :src="item.icon" alt="">
           <span>{{item.name}}</span>
         </div>
       </el-tab-pane>
@@ -56,7 +56,7 @@ export default {
       contactList:[],
       activeName:'address',
       centerDialogVisible : false,
-      qrCodeConfig:"userName:'123'",
+      qrCodeConfig:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
     }
   },
   mounted() {
@@ -68,15 +68,12 @@ export default {
       .then((res)=>{
         this.contactList = res.data.list
         this.contactList.forEach((res)=>{
-          res.avatarImg = require("./../../../../static/images/image_user_defult.png")
+          res.icon = require("./../../../../static/images/image_user_defult.png")
         })
       })
     },
-    userMemberShow(){
-      this.centerDialogVisible = true
-    },
     goContactPage(data){
-      this.$router.push({ name: "ContactPage",params:data });
+      this.$router.push({ name: "ContactPage",params:data,query:{from:'Address'}});
     }
   },
   components: {

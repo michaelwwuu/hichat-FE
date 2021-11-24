@@ -1,16 +1,13 @@
 <template>
   <div class="message-input-box">
-    <div class="input-tools-right" :style="textArea !== '' ? 'left: 0px':'left: 7px'">
-      <div v-if="textArea === ''">
+    <div class="input-tools-right">
+      <div>
         <img src="./../../static/images/plus.png" alt="">
         <img src="./../../static/images/image.png" alt="">
         <img src="./../../static/images/camera.png" alt="">
       </div>
-      <div v-else>
-        <img src="./../../static/images/next.png" alt="" style="margin-right: 0;">
-      </div>
     </div>
-    <div class="text-send-box" :style="textArea === '' ? 'width: 60%;':'width: 76%;'">
+    <div class="text-send-box">
       <el-input
         type="textarea"
         resize="none"
@@ -39,7 +36,7 @@
             slot-scope="{ emojis, insert }"
             class="face-icon"
           >
-            <div>
+            <div class="face-icon-box">
               <div>
                 <div
                   v-for="(emojiGroup, category) in emojis"
@@ -62,7 +59,7 @@
         </emoji-picker>
       </div>
     </div>
-    <div class="input-tools-left">
+    <div class="input-tools-left" @click="sendMessage">
       <div v-if="textArea === ''">
         <img src="./../../static/images/audio.png" alt="">
       </div>
@@ -137,12 +134,13 @@ export default {
     // 发送消息
     sendMessage() {
       let message = this.userInfoData;
-      message.chatType = "CLI_ROOM_SEND"
+      message.chatType = "CLI_USER_SEND"
       message.id = Math.random();
       message.text = this.textAreaTran();
+      console.log(message)
       if (this.blankTesting()) {
         // 发送服务器
-        Socket.send(message);
+        // Socket.send(message);
         // 消息清空
         this.textArea = "";
       }
@@ -187,7 +185,7 @@ export default {
     }
   }
   .text-send-box {
-    width: 60%;
+    width: 16em;
     height: 35px;
     display: flex;
     align-items: center;
@@ -207,7 +205,7 @@ export default {
       .face-other-btn {
         margin-right: 10px;
         img {
-          height: 15px;
+          height: 1.2em;
         }
       }
 
@@ -224,29 +222,31 @@ export default {
       }
       .face-icon {
         position: absolute;
-        bottom: 136px;
+        bottom: 57px;
+        left:0;
         background-color: #fff;
-        max-width: 65%;
-        border-radius: 4px;
-        margin-bottom: 10px;
+        width: 100%;
+        border-radius: 15px 15px 0 0; 
         box-shadow: 0px 0 7px #ccc;
-        padding: 10px;
         height: 20em;
         overflow: auto;
         line-height: 30px;
-        .face-box {
-          font-size: 18px;
-          margin: 10px 0 15px 0;
-          h5 {
-            font-weight: 600;
-            margin-bottom: 10px;
+        .face-icon-box{
+          padding: 10px;
+          .face-box {
+            font-size: 16px;
+            word-break: break-word;
+            h5 {
+              font-weight: 600;
+            }
+          }
+          span {
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 5px;
           }
         }
-        span {
-          cursor: pointer;
-          font-size: 20px;
-          margin-right: 5px;
-        }
+
       }
     }
   }

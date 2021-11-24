@@ -60,7 +60,7 @@ export default {
         chatType: "CLI_RECENT_CHAT",
         id:Math.random(),
         tokenType: 0,
-        fromChatId:localStorage.getItem('toChatId'),
+        fromChatId:'',
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
       }
@@ -81,7 +81,7 @@ export default {
        }
     },
     goChatRoom(data){
-      console.log(data)
+      this.$router.push({ name: "ChatMsg",params:data,query:{from:'HiChat'} });
     }
   }   
 };

@@ -1,26 +1,24 @@
 <template>
   <div class="home-wrapper">
     <div class="home-header">
-      <router-link :to="'/Home'">
-        <div class="home-user"></div>
-      </router-link>
+      <div class="home-user" @click="back"></div>
       <span class="home-header-title"></span>
       <div class="home-add-user"></div>
     </div>
     <div class="address-content">
       <div class="user-data">
-        <span><img :src="userData.avatarImg" alt=""></span>
+        <span><img :src="userData.icon" alt=""></span>
         <span>{{userData.name}}</span>
       </div>
+
       <div class="setting-button" v-for="(item,index) in settingData" :key="index">
-        <router-link :to="item.path">
+        <span @click="goChatRoom(userData)">
           <div class="setting-button-left">
             <img :src="item.icon" alt="">
             <span>{{item.name}}</span>        
           </div>
           <img src="./../../../static/images/next.png" alt=""> 
-        </router-link>
-        
+        </span>
       </div>
 
       <div class="setting-notification">
@@ -49,7 +47,7 @@
 <script>
 
 export default {
-  name: "AddUser",
+  name: "ContactPage",
   data() {
     return {
       userData:{},
@@ -57,7 +55,7 @@ export default {
         {
           name:"传送讯息",
           icon:require("./../../../static/images/chat_icon.png"),
-          path:"",
+          path:"/ChatMsg",
         },
         {
           name:"在对话中搜寻",
@@ -75,12 +73,21 @@ export default {
   },
   created() {
     this.userData = this.$route.params
-    if(Object.keys(this.userData).length === 0){
-      this.$router.push({ path:'/Address' });
-    }
+    console.log(this.$route)
+    if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/Address' }); 
   },
   methods: {
- 
+    goChatRoom(data){
+      this.$router.push({ name:'ChatMsg',params:data,query:{from:'ContactPage'} }); 
+    },
+    back(){
+      console.log(this.$route.query)
+      if(Object.keys(this.$route.query).length === 0){
+        this.$router.go(-3)
+      } else{
+        this.$router.push({ name: this.$route.query.from,params:this.$route.params });
+      }
+    }
   },
 };
 </script>
@@ -146,11 +153,11 @@ export default {
         position: relative;
         top:9px;
       }
-      a{
+      span{
         text-decoration: none;
         display: flex;
         justify-content: space-between;
-        align-content: center;
+        align-items: center;
         padding:0.5em 0.7em 0.5em 0;
         margin-left: 10px;
       }

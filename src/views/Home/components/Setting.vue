@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="home-header">
-      <div class="home-user" @click="userMemberShow"></div>
+      <div class="home-user" @click="centerDialogVisible = true"></div>
       <span class="home-header-title">設定</span>
       <div class="home-add-user"></div>
     </div>
@@ -99,7 +99,7 @@ export default {
       notification: true,
       userData: {},
       centerDialogVisible : false,
-      qrCodeConfig:"userName:'123'",
+      qrCodeConfig:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
     };
   },
   mounted() {
@@ -112,9 +112,6 @@ export default {
         if (this.userData.avatarImg === undefined)
           this.userData.avatarImg = require("./../../../../static/images/image_user_defult.png");
       });
-    },
-    userMemberShow(){
-      this.centerDialogVisible = true
     },
   },
   components: {

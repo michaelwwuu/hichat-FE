@@ -182,6 +182,7 @@ export default {
         }
       );
       setLocal("UUID", "hiWeb" + number);
+
     },
     //登入&&註冊
     submitForm(rules) {

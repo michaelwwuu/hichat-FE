@@ -4,16 +4,16 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <router-link :to="'/HiChat'" class="home-user-link">
+            <span  class="home-user-link" @click="back">
               <div class="home-user"></div>
-            </router-link>
-            <span class="home-header-title">michel_1231</span>
+            </span>
+            <span class="home-header-title">{{userData.name}}</span>
             <div class="home-user-search"></div>
-            <router-link :to="'/AddUser'" class="home-photo-link">
+            <span class="home-photo-link" @click="goUserMsg(userData)">
               <div class="home-user-photo">
                 <img src="./../../../static/images/image_user_defult.png" alt="">
               </div>
-            </router-link>
+            </span>
           </div>
         </el-header>
         <message-pabel
@@ -31,7 +31,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import MessagePabel from "@/components/message-pabel";
+import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import { getLocal, getToken } from "_util/utils.js";
 export default {
@@ -47,15 +47,17 @@ export default {
         tokenType: 0,
       },
       isAdmin: false,
+      userData:{}
     };
   },
   mounted() {
-    if(!getToken("token")) return this.$router.push({ path: "/Login" });  
+    this.userData = this.$route.params
+    if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/HiChat' });
+    this.getChatHistoryMessage()
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
     window.addEventListener("beforeunload", this.closeWebsocket);
-
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -101,90 +103,88 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-
+    goUserMsg(userData){
+      this.$router.push({ name: "ContactPage",params:userData,query:{from:'ChatMsg'} });
+    },
+    back(){
+      if(Object.keys(this.$route.query).length === 0){
+        this.$router.go(-3)
+      } else{
+        this.$router.push({ name: this.$route.query.from,params:this.$route.params });
+      }
+    },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
-        banRemainTime: data.banRemainTime,
-        chatType: data.chatType,
-        chatRoomId: data.toChatId,
-        platformCode: data.platformCode,
-        historyId: data.historyId,
+        chatType: data.chat.chatType,
+        historyId: data.chat.historyId,
         message: {
-          time: data.sendTime,
-          content: data.text
+          time: data.chat.sendTime,
+          content: data.chat.text
         },
-        username: data.fromChatId,
+        username: data.toChatId,
       };
     },
 
-
+    getChatHistoryMessage(){
+      let historyMsgList ={
+        chatType: "CLI_HISTORY_REQ",
+        id:Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+        toChatId: this.userData.toChatId,
+        targetId: this.userData.lastChat.historyId,
+        pageSize: 1000,
+      }
+      Socket.send(historyMsgList);
+    },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-        // 加入房间成功
-        case "SRV_JOIN_ROOM":
-        // 离开房间成功
-        case "SRV_LEAVE_ROOM": 
-          // 房主排序第一
-          this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
-          this.$nextTick(() => {
-            setTimeout(() => {
-              if(!getLocal('isGuest')){
-                this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
-                this.isAdmin = true && this.chatAdminUser[0].isAdmin;
-              }
-            })
-          })
-          break
-        // 发送讯息成功
-        case "SRV_ROOM_SEND":
-        // 发送红包成功 目前只有事件 没有功能
-        case "SRV_ROOM_RED":
-          this.concats.forEach((res) => {
-            if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
-          });
-          this.messageList(userInfo)
-          this.messageData.push(this.chatRoomMsg);
-          break;
-        // 封禁成功   
-        case "SRV_ROOM_BAN":
-        // 解除封禁
-        case "SRV_ROOM_LIFT_BAN":
-          this.concats.forEach(el => this.banUserInput(el,userInfo));
-          this.messageData.forEach(el => this.banUserInput(el,userInfo));
-          break;
-        // 历史讯息
-        case "SRV_ROOM_HISTORY_RSP":
-          let historyMsgList = userInfo.historyMessage;
-          let historyPageSize = userInfo.pageSize;
-          if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
+      //   // 加入房间成功
+      //   case "SRV_JOIN_ROOM":
+      //   // 离开房间成功
+      //   case "SRV_LEAVE_ROOM": 
+      //     // 房主排序第一
+      //     this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
+      //     this.$nextTick(() => {
+      //       setTimeout(() => {
+      //         if(!getLocal('isGuest')){
+      //           this.chatAdminUser = this.concats.filter(el => el.username === getLocal("username"))
+      //           this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+      //         }
+      //       })
+      //     })
+      //     break
+      //   // 发送讯息成功
+      //   case "SRV_ROOM_SEND":
+      //   // 发送红包成功 目前只有事件 没有功能
+      //   case "SRV_ROOM_RED":
+      //     this.concats.forEach((res) => {
+      //       if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
+      //     });
+      //     this.messageList(userInfo)
+      //     this.messageData.push(this.chatRoomMsg);
+      //     break;
+      //   // 封禁成功   
+      //   case "SRV_ROOM_BAN":
+      //   // 解除封禁
+      //   case "SRV_ROOM_LIFT_BAN":
+      //     this.concats.forEach(el => this.banUserInput(el,userInfo));
+      //     this.messageData.forEach(el => this.banUserInput(el,userInfo));
+      //     break;
+      //   // 历史讯息
+        case "SRV_HISTORY_RSP":
+          let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            this.concats.forEach((res) => {
-              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
-            });
-            this.banUserMsg(el)
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });
           break;  
       }
-    },
-
-    // 通知加入
-    promptPopup(data){
-      this.$notify({
-        title: `通知`,
-        dangerouslyUseHTMLString: true,
-        message: `
-          <div class="notify-content" style="font-size:16px; font-weight:600">
-            <strong class="notify-title">${data.chatType === 'SRV_JOIN_ROOM' ? '欢迎':''}:)</strong>
-            <span><strong>【${data.username}】${data.chatType === 'SRV_JOIN_ROOM' ? '进入':'离开'}聊天室</strong</span>
-          </div>
-        `,
-      });
     },
 
 
@@ -217,8 +217,8 @@ export default {
 
     // 关闭socket
     closeWebsocket() {
-      Socket.onClose();
-      window.location.reload();
+      // Socket.onClose();
+      // window.location.reload();
     },
   },
   components: {
@@ -384,22 +384,5 @@ export default {
   width: 10px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
 
-  // border-radius: 10px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background-image: linear-gradient(180deg,rgb(138, 138, 138), rgb(138, 138, 138));
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background-image: linear-gradient(180deg,rgb(138, 138, 138), rgb(138, 138, 138));
-
-}
 </style>
