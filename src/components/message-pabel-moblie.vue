@@ -3,11 +3,12 @@
     
     <ul class="message-styles-box">
       <li
-        v-for="(item, index) in message"
+        v-for="(item, index) in newMessageData"
         :key="index"
-        :class="judgeClass(item)"
       >
-        <div class="now-time">
+        <!-- :class="judgeClass(newMessageData)" -->
+      {{newMessageData[index]}}
+        <!-- <div class="now-time">
           <span>{{$root.formatTimeDay(item.message.time)}}</span>
         </div>
         <div class="read-check-box">
@@ -20,7 +21,7 @@
             $root.formatTimeSecound(item.message.time)
           }}</span>
 
-        </p>
+        </p> -->
       </li>
     </ul>
   </div>
@@ -43,27 +44,40 @@ export default {
     return {
       message: [],
       gotoBottom: gotoBottom,
+      newMessageData:{},
+      newData:[],
     };
   },
-
   watch: {
     messageData(val) {
       //去除重复
       const set = new Set();
-      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);      
+      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false); 
       this.gotoBottom();
     },
-  },
-  mounted() {
+    message(val){
+      val.forEach(el => {
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = []
+        let newData = this.message.filter((res) => {
+          return this.$root.formatTimeDay(res.message.time) === this.$root.formatTimeDay(el.message.time)
+        })
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData
+      });
+      console.log(this.newMessageData)
+    }
   },
   methods: {
     // 判断讯息Class名称
     judgeClass(item) {
-      if (item.userChatId === getLocal("fromChatId")) {
-        return "message-layout-right";
-      } else {
-        return "message-layout-left";
-      }
+      console.log('123',item)
+      // item.forEach((el)=>{
+      //   if (el.userChatId === getLocal("fromChatId")) {
+      //     return "message-layout-right";
+      //   } else {
+      //     return "message-layout-left";
+      //   }
+      // })
+
     },
   },
 };

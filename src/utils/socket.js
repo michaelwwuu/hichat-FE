@@ -57,7 +57,7 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        console.log("<--【连线斷開】------自動重新連線-->");
+        console.log("<--【连线斷開】------自動重新連線-->",e);
         chatDataKey.chatType = "CLI_AUTH";
         chatDataKey.id = Math.random();
         emitter.connect();

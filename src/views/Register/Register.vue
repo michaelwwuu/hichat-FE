@@ -61,7 +61,7 @@
           </span>
         </el-form-item>
         <span class="tip-text"
-          >密碼長度為8至12個字元，允許混用英文字母、數字和符號。</span
+          >密碼長度為6至12個字元，至少包含1個大寫、1個小寫英文及1個數字。</span
         >
         <el-form-item prop="passwordAganin">
           <span class="svg-container">
@@ -74,7 +74,6 @@
             name="passwordAganin"
             :type="passwordTypeAganin === 'password' ? 'password' : 'text'"
             tabindex="2"
-            minLength="8"
             maxLength="12"
             @input="
               (v) =>
@@ -104,7 +103,6 @@
             name="username"
             type="text"
             tabindex="1"
-            minLength="5"
             maxLength="18"
             @input="
               (v) =>
@@ -127,7 +125,6 @@
             name="nickname"
             type="text"
             tabindex="1"
-            minLength="5"
             maxLength="18"
           >
           </el-input>
@@ -173,7 +170,7 @@
       <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
       <div align="center">註冊完成，請重新登入</div>
       <span slot="footer" class="dialog-footer">
-        <router-link to="/Login">
+        <router-link to="/Home">
           <el-button @click="dialogShow">确 定</el-button>
         </router-link>
       </span>
@@ -209,8 +206,8 @@ export default {
       handler(val) {
         if (
           Object.values(val).every(el => el !== "") &&
-          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) &&
-          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.passwordAganin) &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
           /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[_]).{5,}$/.test(val.username) 
         ) {
           this.disabled = false;

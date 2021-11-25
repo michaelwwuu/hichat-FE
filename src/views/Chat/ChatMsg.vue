@@ -48,7 +48,7 @@ export default {
     };
   },
   created() {
-    this.userData = this.$route.params
+    this.userData = JSON.parse(localStorage.getItem('userData'))
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
@@ -126,14 +126,11 @@ export default {
           this.messageData.push(this.chatRoomMsg);
           break;
         //历史讯息
-        case "SRV_MSG_READ":
-          this.messageData.forEach((res)=>{
-            if(res.historyId === userInfo.historyId){
-              res.isRead = true
-            }
-          })
-
-          break;
+        // case "SRV_MSG_READ":
+        //   this.messageData.forEach((res)=>{
+        //     if(res.historyId === userInfo.historyId) res.isRead = true
+        //   })
+        //   break;
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
@@ -141,7 +138,7 @@ export default {
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           }); 
-          this.readMsgShow()
+          // this.readMsgShow()
           break;  
       }
     },

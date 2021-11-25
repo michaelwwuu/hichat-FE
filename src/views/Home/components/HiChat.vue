@@ -89,7 +89,8 @@ export default {
        }
     },
     goChatRoom(data){
-      this.$router.push({ name: "ChatMsg",params:data });
+      localStorage.setItem('userData',JSON.stringify(data))
+      this.$router.push({ name: "ChatMsg" });
     }
   }   
 };

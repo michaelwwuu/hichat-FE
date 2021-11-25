@@ -84,7 +84,6 @@ function getAuthCodeData(email,key) {
     email:email,
     forRegister:key
   }
-  console.log(params)
   genAuthCode(params).then((res)=>{
     if(res.code === 200) this.$message({ message: "請至郵件信箱獲取驗證碼", type: "success"});
   })

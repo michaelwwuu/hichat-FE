@@ -100,7 +100,6 @@ export default {
   created() {
     Socket.$on("message", this.handleGetMessage);
     window.addEventListener("beforeunload", this.closeWebsocket);
-
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
