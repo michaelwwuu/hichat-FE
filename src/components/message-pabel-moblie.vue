@@ -5,9 +5,8 @@
       <li
         v-for="(item, index) in newMessageData"
         :key="index"
+        :class="judgeClass(newMessageData[index])"
       >
-        <!-- :class="judgeClass(newMessageData)" -->
-      {{newMessageData[index]}}
         <!-- <div class="now-time">
           <span>{{$root.formatTimeDay(item.message.time)}}</span>
         </div>
@@ -56,6 +55,7 @@ export default {
       this.gotoBottom();
     },
     message(val){
+      this.newMessageData= {}
       val.forEach(el => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = []
         let newData = this.message.filter((res) => {
@@ -69,14 +69,14 @@ export default {
   methods: {
     // 判断讯息Class名称
     judgeClass(item) {
-      console.log('123',item)
-      // item.forEach((el)=>{
-      //   if (el.userChatId === getLocal("fromChatId")) {
-      //     return "message-layout-right";
-      //   } else {
-      //     return "message-layout-left";
-      //   }
-      // })
+      item.forEach(el=>{
+        console.log(el)
+        if (el.userChatId === getLocal("fromChatId")) {
+          return "message-layout-right";
+        } else {
+          return "message-layout-left";
+        }
+      })
 
     },
   },
