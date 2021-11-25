@@ -40,19 +40,19 @@ const routes = [
         path: "/Address",
         name: "Address",
         component: () => import("@/views/Home/components/Address.vue"),
-        meta: { keepAlive: true },
+        meta: { keepAlive: false },
       },
       {
         path: "/HiChat",
         name: "HiChat",
         component: () => import("@/views/Home/components/HiChat.vue"),
-        meta: { keepAlive: true },
+        meta: { keepAlive: false },
       },
       {
         path: "/Setting",
         name: "Setting",
         component: () => import("@/views/Home/components/Setting.vue"),
-        meta: { keepAlive: true },
+        meta: { keepAlive: false },
       }
     ]
   },
@@ -63,20 +63,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "AddUser" */ '@/views/AddUser/AddUser.vue'),
   },
   {
-    path: "/Room",
-    name: "Room",
-    component: () => import(/* webpackChunkName: "Room" */ '@/views/Room/Room.vue'),
-  },
-  {
-    path: "/Chat",
-    name: "Chat",
-    component: () => import(/* webpackChunkName: "Chat" */ '@/views/Chat/Chat.vue'),
-  },
-  {
     path: "/ChatMsg",
     name: "ChatMsg",
     component: () => import(/* webpackChunkName: "ChatMsg" */ '@/views/Chat/ChatMsg.vue'),
-    meta: { keepAlive: true },
+    meta: { keepAlive: false },
   },    
   {
     path: "/ContactPage",
@@ -110,6 +100,7 @@ router.beforeEach((to, from, next) => {
       if (res.code === 200) {
         setLocal('username', res.data.username);
         setLocal('id', res.data.id);
+        setLocal('fromChatId','u'+ res.data.id)
       } else {
         next({ path: '/login' });
       }

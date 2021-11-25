@@ -59,14 +59,16 @@ export default {
       qrCodeConfig:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
     }
   },
-  mounted() {
+  created() {
     this.getAddressList()
+    if(!localStorage.getItem("token")) return this.$router.push({ path: "/Login" });  
   },
   methods: {
     getAddressList(){
       getContactList()
       .then((res)=>{
         this.contactList = res.data.list
+        
         this.contactList.forEach((res)=>{
           if(res.icon === undefined){
             res.icon = require("./../../../../static/images/image_user_defult.png")

@@ -8,29 +8,8 @@
     <div class="add-content">
       <div class="user-data">
         <span><img :src="userData.icon" alt=""></span>
-        <span class="photo-edit">变更头像</span>
-        <el-upload
-        action="#"
-        list-type="picture-card"
-        :auto-upload="false">
-          <div slot="file" slot-scope="{file}">
-            <img
-              class="el-upload-list__item-thumbnail"
-              :src="file.url" alt=""
-            >
-            <span class="el-upload-list__item-actions">
-              <span
-                class="el-upload-list__item-preview"
-                @click="handlePictureCardPreview(file)"
-              >
-                <i class="el-icon-zoom-in"></i>
-              </span>
-            </span>
-          </div>
-      </el-upload>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="">
-      </el-dialog>
+        <span class="photo-edit" @click="updataPhoto">变更头像</span>
+
       </div>
       <div class="home-footer-btn">
         <el-button
@@ -60,8 +39,7 @@ export default {
       userEditForm:{
         nickname:''
       },
-      dialogImageUrl: '',
-      dialogVisible: false,
+
     }
   },
   created() {
@@ -75,12 +53,11 @@ export default {
 
       // })
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
     back(){
       this.$router.back(-1)
+    },
+    updataPhoto(){
+      console.log(123)
     }
   },
 

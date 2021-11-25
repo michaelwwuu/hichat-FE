@@ -79,6 +79,7 @@ export default {
     return {
       textArea: "",
       search: "",
+
     };
   },
   props: {
@@ -86,11 +87,10 @@ export default {
     userInfoData: {
       type: Object,
     },
-  },
-  watch:{
-    textArea(val){
-      console.log(val)
-    }
+    // 当前用户
+    userData: {
+      type: Object,
+    },
   },
   methods: {
     // 表情符号转简中
@@ -136,11 +136,12 @@ export default {
       let message = this.userInfoData;
       message.chatType = "CLI_USER_SEND"
       message.id = Math.random();
+      message.fromChatId = this.userData.lastChat.fromChatId;
+      message.toChatId = this.userData.lastChat.toChatId;
       message.text = this.textAreaTran();
-      console.log(message)
       if (this.blankTesting()) {
         // 发送服务器
-        // Socket.send(message);
+        Socket.send(message);
         // 消息清空
         this.textArea = "";
       }

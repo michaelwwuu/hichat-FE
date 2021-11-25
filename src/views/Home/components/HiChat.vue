@@ -19,7 +19,12 @@
           <span>{{item.name}}</span>
           <span>{{item.lastChat.text}}</span>
         </div>
-        <span class="time">{{$root.formatTimeDay(item.lastChat.sendTime)}}</span>
+        <span class="time">
+          {{$root.formatTimeDay(item.lastChat.sendTime)}}
+          <div class="el-badge-box"><el-badge :value="item.unreadCount" class="item" v-if="item.unreadCount !== 0"></el-badge></div>
+        </span>
+          
+
       </div>
     </div>
   </div>
@@ -35,6 +40,7 @@ export default {
     return {
       searchKey:"",
       hiChatDataList:[],
+      newMsgDataList:[],
     }
   },
   created() {
@@ -60,7 +66,6 @@ export default {
         chatType: "CLI_RECENT_CHAT",
         id:Math.random(),
         tokenType: 0,
-        fromChatId:'',
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
       }
@@ -71,17 +76,20 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
+        //成功收到
         case "SRV_RECENT_CHAT":
-          localStorage.setItem('toChatId',userInfo.toChatId)
           this.hiChatDataList = userInfo.recentChat
           this.hiChatDataList.forEach((res)=>{
             if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
           })
           break
+        case "SRV_USER_SEND":
+        this.getHiChatDataList()
+        break
        }
     },
     goChatRoom(data){
-      this.$router.push({ name: "ChatMsg",params:data,query:{from:'HiChat'} });
+      this.$router.push({ name: "ChatMsg",params:data });
     }
   }   
 };
@@ -162,8 +170,14 @@ export default {
       .time{
         position: absolute;
         right: 1.5em;
-        top: 1em;
         font-size: 14px;
+        .el-badge-box{
+          height: 25px;
+          .el-badge{
+            display: block;
+            top: 5px;
+          }
+        }
       }    
       img{
         height:3em;

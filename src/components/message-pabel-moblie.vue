@@ -10,11 +10,16 @@
         <div class="now-time">
           <span>{{$root.formatTimeDay(item.message.time)}}</span>
         </div>
+        <div class="read-check-box">
+          <span class="read-check" v-if="item.isRead"><img src="./../../static/images/check.png" alt=""></span>
+          <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
+        </div>
         <p>
           <span class="message-classic">{{item.message.content}}</span>
           <span class="nickname-time">{{
             $root.formatTimeSecound(item.message.time)
           }}</span>
+
         </p>
       </li>
     </ul>
@@ -22,8 +27,7 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
-import { gotoBottom,disabled,unBlock } from "@/assets/tools";
+import { gotoBottom } from "@/assets/tools";
 import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
@@ -34,47 +38,40 @@ export default {
     messageData: {
       type: Array,
     },
-    isChecked: {
-      type: Boolean,
-    },
-    clearDialog:{
-      type: Boolean,
-    },
   },
   data() {
     return {
       message: [],
       gotoBottom: gotoBottom,
-      disabled:disabled,
-      unBlock:unBlock,
-      disabledImg: require("./../../static/images/disabled.svg"),
     };
   },
+
   watch: {
     messageData(val) {
       //去除重复
       const set = new Set();
       this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);      
+      this.gotoBottom();
     },
+  },
+  mounted() {
   },
   methods: {
     // 判断讯息Class名称
     judgeClass(item) {
-      this.gotoBottom();
-      if (item.username === getLocal("username")) {
+      if (item.userChatId === getLocal("fromChatId")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
       }
     },
-
   },
 };
 </script>
 
 <style lang="scss" >
 .message-pabel-box {
-  padding: 0 20px;
+  padding: 0 15px 0 20px;
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -119,12 +116,16 @@ export default {
         font-size: 12px;
         padding-left: 10px;
       }
+      .read-check-box{
+        display:none;
+      }
     }
 
     .message-layout-right {
       p{
         display: flex;
         align-items: end;
+        flex-flow: row-reverse;
       }
       .message-avatar {
         float: right;
@@ -132,18 +133,38 @@ export default {
       }
       .message-classic {
         text-align: left;
-        color: #ffffff;
+        color: #000000;
         line-height: 1.4rem;
         font-weight: 500;
-        background-color: rgba(55, 126, 200, 0.8);
+        background-color: #e5e4e4;
         letter-spacing: 0.5px;
-        border-radius: 8px 8px 0 8px;
+        border-radius: 8px 0 8px 8px;
       }
       .nickname-time {
         color: #777777;
         font-size: 12px;
-        padding-left: 10px;
+        padding-right: 10px;
       }
+      .read-check-box{
+        text-align:right;
+        position: relative;
+        top: 50px;
+        left:7px;
+        z-index: 9;
+        span{
+          img{
+            height:1em;
+          }
+        }
+        .read-check{
+          position: relative;
+          left: 0.5em;
+        }
+        .read-check2{
+          left: 1em;
+        }
+      }
+
     }
 
     .message-avatar {

@@ -20,7 +20,7 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <message-input :userInfoData="userInfoData" />
+        <message-input :userInfoData="userInfoData" :userData="userData" />
       </el-main>
     </el-container>
   </div>
@@ -43,35 +43,30 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      userData:{}
+      userData:{},
+      readMsgData:[],
     };
   },
-  mounted() {
-    this.userData = this.$route.params
-    // if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/HiChat' });
-    this.getChatHistoryMessage()
-  },
   created() {
+    this.userData = this.$route.params
     Socket.$on("message", this.handleGetMessage);
-    window.addEventListener("beforeunload", this.closeWebsocket);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
-    this.closeWebsocket();
   },
-  destroyed() {
-    window.removeEventListener("beforeunload", this.closeWebsocket);
+  mounted() {
+    this.getChatHistoryMessage()
   },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
     }),
   },
-  watch: {
-    wsRes(val) {
-      let chatType = val.chatType;
-    }, 
-  },
+  // watch: {
+  //   wsRes(val) {
+  //     let chatType = val.chatType;
+  //   }, 
+  // },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
@@ -80,13 +75,7 @@ export default {
       this.$router.push({ name: "ContactPage",params:userData });
     },
     back(){
-      // if(Object.keys(this.$route.query).length === 0){
-      //   this.$router.go(-3)
-      // } else{
-      //   this.$router.push({ name: this.$route.query.from,params:this.$route.params });
-      // }
       this.$router.back(-1)
-
     },
     // 訊息統一格式
     messageList(data) {
@@ -97,10 +86,10 @@ export default {
           time: data.chat.sendTime,
           content: data.chat.text
         },
-        username: data.toChatId,
+        isRead:false,
+        userChatId: data.chat.fromChatId,
       };
     },
-
     getChatHistoryMessage(){
       let historyMsgList ={
         chatType: "CLI_HISTORY_REQ",
@@ -114,29 +103,50 @@ export default {
       }
       Socket.send(historyMsgList);
     },
+    readMsgShow(){
+      let readData ={
+        chatType: "CLI_MSG_READ",
+        id:Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+        fromChatId: localStorage.getItem("fromChatId"),
+        targetArray: this.readMsgData ,
+      }
+      Socket.send(readData);
+    },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-      // 历史讯息
+        // 发送讯息成功
+        case "SRV_USER_SEND":
+          this.messageList(userInfo)
+          this.messageData.push(this.chatRoomMsg);
+          break;
+        //历史讯息
+        case "SRV_MSG_READ":
+          this.messageData.forEach((res)=>{
+            if(res.historyId === userInfo.historyId){
+              res.isRead = true
+            }
+          })
+
+          break;
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
+            this.readMsgData.push(el.chat.historyId)
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
-          });
+          }); 
+          this.readMsgShow()
           break;  
       }
     },
 
 
-
-    // 关闭socket
-    closeWebsocket() {
-      // Socket.onClose();
-      // window.location.reload();
-    },
   },
   components: {
     MessagePabel,

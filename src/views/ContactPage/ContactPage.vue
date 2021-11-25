@@ -73,7 +73,6 @@ export default {
   },
   created() {
     this.userData = this.$route.params
-    // if(Object.keys(this.userData).length === 0) this.$router.push({ path:'/Address' }); 
   },
   methods: {
     goChatRoom(data,path){
@@ -81,12 +80,6 @@ export default {
     },
     back(){
       this.$router.back(-1)
-      // console.log(this.$route.query)
-      // if(Object.keys(this.$route.query).length === 0){
-      //   this.$router.go(-3)
-      // } else{
-      //   this.$router.push({ name: this.$route.query.from,params:this.$route.params });
-      // }
     }
   },
 };

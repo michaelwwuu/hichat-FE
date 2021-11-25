@@ -1,7 +1,7 @@
 import Vue from "vue";
 // const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
-// const wsUrl = "ws://test.hichat.tools/ws/im/echo";//pre 環境
+// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
+const wsUrl = "ws://test.hichat.tools/ws/im/echo";//pre 環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
@@ -37,7 +37,9 @@ const emitter = new Vue({
         switch (chatType) {
           // 连线成功
           case "SRV_SUCCESS_MSG":
-            socket.send(JSON.stringify(chatDataKey));
+            if(messageData.text === "连接成功，请进行授权"){
+              socket.send(JSON.stringify(chatDataKey));
+            } 
             break;
           // 连线失敗
           case "SRV_ERROR_MSG":

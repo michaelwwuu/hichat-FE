@@ -61,7 +61,7 @@
           />
         </span>
       </el-form-item>
-      <el-form-item prop="authCode">
+      <!-- <el-form-item prop="authCode">
         <span class="svg-container">
           <img src="./../../../static/images/code.png" alt="" />
         </span>
@@ -81,7 +81,7 @@
           @click="getAuthCodeData(loginForm.email,false)"
           >获取驗證碼</span
         >
-      </el-form-item>
+      </el-form-item> -->
       <div class="remember-style">
         <el-switch
           v-model="remember"
@@ -123,7 +123,7 @@ export default {
       loginForm: {
         email: "",
         password: "",
-        authCode:"",
+        // authCode:"",
       },
       getAuthCodeData:getAuthCodeData,
       device: "",
