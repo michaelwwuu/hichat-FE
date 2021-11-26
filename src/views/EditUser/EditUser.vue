@@ -35,6 +35,7 @@
         action="#"
         :on-change="uploadImg"     
         :auto-upload="false"
+        :file-list="fileList"
         list-type="picture">
         <el-button size="small" type="primary" >点击上传</el-button>
         <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -59,7 +60,7 @@ export default {
         nickname:''
       },
       uploadImgShow:false,
-      fileList: {}
+      fileList:[],
     }
   },
   created() {
@@ -83,13 +84,16 @@ export default {
       this.$router.back(-1)
     },
     uploadImg(file, fileList) {
-      this.fileList = file
+      this.fileList = fileList
 		},
     submitAvatarUpload(){
-      let file = this.fileList
-			console.log(file)
-      
-      uploadIcon(file).then((res)=>{
+      let formData = new FormData()
+      formData.append('file',this.fileList[0].raw);
+			// console.log(this.fileList[0].raw)
+      formData.forEach((value, key) => {
+          console.log("key %s: value %s", key, value);
+      })
+      uploadIcon(formData).then((res)=>{
         console.log(res)
       })
     }
