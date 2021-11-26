@@ -8,8 +8,8 @@
     <div class="address-content">
       <div class="user-data">
         <span><img :src="userData.icon" alt="" /></span>
-        <span>{{ userData.username }}</span>
-        <span class="user-data-id">{{ userData.id }}</span>
+        <span>{{ userData.nickname }}</span>
+        <span class="user-data-id"> ID : {{ userData.username }}</span>
       </div>
       <div
         class="setting-button"
@@ -109,12 +109,15 @@ export default {
     getUserData() {
       getUserInfo().then((res) => {
         this.userData = res.data;
+        this.userData.nickname =  res.data.nickname.replace(/\["|"]/g, '' )
+        console.log(this.userData)
         if (this.userData.icon === undefined)
           this.userData.icon = require("./../../../../static/images/image_user_defult.png");
       });
     },
     goEditUserPage(userData){
-      this.$router.push({ name:'EditUser',params:userData}); 
+      localStorage.setItem('accountMsg', JSON.stringify(userData))
+      this.$router.push({ name:'EditUser'}); 
     },
   },
   components: {

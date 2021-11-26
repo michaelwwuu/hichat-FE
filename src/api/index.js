@@ -96,3 +96,13 @@ export const updateNickname = data => {
   }
   return axios.request(postData)
 }
+
+// 上傳頭像
+export const uploadIcon = data => {
+  let postData = {
+    url: '/upload/uploadIcon',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

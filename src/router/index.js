@@ -72,7 +72,8 @@ const routes = [
     path: "/ContactPage",
     name: "ContactPage",
     component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
-    meta: { keepAlive: true },
+    meta: { keepAlive: false },
+
   }, 
   {
     path: "/EditUser",

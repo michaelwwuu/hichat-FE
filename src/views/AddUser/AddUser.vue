@@ -22,7 +22,7 @@
 
     <div v-if="Object.keys(addUser).length !== 0" class="add-content">
       <div class="user-data">
-        <span><img :src="addUser.icon" alt=""></span>
+        <span><img :src="addUser.icon === undefined ? avatarImg : addUser.icon" alt=""></span>
         <span>{{addUser.username}}</span>
       </div>
       <div class="home-footer-btn">
@@ -72,8 +72,8 @@ export default {
     },
     joinUserButtom(data){
       let parmas = {
-          contactId: data.id,
-          name: data.username
+        contactId: data.id,
+        name: data.username
       }
       addContactUser(parmas)
       .then((res)=>{

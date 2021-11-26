@@ -72,7 +72,7 @@ export default {
     }
   },
   created() {
-    this.userData = this.$route.params
+    this.userData = JSON.parse(localStorage.getItem('userData'))
   },
   methods: {
     goChatRoom(data,path){

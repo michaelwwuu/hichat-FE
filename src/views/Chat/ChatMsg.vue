@@ -9,10 +9,12 @@
             </span>
             <span class="home-header-title">{{userData.name}}</span>
             <div class="home-user-search"></div>
-            <span class="home-photo-link" @click="goUserMsg(userData)">
-              <div class="home-user-photo">
-                <img src="./../../../static/images/image_user_defult.png" alt="">
-              </div>
+            <span class="home-photo-link">
+              <router-link :to="'/ContactPage'">
+                <div class="home-user-photo">
+                  <img src="./../../../static/images/image_user_defult.png" alt="">
+                </div>
+              </router-link>
             </span>
           </div>
         </el-header>
@@ -71,9 +73,6 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    goUserMsg(userData){
-      this.$router.push({ name: "ContactPage",params:userData });
-    },
     back(){
       this.$router.back(-1)
     },
@@ -97,7 +96,7 @@ export default {
         tokenType: 0,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-        toChatId: this.userData.toChatId,
+        toChatId: this.userData.toChatId === undefined ? 'u'+ this.userData.contactId : this.userData.toChatId,
         targetId: '',
         pageSize: 1000,
       }

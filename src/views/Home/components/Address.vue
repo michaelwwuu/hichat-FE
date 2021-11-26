@@ -14,9 +14,9 @@
         v-model="searchKey">
       </el-input>
     </div>
-
+  <!-- ${contactList.length || 0} -->
     <el-tabs v-model="activeName" >
-      <el-tab-pane :label="`聯絡人 ${contactList.length || 0}`" name="address">
+      <el-tab-pane label="聯絡人" name="address">
         <div  class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
           <img :src="item.icon" alt="">
           <span>{{item.name}}</span>
@@ -60,8 +60,8 @@ export default {
     }
   },
   created() {
-    this.getAddressList()
     if(!localStorage.getItem("token")) return this.$router.push({ path: "/Login" });  
+    this.getAddressList()
   },
   methods: {
     getAddressList(){
@@ -77,7 +77,8 @@ export default {
       })
     },
     goContactPage(data){
-      this.$router.push({ name: "ContactPage",params:data});
+      localStorage.setItem('userData',JSON.stringify(data))
+      this.$router.push({ name: "ContactPage"});
     }
   },
   components: {

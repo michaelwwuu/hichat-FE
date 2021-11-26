@@ -8,12 +8,12 @@
     <div class="add-content">
       <div class="user-data">
         <span><img :src="userData.icon" alt=""></span>
-        <span class="photo-edit" @click="updataPhoto">变更头像</span>
+        <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
 
       </div>
       <div class="home-footer-btn">
         <el-button
-        @click="editSubmit"
+        @click="editSubmit(userEditForm.nickname)"
           >保存</el-button
         >
       </div>
@@ -24,12 +24,31 @@
           <el-input v-model="userEditForm.nickname"></el-input>
         </el-form-item>
       </el-form>
-    </div>    
+    </div>  
+    <el-dialog
+      title="上傳大頭貼"
+      :visible.sync="uploadImgShow"
+      width="80%"
+      center>
+      <el-upload
+        class="upload-demo"
+        action="#"
+        :on-change="uploadImg"     
+        :auto-upload="false"
+        list-type="picture">
+        <el-button size="small" type="primary" >点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="success" @click="submitAvatarUpload">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { updateNickname } from "@/api";
+import { getUserInfo,updateNickname,uploadIcon } from "@/api";
 
 export default {
   name: "EditUser",
@@ -39,25 +58,40 @@ export default {
       userEditForm:{
         nickname:''
       },
-
+      uploadImgShow:false,
+      fileList: {}
     }
   },
   created() {
-    this.userData = this.$route.params
-    this.userEditForm.nickname = this.userData.nickname
+    this.getUserData()
   },
   methods: {
-    editSubmit(){
-      console.log(this.userEditForm)
-      // updateNickname(this.userEditForm).then((res)=>{
-
-      // })
+    editSubmit(){ 
+      updateNickname(Object.values([this.userEditForm.nickname])).then((res)=>{
+        if(res.code === 200) this.getUserData()
+      })
+    },
+    getUserData() {
+      getUserInfo().then((res) => {
+        this.userData = res.data;
+        this.userEditForm.nickname = this.userData.nickname.replace(/\["|"]/g, '' )
+        if (this.userData.icon === undefined)
+          this.userData.icon = require("./../../../static/images/image_user_defult.png");
+      });
     },
     back(){
       this.$router.back(-1)
     },
-    updataPhoto(){
-      console.log(123)
+    uploadImg(file, fileList) {
+      this.fileList = file
+		},
+    submitAvatarUpload(){
+      let file = this.fileList
+			console.log(file)
+      
+      uploadIcon(file).then((res)=>{
+        console.log(res)
+      })
     }
   },
 
@@ -116,9 +150,9 @@ export default {
       span{
         display: block;
         text-align: center;
-        height:5.5em;
+        height:4.5em;
         img{
-          height:5em;
+          height:4em;
           border-radius: 10px;
         }
       }
@@ -141,6 +175,16 @@ export default {
       }
     }
   }
-
+  /deep/.el-dialog__wrapper{
+    .el-dialog__body{
+      .upload-demo{
+        .el-upload-list{
+          .el-upload-list__item{
+            margin-top: -72px;
+          }
+        }
+      }
+    }
+  }
 }
 </style>
