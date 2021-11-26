@@ -13,7 +13,12 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: "/login"
+    redirect: "/HelloPage"
+  },
+  {
+    path: "/HelloPage",
+    name: "HelloPage",
+    component: () => import(/* webpackChunkName: "HelloPage" */ '@/views/HelloPage/HelloPage.vue'),
   },
   {
     path: "/login",
