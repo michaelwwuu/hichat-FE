@@ -2,26 +2,29 @@
   <div class="message-pabel-box">
     
     <ul class="message-styles-box">
-      <li
+      <div 
         v-for="(item, index) in newMessageData"
-        :key="index"
-        :class="judgeClass(newMessageData[index])"
-      >
-        <!-- <div class="now-time">
-          <span>{{$root.formatTimeDay(item.message.time)}}</span>
-        </div>
-        <div class="read-check-box">
-          <span class="read-check" v-if="item.isRead"><img src="./../../static/images/check.png" alt=""></span>
-          <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
-        </div>
-        <p>
-          <span class="message-classic">{{item.message.content}}</span>
-          <span class="nickname-time">{{
-            $root.formatTimeSecound(item.message.time)
-          }}</span>
-
-        </p> -->
-      </li>
+        :key="index">
+        <div class="now-time">
+            <span>{{index}}</span>
+          </div>
+        <li
+          v-for="(el, index) in item"
+          :key="index"
+          :class="judgeClass(item[index])"
+        >
+          <div class="read-check-box">
+            <span class="read-check" v-if="el.isRead"><img src="./../../static/images/check.png" alt=""></span>
+            <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
+          </div>
+          <p>
+            <span class="message-classic">{{el.message.content}}</span>
+            <span class="nickname-time">{{
+              $root.formatTimeSecound(el.message.time)
+            }}</span>
+          </p>
+        </li>
+      </div>
     </ul>
   </div>
 </template>
@@ -63,20 +66,16 @@ export default {
         })
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData
       });
-      console.log(this.newMessageData)
     }
   },
   methods: {
     // 判断讯息Class名称
     judgeClass(item) {
-      item.forEach(el=>{
-        console.log(el)
-        if (el.userChatId === getLocal("fromChatId")) {
-          return "message-layout-right";
-        } else {
-          return "message-layout-left";
-        }
-      })
+      if (item.userChatId === getLocal("fromChatId")) {
+        return "message-layout-right";
+      } else {
+        return "message-layout-left";
+      }
 
     },
   },

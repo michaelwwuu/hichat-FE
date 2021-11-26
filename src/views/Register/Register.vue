@@ -208,7 +208,7 @@ export default {
           Object.values(val).every(el => el !== "") &&
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
-          /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[_]).{5,}$/.test(val.username) 
+          /^(?=.*?[a-z])(?=.*?[0-9]).{5,}$/.test(val.username) 
         ) {
           this.disabled = false;
         } else {

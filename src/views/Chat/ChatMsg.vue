@@ -86,7 +86,7 @@ export default {
           time: data.chat.sendTime,
           content: data.chat.text
         },
-        isRead:false,
+        isRead:data.isRead,
         userChatId: data.chat.fromChatId,
       };
     },
@@ -98,7 +98,7 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
         toChatId: this.userData.toChatId,
-        targetId: this.userData.lastChat.historyId,
+        targetId: '',
         pageSize: 1000,
       }
       Socket.send(historyMsgList);
@@ -110,8 +110,7 @@ export default {
         tokenType: 0,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-        fromChatId: localStorage.getItem("fromChatId"),
-        targetArray: this.readMsgData ,
+        targetArray: this.readMsgData,
       }
       Socket.send(readData);
     },
@@ -124,26 +123,28 @@ export default {
         case "SRV_USER_SEND":
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
+          this.readMsgData.push(userInfo.historyId)
+          this.readMsgShow()
+
           break;
-        //历史讯息
-        // case "SRV_MSG_READ":
-        //   this.messageData.forEach((res)=>{
-        //     if(res.historyId === userInfo.historyId) res.isRead = true
-        //   })
-        //   break;
+        // 历史讯息
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            this.readMsgData.push(el.chat.historyId)
+            if(!el.isRead) this.readMsgData.push(el.chat.historyId)
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           }); 
-          // this.readMsgShow()
+          this.readMsgShow()
+          break;  
+        // 已讀
+        case "SRV_MSG_READ":
+          this.messageData.forEach((res)=>{
+            if(res.historyId === userInfo.historyId) res.isRead = true
+          })
           break;  
       }
     },
-
-
   },
   components: {
     MessagePabel,

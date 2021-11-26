@@ -136,8 +136,8 @@ export default {
       let message = this.userInfoData;
       message.chatType = "CLI_USER_SEND"
       message.id = Math.random();
-      message.fromChatId = this.userData.lastChat.fromChatId;
-      message.toChatId = this.userData.lastChat.toChatId;
+      message.fromChatId = localStorage.getItem("fromChatId");
+      message.toChatId = this.userData.toChatId;
       message.text = this.textAreaTran();
       if (this.blankTesting()) {
         // 发送服务器
