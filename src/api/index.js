@@ -3,7 +3,7 @@ import { axios } from '../libs/axios/api.request'
 //登录
 export const login = data => {
   let postData = {
-    url: '/sso/login',
+    url: '/api/sso/login',
     method: 'post',
     data
   }
@@ -12,7 +12,7 @@ export const login = data => {
 //註冊
 export const register = data => {
   let postData = {
-    url: '/sso/register',
+    url: '/api/sso/register',
     method: 'post',
     data
   }
@@ -21,7 +21,7 @@ export const register = data => {
 // 用户信息
 export const getUserInfo = (params) => {
   let postData = {
-    url: '/member/profile/my',
+    url: '/api/member/profile/my',
     method: 'get',
     params
   }
@@ -30,7 +30,7 @@ export const getUserInfo = (params) => {
 // 搜尋聊天室
 export const getRoomList = (params) => {
   let postData = {
-    url: '/chatroom/searchByName',
+    url: '/api/chatroom/searchByName',
     method: 'get',
     params
   }
@@ -40,7 +40,7 @@ export const getRoomList = (params) => {
 // 獲取驗證碼
 // export const getAuthCode = (params) => {
 //   let postData = {
-//     url: '/sso/getAuthCode',
+//     url: '/api/sso/getAuthCode',
 //     method: 'get',
 //     params
 //   }
@@ -50,7 +50,7 @@ export const getRoomList = (params) => {
 // 產生驗證碼
 export const genAuthCode = (params) => {
   let postData = {
-    url: '/sso/genAuthCode',
+    url: '/api/sso/genAuthCode',
     method: 'get',
     params
   }
@@ -60,7 +60,7 @@ export const genAuthCode = (params) => {
 // 搜尋用戶
 export const searchByEmailUsername = (params) => {
   let postData = {
-    url: '/member/profile/searchByEmailUsername',
+    url: '/api/member/profile/searchByEmailUsername',
     method: 'get',
     params
   }
@@ -70,7 +70,7 @@ export const searchByEmailUsername = (params) => {
 // 獲取會員訊息
 export const getContactList = (params) => {
   let postData = {
-    url: '/member/contact/list',
+    url: '/api/member/contact/list',
     method: 'get',
     params
   }
@@ -80,7 +80,7 @@ export const getContactList = (params) => {
 // 添加好友
 export const addContactUser = data => {
   let postData = {
-    url: '/member/contact/add',
+    url: '/api/member/contact/add',
     method: 'post',
     data
   }
@@ -90,7 +90,7 @@ export const addContactUser = data => {
 // 修改暱稱
 export const updateNickname = data => {
   let postData = {
-    url: '/member/profile/updateNickname/my',
+    url: '/api/member/profile/updateNickname/my',
     method: 'put',
     data
   }
@@ -100,7 +100,7 @@ export const updateNickname = data => {
 // 上傳頭像
 export const uploadIcon = data => {
   let postData = {
-    url: '/upload/uploadIcon',
+    url: '/file/upload/uploadIcon',
     method: 'post',
     data
   }

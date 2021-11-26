@@ -89,12 +89,13 @@ export default {
     submitAvatarUpload(){
       let formData = new FormData()
       formData.append('file',this.fileList[0].raw);
-			// console.log(this.fileList[0].raw)
-      formData.forEach((value, key) => {
-          console.log("key %s: value %s", key, value);
-      })
       uploadIcon(formData).then((res)=>{
         console.log(res)
+        if(res.code === 200) {
+          this.fileList =[]
+          this.uploadImgShow = false
+          this.getUserData()
+        }
       })
     }
   },

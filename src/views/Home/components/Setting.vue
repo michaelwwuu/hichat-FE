@@ -174,6 +174,9 @@ export default {
         height: 4em;
       }
     }
+    img{
+      border-radius: 10px;
+    }
   }
   .setting-button {
     padding: 0.5em 0 0.5em 0.5em;
