@@ -59,27 +59,54 @@
         </emoji-picker>
       </div>
     </div>
-    <div class="input-tools-left" @click="sendMessage">
-      <div v-if="textArea === ''">
+    <div class="input-tools-left">
+      <div v-if="textArea === ''" @click="sendAduio">
         <img src="./../../static/images/audio.png" alt="">
       </div>
-      <div v-else>
+      <div v-else  @click="sendMessage">
         <img src="./../../static/images/send.png" alt="">
       </div>
     </div>
+    <el-dialog
+      :title="tipMsg"
+      :visible.sync="sendAduioShow"
+      width="90%"
+      class="audio-box"
+      append-to-body
+      center>
+      <div class="record-play">
+        <audio id="audioVoice" controls autoplay class="record-play-box"></audio>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onStartVoice">开始录音</el-button>
+        <el-button type="danger" @click="onPlayAudio">播放录音</el-button>
+        <el-button type="warning" @click="onEndVoice">傳送录音</el-button>
+      </span>
+    </el-dialog>    
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
+
+import Record from './../../static/js/record-sdk';
+
+
 export default {
   name: "MessageInput",
   data() {
     return {
       textArea: "",
       search: "",
-
+      sendAduioShow:false,
+      aduioMsgData:{},
+      //錄音
+      isVoice: false,
+      // isFinished: false,
+      tipMsg: '录音',
+      audio: "",
+      recorder: new Record()
     };
   },
   props: {
@@ -93,6 +120,53 @@ export default {
     },
   },
   methods: {
+    sendAduio(){
+      // this.isFinished = false
+      this.sendAduioShow = true
+    },
+
+    // 开始录音
+    onStartVoice () {
+      this.onStopAudio()
+      // this.isFinished = false;
+      this.recorder.startRecord({
+        success: res => {
+          this.isVoice = true
+        },
+        error: e => {
+          this.isVoice = false
+          this.$toast(e)
+        }
+      });
+    },
+
+    // 结束录音
+    onEndVoice () {
+      // this.isFinished = false;
+      this.recorder.stopRecord({
+        success: res => {
+          this.isVoice = false
+          //此处可以获取音频源文件(res)，用于上传等操作
+          this.aduioMsgData = res
+          console.log('音频源文件', this.aduioMsgData)
+        },
+        error: e => {
+          this.isVoice = false
+        }
+      });
+    },
+
+     // 播放录音
+    onPlayAudio () {
+      this.isVoice = false
+      // this.isFinished = true;
+      this.audio = document.getElementById("audioVoice");
+      this.recorder.play(this.audio);
+    },
+    // 停止播放录音
+    onStopAudio () {
+      if(this.audio !== '') this.recorder.clear(this.audio);
+    },
     // 表情符号转简中
     emojiChine(category) {
       if (category === "Frequently used") return "经常使用";
@@ -257,6 +331,20 @@ export default {
     display: inline-block;
     width: 20px;
     height: 20px;
+  }
+}
+.audio-box{
+  position: absolute;
+  top: 5em;
+  .el-dialog{
+    border-radius: 10px;
+    .el-dialog__body{
+      .record-play{
+        .record-play-box{
+          width: 100%;
+        }
+      }
+    }
   }
 }
 </style>

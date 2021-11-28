@@ -1,6 +1,5 @@
 <template>
   <div class="message-pabel-box">
-    
     <ul class="message-styles-box">
       <div 
         v-for="(item, index) in newMessageData"
@@ -18,7 +17,11 @@
             <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
           </div>
           <p>
-            <span class="message-classic">{{el.message.content}}</span>
+            <span class="message-classic" v-if="el.chatType === 'SRV_USER_SEND'">{{el.message.content}}</span>
+            <audio class="message-audio" v-else-if="el.chatType === 'SRV_USER_AUDIO'" controls :src="el.message.content"></audio>
+
+            <span class="message-classic" v-else-if="el.chatType === 'SRV_USER_IMAGE'"><img :src="el.message.content" alt=""></span>
+
             <span class="nickname-time">{{
               $root.formatTimeSecound(el.message.time)
             }}</span>
@@ -58,7 +61,7 @@ export default {
       this.gotoBottom();
     },
     message(val){
-      this.newMessageData= {}
+      this.newMessageData = {}
       val.forEach(el => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = []
         let newData = this.message.filter((res) => {
@@ -66,6 +69,7 @@ export default {
         })
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData
       });
+      console.log(this.newMessageData)
     }
   },
   methods: {
@@ -76,7 +80,6 @@ export default {
       } else {
         return "message-layout-left";
       }
-
     },
   },
 };
@@ -202,6 +205,16 @@ export default {
       .red {
         height: 1.5em;
       }
+      img{
+        height: 6em;
+      }
+    }
+    .message-audio{
+      position: relative;
+      max-width: 37%;
+      margin-top: 5px;
+      display: inline-block;
+      padding: 9px 0;
     }
   }
 }

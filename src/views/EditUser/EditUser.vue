@@ -69,7 +69,10 @@ export default {
   methods: {
     editSubmit(){ 
       updateNickname(Object.values([this.userEditForm.nickname])).then((res)=>{
-        if(res.code === 200) this.getUserData()
+        if(res.code === 200) {
+          this.getUserData()
+          this.back()
+        }
       })
     },
     getUserData() {

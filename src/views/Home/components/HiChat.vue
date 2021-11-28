@@ -17,14 +17,14 @@
         <img :src="item.icon" alt="">
         <div class="msg-box">
           <span>{{item.name}}</span>
-          <span>{{item.lastChat.text}}</span>
+          <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{item.lastChat.text}}</span>
+          <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">傳送了語音</span>
+          <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">傳送了圖片</span>
         </div>
         <span class="time">
           {{$root.formatTimeDay(item.lastChat.sendTime)}}
           <div class="el-badge-box"><el-badge :value="item.unreadCount" class="item" v-if="item.unreadCount !== 0"></el-badge></div>
         </span>
-          
-
       </div>
     </div>
   </div>
@@ -84,8 +84,8 @@ export default {
           })
           break
         case "SRV_USER_SEND":
-        this.getHiChatDataList()
-        break
+          this.getHiChatDataList()
+           break
        }
     },
     goChatRoom(data){

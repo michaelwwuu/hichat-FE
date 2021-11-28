@@ -73,9 +73,12 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+
+    // 回上一頁
     back(){
       this.$router.back(-1)
     },
+
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -89,8 +92,10 @@ export default {
         userChatId: data.chat.fromChatId,
       };
     },
+
+    // 獲取歷史訊息
     getChatHistoryMessage(){
-      let historyMsgList ={
+      let historyMessageData ={
         chatType: "CLI_HISTORY_REQ",
         id:Math.random(),
         tokenType: 0,
@@ -100,10 +105,12 @@ export default {
         targetId: '',
         pageSize: 1000,
       }
-      Socket.send(historyMsgList);
+      Socket.send(historyMessageData);
     },
+
+    // 已讀
     readMsgShow(){
-      let readData ={
+      let sendReadMessageData ={
         chatType: "CLI_MSG_READ",
         id:Math.random(),
         tokenType: 0,
@@ -111,8 +118,9 @@ export default {
         token: localStorage.getItem("token"),
         targetArray: this.readMsgData,
       }
-      Socket.send(readData);
+      Socket.send(sendReadMessageData);
     },
+
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -124,12 +132,11 @@ export default {
           this.messageData.push(this.chatRoomMsg);
           this.readMsgData.push(userInfo.historyId)
           this.readMsgShow()
-
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
+          historyMsgList.forEach(el => {
             if(!el.isRead) this.readMsgData.push(el.chat.historyId)
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
@@ -138,10 +145,18 @@ export default {
           break;  
         // 已讀
         case "SRV_MSG_READ":
-          this.messageData.forEach((res)=>{
+          this.messageData.forEach(res =>{
             if(res.historyId === userInfo.historyId) res.isRead = true
           })
           break;  
+        case "SRV_USER_IMAGE":  
+        case "SRV_USER_AUDIO":
+          this.messageList(userInfo)
+          break; 
+        // 撈取歷史訊息  
+        case "SRV_RECENT_CHAT":
+          this.getChatHistoryMessage()
+          break  
       }
     },
   },
