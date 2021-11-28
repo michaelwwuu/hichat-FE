@@ -211,7 +211,7 @@ export default {
     }
     .message-audio{
       position: relative;
-      max-width: 37%;
+      max-width: 65%;
       margin-top: 5px;
       display: inline-block;
       padding: 9px 0;

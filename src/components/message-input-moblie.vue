@@ -75,12 +75,12 @@
       append-to-body
       center>
       <div class="record-play">
-        <audio id="audioVoice" controls autoplay class="record-play-box"></audio>
+        <audio id="audioVoice" controls class="record-play-box"></audio>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="onStartVoice">开始录音</el-button>
-        <el-button type="danger" @click="onPlayAudio">播放录音</el-button>
-        <el-button type="warning" @click="onEndVoice">傳送录音</el-button>
+        <!-- <el-button type="danger" @click="onPlayAudio">播放录音</el-button> -->
+        <el-button type="info" @click="onEndVoice">結束录音</el-button>
       </span>
     </el-dialog>    
   </div>
@@ -147,8 +147,9 @@ export default {
         success: res => {
           this.isVoice = false
           //此处可以获取音频源文件(res)，用于上传等操作
-          this.aduioMsgData = res
-          console.log('音频源文件', this.aduioMsgData)
+          this.audio = document.getElementById("audioVoice");
+          this.recorder.play(this.audio);
+          console.log('音频源文件', res)
         },
         error: e => {
           this.isVoice = false
@@ -161,12 +162,16 @@ export default {
       this.isVoice = false
       // this.isFinished = true;
       this.audio = document.getElementById("audioVoice");
+      console.log(this.audio)
       this.recorder.play(this.audio);
     },
+    
     // 停止播放录音
     onStopAudio () {
       if(this.audio !== '') this.recorder.clear(this.audio);
     },
+
+
     // 表情符号转简中
     emojiChine(category) {
       if (category === "Frequently used") return "经常使用";

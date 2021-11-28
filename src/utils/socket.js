@@ -18,7 +18,7 @@ const emitter = new Vue({
   },
   methods: {
     send(message) {
-      if (socket.readyState === 1)socket.send(JSON.stringify(message));
+      if (socket.readyState === 1) socket.send(JSON.stringify(message));
     },
     onClose() {
       let leaveChat = this.chatDataKey;
