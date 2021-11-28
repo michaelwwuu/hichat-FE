@@ -3,7 +3,7 @@
     <div class="input-tools-right">
       <div>
         <!-- <img src="./../../static/images/plus.png" alt=""> -->
-        <img src="./../../static/images/image.png" alt="">
+        <img src="./../../static/images/image.png" alt="" @click="uploadImgShow = true"> 
         <!-- <img src="./../../static/images/camera.png" alt=""> -->
       </div>
     </div>
@@ -83,6 +83,28 @@
         <el-button type="info" @click="onEndVoice">結束录音</el-button>
       </span>
     </el-dialog>    
+    <el-dialog
+      title="上傳圖片"
+      :visible.sync="uploadImgShow"
+      append-to-body
+      class="upload-box"
+      width="80%"
+      center>
+      <el-upload
+        class="upload-demo"
+        action="#"
+        :on-change="uploadImg"     
+        :auto-upload="false"
+        :file-list="fileList"
+        list-type="picture">
+        <el-button size="small" type="primary" >点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传 jpg / png 圖片，且不超过500kb</div>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="success" @click="submitAvatarUpload">确 定</el-button>
+        <el-button @click="uploadImgShow = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -100,7 +122,8 @@ export default {
       textArea: "",
       search: "",
       sendAduioShow:false,
-      aduioMsgData:{},
+      uploadImgShow:false,
+
       //錄音
       isVoice: false,
       // isFinished: false,
@@ -135,7 +158,10 @@ export default {
         },
         error: e => {
           this.isVoice = false
-          this.$toast(e)
+          this.$message({
+            message: e,
+            type: 'warning'
+          });
         }
       });
     },
@@ -347,6 +373,20 @@ export default {
       .record-play{
         .record-play-box{
           width: 100%;
+        }
+      }
+    }
+  }
+}
+.upload-box{
+  .el-dialog{
+    border-radius: 10px;
+    .el-dialog__body{
+      .upload-demo{
+        .el-upload-list{
+          .el-upload-list__item{
+            margin-top: -72px;
+          }
         }
       }
     }

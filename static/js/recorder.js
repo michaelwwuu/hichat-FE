@@ -114,7 +114,6 @@ export default class Recorder {
             data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
           }
         }
-        console.log(new Blob([data], { type: 'audio/mp4' }))
         return new Blob([data], { type: 'audio/mp4' });
       }
     };
@@ -140,7 +139,6 @@ export default class Recorder {
   //获取音频文件
   getBlob () {
     this.stop();
-    console.log()
     return this.audioData.encodeWAV();
   };
 

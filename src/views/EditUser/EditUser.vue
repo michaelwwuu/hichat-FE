@@ -38,11 +38,11 @@
         :file-list="fileList"
         list-type="picture">
         <el-button size="small" type="primary" >点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        <div slot="tip" class="el-upload__tip">只能上传 jpg / png 圖片，且不超过500kb</div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
         <el-button type="success" @click="submitAvatarUpload">确 定</el-button>
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button @click="uploadImgShow = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>
