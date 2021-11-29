@@ -76,6 +76,7 @@
       :before-close="closeAduioShow"
       center>
       <div class="record-play">
+        <div class="record-time">{{one}}<span>:</span>{{two}}<span>:</span>{{three}}</div>
         <audio id="audioVoice" controls class="record-play-box"></audio>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -134,6 +135,13 @@ export default {
       audio: "",
       recorder: new Record(),
       audioMessageData:{},
+      flag: null,
+      one : '00',// 時
+      two : '00',// 分
+      three : '00',// 秒
+      abc : 0,// 秒的計數
+      cde : 0,// 分的計數
+      efg : 0,// 時的計數
     };
   },
   props: {
@@ -147,6 +155,47 @@ export default {
     },
   },
   methods: {
+    // 開始計時
+
+    startHandler(){
+      this.flag = setInterval(()=>{
+      if(this.three === 60 || this.three === '60'){
+        this.three = '00';
+        this.abc = 0;
+        if(this.two === 60 || this.two === '60'){
+          this.two = '00';
+          this.cde = 0;
+          if(this.efg+1){
+            this.efg++;
+            this.one = '0' + this.efg;
+          }else{
+            this.efg++;
+            this.one = this.efg;
+          }
+        }else{
+          if(this.cde+1 <= 9){
+            this.cde++;
+            this.two = '0' + this.cde;
+          }else{
+            this.cde++;
+            this.two = this.cde;
+          }
+        }
+      }else{
+        if(this.abc+1 <= 9){
+          this.abc++;
+          this.three = '0' + this.abc;
+        }else{
+          this.abc++;
+          this.three=this.abc;
+        }
+      }},1000)
+    },
+    // 暫停計時
+    endHandler(){
+      this.flag = clearInterval(this.flag)
+    },
+
     uploadImg(file, fileList) {
       this.fileList = fileList
 		},
@@ -195,6 +244,7 @@ export default {
     },
     // 开始录音
     onStartVoice () {
+      this.startHandler()
       this.onStopAudio()
       // this.isFinished = false;
       this.recorder.startRecord({
@@ -211,6 +261,7 @@ export default {
     // 结束录音
     onEndVoice () {
       // this.isFinished = false;
+      this.endHandler()
       this.recorder.stopRecord({
         success: res => {
           this.isVoice = false
@@ -416,6 +467,13 @@ export default {
       .record-play{
         .record-play-box{
           width: 100%;
+        }
+        .record-time{
+          width: 100%;
+          text-align: center;
+          font-size: 2em;
+          margin-bottom: 1em;
+          font-family: monospace;
         }
       }
     }
