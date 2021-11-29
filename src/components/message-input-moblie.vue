@@ -73,6 +73,7 @@
       width="90%"
       class="audio-box"
       append-to-body
+      :before-close="closeAduioShow"
       center>
       <div class="record-play">
         <audio id="audioVoice" controls class="record-play-box"></audio>
@@ -81,6 +82,7 @@
         <el-button type="primary" @click="onStartVoice">开始录音</el-button>
         <!-- <el-button type="danger" @click="onPlayAudio">播放录音</el-button> -->
         <el-button type="info" @click="onEndVoice">結束录音</el-button>
+        <el-button type="danger" @click="onAudioFile">上傳錄音</el-button>
       </span>
     </el-dialog>    
     <el-dialog
@@ -113,7 +115,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from './../../static/js/record-sdk';
-
+import { uploadMessageImage } from "@/api";
 
 export default {
   name: "MessageInput",
@@ -131,7 +133,7 @@ export default {
       tipMsg: '录音',
       audio: "",
       recorder: new Record(),
-      
+      audioMessageData:{},
     };
   },
   props: {
@@ -150,13 +152,33 @@ export default {
 		},
     submitAvatarUpload(){
       this.formData.append('file',this.fileList[0].raw);
-
+      uploadMessageImage(this.formData).then((res)=>{
+        if(res.code === 200) {
+          let message = this.userInfoData;
+          message.chatType = "CLI_USER_IMAGE"
+          message.id = Math.random();
+          message.fromChatId = localStorage.getItem("fromChatId");
+          message.toChatId = this.userData.toChatId;
+          message.text = res.data;
+          Socket.send(message);
+          this.fileList =[]
+          this.uploadImgShow = false
+        }
+      })
+    },
+    // 關閉錄音
+    closeAduioShow(){
+      this.sendAduioShow = false
+      this.audioMessageData = {}
+    },
+    // 上船錄音
+    onAudioFile(){
+      console.log('audioMessageData',this.audioMessageData)
     },
     sendAduio(){
       // this.isFinished = false
       this.sendAduioShow = true
     },
-
     // 开始录音
     onStartVoice () {
       this.onStopAudio()
@@ -185,6 +207,7 @@ export default {
           this.audio = document.getElementById("audioVoice");
           this.recorder.play(this.audio);
           console.log('音频源文件', res)
+          this.audioMessageData = res
         },
         error: e => {
           this.isVoice = false

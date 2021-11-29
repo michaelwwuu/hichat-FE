@@ -12,20 +12,20 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <div class="read-check-box">
-            <span class="read-check" v-if="el.isRead"><img src="./../../static/images/check.png" alt=""></span>
-            <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
-          </div>
           <p>
             <span class="message-classic" v-if="el.chatType === 'SRV_USER_SEND'">{{el.message.content}}</span>
             <audio class="message-audio" v-else-if="el.chatType === 'SRV_USER_AUDIO'" controls :src="el.message.content"></audio>
 
-            <span class="message-classic" v-else-if="el.chatType === 'SRV_USER_IMAGE'"><img :src="el.message.content" alt=""></span>
+            <span class="message-image" v-else-if="el.chatType === 'SRV_USER_IMAGE'"><img :src="el.message.content" alt=""></span>
 
             <span class="nickname-time">{{
               $root.formatTimeSecound(el.message.time)
             }}</span>
           </p>
+          <div class="read-check-box">
+            <span class="read-check" v-if="el.isRead"><img src="./../../static/images/check.png" alt=""></span>
+            <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
+          </div>
         </li>
       </div>
     </ul>
@@ -69,7 +69,6 @@ export default {
         })
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData
       });
-      console.log(this.newMessageData)
     }
   },
   methods: {
@@ -162,11 +161,8 @@ export default {
         padding-right: 10px;
       }
       .read-check-box{
-        text-align:right;
-        position: relative;
-        top: 50px;
-        left:7px;
-        z-index: 9;
+        display: flex;
+        justify-content: flex-end;
         span{
           img{
             height:1em;
@@ -212,9 +208,24 @@ export default {
     .message-audio{
       position: relative;
       max-width: 65%;
-      margin-top: 5px;
+      margin-top: 1em;
       display: inline-block;
-      padding: 9px 0;
+      border: 1px solid #d4d4d4;
+      border-radius:50px
+
+    }
+    .message-image{
+      position: relative;
+      margin-top: 1em;
+      display: inline-block;
+      padding: 5px 7px;
+      color: #333333;
+      background-color: #e5e4e4;
+      border-radius: 10px;
+      img{
+        border-radius: 8px;
+        height: 6em;
+      }
     }
   }
 }

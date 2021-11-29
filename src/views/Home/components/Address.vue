@@ -58,7 +58,7 @@ export default {
       activeName:'address',
       centerDialogVisible : false,
       qrCodeConfig:{
-        text:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
+        text:`https://test.hichat.tools/fe/#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo:require("./../../../../static/images/material_ic_logo.png"),
       },
       downloadFilename:''

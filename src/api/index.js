@@ -106,3 +106,13 @@ export const uploadIcon = data => {
   }
   return axios.request(postData)
 }
+
+// 上傳圖片
+export const uploadMessageImage = data => {
+  let postData = {
+    url: 'file/upload/uploadMessageImage',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

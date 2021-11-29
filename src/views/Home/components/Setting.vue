@@ -30,13 +30,15 @@
           
         </router-link>
       </div>
-
-      <div class="setting-disable">
-        <div class="setting-button-left">
-          <img src="./../../../../static/images/logout.png" alt="" />
-          <span>登出</span>
-        </div>
+      <div class="setting-disable" >
+        <router-link :to="'/login'">
+          <div class="setting-button-left">
+            <img src="./../../../../static/images/logout.png" alt="" />
+            <span>登出</span>
+          </div>
+        </router-link>
       </div>
+      
     </div>
     <el-dialog
       title="我的帐号"
@@ -101,7 +103,7 @@ export default {
       userData: {},
       centerDialogVisible : false,
       qrCodeConfig:{
-        text:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
+        text:`https://test.hichat.tools/fe/#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo:require("./../../../../static/images/material_ic_logo.png"),
       },
       downloadFilename:''
@@ -260,6 +262,9 @@ export default {
         color: #333333;
         font-weight: 600;
       }
+    }
+    a{
+      text-decoration: none;
     }
   }
   .setting-disable {
