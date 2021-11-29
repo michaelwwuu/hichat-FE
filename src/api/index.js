@@ -116,3 +116,13 @@ export const uploadMessageImage = data => {
   }
   return axios.request(postData)
 }
+
+// 上傳檔案
+export const uploadMessageFile = data => {
+  let postData = {
+    url: 'file/upload/uploadMessageFile',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

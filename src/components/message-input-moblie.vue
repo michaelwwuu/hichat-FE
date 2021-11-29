@@ -115,7 +115,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from './../../static/js/record-sdk';
-import { uploadMessageImage } from "@/api";
+import { uploadMessageImage,uploadMessageFile } from "@/api";
 
 export default {
   name: "MessageInput",
@@ -171,9 +171,15 @@ export default {
       this.sendAduioShow = false
       this.audioMessageData = {}
     },
-    // 上船錄音
+    // 上傳錄音
     onAudioFile(){
-      console.log('audioMessageData',this.audioMessageData)
+      this.formData.append('file',this.audioMessageData);
+      this.formData.append('type','AUDIO');
+      uploadMessageFile(this.formData).then((res)=>{
+        if(res.code === 200) {
+          console.log(res)
+        }
+      })
     },
     sendAduio(){
       // this.isFinished = false
