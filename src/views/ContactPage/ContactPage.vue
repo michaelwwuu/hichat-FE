@@ -9,9 +9,10 @@
       <div class="user-data">
         <span><img :src="userData.icon" alt=""></span>
         <span>{{userData.name}}</span>
+        <span class="user-data-id"> ID : {{ userData.username }}</span>
       </div>
 
-      <div class="setting-button" v-for="(item,index) in settingData" :key="index">
+      <div class="setting-button" v-for="(item,index) in settingData" :key="index" @click="developmentMessage(item)">
         <span @click="goChatRoom(userData,item.path)">
           <div class="setting-button-left">
             <img :src="item.icon" alt="">
@@ -21,7 +22,7 @@
         </span>
       </div>
 
-      <div class="setting-notification">
+      <div class="setting-notification" @click="developmentMessage('提醒通知')">
         <div class="setting-button-left">
           <img src="./../../../static/images/notification.png" alt="">
           <span>提醒通知</span>        
@@ -33,7 +34,7 @@
         </el-switch>
       </div>
 
-      <div class="setting-disable">
+      <div class="setting-disable" @click="developmentMessage('封锁联络人')">
         <div class="setting-button-left">
           <img src="./../../../static/images/blockade.png" alt="">
           <span>封锁联络人</span>        
@@ -45,6 +46,7 @@
 </template>
 
 <script>
+import { developmentMessage } from "@/assets/tools";
 
 export default {
   name: "ContactPage",
@@ -69,6 +71,7 @@ export default {
         }
       ],
       notification:true,
+      developmentMessage:developmentMessage
     }
   },
   created() {
@@ -122,17 +125,24 @@ export default {
     }
   }
   .address-content{
-    .user-data{
-      margin: 2.5em auto -2.3em auto;
-      span{
+    .user-data {
+      margin: 2.5em auto;
+      .user-data-id {
+        margin: -3.5em 0 -5em 0;
+        font-size: 13px;
+        color: #b3b3b3;
+      }
+      span {
         display: block;
         text-align: center;
-        height:4.5em;
+        height: 4.5em;
         font-weight: 600;
-        img{
-          height:4em;
-          border-radius: 10px;
+        img {
+          height: 4em;
         }
+      }
+      img{
+        border-radius: 10px;
       }
     }
     .setting-button{

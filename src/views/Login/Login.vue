@@ -159,12 +159,25 @@ export default {
         } else {
           this.disabled = true;
         }
+        localStorage.setItem("email",val.email);
       },
       deep: true,
     },
+    remember(val){
+      !val ? localStorage.removeItem('email') : localStorage.setItem("email",this.loginForm.email);
+    }
   },
   mounted() {
-    localStorage.clear();
+    if(this.remember){
+      this.loginForm.email = localStorage.getItem('email')
+      localStorage.removeItem('username')
+      localStorage.removeItem('token')
+      localStorage.removeItem('id')
+      localStorage.removeItem('fromChatId')
+      localStorage.removeItem('UUID')
+    }else{
+      localStorage.clear();
+    }
     this.getUUID();
   },
   methods: {

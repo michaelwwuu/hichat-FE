@@ -16,28 +16,29 @@
         v-for="(item, index) in settingData"
         :key="index"
         :class="{ 'mt10': item.name === '提醒' || item.name === '关于HiChat'}"
+        @click="developmentMessage(item)"
       >
-        <router-link :to="item.path">
+        <router-link :to="item.path" >
           <div class="setting-button-left">
             <img :src="item.icon" alt="" />
             <span>{{ item.name }}</span>
           </div>
-          <div class="setting-button-right">
+          <div class="setting-button-right" >
             <span v-if="item.name === '提醒'">开启</span>
             <span v-if="item.name === '语言'">简体中文</span>
             <img src="./../../../../static/images/next.png" alt="" />
           </div>
-          
         </router-link>
       </div>
-      <div class="setting-disable" >
-        <router-link :to="'/login'">
+
+      <router-link :to="'/login'">
+        <div class="setting-disable" >
           <div class="setting-button-left">
             <img src="./../../../../static/images/logout.png" alt="" />
             <span>登出</span>
           </div>
-        </router-link>
-      </div>
+        </div>
+      </router-link>
       
     </div>
     <el-dialog
@@ -62,6 +63,8 @@
 import { getUserInfo } from "@/api";
 import VueQr from 'vue-qr'
 import urlCopy from "@/utils/urlCopy.js";
+import { developmentMessage } from "@/assets/tools";
+
 
 export default {
   name: "Setting",
@@ -106,7 +109,8 @@ export default {
         text:`https://test.hichat.tools/fe/#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo:require("./../../../../static/images/material_ic_logo.png"),
       },
-      downloadFilename:''
+      downloadFilename:'',
+      developmentMessage:developmentMessage
     };
   },
   mounted() {
@@ -129,7 +133,6 @@ export default {
       getUserInfo().then((res) => {
         this.userData = res.data;
         this.userData.nickname =  res.data.nickname.replace(/\["|"]/g, '' )
-        console.log(this.userData)
         if (this.userData.icon === undefined)
           this.userData.icon = require("./../../../../static/images/image_user_defult.png");
       });
@@ -263,11 +266,13 @@ export default {
         font-weight: 600;
       }
     }
-    a{
-      text-decoration: none;
-    }
+    
+  }
+  a{
+    text-decoration: none;
   }
   .setting-disable {
+    margin: 0;
     span {
       color: #ee5253 !important;
     }

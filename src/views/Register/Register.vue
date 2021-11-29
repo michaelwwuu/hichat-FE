@@ -265,7 +265,12 @@ export default {
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
               this.dialogShow = true
-            } 
+            } else{
+              this.$message({
+                message: res.message,
+                type: "error",
+              });
+            }
           })
           .catch((err) => {
             this.$message({
@@ -380,9 +385,8 @@ export default {
       }
     }
     .register-footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
+      position: relative;
+      top: 2em;
     }
   }
   .dialog-style{

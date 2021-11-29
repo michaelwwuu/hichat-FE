@@ -85,13 +85,27 @@ function getAuthCodeData(email,key) {
     forRegister:key
   }
   genAuthCode(params).then((res)=>{
-    if(res.code === 200) this.$message({ message: "請至郵件信箱獲取驗證碼", type: "success"});
+    switch (res.code) {
+      case 200:
+        this.$message({ message: "請至郵件信箱獲取驗證碼", type: "success"});
+        break;
+      case 500:
+        this.$message({ message: res.message, type: "warning"});
+        break;
+      default:
+        break;
+    }
   })
+  
 }
-
+function developmentMessage(data){
+  if(data.name ==='传送讯息') return
+  this.$message({ message: "功能開發中", type: "warning"});
+}
 export {
   gotoBottom,
   // disabled,
   // unBlock,
-  getAuthCodeData
+  getAuthCodeData,
+  developmentMessage,
 }

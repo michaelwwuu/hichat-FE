@@ -177,7 +177,6 @@ export default {
       this.formData.append('type','FILE');
       uploadMessageFile(this.formData).then((res)=>{
         if(res.code === 200) {
-          console.log(res)
           let message = this.userInfoData;
           message.chatType = "CLI_USER_AUDIO"
           message.id = Math.random();
