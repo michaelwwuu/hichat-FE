@@ -44,13 +44,13 @@
       width="100%"
       center>
       <div class="qrcode-box">
-        <vue-qr :correctLevel="3" :autoColor="false" colorDark="#333333" :text="qrCodeConfig"  :size="100" :margin="0" :logoMargin="3"></vue-qr>
+        <vue-qr ref="Qrcode" :correctLevel="3" :autoColor="false" colorDark="#333333" :text="qrCodeConfig.text"  :download="downloadFilename" :size="100" :margin="0" :logoSrc="qrCodeConfig.logo" :logoCornerRadius="2" :logoMargin="1"></vue-qr>
       </div>
       <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
       <span slot="footer" class="dialog-footer">
         <img src="./../../../../static/images/scan.png" alt="">
-        <img src="./../../../../static/images/share.png" alt="">
-        <img src="./../../../../static/images/download.png" alt="">
+        <img src="./../../../../static/images/share.png" alt="" @click="copyUrl">
+        <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
       </span>
     </el-dialog>
   </div>
@@ -59,6 +59,7 @@
 <script>
 import { getUserInfo } from "@/api";
 import VueQr from 'vue-qr'
+import urlCopy from "@/utils/urlCopy.js";
 
 export default {
   name: "Setting",
@@ -99,13 +100,29 @@ export default {
       notification: true,
       userData: {},
       centerDialogVisible : false,
-      qrCodeConfig:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
+      qrCodeConfig:{
+        text:`http://localhost:8080/#/Address?${localStorage.getItem('username')}&${localStorage.getItem('id')}`,
+        logo:require("./../../../../static/images/material_ic_logo.png"),
+      },
+      downloadFilename:''
     };
   },
   mounted() {
     this.getUserData();
   },
   methods: {
+    copyUrl(){
+      let url = this.qrCodeConfig.text;
+      urlCopy(url);
+    },
+    downloadImg () {
+      const iconUrl = this.$refs.Qrcode.$el.src
+      let a = document.createElement('a')
+      let event = new MouseEvent('click')
+      a.download = '二维码'
+      a.href = iconUrl
+      a.dispatchEvent(event)
+    },
     getUserData() {
       getUserInfo().then((res) => {
         this.userData = res.data;
@@ -287,20 +304,20 @@ export default {
         img{
           height: 14em;
         }
-        &::after{
-          content: '';
-          display: block;
-          width: 2.5em;
-          height: 2.5em;
-          background-color: #FFF;
-          background-image: url('./../../../../static/images/material_ic_logo.png');
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 70%;
-          position: absolute;
-          margin: 0 auto;
-          border-radius:10px;
-        }
+        // &::after{
+        //   content: '';
+        //   display: block;
+        //   width: 2.5em;
+        //   height: 2.5em;
+        //   background-color: #FFF;
+        //   background-image: url('./../../../../static/images/material_ic_logo.png');
+        //   background-repeat: no-repeat;
+        //   background-position: center;
+        //   background-size: 70%;
+        //   position: absolute;
+        //   margin: 0 auto;
+        //   border-radius:10px;
+        // }
       }
       .qrcode-box-text{
         color: #0c0d0d;

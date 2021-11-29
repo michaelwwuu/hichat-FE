@@ -189,6 +189,7 @@ export default {
       loginForm: {
         email: "",
         password: "",
+        passwordAganin: "",
         authCode: "",
         nickname: "",
         username: "",
@@ -204,6 +205,10 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
+        console.log(val)
+        if (val.password !== val.passwordAganin){
+          this.disabled = false;
+        }
         if (
           Object.values(val).every(el => el !== "") &&
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&

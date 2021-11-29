@@ -153,7 +153,7 @@ export default {
       handler(val) {
         if (
           Object.values(val).every(el => el !== "") &&
-          /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val.password) 
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password)
         ) {
           this.disabled = false;
         } else {
