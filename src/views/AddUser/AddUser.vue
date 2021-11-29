@@ -77,8 +77,7 @@ export default {
         this.noData = true
         return
       }
-      searchByEmailUsername({token})
-      .then((res)=>{
+      searchByEmailUsername({token}).then(res=>{
         if(res.data === undefined) {
           this.noData = true
         } else if(res.data !=={}){
@@ -91,8 +90,7 @@ export default {
         contactId: data.id,
         name: data.username
       }
-      addContactUser(parmas)
-      .then((res)=>{
+      addContactUser(parmas).then(res=>{
         if(res.code === 200) this.$router.push({ path:'/Address' });
       })
     }
