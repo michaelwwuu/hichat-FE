@@ -126,6 +126,9 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
+        // 发送影片照片讯息成功 
+        case "SRV_USER_IMAGE":  
+        case "SRV_USER_AUDIO":
         // 发送讯息成功
         case "SRV_USER_SEND":
           this.messageList(userInfo)
@@ -149,10 +152,6 @@ export default {
             if(res.historyId === userInfo.historyId) res.isRead = true
           })
           break;  
-        case "SRV_USER_IMAGE":  
-        case "SRV_USER_AUDIO":
-          this.messageList(userInfo)
-          break; 
         // 撈取歷史訊息  
         case "SRV_RECENT_CHAT":
           this.getChatHistoryMessage()

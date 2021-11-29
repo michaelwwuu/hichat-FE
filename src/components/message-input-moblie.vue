@@ -123,13 +123,15 @@ export default {
       search: "",
       sendAduioShow:false,
       uploadImgShow:false,
-
+      formData:new FormData(),
+      fileList:[],
       //錄音
       isVoice: false,
       // isFinished: false,
       tipMsg: '录音',
       audio: "",
-      recorder: new Record()
+      recorder: new Record(),
+      
     };
   },
   props: {
@@ -143,6 +145,13 @@ export default {
     },
   },
   methods: {
+    uploadImg(file, fileList) {
+      this.fileList = fileList
+		},
+    submitAvatarUpload(){
+      this.formData.append('file',this.fileList[0].raw);
+
+    },
     sendAduio(){
       // this.isFinished = false
       this.sendAduioShow = true

@@ -60,6 +60,7 @@ export default {
         nickname:''
       },
       uploadImgShow:false,
+      formData:new FormData(),
       fileList:[],
     }
   },
@@ -90,8 +91,7 @@ export default {
       this.fileList = fileList
 		},
     submitAvatarUpload(){
-      let formData = new FormData()
-      formData.append('file',this.fileList[0].raw);
+      this.formData.append('file',this.fileList[0].raw);
       uploadIcon(formData).then((res)=>{
         console.log(res)
         if(res.code === 200) {
