@@ -16,7 +16,13 @@
             <span class="message-classic" v-if="el.chatType === 'SRV_USER_SEND'">{{el.message.content}}</span>
             <audio class="message-audio" v-else-if="el.chatType === 'SRV_USER_AUDIO'" controls :src="el.message.content"></audio>
 
-            <span class="message-image" v-else-if="el.chatType === 'SRV_USER_IMAGE'"><img :src="el.message.content" alt=""></span>
+            <span class="message-image" v-else-if="el.chatType === 'SRV_USER_IMAGE'">
+              <!-- <img :src="el.message.content" alt=""> -->
+              <el-image 
+                :src="el.message.content" 
+                :preview-src-list="[el.message.content]">
+              </el-image>
+            </span>
 
             <span class="nickname-time">{{
               $root.formatTimeSecound(el.message.time)
