@@ -12,7 +12,7 @@
         <span class="user-data-id"> ID : {{ userData.username }}</span>
       </div>
 
-      <div class="setting-button" v-for="(item,index) in settingData" :key="index" @click="developmentMessage(item)">
+      <div class="setting-button" v-for="(item,index) in settingData" :key="index" @click="developmentMessage(item.name)">
         <span @click="goChatRoom(userData,item.path)">
           <div class="setting-button-left">
             <img :src="item.icon" alt="">
@@ -30,7 +30,8 @@
         <el-switch
           v-model="notification"
           active-color="#fd5f3f"
-          inactive-color="#666666">
+          inactive-color="#666666"
+          disabled>
         </el-switch>
       </div>
 

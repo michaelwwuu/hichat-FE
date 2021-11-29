@@ -14,8 +14,8 @@
         :autosize="{ minRows: 1, maxRows: 1 }"
         placeholder="Aa"
         v-model="textArea"
-        v-on:keyup.native="keyUp"
       >
+        <!-- v-on:keyup.native="keyUp" -->
       </el-input>
       <div class="footer-tools">
         <emoji-picker @emoji="insert" :search="search">
@@ -63,7 +63,7 @@
       <div v-if="textArea === ''" @click="sendAduio">
         <img src="./../../static/images/audio.png" alt="">
       </div>
-      <div v-else  @click="sendMessage">
+      <div v-else @click="sendMessage">
         <img src="./../../static/images/send.png" alt="">
       </div>
     </div>
@@ -278,9 +278,9 @@ export default {
     },
 
     // 按Enter发送消息
-    keyUp(event) {
-      if (event.key === "Enter") this.sendMessage();
-    },
+    // keyUp(event) {
+    //   if (event.key === "Enter") this.sendMessage();
+    // },
 
     // 发送消息
     sendMessage() {

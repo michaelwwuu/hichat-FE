@@ -16,7 +16,7 @@
         v-for="(item, index) in settingData"
         :key="index"
         :class="{ 'mt10': item.name === '提醒' || item.name === '关于HiChat'}"
-        @click="developmentMessage(item)"
+        @click="developmentMessage(item.name)"
       >
         <router-link :to="item.path" >
           <div class="setting-button-left">

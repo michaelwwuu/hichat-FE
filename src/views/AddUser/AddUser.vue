@@ -20,7 +20,7 @@
       <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
     </div>
 
-    <div v-if="Object.keys(addUser).length !== 0" class="add-content">
+    <div v-if="addUser.username !== undefined" class="add-content">
       <div class="user-data">
         <span><img :src="addUser.icon === undefined ? avatarImg : addUser.icon" alt=""></span>
         <span>{{addUser.username}}</span>
@@ -43,17 +43,14 @@ export default {
   name: "AddUser",
   data() {
     return {
-      searchKey:'',
-      noData:false,
       addUser:{},
-      avatarImg:require("./../../../static/images/image_user_defult.png")
+      searchKey:'',
+      avatarImg:require("./../../../static/images/image_user_defult.png"),
+      noData:false,
     }
   },
   created() {
-    if(this.getUrlParam('username') !== undefined){
-      let token = this.getUrlParam('username')
-      this.searchUserData(token)
-    }
+    if(this.getUrlParam('username') !== '') this.searchUserData(token)
   },
   methods: {
     // 獲取URL key
@@ -72,6 +69,7 @@ export default {
         return "";
       }
     },
+
     searchUserData(token){
       this.noData = false
       if(token === '') {
@@ -79,7 +77,6 @@ export default {
         this.noData = true
         return
       }
-      this.addUser = {}
       searchByEmailUsername({token})
       .then((res)=>{
         if(res.data === undefined) {
@@ -87,9 +84,6 @@ export default {
         } else if(res.data !=={}){
           this.addUser = res.data
         }
-      })
-      .catch((res)=>{
-
       })
     },
     joinUserButtom(data){

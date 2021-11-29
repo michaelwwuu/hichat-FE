@@ -99,7 +99,7 @@ function getAuthCodeData(email,key) {
   
 }
 function developmentMessage(data){
-  if(data.name ==='传送讯息') return
+  if(data ==='传送讯息') return
   this.$message({ message: "功能開發中", type: "warning"});
 }
 export {
