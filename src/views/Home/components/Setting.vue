@@ -230,6 +230,7 @@ export default {
         margin-left: 1em;
         font-size: 15px;
         color: #333333;
+        font-weight: 600;
       }
     }
     .setting-button-right {
@@ -239,6 +240,7 @@ export default {
         margin-right: 1em;
         font-size: 15px;
         color: #b3b3b3;
+        font-weight: 600;
       }
     }
   }
@@ -261,6 +263,7 @@ export default {
         margin-left: 1em;
         font-size: 15px;
         color: #333333;
+        font-weight: 600;
       }
     }
     
