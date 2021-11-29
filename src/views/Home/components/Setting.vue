@@ -99,7 +99,7 @@ export default {
         {
           name: "关于HiChat",
           icon: require("./../../../../static/images/about.png"),
-          path: "",
+          path: "/About",
         },
       ],
       notification: true,

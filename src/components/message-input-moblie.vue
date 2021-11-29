@@ -203,10 +203,7 @@ export default {
         },
         error: e => {
           this.isVoice = false
-          this.$message({
-            message: e,
-            type: 'warning'
-          });
+          this.$message({ message: e, type: 'warning'});
         }
       });
     },

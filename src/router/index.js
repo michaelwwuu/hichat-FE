@@ -86,7 +86,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "EditUser" */ '@/views/EditUser/EditUser.vue'),
     meta: { keepAlive: true },
   }, 
-
+  {
+    path: "/About",
+    name: "About",
+    component: () => import(/* webpackChunkName: "About" */ '@/views/About/About.vue'),
+    meta: { keepAlive: true },
+  }, 
   {
     path: "*",
     redirect: "/login"
