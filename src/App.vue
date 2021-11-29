@@ -15,7 +15,6 @@ export default {
 
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap');
 #app {
   max-width: 100vw;
   height: 100vh;
