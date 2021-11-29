@@ -30,9 +30,9 @@ class HttpRequest {
       if (config.method === 'post') {
         config.headers.post['Content-Type'] = "'Content-Type': 'multipart/form-data'";
       }
-      // if (config.method === 'put') {
-      //   config.headers.post['Content-Type'] = "'Content-Type': 'application/json'";
-      // }
+      if (config.method === 'put') {
+        config.headers['Content-Type'] = 'application/json';
+      }
       if (getToken) {
         config.headers.Authorization = `${localStorage.token}`
       }
