@@ -84,7 +84,12 @@ const routes = [
     name: "EditContact",
     component: () => import(/* webpackChunkName: "EditContact" */ '@/views/EditContact/EditContact.vue'),
     meta: { keepAlive: false },
-
+  }, 
+  {
+    path: "/ResetPassword",
+    name: "ResetPassword",
+    component: () => import(/* webpackChunkName: "ResetPassword" */ '@/views/ResetPassword/ResetPassword.vue'),
+    meta: { keepAlive: false },
   }, 
   {
     path: "/EditUser",

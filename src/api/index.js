@@ -146,3 +146,12 @@ export const forgetPassword = data => {
   }
   return axios.request(postData)
 }
+// 解鎖密碼
+export const unlockUser = data => {
+  let postData = {
+    url: '/api/sso/unlockUser',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

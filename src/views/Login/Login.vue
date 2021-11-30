@@ -119,7 +119,7 @@
       <div align="center">帐号已锁定。</div>
       <div align="center">请至邮箱取得验证码以解锁帐号。</div>
       <span slot="footer" class="dialog-footer">
-        <router-link to="/Home">
+        <router-link to="/ResetPassword">
           <el-button @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
@@ -227,11 +227,13 @@ export default {
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
               this.$router.push({ path: "/Home" });
-            } else {
-              this.$message({ message: "登入驗證失敗，請重新輸入並確認", type: "error",});
+            } else if(res.data === '账号已被禁用') {
+              //登入失敗
+              this.dialogShow = true;
+            }else{
+              this.$message({ message: res.data, type: "error",});
               return false;
             }
-            //登入失敗
           })
           .catch((err) => {
             this.$message({ message: "登入驗證失敗，請重新輸入並確認", type: "error",});
@@ -469,6 +471,9 @@ $light_gray: #eee;
           &:nth-child(2){
             margin: 2em 0 1em 0;
           }
+          &:nth-child(3){
+            margin: 0 0 1em 0;
+          }
         }
       }
       .el-dialog__footer{
@@ -478,6 +483,7 @@ $light_gray: #eee;
             width: 90%;
             background-color: #fd5f3f;
             color: #FFF;
+            border:0
           }
         }
       }
