@@ -93,7 +93,6 @@ export default {
     submitAvatarUpload(){
       this.formData.append('file',this.fileList[0].raw);
       uploadIcon(this.formData).then((res)=>{
-        console.log(res)
         if(res.code === 200) {
           this.fileList =[]
           this.uploadImgShow = false

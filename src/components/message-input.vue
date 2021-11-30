@@ -166,7 +166,6 @@ export default {
 
     // 发送紅包
     redEnvelopeSubmit(redEnvelopeRadio){
-      console.log(redEnvelopeRadio)
       this.redEnvelopeDialog = true;
       this.redEnvelopeMsg = redEnvelopeRadio === 0 ? '红发数量不足，请参阅会员中心首页钱包说明，有更多红包获取资讯' : '发放成功！'
     },

@@ -94,7 +94,9 @@ export default {
       })
     },
     goContactPage(data){
-      localStorage.setItem('userData',JSON.stringify(data))
+      let userData = data
+      userData.toChatId = 'u' + data.contactId
+      localStorage.setItem('userData',JSON.stringify(userData))
       this.$router.push({ name: "ContactPage"});
     }
   },

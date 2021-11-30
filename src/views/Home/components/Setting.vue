@@ -9,7 +9,7 @@
       <div class="user-data">
         <span><img :src="userData.icon" alt="" /></span>
         <span>{{ userData.nickname }}</span>
-        <span class="user-data-id"> ID : {{ userData.username }}</span>
+        <span class="user-data-id" @click="copyPaste(userData.username)"> ID : {{ userData.username }}</span>
       </div>
       <div
         class="setting-button"
@@ -88,7 +88,7 @@ export default {
         {
           name: "密码管理",
           icon: require("./../../../../static/images/safe.png"),
-          path: "",
+          path: "/passwordMange",
         },
         {
           name: "封鎖名單",
@@ -131,6 +131,19 @@ export default {
     this.getUserData();
   },
   methods: {
+    copyPaste(data){
+      let url = document.createElement("input");
+      document.body.appendChild(url);
+      url.value = data;
+      url.select();
+      document.execCommand('copy');
+      document.body.removeChild(url);
+      this.$message({
+        message: `ID : ${data} 复制成功`,
+        type: 'success',
+        duration: 1000
+      });
+    },
     copyUrl(){
       let url = this.qrCodeConfig.text;
       urlCopy(url);

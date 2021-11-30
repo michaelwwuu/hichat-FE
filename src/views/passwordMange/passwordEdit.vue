@@ -1,10 +1,9 @@
 <template>
-  <div :class="[{ 'register-container-moblie': device === 'moblie' }]">
-    <div class="register-header">
-      <router-link :to="'/Login'"
-        ><div class="register-back"></div
-      ></router-link>
-      <span class="register-header-title">註冊</span>
+  <div class="home-wrapper">
+    <div class="home-header">
+      <div class="home-user" @click="back"></div>
+      <span class="home-header-title">修改登录密码</span>
+      <div class="home-add-user"></div>
     </div>
     <div class="register-content">
       <el-form
@@ -13,46 +12,28 @@
         class="login-form"
         label-position="top"
       >
-        <el-form-item prop="email">
-          <span class="svg-container">
-            <img src="./../../../static/images/mail.png" alt="" />
-          </span>
-          <el-input
-            ref="email"
-            placeholder="電子郵箱"
-            v-model="loginForm.email"
-            name="email"
-            type="text"
-            tabindex="1"
-            maxLength="30"
-            @input="
-              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="oldPassword">
           <span class="svg-container">
             <img src="./../../../static/images/lock.png" alt="" />
           </span>
           <el-input
-            ref="password"
-            placeholder="登入密碼"
-            v-model="loginForm.password"
-            name="password"
-            :type="passwordType === 'password' ? 'password' : 'text'"
+            ref="oldPassword"
+            placeholder="目前的密码"
+            v-model="loginForm.oldPassword"
+            name="oldPassword"
+            :type="oldPasswordType === 'password' ? 'password' : 'text'"
             tabindex="2"
             maxLength="12"
             @input="
               (v) =>
-                (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.oldPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
-          <span class="show-pwd" @click="showPwd('password')">
+          <span class="show-pwd" @click="showPwd('oldPassword')">
             <img
               :src="
-                passwordType === 'password'
+                oldPasswordType === 'password'
                   ? require('../../../static/images/eye_closed.png')
                   : require('./../../../static/images/eye-solid.svg')
               "
@@ -60,31 +41,28 @@
             />
           </span>
         </el-form-item>
-        <span class="tip-text"
-          >密碼長度為6至12個字元，至少包含1個大寫、1個小寫英文及1個數字。</span
-        >
-        <el-form-item prop="passwordAganin">
+        <el-form-item prop="newPassword">
           <span class="svg-container">
             <img src="./../../../static/images/lock.png" alt="" />
           </span>
           <el-input
-            ref="passwordAganin"
-            placeholder="再次確認登入密碼"
-            v-model="loginForm.passwordAganin"
-            name="passwordAganin"
-            :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
+            ref="newPassword"
+            placeholder="欲设定的密码"
+            v-model="loginForm.newPassword"
+            name="newPassword"
+            :type="newPasswordType === 'password' ? 'password' : 'text'"
             tabindex="2"
             maxLength="12"
             @input="
               (v) =>
-                (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
-          <span class="show-pwd" @click="showPwd('passwordAgain')">
+          <span class="show-pwd" @click="showPwd('newPassword')">
             <img
               :src="
-                passwordTypeAgain === 'password'
+                newPasswordType === 'password'
                   ? require('../../../static/images/eye_closed.png')
                   : require('./../../../static/images/eye-solid.svg')
               "
@@ -92,63 +70,34 @@
             />
           </span>
         </el-form-item>
-        <el-form-item prop="username">
+        <el-form-item prop="newPasswordAganin">
           <span class="svg-container">
-            <img src="./../../../static/images/at.png" alt="" />
+            <img src="./../../../static/images/lock.png" alt="" />
           </span>
           <el-input
-            ref="username"
-            placeholder="使用者ID"
-            v-model="loginForm.username"
-            name="username"
-            type="text"
-            tabindex="1"
-            maxLength="18"
+            ref="newPasswordAganin"
+            placeholder="确认欲设定的密码"
+            v-model="loginForm.newPasswordAganin"
+            name="newPasswordAganin"
+            :type="newPasswordTypeAgain === 'password' ? 'password' : 'text'"
+            tabindex="2"
+            maxLength="12"
             @input="
               (v) =>
-                (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.newPasswordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
-        </el-form-item>
-        <span class="tip-text"
-          >ID 長度為5至18個字元，允許混用英文字母、數字和底線。</span
-        >
-        <el-form-item prop="nickname">
-          <span class="svg-container">
-            <img src="./../../../static/images/user.png" alt="" />
+          <span class="show-pwd" @click="showPwd('newPasswordAgain')">
+            <img
+              :src="
+                newPasswordTypeAgain === 'password'
+                  ? require('../../../static/images/eye_closed.png')
+                  : require('./../../../static/images/eye-solid.svg')
+              "
+              alt=""
+            />
           </span>
-          <el-input
-            ref="nickname"
-            placeholder="暱稱"
-            v-model="loginForm.nickname"
-            name="nickname"
-            type="text"
-            tabindex="1"
-            maxLength="18"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="authCode">
-          <span class="svg-container">
-            <img src="./../../../static/images/code.png" alt="" />
-          </span>
-          <el-input
-            ref="authCode"
-            placeholder="驗證碼"
-            v-model="loginForm.authCode"
-            name="authCode"
-            type="authCode"
-            tabindex="2"
-            maxLength="6"
-            @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
-          >
-          </el-input>
-          <span
-            class="verification-style"
-            @click="getAuthCodeData(loginForm.email,true)"
-            >获取驗證碼</span
-          >
         </el-form-item>
         <div class="register-footer">
           <el-button
@@ -168,9 +117,9 @@
       :show-close="false"
       center>
       <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
-      <div align="center">注册完成，系统将自动登入</div>
+      <div align="center">登录密码已修改。</div>
       <span slot="footer" class="dialog-footer">
-        <router-link to="/Home">
+        <router-link to="/passwordMange">
           <el-button @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
@@ -179,38 +128,34 @@
 </template>
 
 <script>
-import { register } from "@/api";
-import { getAuthCodeData } from "@/assets/tools";
-import { setToken } from "_util/utils.js";
+import { updatePassword } from "@/api";
 
 export default {
+  name: "passwordEdit",
   data() {
     return {
       loginForm: {
-        email: "",
-        password: "",
-        passwordAganin: "",
-        authCode: "",
-        nickname: "",
-        username: "",
+        newPassword: "",
+        oldPassword: ""
       },
-      device: "",
-      passwordType: "password",
-      passwordTypeAgain: "password",
+      email:localStorage.getItem("email"),
+      oldPasswordType: "password",
+      newPasswordType: "password",
+      newPasswordTypeAgain: "password",
+      notification:false,
       disabled: true,
       dialogShow:false,
-      getAuthCodeData:getAuthCodeData,
-    };
+    }
   },
   watch: {
     loginForm: {
       handler(val) {
-        if(val.password === val.passwordAganin) {
+        if(val.newPassword === val.newPasswordAganin) {
           if (
             Object.values(val).every(el => el !== "") &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
-            /^[A-Za-z0-9_\_]+.{5}$/.test(val.username) 
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.oldPassword) &&
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPassword) &&
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPasswordAganin)
           ) {
             this.disabled = false;
           } 
@@ -221,45 +166,29 @@ export default {
       deep: true,
     },
   },
-  created() {
-    if (
-      navigator.userAgent.match(/Android/i) ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match(/iPad/i) ||
-      navigator.userAgent.match(/iPod/i) ||
-      navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i)
-    ) {
-      this.device = "moblie";
-    } else {
-      this.device = "pc";
-    }
-  },
   methods: {
     showPwd(value) {
-      if(value === 'password'){
-        this.passwordType = this.passwordType === "password" ? "" : "password";
-      } else if(value === 'passwordAgain'){
-        this.passwordTypeAgain = this.passwordTypeAgain === "password" ? "" : "password";
+      if(value === 'oldPassword'){
+        this.oldPasswordType = this.oldPasswordType === "password" ? "" : "password";
+      }else if(value === 'newPassword'){
+        this.newPasswordType = this.newPasswordType === "password" ? "" : "password";
+      } else if(value === 'newPasswordAgain'){
+        this.newPasswordTypeAgain = this.newPasswordTypeAgain === "password" ? "" : "password";
       }
-      this.$nextTick(() => this.$refs.password.focus());
+      this.$nextTick(() => this.$refs.newPassword.focus());
     },
-    //登入&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
       this.$refs[rules].validate(valid => {
         if (!valid) {
-          this.$message({ message: "注册失败，请重新输入并确认", type: "error", });
+          this.$message({ message: "修改失败，请重新输入并确认", type: "error", });
           return;
         }
-        delete this.loginForm.passwordAganin;
-        this.disabled = true
-        register(this.loginForm)
+        delete this.loginForm.newPasswordAganin;
+        updatePassword(this.loginForm)
           .then((res) => {
             //登入成功
             if (res.code === 200) {
-              setToken(res.data.tokenHead + res.data.token);
               this.dialogShow = true
             } else{
               this.$message({ message: res.message, type: "error",});
@@ -267,27 +196,29 @@ export default {
             }
           })
           .catch((err) => {
-            this.$message({ message: "注册失败，请重新输入并确认", type: "error",});
+            this.$message({ message: "修改失败，请重新输入并确认", type: "error",});
             return false;
           });
       });
     },
-    
+    back(){
+      this.$router.back(-1)
+    }
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.register-container-moblie {
+.home-wrapper{
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
-  .register-header {
+  .home-header {
     margin: 1em;
     display: flex;
     align-items: center;
-    .register-back {
+    .home-user {
       width: 2em;
       height: 2em;
       border-radius: 10px;
@@ -297,12 +228,14 @@ export default {
       background-position: center;
       background-repeat: no-repeat;
     }
-    .register-header-title {
+    .home-header-title {
       margin: 0 auto;
-      position: relative;
-      left: -0.5em;
       color: #10686e;
       font-weight: 600;
+    }
+    .home-add-user{
+      width: 2em;
+      height: 2em;
     }
   }
   .register-content {
@@ -408,5 +341,3 @@ export default {
   }
 }
 </style>
-
-

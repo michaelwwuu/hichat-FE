@@ -133,15 +133,22 @@ export default {
           });
           return;
         }
+        this.disabled = true
         forgetPassword(this.loginForm)
           .then((res) => {
-            if(res.code === 200) this.dialogShow = true;
+            if(res.code === 200) {
+              this.dialogShow = true;
+            } else {
+              this.$message({ message: res.data, type: "error",});
+              this.loginForm.authCode="";
+            }
           })
           .catch((err) => {
             this.$message({
               message: "输入失败，请重新输入并确认",
               type: "error",
             });
+            this.disabled = false
             return false;
           });
       });

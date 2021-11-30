@@ -11,7 +11,7 @@
       <div class="user-data">
         <span><img :src="userData.icon" alt=""></span>
         <span>{{userData.name}}</span>
-        <span class="user-data-id"> ID : {{ userData.username }}</span>
+        <span class="user-data-id" @click="copyPaste(userData.username)"> ID : {{ userData.username }}</span>
       </div>
 
       <div class="setting-button" v-for="(item,index) in settingData" :key="index" @click="developmentMessage(item.name)">
@@ -81,8 +81,21 @@ export default {
     this.userData = JSON.parse(localStorage.getItem('userData'))
   },
   methods: {
+    copyPaste(data){
+      let url = document.createElement("input");
+      document.body.appendChild(url);
+      url.value = data;
+      url.select();
+      document.execCommand('copy');
+      document.body.removeChild(url);
+      this.$message({
+        message: `ID : ${data} 复制成功`,
+        type: 'success',
+        duration: 1000
+      });
+    },
     goChatRoom(data,path){
-      this.$router.push({ name:path,params:data}); 
+      this.$router.push({name:path,params:data}); 
     },
     back(){
       this.$router.back(-1)

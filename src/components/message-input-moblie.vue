@@ -281,7 +281,7 @@ export default {
       this.isVoice = false
       // this.isFinished = true;
       this.audio = document.getElementById("audioVoice");
-      console.log(this.audio)
+
       this.recorder.play(this.audio);
     },
     

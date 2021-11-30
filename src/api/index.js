@@ -155,3 +155,13 @@ export const unlockUser = data => {
   }
   return axios.request(postData)
 }
+
+// 修改密碼
+export const updatePassword = data => {
+  let postData = {
+    url: '/api/sso/updatePassword',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

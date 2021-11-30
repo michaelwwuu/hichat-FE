@@ -219,7 +219,7 @@ export default {
       this.$refs[rules].validate(() => {
         if (this.disabled) {
           this.$message({ message: "資料尚未輸入完全", type: "error",});
-          return;
+          return 
         }
         login(this.loginForm)
           .then((res) => {
@@ -236,7 +236,7 @@ export default {
             }
           })
           .catch((err) => {
-            this.$message({ message: "登入驗證失敗，請重新輸入並確認", type: "error",});
+            this.$message({ message: "登入验证失败，请重输入并确认", type: "error",});
             return false;
           });
       });
