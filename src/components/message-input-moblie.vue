@@ -76,7 +76,7 @@
       center>
       <div class="record-play">
         <div class="record-time">{{one}}<span>:</span>{{two}}<span>:</span>{{three}}</div>
-        <audio id="audioVoice" controls class="record-play-box"></audio>
+        <audio v-show="isFinished" id="audioVoice" controls class="record-play-box"></audio>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="onStartVoice">开始录音</el-button>
@@ -125,11 +125,10 @@ export default {
       search: "",
       sendAduioShow:false,
       uploadImgShow:false,
-      formData:new FormData(),
       fileList:[],
       //錄音
       isVoice: false,
-      // isFinished: false,
+      isFinished: false,
       tipMsg: '录音',
       audio: "",
       recorder: new Record(),
@@ -155,7 +154,6 @@ export default {
   },
   methods: {
     // 開始計時
-
     startHandler(){
       this.flag = setInterval(()=>{
       if(this.three === 60 || this.three === '60'){
@@ -199,8 +197,9 @@ export default {
       this.fileList = fileList
 		},
     submitAvatarUpload(){
-      this.formData.append('file',this.fileList[0].raw);
-      uploadMessageImage(this.formData).then((res)=>{
+      let formData = new FormData();
+      formData.append('file',this.fileList[0].raw);
+      uploadMessageImage(formData).then((res)=>{
         if(res.code === 200) {
           let message = this.userInfoData;
           message.chatType = "CLI_USER_IMAGE"
@@ -221,9 +220,10 @@ export default {
     },
     // 上傳錄音
     onAudioFile(){
-      this.formData.append('file',this.audioMessageData);
-      this.formData.append('type','FILE');
-      uploadMessageFile(this.formData).then((res)=>{
+      let formData = new FormData();
+      formData.append('file',this.audioMessageData);
+      formData.append('type','FILE');
+      uploadMessageFile(formData).then((res)=>{
         if(res.code === 200) {
           let message = this.userInfoData;
           message.chatType = "CLI_USER_AUDIO"
@@ -238,8 +238,16 @@ export default {
       })
     },
     sendAduio(){
-      // this.isFinished = false
+      this.isFinished = false
       this.sendAduioShow = true
+      this.flag= null,
+      this.one = '00',// 時
+      this.two = '00',// 分
+      this.three =  '00',// 秒
+      this.abc = 0,// 秒的計數
+      this.cde = 0,// 分的計數
+      this.efg = 0,// 時的計數
+      this.onStopAudio()
     },
     // 开始录音
     onStartVoice () {
@@ -259,7 +267,7 @@ export default {
 
     // 结束录音
     onEndVoice () {
-      // this.isFinished = false;
+      this.isFinished = true;
       this.endHandler()
       this.recorder.stopRecord({
         success: res => {
@@ -323,11 +331,6 @@ export default {
       }
       return true;
     },
-
-    // 按Enter发送消息
-    // keyUp(event) {
-    //   if (event.key === "Enter") this.sendMessage();
-    // },
 
     // 发送消息
     sendMessage() {
@@ -431,17 +434,18 @@ export default {
         overflow: auto;
         line-height: 30px;
         .face-icon-box{
-          padding: 10px;
+          padding: 15px;
           .face-box {
-            font-size: 16px;
+            font-size: 1.2em;
             word-break: break-word;
+            margin-bottom: 15px;
             h5 {
               font-weight: 600;
             }
           }
           span {
             cursor: pointer;
-            font-size: 14px;
+            font-size: 1em;
             margin-right: 5px;
           }
         }
@@ -465,13 +469,13 @@ export default {
     .el-dialog__body{
       .record-play{
         .record-play-box{
+          margin-top: 1em;
           width: 100%;
         }
         .record-time{
           width: 100%;
           text-align: center;
           font-size: 2em;
-          margin-bottom: 1em;
           font-family: monospace;
         }
       }

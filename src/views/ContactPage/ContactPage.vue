@@ -9,7 +9,12 @@
     </div>
     <div class="address-content">
       <div class="user-data">
-        <span><img :src="userData.icon" alt=""></span>
+        <span>
+          <el-image 
+            :src="userData.icon" 
+            :preview-src-list="[userData.icon]">
+          </el-image>
+        </span>
         <span>{{userData.name}}</span>
         <span class="user-data-id" @click="copyPaste(userData.username)"> ID : {{ userData.username }}</span>
       </div>
@@ -153,11 +158,11 @@ export default {
         text-align: center;
         height: 4.5em;
         font-weight: 600;
-        img {
+        .el-image {
           height: 4em;
         }
       }
-      img{
+      .el-image{
         border-radius: 10px;
       }
     }

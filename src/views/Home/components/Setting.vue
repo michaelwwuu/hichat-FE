@@ -7,7 +7,12 @@
     </div>
     <div class="address-content">
       <div class="user-data">
-        <span><img :src="userData.icon" alt="" /></span>
+        <span>
+          <el-image 
+            :src="userData.icon" 
+            :preview-src-list="[userData.icon]">
+          </el-image>
+        </span>
         <span>{{ userData.nickname }}</span>
         <span class="user-data-id" @click="copyPaste(userData.username)"> ID : {{ userData.username }}</span>
       </div>
@@ -49,7 +54,7 @@
       </div>
       <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
       <span slot="footer" class="dialog-footer">
-        <img src="./../../../../static/images/scan.png" alt="">
+        <el-upload action="#"><img src="./../../../../static/images/scan.png" alt=""></el-upload>
         <img src="./../../../../static/images/share.png" alt="" @click="copyUrl">
         <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
       </span>
@@ -77,7 +82,6 @@ import { getUserInfo } from "@/api";
 import VueQr from 'vue-qr'
 import urlCopy from "@/utils/urlCopy.js";
 import { developmentMessage } from "@/assets/tools";
-
 
 export default {
   name: "Setting",
@@ -124,13 +128,13 @@ export default {
         logo:require("./../../../../static/images/material_ic_logo.png"),
       },
       downloadFilename:'',
-      developmentMessage:developmentMessage
+      developmentMessage:developmentMessage,
     };
   },
   mounted() {
     this.getUserData();
   },
-  methods: {
+  methods:{
     copyPaste(data){
       let url = document.createElement("input");
       document.body.appendChild(url);
@@ -222,11 +226,11 @@ export default {
       text-align: center;
       height: 4.5em;
       font-weight: 600;
-      img {
+      .el-image {
         height: 4em;
       }
     }
-    img{
+    .el-image{
       border-radius: 10px;
     }
   }

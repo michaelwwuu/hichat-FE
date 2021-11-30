@@ -190,6 +190,7 @@ export default {
       localStorage.removeItem('token')
       localStorage.removeItem('id')
       localStorage.removeItem('fromChatId')
+      localStorage.removeItem('accountMsg')
       localStorage.removeItem('userData')
     }else{
       localStorage.clear();
