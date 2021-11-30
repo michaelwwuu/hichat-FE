@@ -15,7 +15,6 @@
         placeholder="Aa"
         v-model="textArea"
       >
-        <!-- v-on:keyup.native="keyUp" -->
       </el-input>
       <div class="footer-tools">
         <emoji-picker @emoji="insert" :search="search">
@@ -104,7 +103,7 @@
         <div slot="tip" class="el-upload__tip">只能上传 jpg / png 圖片，且不超过500kb</div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitAvatarUpload">确 定</el-button>
+        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
         <el-button @click="uploadImgShow = false">取 消</el-button>
       </span>
     </el-dialog>

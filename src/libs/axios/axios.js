@@ -36,10 +36,10 @@ class HttpRequest {
       if (getToken) {
         config.headers.Authorization = `${localStorage.token}`
       }
-      if (config.isForm) {
-        config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        config.data = qs.stringify(config.data)
-      }
+      // if (config.isForm) {
+      //   config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      //   config.data = qs.stringify(config.data)
+      // }
       return config
     }, error => {
       return Promise.reject(error)

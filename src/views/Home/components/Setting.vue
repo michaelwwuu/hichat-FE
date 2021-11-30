@@ -31,14 +31,12 @@
         </router-link>
       </div>
 
-      <router-link :to="'/login'">
-        <div class="setting-disable" >
-          <div class="setting-button-left">
-            <img src="./../../../../static/images/logout.png" alt="" />
-            <span>登出</span>
-          </div>
+      <div class="setting-disable" @click="loginOutDialogShow = true">
+        <div class="setting-button-left">
+          <img src="./../../../../static/images/logout.png" alt="" />
+          <span>登出</span>
         </div>
-      </router-link>
+      </div>
       
     </div>
     <el-dialog
@@ -56,6 +54,21 @@
         <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="loginOutDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center>
+      <div class="loginOut-box">
+        <div><img src="./../../../../static/images/warn.png" alt=""></div>
+        <span>确认要登出嗎？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="loginOutDialogShow = false">取消</el-button>
+        <el-button class="background-red" @click="loginOut">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -70,6 +83,7 @@ export default {
   name: "Setting",
   data() {
     return {
+      userData: {},
       settingData: [
         {
           name: "密码管理",
@@ -103,8 +117,8 @@ export default {
         },
       ],
       notification: true,
-      userData: {},
-      centerDialogVisible : false,
+      centerDialogVisible: false,
+      loginOutDialogShow:false,
       qrCodeConfig:{
         text:`https://test.hichat.tools/fe/#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo:require("./../../../../static/images/material_ic_logo.png"),
@@ -141,6 +155,9 @@ export default {
       localStorage.setItem('accountMsg', JSON.stringify(userData))
       this.$router.push({ name:'EditUser'}); 
     },
+    loginOut(){
+      this.$router.push({ path:'/login'}); 
+    }
   },
   components: {
     VueQr,
@@ -230,7 +247,6 @@ export default {
         margin-left: 1em;
         font-size: 15px;
         color: #333333;
-        font-weight: 600;
       }
     }
     .setting-button-right {
@@ -240,7 +256,6 @@ export default {
         margin-right: 1em;
         font-size: 15px;
         color: #b3b3b3;
-        font-weight: 600;
       }
     }
   }
@@ -263,7 +278,6 @@ export default {
         margin-left: 1em;
         font-size: 15px;
         color: #333333;
-        font-weight: 600;
       }
     }
     
@@ -314,20 +328,6 @@ export default {
         img{
           height: 14em;
         }
-        // &::after{
-        //   content: '';
-        //   display: block;
-        //   width: 2.5em;
-        //   height: 2.5em;
-        //   background-color: #FFF;
-        //   background-image: url('./../../../../static/images/material_ic_logo.png');
-        //   background-repeat: no-repeat;
-        //   background-position: center;
-        //   background-size: 70%;
-        //   position: absolute;
-        //   margin: 0 auto;
-        //   border-radius:10px;
-        // }
       }
       .qrcode-box-text{
         color: #0c0d0d;
@@ -343,6 +343,52 @@ export default {
         justify-content: space-between;
         img{
           height: 1em;
+        }
+      }
+    }
+  }
+}
+/deep/.el-dialog-loginOut{
+  overflow: auto;
+  .el-dialog{
+    position: relative;
+    margin: 0 auto 50px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 50%;
+    .el-dialog__header{
+      padding: 10px;
+    }
+    .el-dialog__body{
+      text-align: center;
+      padding: 25px 25px 15px;
+      .loginOut-box{
+        img{
+          height: 5em;
+           margin-bottom: 1.2em;
+        }
+      }
+    }
+    .el-dialog__footer{
+      padding: 20px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+      .dialog-footer{
+        display: flex;
+        justify-content: space-between;
+        .el-button{
+          width: 100%;
+          border-radius: 8px;
+        }
+        .background-red{
+          background-color: #ee5253;
+          color: #FFF;
+        }
+        .border-red{
+          border:1px solid #fe5f3f;
+          color: #fe5f3f;
         }
       }
     }

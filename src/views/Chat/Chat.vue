@@ -54,7 +54,7 @@
     >
       <span>確定要清除聊天室</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="clearChatScreen">确 定</el-button>
+        <el-button type="primary" @click="clearChatScreen">确认</el-button>
       </span>
     </el-dialog>
   </div>

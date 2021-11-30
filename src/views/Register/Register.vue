@@ -168,10 +168,10 @@
       :show-close="false"
       center>
       <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
-      <div align="center">註冊完成，請重新登入</div>
+      <div align="center">注册完成，系统将自动登入</div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Home">
-          <el-button @click="dialogShow">确 定</el-button>
+          <el-button @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
     </el-dialog>
@@ -205,18 +205,16 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        console.log(val)
-        if (val.password !== val.passwordAganin){
-          this.disabled = false;
-        }
-        if (
-          Object.values(val).every(el => el !== "") &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
-          /^(?=.*?[a-z])(?=.*?[0-9]).{5,}$/.test(val.username) 
-        ) {
-          this.disabled = false;
-        } else {
+        if(val.password === val.passwordAganin) {
+          if (
+            Object.values(val).every(el => el !== "") &&
+            /^(?=.*?[a-z])(?=.*?[0-9]).{5,}$/.test(val.password) &&
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
+            /^(?=.*?[a-z])(?=.*?[0-9]).{5,}$/.test(val.username) 
+          ) {
+            this.disabled = false;
+          } 
+        }else{
           this.disabled = true;
         }
       },
@@ -252,10 +250,7 @@ export default {
       //驗證註冊表單是否通過
       this.$refs[rules].validate(valid => {
         if (!valid) {
-          this.$message({
-            message: "註冊失敗，請重新輸入並確認",
-            type: "error",
-          });
+          this.$message({ message: "註冊失敗，請重新輸入並確認", type: "error", });
           return;
         }
         delete this.loginForm.passwordAganin;
@@ -266,17 +261,12 @@ export default {
               setToken(res.data.tokenHead + res.data.token);
               this.dialogShow = true
             } else{
-              this.$message({
-                message: res.message,
-                type: "error",
-              });
+              this.$message({ message: res.message, type: "error",});
+              return
             }
           })
           .catch((err) => {
-            this.$message({
-              message: "註冊失敗，請重新輸入並確認",
-              type: "error",
-            });
+            this.$message({ message: "註冊失敗，請重新輸入並確認", type: "error",});
             return false;
           });
       });

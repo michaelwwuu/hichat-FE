@@ -57,14 +57,29 @@
             >提交</el-button
           >
         </div>
-        
       </el-form>
     </div>
+    <el-dialog
+      :visible.sync="dialogShow"
+      class="dialog-style"
+      width="90%"
+      :show-close="false"
+      center>
+      <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
+      <div align="center">密码已变更，请重新登录。</div>
+      <span slot="footer" class="dialog-footer">
+        <router-link to="/Login">
+          <el-button @click="dialogShow = false">确认</el-button>
+        </router-link>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getAuthCodeData } from "@/assets/tools";
+
+import { forgetPassword } from "@/api";
 
 export default {
   data() {
@@ -76,6 +91,7 @@ export default {
       device:'',
       disabled:true,
       getAuthCodeData:getAuthCodeData,
+      dialogShow:false,
     };
   },
   watch: {
@@ -112,28 +128,18 @@ export default {
       this.$refs[rules].validate((valid) => {
         if (!valid) {
           this.$message({
-            message: "註冊失敗，請重新輸入並確認",
+            message: "输入失败，请重新输入并确认",
             type: "error",
           });
           return;
         }
-        register(this.loginForm)
+        forgetPassword(this.loginForm)
           .then((res) => {
-            //登入成功
-            // if (res.code === 200) {
-            //   setToken(res.data.tokenHead + res.data.token);
-            //   this.$router.push({ path: "/Chat" });
-            // } else if (res.code === 500) {
-            //   this.$message({
-            //     message: res.message,
-            //     type: "error",
-            //   });
-            //   return false;
-            // }
+            if(res.code === 200) this.dialogShow = true;
           })
           .catch((err) => {
             this.$message({
-              message: "註冊失敗，請重新輸入並確認",
+              message: "输入失败，请重新输入并确认",
               type: "error",
             });
             return false;
@@ -247,6 +253,32 @@ export default {
       bottom: 0;
       width: 100%;
     }
+  }
+  .dialog-style{
+    /deep/.el-dialog{
+      border-radius: 10px;
+      .el-dialog__body{
+        margin-top:-2.5em;
+        margin-bottom:-1.5em;
+        div{
+          margin: 2em 0;
+          img{
+            height:5em;
+          }
+        }
+      }
+      .el-dialog__footer{
+        width: 100%;
+        .dialog-footer{
+          .el-button{
+            width: 90%;
+            background-color: #fd5f3f;
+            color: #FFF;
+          }
+        }
+      }
+    }
+    
   }
 }
 </style>

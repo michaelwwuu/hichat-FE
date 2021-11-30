@@ -109,6 +109,21 @@
         </router-link>
       </div>
     </el-form>
+    <el-dialog
+      :visible.sync="dialogShow"
+      class="dialog-style"
+      width="90%"
+      :show-close="false"
+      center>
+      <div align="center"><img src="./../../../static/images/warn.png" alt="" /></div>
+      <div align="center">帐号已锁定。</div>
+      <div align="center">请至邮箱取得验证码以解锁帐号。</div>
+      <span slot="footer" class="dialog-footer">
+        <router-link to="/Home">
+          <el-button @click="dialogShow = false">确认</el-button>
+        </router-link>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -131,6 +146,7 @@ export default {
       passwordType: 'password',
       remember:true,
       disabled:true,
+      dialogShow:false,
     };
   },
   created() {
@@ -169,12 +185,12 @@ export default {
   },
   mounted() {
     if(this.remember){
-      this.loginForm.email = localStorage.getItem('email')
+      this.loginForm.email = localStorage.getItem('email') === null ? '' : localStorage.getItem('email')
       localStorage.removeItem('username')
       localStorage.removeItem('token')
       localStorage.removeItem('id')
       localStorage.removeItem('fromChatId')
-      localStorage.removeItem('UUID')
+      localStorage.removeItem('userData')
     }else{
       localStorage.clear();
     }
@@ -200,12 +216,9 @@ export default {
     //登入&&註冊
     submitForm(rules) {
       //驗證登入表單是否通過
-      this.$refs[rules].validate(valid => {
+      this.$refs[rules].validate(() => {
         if (this.disabled) {
-          this.$message({
-            message: "資料尚未輸入完全",
-            type: "error",
-          });
+          this.$message({ message: "資料尚未輸入完全", type: "error",});
           return;
         }
         login(this.loginForm)
@@ -215,19 +228,13 @@ export default {
               setToken(res.data.tokenHead + res.data.token);
               this.$router.push({ path: "/Home" });
             } else {
-              this.$message({
-                message: "登入驗證失敗，請重新輸入並確認",
-                type: "error",
-              });
+              this.$message({ message: "登入驗證失敗，請重新輸入並確認", type: "error",});
               return false;
             }
             //登入失敗
           })
           .catch((err) => {
-            this.$message({
-              message: "登入驗證失敗，請重新輸入並確認",
-              type: "error",
-            });
+            this.$message({ message: "登入驗證失敗，請重新輸入並確認", type: "error",});
             return false;
           });
       });
@@ -445,6 +452,37 @@ $light_gray: #eee;
     img{
       height:17px
     }
+  }
+  .dialog-style{
+    /deep/.el-dialog{
+      border-radius: 10px;
+      .el-dialog__body{
+        margin-top:-2.5em;
+        margin-bottom:-1.5em;
+        div{
+          img{
+            height:5em;
+          }
+          &:nth-child(1){
+            margin: 2em 0;
+          }
+          &:nth-child(2){
+            margin: 2em 0 1em 0;
+          }
+        }
+      }
+      .el-dialog__footer{
+        width: 100%;
+        .dialog-footer{
+          .el-button{
+            width: 90%;
+            background-color: #fd5f3f;
+            color: #FFF;
+          }
+        }
+      }
+    }
+    
   }
 }
 </style>

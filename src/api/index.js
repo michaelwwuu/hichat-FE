@@ -97,6 +97,16 @@ export const updateNickname = data => {
   return axios.request(postData)
 }
 
+// 修改好友暱稱
+export const updateContactNickName = (data,contactId) => {
+  let postData = {
+    url: `/api/member/contact/update/${contactId}`,
+    method: 'put',
+    data
+  }
+  return axios.request(postData)
+}
+
 // 上傳頭像
 export const uploadIcon = data => {
   let postData = {
@@ -121,6 +131,16 @@ export const uploadMessageImage = data => {
 export const uploadMessageFile = data => {
   let postData = {
     url: 'file/upload/uploadMessageFile',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 忘記密碼
+export const forgetPassword = data => {
+  let postData = {
+    url: '/api/sso/forgetPassword',
     method: 'post',
     data
   }

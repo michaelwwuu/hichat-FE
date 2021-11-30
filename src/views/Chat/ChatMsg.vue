@@ -64,11 +64,6 @@ export default {
       wsRes: (state) => state.ws.wsRes,
     }),
   },
-  // watch: {
-  //   wsRes(val) {
-  //     let chatType = val.chatType;
-  //   }, 
-  // },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
@@ -178,8 +173,6 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    // width: 95%;
-    // margin: 30px auto;
     .el-aside,
     .el-main {
       display: flex;

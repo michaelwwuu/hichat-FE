@@ -10,7 +10,7 @@
         class="setting-button"
         v-for="(item, index) in aboutData"
         :key="index"
-        :class="{ 'mt10': item.name === '服务条款'}"
+        :class="{ 'mt10 border-bottom' : item.name === '服务条款'}"
         @click="developmentMessage(item.name)"
       >
         <router-link :to="item.path" >
@@ -18,7 +18,7 @@
             <img :src="item.icon" alt="" />
             <span>{{ item.name }}</span>
           </div>
-          <div class="setting-button-right" v-if="item.name === '使用版本'">
+          <div class="setting-button-right version" v-if="item.name === '使用版本'">
             <span>{{item.version}}</span>
           </div>
           <div class="setting-button-right" v-else>
@@ -99,15 +99,6 @@ export default {
     .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
-      &::after {
-        content: "";
-        display: block;
-        border-bottom: 1px solid #b3b3b3;
-        width: 100%;
-        margin-left: 10px;
-        position: relative;
-        top: 9px;
-      }
       a {
         text-decoration: none;
         display: flex;
@@ -126,7 +117,6 @@ export default {
           margin-left: 1em;
           font-size: 15px;
           color: #333333;
-          font-weight: 600;
         }
       }
       .setting-button-right {
@@ -136,12 +126,19 @@ export default {
           margin-right: 1em;
           font-size: 15px;
           color: #b3b3b3;
-          font-weight: 600;
+        }
+      }
+      .version{
+        span {
+          margin-right: 0;
         }
       }
     }
     .mt10{
       margin-top: 1em;
+    }
+    .border-bottom{
+      border-bottom: 1px solid #b3b3b3;
     }
   }
 }

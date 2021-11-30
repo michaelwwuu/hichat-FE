@@ -78,7 +78,7 @@
         append-to-body>
         <div class="redEnvelope-title" :style="redEnvelopeRadio === 1 ? 'text-align: center' : ''">{{redEnvelopeMsg}}</div>
         <span slot="footer" class="dialog-footer">
-          <el-button type="danger" @click="closeRedEnvelope(redEnvelopeRadio)">确 定</el-button>
+          <el-button type="danger" @click="closeRedEnvelope(redEnvelopeRadio)">确认</el-button>
         </span>
       </el-dialog>
       <div class="redEnvelope-title">请选择你所要发放的红包，每次发放只会发出一包，一包红包可让 10 位会员索取</div>
@@ -87,7 +87,7 @@
         <span>数量 : {{item.redEnvelopeNumber}}</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="redEnvelopeSubmit(redEnvelopeRadio)">确 定</el-button>
+        <el-button type="danger" @click="redEnvelopeSubmit(redEnvelopeRadio)">确认</el-button>
       </span>
     </el-dialog>
   </div>

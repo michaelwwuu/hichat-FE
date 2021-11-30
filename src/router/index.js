@@ -78,6 +78,12 @@ const routes = [
     name: "ContactPage",
     component: () => import(/* webpackChunkName: "ContactPage" */ '@/views/ContactPage/ContactPage.vue'),
     meta: { keepAlive: false },
+  }, 
+  {
+    path: "/EditContact",
+    name: "EditContact",
+    component: () => import(/* webpackChunkName: "EditContact" */ '@/views/EditContact/EditContact.vue'),
+    meta: { keepAlive: false },
 
   }, 
   {

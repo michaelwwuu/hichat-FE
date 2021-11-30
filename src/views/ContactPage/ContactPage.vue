@@ -3,7 +3,9 @@
     <div class="home-header">
       <div class="home-user" @click="back"></div>
       <span class="home-header-title"></span>
-      <div class="home-add-user"></div>
+      <router-link :to="'/EditContact'">
+        <div class="home-add-user"></div>
+      </router-link>
     </div>
     <div class="address-content">
       <div class="user-data">
@@ -176,7 +178,6 @@ export default {
           margin-left: 1em;
           font-size: 15px;
           color: #333333;
-          font-weight: 600;
         }
       }
     }
@@ -198,7 +199,6 @@ export default {
           margin-left: 1em;
           font-size: 15px;
           color: #333333;
-          font-weight: 600;
         }
       }
     }
