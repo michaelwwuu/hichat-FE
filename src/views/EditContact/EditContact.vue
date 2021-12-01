@@ -7,9 +7,14 @@
     </div>
     <div class="address-content">
       <div class="user-data">
-        <span><img :src="userData.icon" alt=""></span>
-        <span>{{userData.name}}</span>
-        <span class="user-data-id"> ID : {{ userData.username }}</span>
+        <el-image 
+          v-if="userData.icon !== undefined"
+          :src="userData.icon" 
+          :preview-src-list="[userData.icon]"/>
+        <div>
+          <span>{{userData.name}}</span>
+          <span class="user-data-id"> ID : {{ userData.username }}</span>
+        </div>
       </div>
       <div class="home-footer-btn">
         <el-button
@@ -97,6 +102,7 @@ export default {
   .address-content{
     .user-data {
       margin: 2.5em auto;
+      text-align: center;
       .user-data-id {
         margin: -3.5em 0 -5em 0;
         font-size: 13px;
@@ -107,11 +113,9 @@ export default {
         text-align: center;
         height: 4.5em;
         font-weight: 600;
-        img {
-          height: 4em;
-        }
       }
-      img{
+      .el-image{
+        width: 4em;
         border-radius: 10px;
       }
     }

@@ -17,8 +17,8 @@
   <!-- ${contactList.length || 0} -->
     <el-tabs v-model="activeName" >
       <el-tab-pane label="聯絡人" name="address">
-        <div  class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
-          <img :src="item.icon" alt="">
+        <div class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
+          <el-image :src="item.icon" :lazy="item.icon"/>
           <span>{{item.name}}</span>
         </div>
       </el-tab-pane>
@@ -186,8 +186,8 @@ export default {
   padding: 0.8em 1em;
   display: flex;
   align-items: center;
-  img{
-    height:3em;
+  .el-image{
+    width:3em;
     border-radius: 10px;
   }
   span{

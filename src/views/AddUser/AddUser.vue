@@ -127,11 +127,11 @@ export default {
       width: 2em;
       height: 2em;
       border-radius: 10px;
-      background-color: #fff;
-      background-image: url("./../../../static/images/scan.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
+      // background-color: #fff;
+      // background-image: url("./../../../static/images/scan.png");
+      // background-size: 50%;
+      // background-position: center;
+      // background-repeat: no-repeat;
     }
   }
   .home-search{
