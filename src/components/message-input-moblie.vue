@@ -218,6 +218,7 @@ export default {
       this.sendAduioShow = false
       this.audioMessageData = {}
     },
+
     // 上傳錄音
     onAudioFile(){
       let formData = new FormData();
@@ -240,7 +241,6 @@ export default {
     sendAduio(){
       this.isFinished = false
       this.sendAduioShow = true
-      this.flag= null,
       this.one = '00',// 時
       this.two = '00',// 分
       this.three =  '00',// 秒
@@ -248,11 +248,18 @@ export default {
       this.cde = 0,// 分的計數
       this.efg = 0,// 時的計數
       this.onStopAudio()
+      this.endHandler()
     },
     // 开始录音
     onStartVoice () {
       this.startHandler()
       this.onStopAudio()
+      this.one = '00',// 時
+      this.two = '00',// 分
+      this.three =  '00',// 秒
+      this.abc = 0,// 秒的計數
+      this.cde = 0,// 分的計數
+      this.efg = 0,// 時的計數
       // this.isFinished = false;
       this.recorder.startRecord({
         success: res => {

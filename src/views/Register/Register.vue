@@ -20,7 +20,7 @@
           <el-input
             ref="email"
             placeholder="電子郵箱"
-            v-model="loginForm.email"
+            v-model.trim="loginForm.email"
             name="email"
             type="text"
             tabindex="1"
@@ -38,7 +38,7 @@
           <el-input
             ref="password"
             placeholder="登入密碼"
-            v-model="loginForm.password"
+            v-model.trim="loginForm.password"
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
             tabindex="2"
@@ -70,7 +70,7 @@
           <el-input
             ref="passwordAganin"
             placeholder="再次確認登入密碼"
-            v-model="loginForm.passwordAganin"
+            v-model.trim="loginForm.passwordAganin"
             name="passwordAganin"
             :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
             tabindex="2"
@@ -99,7 +99,7 @@
           <el-input
             ref="username"
             placeholder="使用者ID"
-            v-model="loginForm.username"
+            v-model.trim="loginForm.username"
             name="username"
             type="text"
             tabindex="1"
@@ -121,7 +121,7 @@
           <el-input
             ref="nickname"
             placeholder="暱稱"
-            v-model="loginForm.nickname"
+            v-model.trim="loginForm.nickname"
             name="nickname"
             type="text"
             tabindex="1"
@@ -136,7 +136,7 @@
           <el-input
             ref="authCode"
             placeholder="驗證碼"
-            v-model="loginForm.authCode"
+            v-model.trim="loginForm.authCode"
             name="authCode"
             type="authCode"
             tabindex="2"
@@ -213,7 +213,9 @@ export default {
             /^[A-Za-z0-9_\_]+.{5}$/.test(val.username) 
           ) {
             this.disabled = false;
-          } 
+          } else {
+            this.disabled = true; 
+          }
         }else{
           this.disabled = true;
         }

@@ -1,82 +1,116 @@
 <template>
-  <div class="scan">
-    <div class="nav">
-      <a class="close" @click="() => $router.go(-1)"></a>
-      <p class="title">Scan QRcode</p>
+  <div class="home-wrapper">
+    <div class="home-header">
+      <div class="home-user" @click="back"></div>
+      <span class="home-header-title">掃碼QRcode </span>
+      <div class="home-add-user"></div>
     </div>
     <div class="scroll-container">
-      <Scaner
+      <!-- <Scaner
         v-on:code-scanned="codeScanned"
         v-on:error-captured="errorCaptured"
         :stop-on-scanned="true"
         :draw-on-found="true"
         :responsive="false"
-      />
+      /> -->
     </div>
   </div>
 </template>
 
 <script>
 
-import Scaner from './../../components/Scaner.vue';
+// import Scaner from './../../components/Scaner.vue';
 
 export default {
   name: 'Scan',
   components: {
-    Scaner
+    // Scaner
   },
   data () {
     return {
-      errorMessage: "",
-      scanned: ""
+      // errorMessage: "",
+      // scanned: ""
     }
   },
   methods: {
-    codeScanned(code) {
-      this.scanned = code;
-      setTimeout(() => {
-        alert(`扫码解析成功: ${code}`);
-      }, 200)
+    back(){
+      this.$router.back(-1)
     },
-    errorCaptured(error) {
-      console.log(error)
-      switch (error.name) {
-        case "NotAllowedError":
-          this.errorMessage = "Camera permission denied.";
-          break;
-        case "NotFoundError":
-          this.errorMessage = "There is no connected camera.";
-          break;
-        case "NotSupportedError":
-          this.errorMessage =
-            "Seems like this page is served in non-secure context.";
-          break;
-        case "NotReadableError":
-          this.errorMessage =
-            "Couldn't access your camera. Is it already in use?";
-          break;
-        case "OverconstrainedError":
-          this.errorMessage = "Constraints don't match any installed camera.";
-          break;
-        default:
-          this.errorMessage = "UNKNOWN ERROR: " + error.message;
-      }
-      console.error(this.errorMessage);
-     alert('相机调用失败');
-    }
+    // codeScanned(code) {
+    //   this.scanned = code;
+    //   setTimeout(() => {
+    //     alert(`扫码解析成功: ${code}`);
+    //   }, 200)
+    // },
+    // errorCaptured(error) {
+    //   console.log(error)
+    //   switch (error.name) {
+    //     case "NotAllowedError":
+    //       this.errorMessage = "Camera permission denied.";
+    //       break;
+    //     case "NotFoundError":
+    //       this.errorMessage = "There is no connected camera.";
+    //       break;
+    //     case "NotSupportedError":
+    //       this.errorMessage =
+    //         "Seems like this page is served in non-secure context.";
+    //       break;
+    //     case "NotReadableError":
+    //       this.errorMessage =
+    //         "Couldn't access your camera. Is it already in use?";
+    //       break;
+    //     case "OverconstrainedError":
+    //       this.errorMessage = "Constraints don't match any installed camera.";
+    //       break;
+    //     default:
+    //       this.errorMessage = "UNKNOWN ERROR: " + error.message;
+    //   }
+    //   console.error(this.errorMessage);
+    //  alert('相机调用失败');
+    // }
   },
   mounted () {
-    var str = navigator.userAgent.toLowerCase(); 
-    var ver = str.match(/cpu iphone os (.*?) like mac os/);
-    if (ver && ver[1].replace(/_/g,".") < '10.3.3') {
-     alert('相机调用失败');
-    }
+    // var str = navigator.userAgent.toLowerCase(); 
+    // var ver = str.match(/cpu iphone os (.*?) like mac os/);
+    // if (ver && ver[1].replace(/_/g,".") < '10.3.3') {
+    //  alert('相机调用失败');
+    // }
   }
 }
 </script>
 
-<style lang="css" scoped>
-.scan {
+<style lang="scss" scoped>
+.home-wrapper{
+  min-height: 100%;
+  width: 100%;
+  background-color: #eaf5fa;
+  overflow: hidden;
+  .home-header {
+    margin: 1em;
+    display: flex;
+    align-items: center;
+    .home-user {
+      width: 2em;
+      height: 2em;
+      border-radius: 10px;
+      background-color: #fff;
+      background-image: url("./../../../static/images/back.png");
+      background-size: 50%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .home-header-title {
+      margin: 0 auto;
+      color: #10686e;
+      font-weight: 600;
+    }
+    .home-add-user{
+      width: 2em;
+      height: 2em;
+    }
+  }
+}
+/* .scan {
   height: 100%;
   width: 100%;
 }
@@ -103,5 +137,5 @@ export default {
   position: absolute;
   left: 16px;
   top: 14px;
-}
+} */
 </style>

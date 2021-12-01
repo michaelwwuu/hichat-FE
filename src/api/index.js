@@ -165,3 +165,13 @@ export const updatePassword = data => {
   }
   return axios.request(postData)
 }
+
+// 獲取會員訊息
+export const getSearchById = (params) => {
+  let postData = {
+    url: '/api/member/profile/searchById',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}

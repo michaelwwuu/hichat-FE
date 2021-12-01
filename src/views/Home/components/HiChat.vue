@@ -89,12 +89,7 @@ export default {
        }
     },
     goChatRoom(data){
-
-      let userData = JSON.parse(localStorage.getItem('userData'))
-      userData.toChatId = data.toChatId
-      // console.log('user',user)
-      // console.log('data',data)
-      localStorage.setItem('userData',JSON.stringify(userData))
+      localStorage.setItem('userData',JSON.stringify(data))
       this.$router.push({ name: "ChatMsg" });
     }
   }   

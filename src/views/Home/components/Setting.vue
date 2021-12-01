@@ -9,9 +9,10 @@
       <div class="user-data">
         <span>
           <el-image 
+            v-if="userData.icon !== undefined"
             :src="userData.icon" 
-            :preview-src-list="[userData.icon]">
-          </el-image>
+            :preview-src-list="[userData.icon]"
+            lazy />
         </span>
         <span>{{ userData.nickname }}</span>
         <span class="user-data-id" @click="copyPaste(userData.username)"> ID : {{ userData.username }}</span>
@@ -54,7 +55,7 @@
       </div>
       <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
       <span slot="footer" class="dialog-footer">
-        <img src="./../../../../static/images/scan.png" alt="">
+        <!-- <img src="./../../../../static/images/scan.png" alt=""> -->
         <img src="./../../../../static/images/share.png" alt="" @click="copyUrl">
         <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
       </span>
@@ -131,7 +132,7 @@ export default {
       developmentMessage:developmentMessage,
     };
   },
-  mounted() {
+  created() {
     this.getUserData();
   },
   methods:{
@@ -163,7 +164,6 @@ export default {
     getUserData() {
       getUserInfo().then((res) => {
         this.userData = res.data;
-        this.userData.nickname =  res.data.nickname.replace(/\["|"]/g, '' )
         if (this.userData.icon === undefined)
           this.userData.icon = require("./../../../../static/images/image_user_defult.png");
       });
@@ -174,6 +174,9 @@ export default {
     },
     loginOut(){
       this.$router.push({ path:'/login'}); 
+    },
+    errorImage(err){
+      console.log(err)
     }
   },
   components: {

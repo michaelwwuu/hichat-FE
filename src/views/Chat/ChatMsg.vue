@@ -10,11 +10,9 @@
             <span class="home-header-title">{{userData.name}}</span>
             <div class="home-user-search"></div>
             <span class="home-photo-link">
-              <router-link :to="'/ContactPage'">
-                <div class="home-user-photo">
+              <div class="home-user-photo" @click="goUserMsg">
                   <img src="./../../../static/images/image_user_defult.png" alt="">
                 </div>
-              </router-link>
             </span>
           </div>
         </el-header>
@@ -34,6 +32,8 @@ import { mapState, mapMutations } from "vuex";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import { getLocal, getToken } from "_util/utils.js";
+import {getSearchById} from '@/api'
+
 export default {
   name: "ChatMsg",
   data() {
@@ -51,6 +51,7 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem('userData'))
+    if(this.userData.username === undefined) this.getUserId()
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
@@ -68,12 +69,20 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-
+    getUserId(){
+      let id = this.userData.toChatId.replace("u","");
+      getSearchById({id}).then((res)=>{
+        this.userData.username = res.data.username       
+        localStorage.setItem('userData', JSON.stringify(this.userData))
+      })
+    },
     // 回上一頁
     back(){
-      this.$router.back(-1)
+      this.$router.push({ name:'HiChat'}); 
     },
-
+    goUserMsg(){
+      this.$router.push({ name:'ContactPage'}); 
+    },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -129,7 +138,6 @@ export default {
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
           this.readMsgData.push(userInfo.historyId)
-          this.readMsgShow()
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
