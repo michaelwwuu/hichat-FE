@@ -104,6 +104,12 @@ const routes = [
     meta: { keepAlive: false },
   },   
   {
+    path: "/QRcode",
+    name: "QRcode",
+    component: () => import(/* webpackChunkName: "QRcode" */ '@/views/QRcode/QRcode.vue'),
+    meta: { keepAlive: false },
+  },  
+  {
     path: "/EditUser",
     name: "EditUser",
     component: () => import(/* webpackChunkName: "EditUser" */ '@/views/EditUser/EditUser.vue'),

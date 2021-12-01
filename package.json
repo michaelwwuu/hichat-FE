@@ -20,6 +20,7 @@
     "reset-css": "^5.0.1",
     "socket.io-client": "^4.2.0",
     "view-design": "^4.4.0",
+    "jsqr": "^1.4.0",
     "vue": "^2.6.11",
     "vue-audio-recorder": "^3.0.1",
     "vue-emoji-picker": "^1.0.3",
@@ -27,7 +28,9 @@
     "vue-qr": "^3.2.2",
     "vue-router": "^3.2.0",
     "vue-socket.io": "^3.0.10",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "webrtc-adapter": "^8.1.0"
+    
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
