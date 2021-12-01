@@ -76,9 +76,9 @@
       center>
       <div class="record-play">
         <div class="record-time">{{one}}<span>:</span>{{two}}<span>:</span>{{three}}</div>
-        <!-- <audio v-show="isFinished" id="audioVoice" controls class="record-play-box"></audio> -->
-       
-
+        <audio v-show="isFinished" id="audioVoice" controls class="record-play-box"></audio>
+        
+  
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="onStartVoice">开始录音</el-button>
@@ -240,6 +240,7 @@ export default {
         }
       })
     },
+
     sendAduio(){
       this.isFinished = false
       this.sendAduioShow = true

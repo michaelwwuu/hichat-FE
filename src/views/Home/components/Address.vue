@@ -18,7 +18,7 @@
     <el-tabs v-model="activeName" >
       <el-tab-pane label="聯絡人" name="address">
         <div class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
-          <el-image :src="item.icon" :lazy="item.icon"/>
+          <el-image :src="item.icon" lazy/>
           <span>{{item.name}}</span>
         </div>
       </el-tab-pane>
