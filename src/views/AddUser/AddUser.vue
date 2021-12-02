@@ -4,7 +4,7 @@
       <router-link :to="'/Home'">
         <div class="home-user"></div>
       </router-link>
-      <span class="home-header-title">新增聯絡人</span>
+      <span class="home-header-title">新增联络人</span>
       <div class="home-add-user"></div>
     </div>
     <div class="home-search">
@@ -28,7 +28,7 @@
       <div class="home-footer-btn">
         <el-button
         @click="joinUserButtom(addUser)"
-          >加入聯絡人</el-button
+          >加入联络人</el-button
         >
       </div>
     </div>

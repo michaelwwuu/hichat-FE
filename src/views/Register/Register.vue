@@ -4,7 +4,7 @@
       <router-link :to="'/Login'"
         ><div class="register-back"></div
       ></router-link>
-      <span class="register-header-title">註冊</span>
+      <span class="register-header-title">注册</span>
     </div>
     <div class="register-content">
       <el-form
@@ -19,7 +19,7 @@
           </span>
           <el-input
             ref="email"
-            placeholder="電子郵箱"
+            placeholder="电子邮箱"
             v-model.trim="loginForm.email"
             name="email"
             type="text"
@@ -37,7 +37,7 @@
           </span>
           <el-input
             ref="password"
-            placeholder="登入密碼"
+            placeholder="登录密码"
             v-model.trim="loginForm.password"
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
@@ -61,7 +61,7 @@
           </span>
         </el-form-item>
         <span class="tip-text"
-          >密碼長度為6至12個字元，至少包含1個大寫、1個小寫英文及1個數字。</span
+          >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
         >
         <el-form-item prop="passwordAganin">
           <span class="svg-container">
@@ -69,7 +69,7 @@
           </span>
           <el-input
             ref="passwordAganin"
-            placeholder="再次確認登入密碼"
+            placeholder="再次确认登录密码"
             v-model.trim="loginForm.passwordAganin"
             name="passwordAganin"
             :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
@@ -98,7 +98,7 @@
           </span>
           <el-input
             ref="username"
-            placeholder="使用者ID"
+            placeholder="用户ID"
             v-model.trim="loginForm.username"
             name="username"
             type="text"
@@ -112,7 +112,7 @@
           </el-input>
         </el-form-item>
         <span class="tip-text"
-          >ID 長度為5至18個字元，允許混用英文字母、數字和底線。</span
+          >ID 长度为5至18个字元，允许混用英文字母、数字和底线。</span
         >
         <el-form-item prop="nickname">
           <span class="svg-container">
@@ -120,7 +120,7 @@
           </span>
           <el-input
             ref="nickname"
-            placeholder="暱稱"
+            placeholder="名称"
             v-model.trim="loginForm.nickname"
             name="nickname"
             type="text"
@@ -135,7 +135,7 @@
           </span>
           <el-input
             ref="authCode"
-            placeholder="驗證碼"
+            placeholder="验证码"
             v-model.trim="loginForm.authCode"
             name="authCode"
             type="authCode"
@@ -168,7 +168,7 @@
       :show-close="false"
       center>
       <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
-      <div align="center">注册完成，系统将自动登入</div>
+      <div align="center">注册完成，系统将自动登录</div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Home">
           <el-button @click="dialogShow = false">确认</el-button>
@@ -210,7 +210,7 @@ export default {
             Object.values(val).every(el => el !== "") &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
-            /^[A-Za-z0-9_\_]+.{5}$/.test(val.username) 
+            /^[A-Za-z0-9_\_]{5,}$/.test(val.username) 
           ) {
             this.disabled = false;
           } else {
@@ -239,6 +239,7 @@ export default {
     }
   },
   methods: {
+
     showPwd(value) {
       if(value === 'password'){
         this.passwordType = this.passwordType === "password" ? "" : "password";
@@ -247,7 +248,7 @@ export default {
       }
       this.$nextTick(() => this.$refs.password.focus());
     },
-    //登入&&註冊
+    //登录&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
       this.$refs[rules].validate(valid => {
@@ -259,7 +260,7 @@ export default {
         this.disabled = true
         register(this.loginForm)
           .then((res) => {
-            //登入成功
+            //登录成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
               this.dialogShow = true

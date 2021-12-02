@@ -121,7 +121,7 @@ export default class Recorder {
 
   //开始录音
   start () {
-    this.audioInput.connect(this.recorder);
+    // this.audioInput.connect(this.recorder);
     this.recorder.connect(this.context.destination);
 
     //音频采集
@@ -181,7 +181,7 @@ export default class Recorder {
           callback(Recorder.checkError(e));
         })
       } else {        
-        navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
+        navigator.getUserMedia({ audio: false, video: false }).then((stream) => {
           let rec = new Recorder(stream, config);
           callback(rec);
         }).catch((e) => {

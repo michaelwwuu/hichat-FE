@@ -147,8 +147,9 @@ router.beforeEach((to, from, next) => {
       setTimeout(() => {
         next({ path: '/login' });
       }, 2000);
-      alert("请注意：由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登入页，谢谢。");
+      alert("请注意：由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登录页，谢谢。");
     })
+    
   }
   if(to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ForgetPassword' ){
     if(localStorage.getItem("token") === null) next({ path: '/login' });

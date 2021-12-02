@@ -187,7 +187,7 @@ export default {
         delete this.loginForm.newPasswordAganin;
         updatePassword(this.loginForm)
           .then((res) => {
-            //登入成功
+            //登录成功
             if (res.code === 200) {
               this.dialogShow = true
             } else{

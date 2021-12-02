@@ -16,7 +16,7 @@ npm run build
 ## 使用 framework -> ElementUI
 ## 使用 套件 -> moment、md5、fontawesome、linkify
 ## 使用 vuex、router、axios(模組化封裝)、mixins(模組化封裝)、localstorage(模組化封裝)、socket(模組化封裝)
-## Login.vue 登入頁面
+## Login.vue 登录頁面
 ## Room.vue 聊天室選則頁面
 ## Chat.vue 聊天室內聊天頁面 頁面內有區分三塊組件
 -- message-group.vue 頁面左側 List
@@ -25,7 +25,7 @@ npm run build
 ```
 ## 多彩網 串接 username
 ```
--- uesername需放入 Login.vue頁面 submitForm // 登入按鈕事件中的 
+-- uesername需放入 Login.vue頁面 submitForm // 登录按鈕事件中的 
 loginForm: {
   isGuest:false,
   username: "",  <------ 這個位置 即可使用平台接入
@@ -60,7 +60,7 @@ loginForm: {
 --------------------------------------------------
 /utils/socket.js -> websocket 初始化 事件處理
 --------------------------------------------------
-/views/Login/Login.vue -> 登入頁面
+/views/Login/Login.vue -> 登录頁面
 --------------------------------------------------
 /views/Room/Room.vue -> 聊天室選房頁面
 --------------------------------------------------

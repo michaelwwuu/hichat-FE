@@ -4,7 +4,7 @@
       <el-aside width="600px">
         <el-header height="55px">
           <font-awesome-icon icon="comment-dots" />
-          <span class="title">欢迎登入 请选择要进入的聊天室</span>
+          <span class="title">欢迎登录 请选择要进入的聊天室</span>
         </el-header>
         <div class="room-box">
           <ul>
@@ -22,7 +22,7 @@
           </ul>
         </div>
          <el-row style="margin:35px auto">
-            <el-button type="danger" plain @click="leaveChatRoom">返回聊天室登入首頁</el-button>
+            <el-button type="danger" plain @click="leaveChatRoom">返回聊天室登录首頁</el-button>
           </el-row>
       </el-aside>
     </el-container>

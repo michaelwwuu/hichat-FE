@@ -81,14 +81,14 @@
   
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="onStartVoice">开始录音</el-button>
+        <el-button type="primary" :disabled="disabledPlay" @click="onStartVoice">开始录音</el-button>
         <!-- <el-button type="danger" @click="onPlayAudio">播放录音</el-button> -->
-        <el-button type="info" @click="onEndVoice">結束录音</el-button>
-        <el-button type="danger" @click="onAudioFile">上傳錄音</el-button>
+        <el-button type="info" :disabled="endDisabledPlay" @click="onEndVoice">結束录音</el-button>
+        <el-button type="danger" :disabled="uploadDisabledPlay" @click="onAudioFile">上传录音</el-button>
       </span>
     </el-dialog>    
     <el-dialog
-      title="上傳圖片"
+      title="上传图片"
       :visible.sync="uploadImgShow"
       append-to-body
       class="upload-box"
@@ -101,12 +101,12 @@
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture">
-        <el-button size="small" type="primary" >点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传 jpg / png 圖片，且不超过500kb</div>
+        <el-button type="primary" >点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传 jpg / png 图片，且不超过500kb</div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
         <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-        <el-button @click="uploadImgShow = false">取 消</el-button>
+        <el-button @click="uploadImgShow = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -131,6 +131,9 @@ export default {
       //錄音
       isVoice: false,
       isFinished: false,
+      disabledPlay:false,
+      endDisabledPlay:true,
+      uploadDisabledPlay:true,
       tipMsg: '录音',
       audio: "",
       recorder: new Record(),
@@ -244,12 +247,19 @@ export default {
     sendAduio(){
       this.isFinished = false
       this.sendAduioShow = true
+
+      //初始化按鈕
+      this.disabledPlay = false
+      this.endDisabledPlay = true
+      this.uploadDisabledPlay = true
+
       this.one = '00',// 時
       this.two = '00',// 分
       this.three =  '00',// 秒
       this.abc = 0,// 秒的計數
       this.cde = 0,// 分的計數
       this.efg = 0,// 時的計數
+
       this.onStopAudio()
       this.endHandler()
     },
@@ -257,6 +267,8 @@ export default {
     onStartVoice () {
       this.startHandler()
       this.onStopAudio()
+      this.disabledPlay= true;
+      this.uploadDisabledPlay = true;
       this.one = '00',// 時
       this.two = '00',// 分
       this.three =  '00',// 秒
@@ -267,9 +279,19 @@ export default {
       this.recorder.startRecord({
         success: res => {
           this.isVoice = true
+          this.endDisabledPlay = false;
         },
         error: e => {
+          this.one = '00',// 時
+          this.two = '00',// 分
+          this.three =  '00',// 秒
+          this.abc = 0,// 秒的計數
+          this.cde = 0,// 分的計數
+          this.efg = 0,// 時的計數
+          this.endHandler()
           this.isVoice = false
+          this.disabledPlay= false;
+          this.endDisabledPlay = true;
           this.$message({ message: e, type: 'warning'});
         }
       });
@@ -278,6 +300,8 @@ export default {
     // 结束录音
     onEndVoice () {
       this.isFinished = true;
+      this.disabledPlay = false;
+      this.uploadDisabledPlay = false;
       this.endHandler()
       this.recorder.stopRecord({
         success: res => {
@@ -312,11 +336,11 @@ export default {
     // 表情符号转简中
     emojiChine(category) {
       if (category === "Frequently used") return "经常使用";
-      if (category === "People") return "笑臉與人物";
-      if (category === "Nature") return "動物與大自然";
-      if (category === "Objects") return "活動與美食";
-      if (category === "Places") return "旅遊與地標";
-      if (category === "Symbols") return "符號";
+      if (category === "People") return "笑脸与人物";
+      if (category === "Nature") return "动物与大自然";
+      if (category === "Objects") return "活动与美食";
+      if (category === "Places") return "旅游与地标";
+      if (category === "Symbols") return "符号";
     },
 
     // 表情符号
@@ -442,21 +466,21 @@ export default {
         box-shadow: 0px 0 7px #ccc;
         height: 20em;
         overflow: auto;
-        line-height: 30px;
+        line-height: 2em;
         .face-icon-box{
           padding: 15px;
           .face-box {
-            font-size: 1.2em;
+            font-size: 1.6em;
             word-break: break-word;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             h5 {
               font-weight: 600;
             }
           }
           span {
             cursor: pointer;
-            font-size: 1em;
-            margin-right: 5px;
+            font-size: 1.2em;
+            margin-right: 10px;
           }
         }
 
@@ -509,6 +533,9 @@ export default {
           .el-upload-list__item{
             margin-top: -72px;
           }
+        }
+        .el-upload__tip{
+          font-size: 13px;
         }
       }
     }

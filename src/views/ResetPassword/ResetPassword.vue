@@ -28,7 +28,7 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          <span class="verification-style" @click="getAuthCodeData(loginForm.email,false)">获取驗證碼</span>
+          <span class="verification-style" @click="getAuthCodeData(loginForm.email,false)">获取验证码</span>
         </el-form-item>
         <span class="tip-text">请至注册邮箱确认验证码</span>
         <div class="register-footer">
@@ -106,7 +106,7 @@ export default {
     }
   },
   methods: {
-    //登入&&註冊
+    //登录&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
       this.$refs[rules].validate((valid) => {

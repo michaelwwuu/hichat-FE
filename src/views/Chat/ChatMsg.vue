@@ -32,7 +32,7 @@ import { mapState, mapMutations } from "vuex";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import { getLocal, getToken } from "_util/utils.js";
-import {getSearchById} from '@/api'
+import { getSearchById } from '@/api'
 
 export default {
   name: "ChatMsg",
@@ -131,9 +131,9 @@ export default {
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功 
+        // 发送讯息成功
         case "SRV_USER_IMAGE":  
         case "SRV_USER_AUDIO":
-        // 发送讯息成功
         case "SRV_USER_SEND":
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);

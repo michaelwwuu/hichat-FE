@@ -4,7 +4,7 @@
   ]">
     <div class="register-header">
       <router-link :to="'/Login'"><div class="register-back"></div></router-link>
-      <span class="register-header-title">忘記密碼</span>
+      <span class="register-header-title">忘记密码</span>
     </div>
     <div class="register-content">
       <el-form
@@ -19,7 +19,7 @@
           </span>
           <el-input
             ref="email"
-            placeholder="電子郵箱"
+            placeholder="电子邮箱"
             v-model="loginForm.email"
             name="email"
             type="text"
@@ -37,7 +37,7 @@
           </span>
           <el-input
             ref="authCode"
-            placeholder="驗證碼"
+            placeholder="验证码"
             v-model="loginForm.authCode"
             name="authCode"
             type="authCode"
@@ -46,7 +46,7 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          <span class="verification-style" @click="getAuthCodeData(loginForm.email,false)">获取驗證碼</span>
+          <span class="verification-style" @click="getAuthCodeData(loginForm.email,false)">获取验证码</span>
         </el-form-item>
         <div class="register-footer">
           <el-button
@@ -122,7 +122,7 @@ export default {
     }
   },
   methods: {
-    //登入&&註冊
+    //登录&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
       this.$refs[rules].validate((valid) => {

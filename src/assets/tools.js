@@ -74,7 +74,7 @@ function gotoBottom () {
 
 function getAuthCodeData(email,key) {
   if (email === '') {
-    this.$message({ message: "資料尚未輸入完全", type: "error" });
+    this.$message({ message: "资料尚未输入完全", type: "error" });
     return;
   }
   let params = {
@@ -83,7 +83,7 @@ function getAuthCodeData(email,key) {
   }
   genAuthCode(params).then((res)=>{
     if(res.code === 200){
-      this.$message({ message: "請至郵件信箱獲取驗證碼", type: "success"});
+      this.$message({ message: "请至邮件信箱获取验证码", type: "success"});
     } else{
       this.$message({ message: res.message, type: "warning"});
     }
@@ -92,7 +92,7 @@ function getAuthCodeData(email,key) {
 }
 function developmentMessage(data){
   if(data ==='传送讯息' || data ==='关于HiChat' || data === '服务条款' || data === '密码管理' || data === '修改登录密码') return
-  this.$message({ message: "功能開發中", type: "warning"});
+  this.$message({ message: "功能开发中", type: "warning"});
 }
 
  

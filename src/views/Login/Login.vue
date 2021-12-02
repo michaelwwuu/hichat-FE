@@ -20,8 +20,8 @@
         </span>
         <el-input
           ref="email"
-          placeholder="電子郵箱"
-          v-model="loginForm.email"
+          placeholder="电子邮箱"
+          v-model.trim="loginForm.email"
           name="email"
           type="text"
           tabindex="1"
@@ -38,8 +38,8 @@
         </span>
         <el-input
           ref="password"
-          placeholder="登入密碼"
-          v-model="loginForm.password"
+          placeholder="登录密碼"
+          v-model.trim="loginForm.password"
           name="password"
           :type="passwordType === 'password' ? 'password' : 'text'"
           tabindex="2"
@@ -87,24 +87,24 @@
           v-model="remember"
           active-color="#fd5f3f"
           inactive-color="#666666"
-          active-text="記住帳號">        
+          active-text="记住帐号">        
         </el-switch>
         <router-link :to="'/ForgetPassword'" style="text-decoration: none;">
-          <span>忘記密碼</span>
+          <span>忘记密码</span>
         </router-link>  
       </div>
       <div>
         <el-button
           style="width: 100%; margin-bottom: 30px"
           @click="submitForm('loginForm')"
-          >登入</el-button
+          >登录</el-button
         >
       </div>
       <div>
         <router-link :to="'/Register'">
           <el-button
             style="width: 100%; margin-bottom: 30px;background-color:#67c23a00; border:1px solid #fd5f3f; color:#fd5f3f;"
-            >註冊</el-button
+            >注册</el-button
           >
         </router-link>
       </div>
@@ -192,7 +192,9 @@ export default {
       localStorage.removeItem('fromChatId')
       localStorage.removeItem('accountMsg')
       localStorage.removeItem('userData')
-    }else{
+      localStorage.removeItem('toChatId')
+    }
+    else{
       localStorage.clear();
     }
     this.getUUID();
@@ -214,22 +216,22 @@ export default {
       setLocal("UUID", "hiWeb" + number);
 
     },
-    //登入&&註冊
+    //登录&&註冊
     submitForm(rules) {
-      //驗證登入表單是否通過
+      //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {
-          this.$message({ message: "資料尚未輸入完全", type: "error",});
+          this.$message({ message: "资料尚未输入完全或帳號密碼不存在", type: "error",});
           return 
         }
         login(this.loginForm)
           .then((res) => {
-            //登入成功
+            //登录成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
               this.$router.push({ path: "/Home" });
             } else if(res.data === '账号已被禁用') {
-              //登入失敗
+              //登录失敗
               this.dialogShow = true;
             }else{
               this.$message({ message: res.data, type: "error",});
@@ -237,7 +239,7 @@ export default {
             }
           })
           .catch((err) => {
-            this.$message({ message: "登入验证失败，请重输入并确认", type: "error",});
+            this.$message({ message: "登录验证失败，请重输入并确认", type: "error",});
             return false;
           });
       });

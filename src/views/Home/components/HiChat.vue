@@ -18,8 +18,8 @@
         <div class="msg-box">
           <span>{{item.name}}</span>
           <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{item.lastChat.text}}</span>
-          <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">傳送了語音</span>
-          <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">傳送了圖片</span>
+          <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
+          <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
         </div>
         <span class="time">
           {{$root.formatTimeDay(item.lastChat.sendTime)}}
@@ -83,6 +83,8 @@ export default {
             if(res.icon === null) res.icon = require("./../../../../static/images/image_user_defult.png")
           })
           break
+        case "SRV_USER_IMAGE":  
+        case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
           this.getHiChatDataList()
            break
@@ -114,11 +116,11 @@ export default {
       width: 2em;
       height: 2em;
       border-radius: 10px;
-      background-color: #fff;
-      background-image: url("./../../../../static/images/add_chat.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
+      // background-color: #fff;
+      // background-image: url("./../../../../static/images/add_chat.png");
+      // background-size: 50%;
+      // background-position: center;
+      // background-repeat: no-repeat;
     }
   }
   .home-search{

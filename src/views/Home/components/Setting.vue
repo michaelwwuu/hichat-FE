@@ -2,7 +2,7 @@
   <div>
     <div class="home-header">
       <div class="home-user" @click="centerDialogVisible = true"></div>
-      <span class="home-header-title">設定</span>
+      <span class="home-header-title">设定</span>
       <div class="home-add-user" @click="goEditUserPage(userData)"></div>
     </div>
     <div class="address-content">
@@ -96,7 +96,7 @@ export default {
           path: "/passwordMange",
         },
         {
-          name: "封鎖名單",
+          name: "封锁名单",
           icon: require("./../../../../static/images/blockade_green.png"),
           path: "",
         },
@@ -174,10 +174,8 @@ export default {
     },
     loginOut(){
       this.$router.push({ path:'/login'}); 
+      window.location.reload();
     },
-    errorImage(err){
-      console.log(err)
-    }
   },
   components: {
     VueQr,

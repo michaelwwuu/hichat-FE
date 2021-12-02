@@ -2,7 +2,7 @@
   <div>
     <div class="home-header">
       <div class="home-user" @click="centerDialogVisible = true"></div>
-      <span class="home-header-title">通訊錄</span>
+      <span class="home-header-title">通讯录</span>
       <router-link :to="'/AddUser'">
         <div class="home-add-user"></div>
       </router-link>
@@ -16,7 +16,7 @@
     </div>
   <!-- ${contactList.length || 0} -->
     <el-tabs v-model="activeName" >
-      <el-tab-pane label="聯絡人" name="address">
+      <el-tab-pane label="联络人" name="address">
         <div class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
           <el-image :src="item.icon" lazy/>
           <span>{{item.name}}</span>
@@ -48,6 +48,7 @@
 import { getContactList } from "@/api";
 import VueQr from 'vue-qr'
 import urlCopy from "@/utils/urlCopy.js";
+import { setLocal } from "_util/utils.js";
 
 export default {
   name: "Address",
@@ -65,7 +66,6 @@ export default {
     }
   },
   created() {
-    // if(!localStorage.getItem("token")) return this.$router.push({ path: "/Login" });  
     this.getAddressList()
   },
   methods: {
@@ -85,7 +85,6 @@ export default {
       getContactList()
       .then((res)=>{
         this.contactList = res.data.list
-        
         this.contactList.forEach((res)=>{
           if(res.icon === undefined){
             res.icon = require("./../../../../static/images/image_user_defult.png")

@@ -26,7 +26,7 @@ export default {
           icon:require("./../../../static/images/address.png"),
           active:require("./../../../static/images/address_hover.png"),
           path:"/Address",
-          name:"通訊錄",
+          name:"通讯录",
         },
         {
           icon:require("./../../../static/images/chat.png"),
@@ -38,7 +38,7 @@ export default {
           icon:require("./../../../static/images/setting.png"),
           active:require("./../../../static/images/setting_hover.png"),
           path:"/Setting",
-          name:"設定",
+          name:"设定",
         },
       ],
       num:0,
