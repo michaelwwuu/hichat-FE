@@ -17,7 +17,14 @@ export default {
     };
   },
   created() {
-    this.$nextTick(() => setTimeout(() => this.$router.push({ path:'/Login'}),2500));  
+    this.$nextTick(() => setTimeout(() => {
+      if(localStorage.getItem('token')){
+        this.$router.push({ path:'/Home'})
+        
+      }else{
+        this.$router.push({ path:'/Login'})
+      }
+    },2500));  
   },
 };
 </script>

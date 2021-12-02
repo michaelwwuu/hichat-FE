@@ -174,7 +174,7 @@ export default {
     },
     loginOut(){
       this.$router.push({ path:'/login'}); 
-      window.location.reload();
+      localStorage.clear();
     },
   },
   components: {

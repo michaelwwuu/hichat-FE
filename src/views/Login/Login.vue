@@ -186,16 +186,16 @@ export default {
   mounted() {
     if(this.remember){
       this.loginForm.email = localStorage.getItem('email') === null ? '' : localStorage.getItem('email')
-      localStorage.removeItem('username')
-      localStorage.removeItem('token')
-      localStorage.removeItem('id')
-      localStorage.removeItem('fromChatId')
-      localStorage.removeItem('accountMsg')
-      localStorage.removeItem('userData')
-      localStorage.removeItem('toChatId')
+      // localStorage.removeItem('username')
+      // localStorage.removeItem('token')
+      // localStorage.removeItem('id')
+      // localStorage.removeItem('fromChatId')
+      // localStorage.removeItem('accountMsg')
+      // localStorage.removeItem('userData')
+      // localStorage.removeItem('toChatId')
     }
     else{
-      localStorage.clear();
+      // localStorage.clear();
     }
     this.getUUID();
   },
@@ -214,7 +214,6 @@ export default {
         }
       );
       setLocal("UUID", "hiWeb" + number);
-
     },
     //登录&&註冊
     submitForm(rules) {
