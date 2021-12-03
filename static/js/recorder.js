@@ -113,8 +113,9 @@ export default class Recorder {
             let s = Math.max(-1, Math.min(1, bytes[i]));
             data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
           }
-        }
-        return new Blob([data], { type: 'audio/mp4' });
+        }       
+
+        return new Blob([data], { type: 'video/mp4' });
       }
     };
   }
@@ -175,14 +176,14 @@ export default class Recorder {
     console.log(callback)
     if (callback) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ audio: false, video: false }).then((stream) => {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
           let rec = new Recorder(stream, config);
           callback(rec);
         }).catch((e) => {
           callback(Recorder.checkError(e));
         })
       } else {        
-        navigator.getUserMedia({ audio: false, video: false }).then((stream) => {
+        navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
           let rec = new Recorder(stream, config);
           callback(rec);
         }).catch((e) => {

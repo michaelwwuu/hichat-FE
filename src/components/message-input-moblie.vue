@@ -227,8 +227,8 @@ export default {
     // 上傳錄音
     onAudioFile(){
       let formData = new FormData();
-      formData.append('file',this.audioMessageData);
-      formData.append('type','FILE');
+      formData.append('file',this.audioMessageData,`${Date.now()}.mp4`);
+      formData.append('type','VIDEO');
       uploadMessageFile(formData).then((res)=>{
         if(res.code === 200) {
           let message = this.userInfoData;
@@ -374,6 +374,7 @@ export default {
       message.fromChatId = localStorage.getItem("fromChatId");
       message.toChatId = this.userData.toChatId;
       message.text = this.textAreaTran();
+      console.log(message)
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);

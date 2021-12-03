@@ -168,8 +168,7 @@ export default {
           this.userData.icon = require("./../../../../static/images/image_user_defult.png");
       });
     },
-    goEditUserPage(userData){
-      localStorage.setItem('accountMsg', JSON.stringify(userData))
+    goEditUserPage(){
       this.$router.push({ name:'EditUser'}); 
     },
     loginOut(){

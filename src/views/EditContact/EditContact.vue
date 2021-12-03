@@ -53,10 +53,10 @@ export default {
   methods: {
     editSubmit(){ 
       let name = this.userEditForm.nickname
-      updateContactNickName({name},this.userData.contactId).then((res)=>{
+      let contactId = this.userData.contactId ===undefined ? this.userData.toChatId.replace('u', ''):this.userData.contactId
+      updateContactNickName({name},contactId).then((res)=>{
         if(res.code === 200) {
           if (res.data.icon === undefined) res.data.icon = require("./../../../static/images/image_user_defult.png");
-          localStorage.setItem('userData', JSON.stringify(res.data))
           this.back()
         }
       })
