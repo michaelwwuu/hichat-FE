@@ -220,7 +220,7 @@ export default {
     // 關閉錄音
     closeAduioShow(){
       this.sendAduioShow = false
-      this.audioMessageData = {}
+      // this.audioMessageData = {}
     },
 
     // 上傳錄音
@@ -252,12 +252,12 @@ export default {
       this.endDisabledPlay = true
       this.uploadDisabledPlay = true
 
-      this.one = '00',// 時
-      this.two = '00',// 分
-      this.three =  '00',// 秒
-      this.abc = 0,// 秒的計數
-      this.cde = 0,// 分的計數
-      this.efg = 0,// 時的計數
+      this.one = '00';// 時
+      this.two = '00';// 分
+      this.three =  '00';// 秒
+      this.abc = 0;// 秒的計數
+      this.cde = 0;// 分的計數
+      this.efg = 0;// 時的計數
 
       this.onStopAudio()
       this.endHandler()
@@ -268,6 +268,7 @@ export default {
       this.onStopAudio()
       this.disabledPlay= true;
       this.uploadDisabledPlay = true;
+      
       this.one = '00';// 時
       this.two = '00';// 分
       this.three =  '00';// 秒
@@ -278,17 +279,15 @@ export default {
       this.recorder.startRecord({
         success: res => {
           this.isVoice = true
-          this.endDisabledPlay = false;
-          console.log(res)
-          
+          this.endDisabledPlay = false;          
         },
         error: e => {
-          this.one = '00',// 時
-          this.two = '00',// 分
-          this.three =  '00',// 秒
-          this.abc = 0,// 秒的計數
-          this.cde = 0,// 分的計數
-          this.efg = 0,// 時的計數
+          this.one = '00';// 時
+          this.two = '00';// 分
+          this.three =  '00';// 秒
+          this.abc = 0;// 秒的計數
+          this.cde = 0;// 分的計數
+          this.efg = 0;// 時的計數
           this.endHandler()
           this.isVoice = false
           this.disabledPlay= false;
@@ -331,9 +330,7 @@ export default {
     
     // 停止播放录音
     onStopAudio () {
-      if(this.audio !== '') {
-        this.recorder.clear(this.audio);
-      }
+      if(document.getElementById("audioVoice") !== null) this.recorder.clear(this.audio);
     },
 
 

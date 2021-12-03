@@ -170,7 +170,6 @@ export default class Recorder {
     this.audioData.buffer = [];
     this.audioData.size = 0;
     var audioElement = audio
-    console.log('102',audioElement)
     audioElement.removeChild(audioElement.childNodes[0])
     // audio.src = ''
   };
