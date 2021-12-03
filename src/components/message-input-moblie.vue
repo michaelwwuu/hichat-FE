@@ -76,9 +76,8 @@
       center>
       <div class="record-play">
         <div class="record-time">{{one}}<span>:</span>{{two}}<span>:</span>{{three}}</div>
-        <audio v-show="isFinished" id="audioVoice" controls class="record-play-box"></audio>
-        
-  
+        <div id="audioVoice-box"></div>
+        <!-- <audio v-show="isFinished" id="audioVoice" controls  class="record-play-box"></audio> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" :disabled="disabledPlay" @click="onStartVoice">开始录音</el-button>
@@ -227,8 +226,8 @@ export default {
     // 上傳錄音
     onAudioFile(){
       let formData = new FormData();
-      formData.append('file',this.audioMessageData,`${Date.now()}.mp4`);
-      formData.append('type','VIDEO');
+      formData.append('file',this.audioMessageData,`${Date.now()}.mp3`);
+      formData.append('type','AUDIO');
       uploadMessageFile(formData).then((res)=>{
         if(res.code === 200) {
           let message = this.userInfoData;
@@ -269,17 +268,19 @@ export default {
       this.onStopAudio()
       this.disabledPlay= true;
       this.uploadDisabledPlay = true;
-      this.one = '00',// 時
-      this.two = '00',// 分
-      this.three =  '00',// 秒
-      this.abc = 0,// 秒的計數
-      this.cde = 0,// 分的計數
-      this.efg = 0,// 時的計數
+      this.one = '00';// 時
+      this.two = '00';// 分
+      this.three =  '00';// 秒
+      this.abc = 0;// 秒的計數
+      this.cde = 0;// 分的計數
+      this.efg = 0;// 時的計數
       // this.isFinished = false;
       this.recorder.startRecord({
         success: res => {
           this.isVoice = true
           this.endDisabledPlay = false;
+          console.log(res)
+          
         },
         error: e => {
           this.one = '00',// 時
@@ -301,13 +302,15 @@ export default {
     onEndVoice () {
       this.isFinished = true;
       this.disabledPlay = false;
+      this.endDisabledPlay = true;
       this.uploadDisabledPlay = false;
       this.endHandler()
       this.recorder.stopRecord({
         success: res => {
           this.isVoice = false
           //此处可以获取音频源文件(res)，用于上传等操作
-          this.audio = document.getElementById("audioVoice");
+          // this.audio = document.getElementById("audioVoice");
+          this.audio = document.getElementById("audioVoice-box");
           this.recorder.play(this.audio);
           console.log('音频源文件', res)
           this.audioMessageData = res
@@ -323,13 +326,14 @@ export default {
       this.isVoice = false
       // this.isFinished = true;
       this.audio = document.getElementById("audioVoice");
-
       this.recorder.play(this.audio);
     },
     
     // 停止播放录音
     onStopAudio () {
-      if(this.audio !== '') this.recorder.clear(this.audio);
+      if(this.audio !== '') {
+        this.recorder.clear(this.audio);
+      }
     },
 
 

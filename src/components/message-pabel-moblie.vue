@@ -14,7 +14,7 @@
         >
           <p>
             <span class="message-classic" v-if="el.chatType === 'SRV_USER_SEND'">{{el.message.content}}</span>
-            <audio class="message-audio" v-else-if="el.chatType === 'SRV_USER_AUDIO'" controls :src="el.message.content"></audio>
+            <audio class="message-audio" v-else-if="el.chatType === 'SRV_USER_AUDIO'" controls :src="el.message.content" type="mp3"></audio>
 
             <span class="message-image" v-else-if="el.chatType === 'SRV_USER_IMAGE'">
               <!-- <img :src="el.message.content" alt=""> -->

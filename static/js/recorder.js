@@ -130,6 +130,7 @@ export default class Recorder {
     this.recorder.onaudioprocess = function (e) {
       self.audioData.input(e.inputBuffer.getChannelData(0));
     };
+
   };
 
   //停止
@@ -145,14 +146,33 @@ export default class Recorder {
 
   //回放
   play (audio) {
-    audio.src = window.URL.createObjectURL(this.getBlob());
+    var audioElement = audio
+    var sourceElement = document.createElement('audio')
+
+    audioElement.appendChild(sourceElement)
+    sourceElement.setAttribute("controls", "controls");
+    sourceElement.setAttribute("class", "record-play-box");
+    sourceElement.setAttribute("id", "audioVoice");
+
+
+    var audioName = document.getElementById('audioVoice')
+    var sourceAudio = document.createElement('source')
+    audioName.appendChild(sourceAudio)
+    
+    sourceAudio.src = window.URL.createObjectURL(this.getBlob())
+    sourceAudio.type = 'audio/mp3' // or whatever
+    // audio.src = window.URL.createObjectURL(this.getBlob());
+
   };
 
   //清理缓存的录音数据
   clear (audio) {
     this.audioData.buffer = [];
     this.audioData.size = 0;
-    audio.src = ''
+    var audioElement = audio
+    console.log('102',audioElement)
+    audioElement.removeChild(audioElement.childNodes[0])
+    // audio.src = ''
   };
 
   static checkError (e) {
@@ -173,7 +193,6 @@ export default class Recorder {
   };
 
   static get (callback, config) {
-    console.log(callback)
     if (callback) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
