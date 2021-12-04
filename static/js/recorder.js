@@ -130,7 +130,6 @@ export default class Recorder {
     this.recorder.onaudioprocess = function (e) {
       self.audioData.input(e.inputBuffer.getChannelData(0));
     };
-
   };
 
   //停止
@@ -162,7 +161,6 @@ export default class Recorder {
     sourceAudio.src = window.URL.createObjectURL(this.getBlob())
     sourceAudio.type = 'audio/mp3' // or whatever
     // audio.src = window.URL.createObjectURL(this.getBlob());
-
   };
 
   //清理缓存的录音数据
@@ -195,6 +193,7 @@ export default class Recorder {
     if (callback) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
+          this.stream = stream
           let rec = new Recorder(stream, config);
           callback(rec);
         }).catch((e) => {
