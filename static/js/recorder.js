@@ -7,7 +7,7 @@ export default class Recorder {
     config = config || {};
     config.sampleBits = config.sampleBits || 16;   //采样数位 8, 16
     config.sampleRate = config.sampleRate || 8000; //采样率(1/6 44100)
-
+    this.stream = stream
     this.context = new (window.webkitAudioContext || window.AudioContext)();
     this.audioInput = this.context.createMediaStreamSource(stream);
     this.createScript = this.context.createScriptProcessor || this.context.createJavaScriptNode;
@@ -134,6 +134,8 @@ export default class Recorder {
 
   //停止
   stop () {
+    // console.log('123',this.stream)
+    this.stream.getTracks().forEach((track) => track.stop())
     this.recorder.disconnect();
   };
 
@@ -193,21 +195,21 @@ export default class Recorder {
     if (callback) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
-          this.stream = stream
           let rec = new Recorder(stream, config);
           callback(rec);
         }).catch((e) => {
           callback(Recorder.checkError(e));
         })
-      } else {        
-        navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
-          let rec = new Recorder(stream, config);
-          callback(rec);
-        }).catch((e) => {
-          // Recorder.checkError(e)
-          callback(Recorder.checkError(e));
-        })
-      }
+      } 
+      // else {        
+      //   navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
+      //     let rec = new Recorder(stream, config);
+      //     callback(rec);
+      //   }).catch((e) => {
+      //     // Recorder.checkError(e)
+      //     callback(Recorder.checkError(e));
+      //   })
+      // }
     }
   };
 }

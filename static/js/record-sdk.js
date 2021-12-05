@@ -3,7 +3,7 @@ export default class Record {
   startRecord (param) {
     let self = this;
     try {
-      Recorder.get(rec => {
+      Recorder.get(rec=> {
         if (rec.error) return param.error(rec.error);
         self.recorder = rec;
         self.recorder.start();
