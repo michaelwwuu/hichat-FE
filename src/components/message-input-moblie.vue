@@ -67,7 +67,7 @@
       </div>
     </div>
     <el-dialog
-      :title="tipMsg"
+      title="录音"
       :visible.sync="sendAduioShow"
       width="90%"
       class="audio-box"
@@ -127,13 +127,14 @@ export default {
       sendAduioShow:false,
       uploadImgShow:false,
       fileList:[],
+
       //錄音
       isVoice: false,
       isFinished: false,
       disabledPlay:false,
       endDisabledPlay:true,
       uploadDisabledPlay:true,
-      tipMsg: '录音',
+
       audio: "",
       recorder: new Record(),
       audioMessageData:{},
@@ -158,7 +159,8 @@ export default {
   },
   methods: {
     // 開始計時
-    startHandler(){
+    startHandler(){   
+      this.resetTime()
       this.flag = setInterval(()=>{
       if(this.three === 60 || this.three === '60'){
         this.three = '00';
@@ -200,6 +202,7 @@ export default {
     uploadImg(file, fileList) {
       this.fileList = fileList
 		},
+
     submitAvatarUpload(){
       let formData = new FormData();
       formData.append('file',this.fileList[0].raw);
@@ -217,10 +220,11 @@ export default {
         }
       })
     },
+    
     // 關閉錄音
     closeAduioShow(){
       this.sendAduioShow = false
-      // this.audioMessageData = {}
+      this.audioMessageData = {}
     },
 
     // 上傳錄音
@@ -243,38 +247,31 @@ export default {
       })
     },
 
+    resetTime(){
+      this.one = '00';// 時
+      this.two = '00';// 分
+      this.three =  '00';// 秒
+      this.abc = 0;// 秒的計數
+      this.cde = 0;// 分的計數
+      this.efg = 0;// 時的計數
+    },
+
     sendAduio(){
+      this.onStopAudio()
+      this.endHandler()
+      this.resetTime()
       this.isFinished = false
       this.sendAduioShow = true
-
       //初始化按鈕
       this.disabledPlay = false
       this.endDisabledPlay = true
       this.uploadDisabledPlay = true
-
-      this.one = '00';// 時
-      this.two = '00';// 分
-      this.three =  '00';// 秒
-      this.abc = 0;// 秒的計數
-      this.cde = 0;// 分的計數
-      this.efg = 0;// 時的計數
-
-      this.onStopAudio()
-      this.endHandler()
     },
     // 开始录音
     onStartVoice () {
-      this.startHandler()
       this.onStopAudio()
       this.disabledPlay= true;
       this.uploadDisabledPlay = true;
-      
-      this.one = '00';// 時
-      this.two = '00';// 分
-      this.three =  '00';// 秒
-      this.abc = 0;// 秒的計數
-      this.cde = 0;// 分的計數
-      this.efg = 0;// 時的計數
       // this.isFinished = false;
       this.recorder.startRecord({
         success: res => {
@@ -282,12 +279,7 @@ export default {
           this.endDisabledPlay = false;          
         },
         error: e => {
-          this.one = '00';// 時
-          this.two = '00';// 分
-          this.three =  '00';// 秒
-          this.abc = 0;// 秒的計數
-          this.cde = 0;// 分的計數
-          this.efg = 0;// 時的計數
+          this.resetTime()
           this.endHandler()
           this.isVoice = false
           this.disabledPlay= false;
@@ -295,6 +287,7 @@ export default {
           this.$message({ message: e, type: 'warning'});
         }
       });
+      this.$nextTick(() => setTimeout(() => this.startHandler(),1000))
     },
 
     // 结束录音

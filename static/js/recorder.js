@@ -146,17 +146,17 @@ export default class Recorder {
 
   //回放
   play (audio) {
-    var audioElement = audio
-    var sourceElement = document.createElement('audio')
+    let audioElement = audio
+    let sourceElement = document.createElement('audio')
 
     audioElement.appendChild(sourceElement)
     sourceElement.setAttribute("controls", "controls");
     sourceElement.setAttribute("class", "record-play-box");
     sourceElement.setAttribute("id", "audioVoice");
 
-
-    var audioName = document.getElementById('audioVoice')
-    var sourceAudio = document.createElement('source')
+    let audioName = document.getElementById('audioVoice')
+    
+    let sourceAudio = document.createElement('source')
     audioName.appendChild(sourceAudio)
     
     sourceAudio.src = window.URL.createObjectURL(this.getBlob())
@@ -168,8 +168,7 @@ export default class Recorder {
   clear (audio) {
     this.audioData.buffer = [];
     this.audioData.size = 0;
-    var audioElement = audio
-    audioElement.removeChild(audioElement.childNodes[0])
+    audio.removeChild(audio.childNodes[0])
     // audio.src = ''
   };
 
@@ -199,16 +198,15 @@ export default class Recorder {
         }).catch((e) => {
           callback(Recorder.checkError(e));
         })
-      } 
-      // else {        
-      //   navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
-      //     let rec = new Recorder(stream, config);
-      //     callback(rec);
-      //   }).catch((e) => {
-      //     // Recorder.checkError(e)
-      //     callback(Recorder.checkError(e));
-      //   })
-      // }
+      } else {        
+        navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
+          let rec = new Recorder(stream, config);
+          callback(rec);
+        }).catch((e) => {
+          // Recorder.checkError(e)
+          callback(Recorder.checkError(e));
+        })
+      }
     }
   };
 }
