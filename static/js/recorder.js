@@ -134,7 +134,6 @@ export default class Recorder {
 
   //停止
   stop () {
-    // console.log('123',this.stream)
     this.stream.getTracks().forEach((track) => track.stop())
     this.recorder.disconnect();
   };
