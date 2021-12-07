@@ -144,13 +144,13 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          {{timer ? '2222' : '123'}}
-          <span
+          <el-button
             class="verification-style"
             :style="timer ?'width:8em;':''"
+            plain
             @click="countDownType(loginForm.email)"
-            >获取驗證碼 <span v-if="timer">({{count}})</span></span
-          >
+            >获取驗證碼 <span v-if="timer">({{count}})</span>
+          </el-button>
         </el-form-item>
         <div class="register-footer">
           <el-button
