@@ -75,7 +75,7 @@ function gotoBottom () {
 function getAuthCodeData(email,key,count) {
   if (email === '') {
     this.$message({ message: "资料尚未输入完全", type: "error" });
-    return count = false
+    return count 
   }
   let params = {
     email:email,

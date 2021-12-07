@@ -49,7 +49,7 @@
           <span
             class="verification-style"
             :style="timer ?'width:8em':''"
-            @click="timer ? getAuthCodeData(loginForm.email,timer=true) : getAuthCodeData(loginForm.email,true)"
+            @click="countDownType(loginForm.email)"
             >获取驗證碼 <span v-if="timer">({{count}})</span></span
           >
         </el-form-item>
@@ -112,6 +112,20 @@ export default {
       },
       deep: true,
     },
+    timer(val){
+      if(val){
+        let timer = null;
+        timer = setInterval(() =>{
+          if (this.count > 0) {
+            this.count = this.count - 1;
+          }
+          else {
+            clearInterval(timer);
+          }
+        }, 1000);
+        console.log(this.count)
+      }
+    }
   },
   created() {
     if (
@@ -129,6 +143,13 @@ export default {
     }
   },
   methods: {
+    countDownType(name){
+      if(name === ''){
+        return this.getAuthCodeData(this.loginForm.email,true) 
+      }else{
+        return this.getAuthCodeData(this.loginForm.email,true,this.timer=true) 
+      }
+    },
     //登录&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過

@@ -61,27 +61,6 @@
           />
         </span>
       </el-form-item>
-      <!-- <el-form-item prop="authCode">
-        <span class="svg-container">
-          <img src="./../../../static/images/code.png" alt="" />
-        </span>
-        <el-input
-          ref="authCode"
-          placeholder="驗證碼"
-          v-model="loginForm.authCode"
-          name="authCode"
-          type="authCode"
-          tabindex="2"
-          maxLength="6"
-          @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
-        >
-        </el-input>
-        <span
-          class="verification-style"
-          @click="getAuthCodeData(loginForm.email,false)"
-          >获取驗證碼</span
-        >
-      </el-form-item> -->
       <div class="remember-style">
         <el-switch
           v-model="remember"
@@ -130,7 +109,6 @@
 <script>
 import { login } from "_api/index.js";
 import { setToken, getToken, setLocal } from "_util/utils.js";
-import { getAuthCodeData } from "@/assets/tools";
 
 export default {
   data() {
@@ -138,9 +116,7 @@ export default {
       loginForm: {
         email: "",
         password: "",
-        // authCode:"",
       },
-      getAuthCodeData:getAuthCodeData,
       device: "",
       token: getToken("token"),
       passwordType: 'password',

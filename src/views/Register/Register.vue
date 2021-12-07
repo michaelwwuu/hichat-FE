@@ -144,10 +144,11 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
+          {{timer ? '2222' : '123'}}
           <span
             class="verification-style"
-            :style="timer ?'width:8em':''"
-            @click="timer ? getAuthCodeData(loginForm.email,timer=true) : getAuthCodeData(loginForm.email,true)"
+            :style="timer ?'width:8em;':''"
+            @click="countDownType(loginForm.email)"
             >获取驗證碼 <span v-if="timer">({{count}})</span></span
           >
         </el-form-item>
@@ -256,6 +257,13 @@ export default {
     }
   },
   methods: {
+    countDownType(name){
+      if(name === ''){
+        return this.getAuthCodeData(this.loginForm.email,true) 
+      }else{
+        return this.getAuthCodeData(this.loginForm.email,true,this.timer=true) 
+      }
+    },
     showPwd(value) {
       if(value === 'password'){
         this.passwordType = this.passwordType === "password" ? "" : "password";
