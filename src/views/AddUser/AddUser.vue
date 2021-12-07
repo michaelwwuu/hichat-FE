@@ -50,7 +50,7 @@ export default {
     }
   },
   created() {
-    if(this.getUrlParam('username') !== '') this.searchUserData(token)
+    if(this.getUrlParam('username') !== '') this.searchUserData(this.getUrlParam('username'))
   },
   methods: {
     // 獲取URL key

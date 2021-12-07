@@ -221,7 +221,7 @@ export default {
 .scaner {
   background: #000000;
   position: fixed;
-  top: 48px;
+  /* top: 63px; */
   left: 0;
   width: 100%;
   height: 100%;

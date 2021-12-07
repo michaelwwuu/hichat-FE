@@ -2,79 +2,78 @@
   <div class="home-wrapper">
     <div class="home-header">
       <div class="home-user" @click="back"></div>
-      <span class="home-header-title">掃碼QRcode </span>
+      <span class="home-header-title">掃碼QRcode</span>
       <div class="home-add-user"></div>
     </div>
     <div class="scroll-container">
-      <!-- <Scaner
+      <Scaner
         v-on:code-scanned="codeScanned"
         v-on:error-captured="errorCaptured"
         :stop-on-scanned="true"
         :draw-on-found="true"
         :responsive="false"
-      /> -->
+      />
     </div>
   </div>
 </template>
 
 <script>
 
-// import Scaner from './../../components/Scaner.vue';
+import Scaner from './../../components/Scaner.vue';
 
 export default {
   name: 'Scan',
   components: {
-    // Scaner
+    Scaner
   },
   data () {
     return {
-      // errorMessage: "",
-      // scanned: ""
+      errorMessage: "",
+      scanned: ""
     }
   },
   methods: {
     back(){
       this.$router.back(-1)
     },
-    // codeScanned(code) {
-    //   this.scanned = code;
-    //   setTimeout(() => {
-    //     alert(`扫码解析成功: ${code}`);
-    //   }, 200)
-    // },
-    // errorCaptured(error) {
-    //   console.log(error)
-    //   switch (error.name) {
-    //     case "NotAllowedError":
-    //       this.errorMessage = "Camera permission denied.";
-    //       break;
-    //     case "NotFoundError":
-    //       this.errorMessage = "There is no connected camera.";
-    //       break;
-    //     case "NotSupportedError":
-    //       this.errorMessage =
-    //         "Seems like this page is served in non-secure context.";
-    //       break;
-    //     case "NotReadableError":
-    //       this.errorMessage =
-    //         "Couldn't access your camera. Is it already in use?";
-    //       break;
-    //     case "OverconstrainedError":
-    //       this.errorMessage = "Constraints don't match any installed camera.";
-    //       break;
-    //     default:
-    //       this.errorMessage = "UNKNOWN ERROR: " + error.message;
-    //   }
-    //   console.error(this.errorMessage);
-    //  alert('相机调用失败');
-    // }
+    codeScanned(code) {
+      this.scanned = code;
+      window.location.replace(code)
+    },
+    
+    errorCaptured(error) {
+      console.log(error)
+      switch (error.name) {
+        case "NotAllowedError":
+          this.errorMessage = "Camera permission denied.";
+          break;
+        case "NotFoundError":
+          this.errorMessage = "There is no connected camera.";
+          break;
+        case "NotSupportedError":
+          this.errorMessage =
+            "Seems like this page is served in non-secure context.";
+          break;
+        case "NotReadableError":
+          this.errorMessage =
+            "Couldn't access your camera. Is it already in use?";
+          break;
+        case "OverconstrainedError":
+          this.errorMessage = "Constraints don't match any installed camera.";
+          break;
+        default:
+          this.errorMessage = "UNKNOWN ERROR: " + error.message;
+      }
+      console.error(this.errorMessage);
+     alert('相机调用失败');
+    }
   },
   mounted () {
-    // var str = navigator.userAgent.toLowerCase(); 
-    // var ver = str.match(/cpu iphone os (.*?) like mac os/);
-    // if (ver && ver[1].replace(/_/g,".") < '10.3.3') {
-    //  alert('相机调用失败');
-    // }
+    var str = navigator.userAgent.toLowerCase(); 
+    var ver = str.match(/cpu iphone os (.*?) like mac os/);
+    if (ver && ver[1].replace(/_/g,".") < '10.3.3') {
+     alert('相机调用失败');
+    }
   }
 }
 </script>
@@ -85,6 +84,7 @@ export default {
   width: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
+  position: fixed;
   .home-header {
     margin: 1em;
     display: flex;
@@ -110,32 +110,4 @@ export default {
     }
   }
 }
-/* .scan {
-  height: 100%;
-  width: 100%;
-}
-.scan .nav {
-  width: 100%;
-  height: 48px;
-  line-height: 48px;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-.scan .nav .title {
-  padding: 0;
-  margin: 0;
-  font-size: 16px;
-  color: #FFFFFF;
-}
-.scan .nav .close {
-  display: inline-block;
-  height: 22px;
-  width: 22px;
-  background: url('./../../../static/images/back.png') no-repeat center;
-  background-size: auto 100%;
-  position: absolute;
-  left: 16px;
-  top: 14px;
-} */
 </style>

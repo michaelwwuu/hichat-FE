@@ -55,7 +55,7 @@
       </div>
       <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
       <span slot="footer" class="dialog-footer">
-        <!-- <img src="./../../../../static/images/scan.png" alt=""> -->
+        <router-link :to="'/QRcode'"><img src="./../../../../static/images/scan.png" alt=""></router-link>
         <img src="./../../../../static/images/share.png" alt="" @click="copyUrl">
         <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
       </span>
@@ -328,7 +328,8 @@ export default {
         font-weight: 600;
       }
       .el-dialog__headerbtn{
-        left: 20px;
+        position: inherit;
+        float: left;
         .el-dialog__close{
           color: #F60;
 
