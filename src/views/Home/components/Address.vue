@@ -22,7 +22,10 @@
           <span>{{item.name}}</span>
         </div>
       </el-tab-pane>
-      <!-- <el-tab-pane label="群組" name="group">
+      <!-- <el-tab-pane label="群组" name="group">
+        <div></div>
+      </el-tab-pane>
+      <el-tab-pane label="陌生讯息" name="strange">
         <div></div>
       </el-tab-pane> -->
     </el-tabs>
@@ -81,13 +84,10 @@ export default {
       a.dispatchEvent(event)
     },    
     getAddressList(){
-      getContactList()
-      .then((res)=>{
+      getContactList().then((res)=>{
         this.contactList = res.data.list
-        this.contactList.forEach((res)=>{
-          if(res.icon === undefined){
-            res.icon = require("./../../../../static/images/image_user_defult.png")
-          }
+        this.contactList.forEach(res =>{
+          if(res.icon === undefined) res.icon = require("./../../../../static/images/image_user_defult.png")
         })
       })
     },
@@ -169,11 +169,10 @@ export default {
     }
     .el-tabs__nav{
       display: flex;
-      width: 13em;
       justify-content: center;
       .el-tabs__item{
         font-size: 15px;
-        padding: 0;
+        padding: 0 2.5em;
       }
     }
   }
@@ -235,20 +234,6 @@ export default {
         img{
           height: 14em;
         }
-        // &::after{
-        //   content: '';
-        //   display: block;
-        //   width: 2.5em;
-        //   height: 2.5em;
-        //   background-color: #FFF;
-        //   background-image: url('./../../../../static/images/material_ic_logo.png');
-        //   background-repeat: no-repeat;
-        //   background-position: center;
-        //   background-size: 70%;
-        //   position: absolute;
-        //   margin: 0 auto;
-        //   border-radius:10px;
-        // }
       }
       .qrcode-box-text{
         color: #0c0d0d;

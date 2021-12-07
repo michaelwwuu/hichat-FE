@@ -72,10 +72,10 @@ function gotoBottom () {
 //   Socket.send(unBlock);
 // }
 
-function getAuthCodeData(email,key) {
+function getAuthCodeData(email,key,count) {
   if (email === '') {
     this.$message({ message: "资料尚未输入完全", type: "error" });
-    return;
+    return count = false
   }
   let params = {
     email:email,

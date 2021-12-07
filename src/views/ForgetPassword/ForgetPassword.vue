@@ -46,7 +46,12 @@
             @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
           >
           </el-input>
-          <span class="verification-style" @click="getAuthCodeData(loginForm.email,false)">获取验证码</span>
+          <span
+            class="verification-style"
+            :style="timer ?'width:8em':''"
+            @click="timer ? getAuthCodeData(loginForm.email,timer=true) : getAuthCodeData(loginForm.email,true)"
+            >获取驗證碼 <span v-if="timer">({{count}})</span></span
+          >
         </el-form-item>
         <div class="register-footer">
           <el-button
@@ -89,6 +94,8 @@ export default {
         authCode:"",
       },
       device:'',
+      count:60,
+      timer:false,
       disabled:true,
       getAuthCodeData:getAuthCodeData,
       dialogShow:false,

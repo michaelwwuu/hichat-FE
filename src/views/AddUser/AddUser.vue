@@ -5,7 +5,7 @@
         <div class="home-user"></div>
       </router-link>
       <span class="home-header-title">新增联络人</span>
-      <div class="home-add-user"></div>
+      <router-link :to="'/QRcode'"><div class="home-add-user"></div></router-link>
     </div>
     <div class="home-search">
       <el-input
@@ -76,13 +76,16 @@ export default {
         this.addUser = {}
         this.noData = true
         return
+      } else if(token === localStorage.getItem('username')){
+        this.$message({message:'无法加入自己为联络人',type: "error"})
+        return
       }
-      searchByEmailUsername({token}).then(res=>{
+      searchByEmailUsername({token}).then(res =>{
         if(res.data === undefined) {
           this.noData = true
         } else if(res.data !=={}){
           this.addUser = res.data
-        }
+        } 
       })
     },
     joinUserButtom(data){
@@ -91,7 +94,11 @@ export default {
         name: data.username
       }
       addContactUser(parmas).then(res=>{
-        if(res.code === 200) this.$router.push({ path:'/Address' });
+        if(res.code === 200) {
+          this.$router.push({ path:'/Address' });
+        } else {
+          this.$message({message:res.message, type: "error"})
+        }
       })
     }
   },
@@ -127,11 +134,11 @@ export default {
       width: 2em;
       height: 2em;
       border-radius: 10px;
-      // background-color: #fff;
-      // background-image: url("./../../../static/images/scan.png");
-      // background-size: 50%;
-      // background-position: center;
-      // background-repeat: no-repeat;
+      background-color: #fff;
+      background-image: url("./../../../static/images/scan.png");
+      background-size: 50%;
+      background-position: center;
+      background-repeat: no-repeat;
     }
   }
   .home-search{

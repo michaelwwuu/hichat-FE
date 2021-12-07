@@ -146,8 +146,9 @@
           </el-input>
           <span
             class="verification-style"
-            @click="getAuthCodeData(loginForm.email,true)"
-            >获取驗證碼</span
+            :style="timer ?'width:8em':''"
+            @click="timer ? getAuthCodeData(loginForm.email,timer=true) : getAuthCodeData(loginForm.email,true)"
+            >获取驗證碼 <span v-if="timer">({{count}})</span></span
           >
         </el-form-item>
         <div class="register-footer">
@@ -197,6 +198,8 @@ export default {
       device: "",
       passwordType: "password",
       passwordTypeAgain: "password",
+      count:60,
+      timer:false,
       disabled: true,
       dialogShow:false,
       getAuthCodeData:getAuthCodeData,
@@ -222,6 +225,20 @@ export default {
       },
       deep: true,
     },
+    timer(val){
+      if(val){
+        let timer = null;
+        timer = setInterval(() =>{
+          if (this.count > 0) {
+            this.count = this.count - 1;
+          }
+          else {
+            clearInterval(timer);
+          }
+        }, 1000);
+        console.log(this.count)
+      }
+    }
   },
   created() {
     if (
@@ -239,7 +256,6 @@ export default {
     }
   },
   methods: {
-
     showPwd(value) {
       if(value === 'password'){
         this.passwordType = this.passwordType === "password" ? "" : "password";

@@ -162,10 +162,9 @@ export default {
       a.dispatchEvent(event)
     },
     getUserData() {
-      getUserInfo().then((res) => {
+      getUserInfo().then(res => {
+        if(res.icon === undefined ) res.icon = require("./../../../../static/images/image_user_defult.png");
         this.userData = res.data;
-        if (this.userData.icon === undefined)
-          this.userData.icon = require("./../../../../static/images/image_user_defult.png");
       });
     },
     goEditUserPage(){

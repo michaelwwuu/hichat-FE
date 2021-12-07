@@ -40,9 +40,7 @@ export default {
       this.scanned = code;
       window.location.replace(code)
     },
-    
     errorCaptured(error) {
-      console.log(error)
       switch (error.name) {
         case "NotAllowedError":
           this.errorMessage = "Camera permission denied.";
@@ -64,16 +62,13 @@ export default {
         default:
           this.errorMessage = "UNKNOWN ERROR: " + error.message;
       }
-      console.error(this.errorMessage);
-     alert('相机调用失败');
+      this.$message({message:'相机调用失败',type: "error"})
     }
   },
   mounted () {
     var str = navigator.userAgent.toLowerCase(); 
     var ver = str.match(/cpu iphone os (.*?) like mac os/);
-    if (ver && ver[1].replace(/_/g,".") < '10.3.3') {
-     alert('相机调用失败');
-    }
+    if (ver && ver[1].replace(/_/g,".") < '10.3.3') this.$message({message:'相机调用失败',type: "error"})
   }
 }
 </script>
