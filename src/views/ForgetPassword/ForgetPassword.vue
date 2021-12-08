@@ -147,6 +147,7 @@ export default {
               clearInterval(time);
               this.count = 60;
               this.timer = false;
+              this.disabledTime = false;
             }
           }, 1000);
         } else{
@@ -154,7 +155,6 @@ export default {
           if(res.code === 10005) this.message='邮箱已存在'
           this.$message({ message: this.message, type: "warning"});
           this.timer = false;
-          this.disabledTime = false;
         } 
       })
     },
