@@ -183,7 +183,8 @@ export default {
         }
       }    
       img{
-        height:3em;
+        width:3em;
+        height: 3em;
         border-radius: 10px;
       }
     }
