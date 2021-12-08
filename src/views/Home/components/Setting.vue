@@ -14,7 +14,7 @@
           lazy />
         <div>
           <span>{{ userData.nickname }}</span>
-          <span class="user-data-id" @click="copyPaste(userData.username)"> ID : {{ userData.username }}</span>
+          <span class="user-data-id"> ID : <span class="user-paste" @click="copyPaste(userData.username)">{{ userData.username }}</span></span>
         </div>
       </div>
       <div
@@ -79,8 +79,8 @@
 </template>
 
 <script>
-import { getUserInfo } from "@/api";
 import VueQr from 'vue-qr'
+import { getUserInfo } from "@/api";
 import urlCopy from "@/utils/urlCopy.js";
 import { developmentMessage } from "@/assets/tools";
 
@@ -221,12 +221,17 @@ export default {
       font-size: 13px;
       color: #b3b3b3;
     }
+    .user-paste{
+      width: 1em;
+      display: contents;
+    }
     span {
       display: block;
       text-align: center;
       height: 4.5em;
       font-weight: 600;
     }
+    
     .el-image{
       width: 4em;
       border-radius: 10px;

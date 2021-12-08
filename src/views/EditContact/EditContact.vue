@@ -13,7 +13,7 @@
           :preview-src-list="[userData.icon]"/>
         <div>
           <span>{{userData.name}}</span>
-          <span class="user-data-id"> ID : {{ userData.username }}</span>
+          <span class="user-data-id"> ID : <span class="user-paste" @click="copyPaste(userData.username)">{{ userData.username }}</span></span>
         </div>
       </div>
       <div class="home-footer-btn">
@@ -107,6 +107,10 @@ export default {
         margin: -3.5em 0 -5em 0;
         font-size: 13px;
         color: #b3b3b3;
+      }
+      .user-paste{
+        width: 1em;
+        display: contents;
       }
       span {
         display: block;

@@ -1,7 +1,11 @@
 import Vue from "vue";
 // const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
-// const wsUrl = "wss://test.hichat.tools/ws/im/echo";//pre 環境
+// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
+const wsUrl = "wss://test.hichat.tools/ws/im/echo";//pre 環境
+
+// const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
+
+
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
@@ -36,15 +40,13 @@ const emitter = new Vue({
         let chatType = messageData.chatType
         switch (chatType) {
           // 连线成功
-          case "SRV_SUCCESS_MSG":
-            if(messageData.text === "连接成功，请进行授权"){
-              socket.send(JSON.stringify(chatDataKey));
-            } 
+          case "SRV_NEED_AUTH":
+            socket.send(JSON.stringify(chatDataKey));
             break;
           // 连线失敗
           case "SRV_ERROR_MSG":
             console.log(`<--【连线失敗】------訊息發送失敗${messageData.text}-->`);
-            if(messageData.text === "NEED_AUTH"){
+            if(messageData.text === "50002"){
               chatDataKey.chatType = "CLI_AUTH";
               chatDataKey.id = Math.random();
               socket.send(JSON.stringify(chatDataKey));

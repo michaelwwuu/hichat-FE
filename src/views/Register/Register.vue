@@ -146,9 +146,10 @@
           </el-input>
           <el-button
             class="verification-style"
-            :style="timer ?'width:8em;':''"
+            :style="disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''"
             plain
-            @click="countDownType(loginForm.email)"
+            :disabled="disabledTime"
+            @click="getAuthCodeData(loginForm.email,true)"
             >获取驗證碼 <span v-if="timer">({{count}})</span>
           </el-button>
         </el-form-item>
@@ -181,8 +182,7 @@
 </template>
 
 <script>
-import { register } from "@/api";
-import { getAuthCodeData } from "@/assets/tools";
+import { register,genAuthCode } from "@/api";
 import { setToken } from "_util/utils.js";
 
 export default {
@@ -201,9 +201,9 @@ export default {
       passwordTypeAgain: "password",
       count:60,
       timer:false,
+      disabledTime:false,
       disabled: true,
       dialogShow:false,
-      getAuthCodeData:getAuthCodeData,
     };
   },
   watch: {
@@ -226,20 +226,6 @@ export default {
       },
       deep: true,
     },
-    timer(val){
-      if(val){
-        let timer = null;
-        timer = setInterval(() =>{
-          if (this.count > 0) {
-            this.count = this.count - 1;
-          }
-          else {
-            clearInterval(timer);
-          }
-        }, 1000);
-        console.log(this.count)
-      }
-    }
   },
   created() {
     if (
@@ -257,12 +243,36 @@ export default {
     }
   },
   methods: {
-    countDownType(name){
-      if(name === ''){
-        return this.getAuthCodeData(this.loginForm.email,true) 
-      }else{
-        return this.getAuthCodeData(this.loginForm.email,true,this.timer=true) 
+    getAuthCodeData(email,key) {
+      if (email === '') {
+        this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
+        return 
       }
+      this.disabledTime = true;
+      let params = { email:email, forRegister:key }
+      genAuthCode(params).then((res)=>{
+        if(res.code === 200){
+          this.$message({ message: "请至邮件信箱获取验证码", type: "success"});
+          this.timer = true;
+          let time = null;
+          time = setInterval(() =>{
+            if (this.count > 0) {
+              this.count = this.count - 1;
+            } else {
+              clearInterval(time);
+              this.count = 60;
+              this.timer = false;
+              this.disabledTime = false;
+            }
+          }, 1000);
+        } else{
+          if(res.code === 10007) this.message='验证码已发送过,请一分钟后再发送'
+          if(res.code === 10005) this.message='邮箱已存在' 
+          this.$message({ message: this.message, type: "warning"});
+          this.timer = false;
+          this.disabledTime = false;
+        } 
+      })
     },
     showPwd(value) {
       if(value === 'password'){
@@ -361,9 +371,8 @@ export default {
         }
       }
       .verification-style {
-        width: 6em;
-        height: 2.1em;
-        line-height: 2.1em;
+        border-radius: 5px !important;
+        padding: 8px 10px;
         font-size: 12px;
         position: absolute;
         top: 1em;

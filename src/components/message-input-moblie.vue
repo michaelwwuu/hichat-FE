@@ -81,7 +81,6 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" :disabled="disabledPlay" @click="onStartVoice">开始录音</el-button>
-        <!-- <el-button type="danger" @click="onPlayAudio">播放录音</el-button> -->
         <el-button type="info" :disabled="endDisabledPlay" @click="onEndVoice">結束录音</el-button>
         <el-button type="danger" :disabled="uploadDisabledPlay" @click="onAudioFile">上传录音</el-button>
       </span>
@@ -311,21 +310,12 @@ export default {
           this.isVoice = false
         }
       });
-    },
-
-     // 播放录音
-    onPlayAudio () {
-      this.isVoice = false
-      // this.isFinished = true;
-      this.audio = document.getElementById("audioVoice");
-      this.recorder.play(this.audio);
-    },
+    },    
     
     // 停止播放录音
     onStopAudio () {
       if(document.getElementById("audioVoice") !== null) this.recorder.clear(this.audio);
     },
-
 
     // 表情符号转简中
     emojiChine(category) {

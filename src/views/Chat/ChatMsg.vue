@@ -4,15 +4,19 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <span  class="home-user-link" @click="back">
-              <div class="home-user"></div>
+            <span  class="home-user-link">
+              <router-link :to="'/HiChat'">
+                <div class="home-user"></div>
+              </router-link>
             </span>
             <span class="home-header-title">{{userData.name}}</span>
             <div class="home-user-search"></div>
             <span class="home-photo-link">
-              <div class="home-user-photo" @click="goUserMsg">
+              <router-link :to="'/ContactPage'">
+                <div class="home-user-photo">
                   <img src="./../../../static/images/image_user_defult.png" alt="">
                 </div>
+              </router-link>
             </span>
           </div>
         </el-header>
@@ -28,11 +32,11 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { getSearchById } from '@/api'
 import { mapState, mapMutations } from "vuex";
+import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
-import { getLocal, getToken } from "_util/utils.js";
-import { getSearchById } from '@/api'
 
 export default {
   name: "ChatMsg",
@@ -76,13 +80,6 @@ export default {
         localStorage.setItem('userData', JSON.stringify(this.userData))
       })
     },
-    // 回上一頁
-    back(){
-      this.$router.push({ name:'HiChat'}); 
-    },
-    goUserMsg(){
-      this.$router.push({ name:'ContactPage'}); 
-    },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -99,29 +96,21 @@ export default {
 
     // 獲取歷史訊息
     getChatHistoryMessage(){
-      let historyMessageData ={
-        chatType: "CLI_HISTORY_REQ",
-        id:Math.random(),
-        tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-        toChatId: this.userData.toChatId === undefined ? 'u'+ this.userData.contactId : this.userData.toChatId,
-        targetId: '',
-        pageSize: 1000,
-      }
+      let historyMessageData = this.userInfoData
+      historyMessageData.chatType = "CLI_HISTORY_REQ";
+      historyMessageData.id = Math.random();
+      historyMessageData.toChatId = this.userData.toChatId === undefined ? 'u'+ this.userData.contactId : this.userData.toChatId;
+      historyMessageData.targetId = "";
+      historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
 
     // 已讀
     readMsgShow(){
-      let sendReadMessageData ={
-        chatType: "CLI_MSG_READ",
-        id:Math.random(),
-        tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-        targetArray: this.readMsgData,
-      }
+      let sendReadMessageData = this.userInfoData
+      sendReadMessageData.chatType = "CLI_MSG_READ";
+      sendReadMessageData.id = Math.random();
+      sendReadMessageData.targetArray = this.readMsgData;
       Socket.send(sendReadMessageData);
     },
 

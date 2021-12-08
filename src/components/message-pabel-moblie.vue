@@ -53,10 +53,10 @@ export default {
   },
   data() {
     return {
-      message: [],
-      gotoBottom: gotoBottom,
-      newMessageData:{},
       newData:[],
+      message:[],
+      newMessageData:{},
+      gotoBottom:gotoBottom,
     };
   },
   watch: {
@@ -230,7 +230,7 @@ export default {
       border-radius: 10px;
       img{
         border-radius: 8px;
-        height: 6em;
+        width: 6em;
       }
     }
   }

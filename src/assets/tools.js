@@ -11,95 +11,13 @@ function gotoBottom () {
   })
 }
 
-// function disabled(item) {
-//   const h = this.$createElement;
-//   this.$prompt( '請輸入封禁分鐘', `確定要封禁玩家"${item.username}"?`, {
-//     center: true,
-//     cancelButtonText: "取消",
-//     confirmButtonText: "确定",
-//     inputPlaceholder: "請輸入封禁分鐘",
-//     inputPattern: /^[0-9]*$/,
-//     inputErrorMessage:'※只能輸入數字',       
-//     inputValidator:(val)=>{ 
-//       if(val.length > 6) return "※輸入字數不可超過6個字";
-//     },
-//     message: h("div", null, [
-//       h("div", {
-//         style:
-//           "width:100%;height:50px;background-image:url(" +
-//           this.disabledImg +
-//           ");background-repeat:no-repeat;background-position: center; position: absolute;top: -3rem;",
-//       }),
-//     ]),
-//   })
-//   .then(({ value }) => {
-//     let banList = {
-//       chatType:"CLI_ROOM_BAN",
-//       id:Math.random(),
-//       banUser: item.username,
-//       toChatId: item.chatRoomId,
-//       minute: value === "0" ? "999999" : value,
-//       token: localStorage.getItem("token"),
-//       deviceId: localStorage.getItem("UUID"),
-//       platformCode: "dcw",
-//       tokenType: 1,
-//     }
-//     Socket.send(banList);
-//     this.$message({
-//       type: "success",
-//       message: "确定封禁" + `${value === "0" ? "999999" : value}` + "分钟",
-//     });
-//   })
-//   .catch(() => {
-//     this.$message({
-//       type: "info",
-//       message: "取消输入",
-//     });
-//   });
-// }
-
-// function unBlock(item) {
-//   let unBlock = {
-//     chatType:"CLI_ROOM_LIFT_BAN",
-//     id:Math.random(),
-//     banUser: item.username,
-//     toChatId: item.chatRoomId,
-//     token: localStorage.getItem("token"),
-//     deviceId: localStorage.getItem("UUID"),
-//     platformCode: "dcw",
-//     tokenType: 1,
-//   }
-//   Socket.send(unBlock);
-// }
-
-function getAuthCodeData(email,key) {
-  if (email === '') {
-    this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
-    return 
-  }
-  let params = {
-    email:email,
-    forRegister:key
-  }
-  genAuthCode(params).then((res)=>{
-    if(res.code === 200){
-      this.$message({ message: "请至邮件信箱获取验证码", type: "success"});
-    } else{
-      this.$message({ message: res.message, type: "warning"});
-    }
-  })
-  
-}
 function developmentMessage(data){
-  if(data ==='传送讯息' || data ==='关于HiChat' || data === '服务条款' || data === '密码管理' || data === '修改登录密码') return
+  if(data ==='传送讯息' || data ==='关于HiChat' || data === '使用版本' || data === '密码管理' || data === '修改登录密码') return
   this.$message({ message: "功能开发中", type: "warning"});
 }
 
  
 export {
   gotoBottom,
-  // disabled,
-  // unBlock,
-  getAuthCodeData,
   developmentMessage,
 }

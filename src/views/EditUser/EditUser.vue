@@ -69,6 +69,10 @@ export default {
   },
   methods: {
     editSubmit(){ 
+      if(this.userEditForm.nickname=== '') {
+        this.$message({ message: "昵称不可为空白", type: "error" });
+        return 
+      }
       updateNickname(this.userEditForm.nickname).then((res)=>{
         if(res.code === 200) {
           this.getUserData()

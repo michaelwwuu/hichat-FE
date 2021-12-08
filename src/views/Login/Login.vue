@@ -98,7 +98,7 @@
       <div align="center">帐号已锁定。</div>
       <div align="center">请至邮箱取得验证码以解锁帐号。</div>
       <span slot="footer" class="dialog-footer">
-        <router-link to="/ResetPassword">
+        <router-link :to="'/ResetPassword'">
           <el-button @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
@@ -160,19 +160,7 @@ export default {
     }
   },
   mounted() {
-    if(this.remember){
-      this.loginForm.email = localStorage.getItem('email') === null ? '' : localStorage.getItem('email')
-      // localStorage.removeItem('username')
-      // localStorage.removeItem('token')
-      // localStorage.removeItem('id')
-      // localStorage.removeItem('fromChatId')
-      // localStorage.removeItem('accountMsg')
-      // localStorage.removeItem('userData')
-      // localStorage.removeItem('toChatId')
-    }
-    else{
-      // localStorage.clear();
-    }
+    if(this.remember) this.loginForm.email = localStorage.getItem('email') === null ? '' : localStorage.getItem('email')
     this.getUUID();
   },
   methods: {
@@ -196,7 +184,7 @@ export default {
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {
-          this.$message({ message: "资料尚未输入完全或帳號密碼不存在", type: "error",});
+          this.$message({ message: "资料尚未输入完全或帳號密碼格式錯誤", type: "error",});
           return 
         }
         login(this.loginForm)
@@ -205,11 +193,13 @@ export default {
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
               this.$router.push({ path: "/Home" });
-            } else if(res.data === '账号已被禁用') {
+            } else if(res.code === 10009) {
               //登录失敗
               this.dialogShow = true;
             }else{
-              this.$message({ message: res.data, type: "error",});
+              if(res.code === 10006) this.message = '邮箱不存在'
+              if(res.code === 10002) this.message = '密码有误'
+              this.$message({ message: this.message, type: "error",});
               return false;
             }
           })

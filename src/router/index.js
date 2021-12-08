@@ -112,7 +112,7 @@ const routes = [
     path: "/EditUser",
     name: "EditUser",
     component: () => import(/* webpackChunkName: "EditUser" */ '@/views/EditUser/EditUser.vue'),
-    meta: { keepAlive: true },
+    meta: { keepAlive: false },
   },
   {
     path: "/About",
@@ -151,7 +151,7 @@ router.beforeEach((to, from, next) => {
     })
     
   }
-  if(to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ForgetPassword' ){
+  if(to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ForgetPassword' && to.name !== 'ResetPassword'){
     if(localStorage.getItem("token") === null) next({ path: '/login' });
   }
   next();

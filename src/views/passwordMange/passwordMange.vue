@@ -61,8 +61,6 @@ export default {
       this.$router.back(-1)
     }
   },
- 
-
 };
 </script>
 

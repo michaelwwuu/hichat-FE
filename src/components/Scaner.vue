@@ -26,9 +26,6 @@
 </template>
 
 <script>
-
-// eslint-disable-next-line no-unused-vars
-import adapter from 'webrtc-adapter';
 import jsQR from 'jsqr';
 
 export default {
@@ -95,9 +92,7 @@ export default {
     active: {
       immediate: true,
       handler(active) {
-        if (!active) {
-          this.fullStop();
-        }
+        if (!active) this.fullStop();
       }
     }
   },
