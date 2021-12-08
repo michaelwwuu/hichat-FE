@@ -1,7 +1,9 @@
 <template>
   <div class="home-wrapper">
     <div class="home-header">
-      <div class="home-user" @click="back"></div>
+      <router-link :to="'/Setting'">
+        <div class="home-user"></div>
+      </router-link>
       <span class="home-header-title">密码管理</span>
       <div class="home-add-user"></div>
     </div>
@@ -56,11 +58,7 @@ export default {
       notification:false,
     }
   },
-  methods: {
-    back(){
-      this.$router.back(-1)
-    }
-  },
+
 };
 </script>
 

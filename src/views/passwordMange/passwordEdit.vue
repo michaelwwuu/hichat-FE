@@ -168,12 +168,16 @@ export default {
   },
   methods: {
     showPwd(value) {
-      if(value === 'oldPassword'){
-        this.oldPasswordType = this.oldPasswordType === "password" ? "" : "password";
-      }else if(value === 'newPassword'){
-        this.newPasswordType = this.newPasswordType === "password" ? "" : "password";
-      } else if(value === 'newPasswordAgain'){
-        this.newPasswordTypeAgain = this.newPasswordTypeAgain === "password" ? "" : "password";
+      switch (value) {
+        case 'oldPassword':
+          this.oldPasswordType = this.oldPasswordType === "password" ? "" : "password";
+          break;
+        case 'newPassword':
+          this.newPasswordType = this.newPasswordType === "password" ? "" : "password";
+          break;
+        case 'newPasswordAgain':
+          this.newPasswordTypeAgain = this.newPasswordTypeAgain === "password" ? "" : "password";
+          break;  
       }
       this.$nextTick(() => this.$refs.newPassword.focus());
     },
@@ -191,7 +195,8 @@ export default {
             if (res.code === 200) {
               this.dialogShow = true
             } else{
-              this.$message({ message: res.message, type: "error",});
+              if(res.code === 10002) this.message = '密码有误'
+              this.$message({ message: this.message, type: "error",});
               return
             }
           })

@@ -163,7 +163,7 @@ export default {
     },
     getUserData() {
       getUserInfo().then(res => {
-        if(res.icon === undefined ) res.icon = require("./../../../../static/images/image_user_defult.png");
+        if(res.data.icon === undefined ) res.data.icon = require("./../../../../static/images/image_user_defult.png");
         this.userData = res.data;
       });
     },

@@ -275,10 +275,13 @@ export default {
       })
     },
     showPwd(value) {
-      if(value === 'password'){
-        this.passwordType = this.passwordType === "password" ? "" : "password";
-      } else if(value === 'passwordAgain'){
-        this.passwordTypeAgain = this.passwordTypeAgain === "password" ? "" : "password";
+      switch (value) {
+        case 'password':
+          this.passwordType = this.passwordType === "password" ? "" : "password";
+          break;
+        case 'passwordAgain':
+          this.passwordTypeAgain = this.passwordTypeAgain === "password" ? "" : "password";
+          break;
       }
       this.$nextTick(() => this.$refs.password.focus());
     },
@@ -299,7 +302,8 @@ export default {
               setToken(res.data.tokenHead + res.data.token);
               this.dialogShow = true
             } else{
-              this.$message({ message: res.message, type: "error",});
+              if(res.code === 10004) this.message="该用户名或邮箱已存在"
+              this.$message({ message: this.message, type: "error",});
               return
             }
           })

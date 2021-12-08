@@ -82,10 +82,9 @@ export default {
     },
     getUserData() {
       getUserInfo().then((res) => {
+        if(res.data.icon === undefined ) res.data.icon = require("./../../../static/images/image_user_defult.png");
         this.userData = res.data;
         this.userEditForm.nickname = this.userData.nickname.replace(/\["|"]/g, '' )
-        if (this.userData.icon === undefined)
-          this.userData.icon = require("./../../../static/images/image_user_defult.png");
       });
     },
     back(){
