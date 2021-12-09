@@ -1,6 +1,5 @@
 
 // import Socket from "@/utils/socket";
-import { genAuthCode } from "@/api";
 
 
 /* 返回底部 */

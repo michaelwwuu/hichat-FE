@@ -9,7 +9,6 @@
       <div class="user-data">
         <span><img :src="userData.icon" alt=""></span>
         <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
-
       </div>
       <div class="home-footer-btn">
         <el-button

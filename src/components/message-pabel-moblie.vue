@@ -90,7 +90,7 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .message-pabel-box {
   padding: 0 15px 0 20px;
   flex: 1;
@@ -119,7 +119,7 @@ export default {
     .message-layout-left {
       p{
         display: flex;
-        align-items: end;
+        align-items: flex-end;
       }
       .message-avatar {
         float: left;
@@ -145,7 +145,7 @@ export default {
     .message-layout-right {
       p{
         display: flex;
-        align-items: end;
+        align-items: flex-end;
         flex-flow: row-reverse;
       }
       .message-avatar {

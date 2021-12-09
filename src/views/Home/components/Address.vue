@@ -24,9 +24,6 @@
       </el-tab-pane>
       <!-- <el-tab-pane label="群组" name="group">
         <div></div>
-      </el-tab-pane>
-      <el-tab-pane label="陌生讯息" name="strange">
-        <div></div>
       </el-tab-pane> -->
     </el-tabs>
     <el-dialog

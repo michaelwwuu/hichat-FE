@@ -86,6 +86,7 @@ export default {
       timer:false,
       disabled: true,
       dialogShow: false,
+      disabledTime:false,
     };
   },
   watch: {

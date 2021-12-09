@@ -77,7 +77,6 @@
       <div class="record-play">
         <div class="record-time">{{one}}<span>:</span>{{two}}<span>:</span>{{three}}</div>
         <div id="audioVoice-box"></div>
-        <!-- <audio v-show="isFinished" id="audioVoice" controls  class="record-play-box"></audio> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" :disabled="disabledPlay" @click="onStartVoice">开始录音</el-button>
@@ -137,6 +136,8 @@ export default {
       audio: "",
       recorder: new Record(),
       audioMessageData:{},
+      
+      //計時
       flag: null,
       one : '00',// 時
       two : '00',// 分
@@ -157,6 +158,30 @@ export default {
     },
   },
   methods: {
+    // 取得圖片
+    uploadImg(file, fileList) {
+      this.fileList = fileList
+		},
+
+    // 上傳圖片
+    submitAvatarUpload(){
+      let formData = new FormData();
+      formData.append('file',this.fileList[0].raw);
+      uploadMessageImage(formData).then((res)=>{
+        if(res.code === 200) {
+          let message = this.userInfoData;
+          message.chatType = "CLI_USER_IMAGE"
+          message.id = Math.random();
+          message.fromChatId = localStorage.getItem("fromChatId");
+          message.toChatId = this.userData.toChatId;
+          message.text = res.data;
+          Socket.send(message);
+          this.fileList =[]
+          this.uploadImgShow = false
+        }
+      })
+    },
+
     // 開始計時
     startHandler(){   
       this.resetTime()
@@ -197,55 +222,7 @@ export default {
     endHandler(){
       this.flag = clearInterval(this.flag)
     },
-
-    uploadImg(file, fileList) {
-      this.fileList = fileList
-		},
-
-    submitAvatarUpload(){
-      let formData = new FormData();
-      formData.append('file',this.fileList[0].raw);
-      uploadMessageImage(formData).then((res)=>{
-        if(res.code === 200) {
-          let message = this.userInfoData;
-          message.chatType = "CLI_USER_IMAGE"
-          message.id = Math.random();
-          message.fromChatId = localStorage.getItem("fromChatId");
-          message.toChatId = this.userData.toChatId;
-          message.text = res.data;
-          Socket.send(message);
-          this.fileList =[]
-          this.uploadImgShow = false
-        }
-      })
-    },
-    
-    // 關閉錄音
-    closeAduioShow(){
-      this.sendAduioShow = false
-      this.audioMessageData = {}
-    },
-
-    // 上傳錄音
-    onAudioFile(){
-      let formData = new FormData();
-      formData.append('file',this.audioMessageData,`${Date.now()}.mp3`);
-      formData.append('type','AUDIO');
-      uploadMessageFile(formData).then((res)=>{
-        if(res.code === 200) {
-          let message = this.userInfoData;
-          message.chatType = "CLI_USER_AUDIO"
-          message.id = Math.random();
-          message.fromChatId = localStorage.getItem("fromChatId");
-          message.toChatId = this.userData.toChatId;
-          message.text = res.data;
-          Socket.send(message);
-          this.sendAduioShow = false
-          this.audioMessageData = {}
-        }
-      })
-    },
-
+    // 重置秒數
     resetTime(){
       this.one = '00';// 時
       this.two = '00';// 分
@@ -253,19 +230,22 @@ export default {
       this.abc = 0;// 秒的計數
       this.cde = 0;// 分的計數
       this.efg = 0;// 時的計數
-    },
+    }, 
 
+    // 開啟錄音
     sendAduio(){
-      this.onStopAudio()
-      this.endHandler()
       this.resetTime()
+      this.endHandler()
+      this.onStopAudio()
       this.isFinished = false
       this.sendAduioShow = true
+
       //初始化按鈕
       this.disabledPlay = false
       this.endDisabledPlay = true
       this.uploadDisabledPlay = true
     },
+    
     // 开始录音
     onStartVoice () {
       this.onStopAudio()
@@ -316,6 +296,33 @@ export default {
     onStopAudio () {
       if(document.getElementById("audioVoice") !== null) this.recorder.clear(this.audio);
     },
+
+    // 關閉錄音
+    closeAduioShow(){
+      this.sendAduioShow = false
+      this.audioMessageData = {}
+    },
+
+    // 上傳錄音
+    onAudioFile(){
+      let formData = new FormData();
+      formData.append('file',this.audioMessageData,`${Date.now()}.mp3`);
+      formData.append('type','AUDIO');
+      uploadMessageFile(formData).then((res)=>{
+        if(res.code === 200) {
+          let message = this.userInfoData;
+          message.chatType = "CLI_USER_AUDIO"
+          message.id = Math.random();
+          message.fromChatId = localStorage.getItem("fromChatId");
+          message.toChatId = this.userData.toChatId;
+          message.text = res.data;
+          Socket.send(message);
+          this.sendAduioShow = false
+          this.audioMessageData = {}
+        }
+      })
+    },
+
 
     // 表情符号转简中
     emojiChine(category) {

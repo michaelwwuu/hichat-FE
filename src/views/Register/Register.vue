@@ -302,6 +302,8 @@ export default {
               setToken(res.data.tokenHead + res.data.token);
               this.dialogShow = true
             } else{
+              if(res.code === 10003) this.message="验证码有误";
+              if(res.code === 10013) this.message="验证码已失效";
               if(res.code === 10004) this.message="该用户名或邮箱已存在"
               this.$message({ message: this.message, type: "error",});
               return

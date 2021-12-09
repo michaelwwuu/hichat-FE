@@ -3,7 +3,7 @@
     <div class="home-header">
       <div class="home-user" @click="centerDialogVisible = true"></div>
       <span class="home-header-title">设定</span>
-      <div class="home-add-user" @click="goEditUserPage(userData)"></div>
+      <router-link :to="'/EditUser'"><div class="home-add-user" @click="goEditUserPage(userData)"></div></router-link>
     </div>
     <div class="address-content">
       <div class="user-data">
@@ -166,9 +166,6 @@ export default {
         if(res.data.icon === undefined ) res.data.icon = require("./../../../../static/images/image_user_defult.png");
         this.userData = res.data;
       });
-    },
-    goEditUserPage(){
-      this.$router.push({ name:'EditUser'}); 
     },
     loginOut(){
       this.$router.push({ path:'/login'}); 
