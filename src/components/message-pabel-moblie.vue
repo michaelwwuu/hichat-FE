@@ -120,6 +120,13 @@ export default {
       p{
         display: flex;
         align-items: flex-end;
+        .message-audio{
+          border-radius: 0 10px 10px 10px;
+          background-color: #f1f3f4;
+        }
+        audio {
+          filter: sepia(30%) grayscale(100%);
+        }
       }
       .message-avatar {
         float: left;
@@ -147,7 +154,11 @@ export default {
         display: flex;
         align-items: flex-end;
         flex-flow: row-reverse;
-      }
+        .message-audio{
+          border-radius: 10px 0 10px 10px;
+          background-color: #f1f3f4;
+        }
+       }
       .message-avatar {
         float: right;
         margin-left: 10px;
@@ -157,7 +168,7 @@ export default {
         color: #000000;
         line-height: 1.4rem;
         font-weight: 500;
-        background-color: #e5e4e4;
+        background-color: #f1f3f4;
         letter-spacing: 0.5px;
         border-radius: 8px 0 8px 8px;
       }
@@ -213,18 +224,18 @@ export default {
     }
     .message-audio{
       position: relative;
-      max-width: 65%;
+      max-width: 50%;
+      height: 2.5em;
       margin-top: 1em;
       display: inline-block;
-      border: 1px solid #d4d4d4;
-      border-radius:50px
+      border: 1px solid #eeeeee;
 
     }
     .message-image{
       position: relative;
       margin-top: 1em;
       display: inline-block;
-      padding: 5px 7px;
+      padding: 5px 6px 2px 6px;
       color: #333333;
       background-color: #e5e4e4;
       border-radius: 10px;
