@@ -1,7 +1,4 @@
 
-// import Socket from "@/utils/socket";
-
-
 /* 返回底部 */
 function gotoBottom () {
   const box = document.getElementsByClassName('message-pabel-box')[0]
@@ -15,8 +12,20 @@ function developmentMessage(data){
   this.$message({ message: "功能开发中", type: "warning"});
 }
 
+function tipMessage(code){
+  switch (code) {
+    case value:
+      
+      break;
+  
+    default:
+      break;
+  }
+  this.$message({ message: this.message, type: "warning"});
+}
  
 export {
   gotoBottom,
+  tipMessage,
   developmentMessage,
 }

@@ -27,25 +27,6 @@ export const getUserInfo = (params) => {
   }
   return axios.request(postData)
 }
-// 搜尋聊天室
-export const getRoomList = (params) => {
-  let postData = {
-    url: '/api/chatroom/searchByName',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
-
-// 獲取驗證碼
-// export const getAuthCode = (params) => {
-//   let postData = {
-//     url: '/api/sso/getAuthCode',
-//     method: 'get',
-//     params
-//   }
-//   return axios.request(postData)
-// }
 
 // 產生驗證碼
 export const genAuthCode = (params) => {
