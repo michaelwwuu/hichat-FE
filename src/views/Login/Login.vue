@@ -151,12 +151,12 @@ export default {
         } else {
           this.disabled = true;
         }
-        localStorage.setItem("email",val.email);
+        this.remember ? localStorage.setItem("email",val.email): '';
       },
       deep: true,
     },
     remember(val){
-      !val ? localStorage.removeItem('email') : localStorage.setItem("email",this.loginForm.email);
+      !val ? localStorage.removeItem('email') : localStorage.setItem("email",this.loginForm.email)
     }
   },
   mounted() {

@@ -58,7 +58,7 @@ export default {
       activeName:'address',
       centerDialogVisible : false,
       qrCodeConfig:{
-        text:`${localStorage.getItem('dominUrl')}#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
+        text:`https://${localStorage.getItem('dominHost')}#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo:require("./../../../../static/images/material_ic_logo.png"),
       },
       downloadFilename:''

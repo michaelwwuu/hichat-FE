@@ -125,7 +125,7 @@ export default {
       centerDialogVisible: false,
       loginOutDialogShow:false,
       qrCodeConfig:{
-        text:`${localStorage.getItem('dominUrl')}#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
+        text:`https://${localStorage.getItem('dominHost')}#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo:require("./../../../../static/images/material_ic_logo.png"),
       },
       downloadFilename:'',
@@ -169,7 +169,11 @@ export default {
     },
     loginOut(){
       this.$router.push({ path:'/login'}); 
-      localStorage.clear();
+      localStorage.removeItem('id')
+      localStorage.removeItem('token')
+      localStorage.removeItem('username')
+      localStorage.removeItem('userData')
+      localStorage.removeItem('fromChatId')
     },
   },
   components: {

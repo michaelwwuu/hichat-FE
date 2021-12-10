@@ -11,7 +11,7 @@
 export default {
   name: "App",
   created() {
-    localStorage.setItem('dominUrl',location.origin + location.pathname)
+    localStorage.setItem('dominHost',location.host)
   },
 };
 </script>
