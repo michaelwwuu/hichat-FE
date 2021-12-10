@@ -140,9 +140,6 @@ export default {
             }
           }, 1000);
         } else{
-          if(res.code === 10007) this.message='验证码已发送过,请一分钟后再发送'
-          if(res.code === 10005) this.message='邮箱已存在' 
-          this.$message({ message: this.message, type: "warning"});
           this.timer = false;
           this.disabledTime = false;
         } 
@@ -163,10 +160,6 @@ export default {
           .then((res) => {
             if (res.code === 200) {
               this.dialogShow = true;
-            }else{
-              if(res.code === 10003) this.message="验证码有误";
-              if(res.code === 10013) this.message="验证码已失效";
-              this.$message({ message: this.message, type: "error"});
             }
           })
           .catch((err) => {

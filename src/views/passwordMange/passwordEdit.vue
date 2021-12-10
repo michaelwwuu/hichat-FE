@@ -194,10 +194,6 @@ export default {
             //登录成功
             if (res.code === 200) {
               this.dialogShow = true
-            } else{
-              if(res.code === 10002) this.message = '密码有误'
-              this.$message({ message: this.message, type: "error",});
-              return
             }
           })
           .catch((err) => {

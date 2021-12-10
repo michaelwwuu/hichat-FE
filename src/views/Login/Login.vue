@@ -196,11 +196,6 @@ export default {
             } else if(res.code === 10009) {
               //登录失敗
               this.dialogShow = true;
-            }else{
-              if(res.code === 10006) this.message = '邮箱不存在'
-              if(res.code === 10002) this.message = '密码有误'
-              this.$message({ message: this.message, type: "error",});
-              return false;
             }
           })
           .catch((err) => {

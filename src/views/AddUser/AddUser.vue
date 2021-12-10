@@ -96,8 +96,6 @@ export default {
       addContactUser(parmas).then(res=>{
         if(res.code === 200) {
           this.$router.push({ path:'/Address' });
-        } else if(res.code === 20002){
-          this.$message({message:'联络人已新增过', type: "error"})
         } else {
           this.$message({message:res.message, type: "error"})
         }

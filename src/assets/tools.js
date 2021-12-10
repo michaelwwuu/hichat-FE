@@ -1,7 +1,3 @@
-
-// import Socket from "@/utils/socket";
-
-
 /* 返回底部 */
 function gotoBottom () {
   const box = document.getElementsByClassName('message-pabel-box')[0]

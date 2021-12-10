@@ -1,12 +1,20 @@
 import axios from 'axios'
-import qs from 'qs'
 import { getToken } from '../utils/utils.js'
+import { Message } from "element-ui";
 axios.defaults.headers.post['Content-Type'] = "'Content-Type': 'multipart/form-data'";
 //axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.timeout = 48000
 
 // 前端axios添加withCredentials属性
 axios.defaults.withCredentials = true
+
+// axios.interceptors.response.use(function (response) {
+//   // 对响应数据做点什么
+//   return response;
+// }, function (error) {
+//   // 对响应错误做点什么
+//   return Promise.reject(error);
+// });
 
 class HttpRequest {
   constructor(baseUrl = baseURL) {
@@ -47,8 +55,19 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       res = res.data
-      if (res.code == 10021) {
-      } else {
+      if(res.code === 200){
+        return Promise.resolve(res)
+      }else if (res.code === 10002 || res.code === 10003) {
+        Message({ message: res.code === 10002 ? "密码有误":"验证码有误", type: "error",});
+        return Promise.resolve(res)
+      } else{
+        if(res.code === 10004) this.message ="该用户名或邮箱已存在"
+        if(res.code === 10005) this.message ="邮箱已存在" 
+        if(res.code === 10006) this.message ="邮箱不存在"
+        if(res.code === 10007) this.message ="验证码已发送过,请一分钟后再发送"
+        if(res.code === 10013) this.message ="验证码已失效";
+        if(res.code === 20002) this.message ="联络人已新增过";
+        Message({ message: this.message, type: "warning",});
         return Promise.resolve(res)
       }
     }, error => {
