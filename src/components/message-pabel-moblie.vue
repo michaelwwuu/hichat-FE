@@ -1,26 +1,38 @@
 <template>
   <div class="message-pabel-box">
     <ul class="message-styles-box">
-      <div 
-        v-for="(item, index) in newMessageData"
-        :key="index">
+      <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
-            <span>{{index}}</span>
-          </div>
+          <span>{{ index }}</span>
+        </div>
         <li
           v-for="(el, index) in item"
           :key="index"
           :class="judgeClass(item[index])"
         >
           <p>
-            <span class="message-classic" v-if="el.chatType === 'SRV_USER_SEND'">{{el.message.content}}</span>
-            <audio class="message-audio" v-else-if="el.chatType === 'SRV_USER_AUDIO'" controls :src="el.message.content" type="mp3"></audio>
+            <span
+              class="message-classic"
+              v-if="el.chatType === 'SRV_USER_SEND'"
+              >{{ el.message.content }}</span
+            >
+            <audio
+              class="message-audio"
+              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
+              controls
+              :src="el.message.content"
+              type="mp3"
+            ></audio>
 
-            <span class="message-image" v-else-if="el.chatType === 'SRV_USER_IMAGE'">
+            <span
+              class="message-image"
+              v-else-if="el.chatType === 'SRV_USER_IMAGE'"
+            >
               <!-- <img :src="el.message.content" alt=""> -->
-              <el-image 
-                :src="el.message.content" 
-                :preview-src-list="[el.message.content]">
+              <el-image
+                :src="el.message.content"
+                :preview-src-list="[el.message.content]"
+              >
               </el-image>
             </span>
 
@@ -29,8 +41,12 @@
             }}</span>
           </p>
           <div class="read-check-box">
-            <span class="read-check" v-if="el.isRead"><img src="./../../static/images/check.png" alt=""></span>
-            <span class="read-check2"><img src="./../../static/images/check.png" alt=""></span>
+            <span class="read-check" v-if="el.isRead"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+            <span class="read-check2"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
           </div>
         </li>
       </div>
@@ -53,29 +69,35 @@ export default {
   },
   data() {
     return {
-      newData:[],
-      message:[],
-      newMessageData:{},
-      gotoBottom:gotoBottom,
+      newData: [],
+      message: [],
+      newMessageData: {},
+      gotoBottom: gotoBottom,
     };
   },
   watch: {
     messageData(val) {
       //去除重复
       const set = new Set();
-      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false); 
+      this.message = val.filter((item) =>
+        !set.has(item.historyId) ? set.add(item.historyId) : false
+      );
       this.gotoBottom();
     },
-    message(val){
-      this.newMessageData = {}
-      val.forEach(el => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = []
+    message(val) {
+      this.newMessageData = {};
+      val.forEach((el) => {
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
-          return this.$root.formatTimeDay(res.message.time) === this.$root.formatTimeDay(el.message.time)
-        })
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData
+          return (
+            this.$root.formatTimeDay(res.message.time) ===
+            this.$root.formatTimeDay(el.message.time)
+          );
+        });
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+          newData;
       });
-    }
+    },
   },
   methods: {
     // 判断讯息Class名称
@@ -101,10 +123,10 @@ export default {
     font-size: 12px;
     text-align: center;
     margin: 1em 0;
-    span{
+    span {
       background-color: #d3d3d3;
-      padding:3px 8px;
-      border-radius:10px;
+      padding: 3px 8px;
+      border-radius: 10px;
     }
   }
 
@@ -117,10 +139,10 @@ export default {
     }
 
     .message-layout-left {
-      p{
+      p {
         display: flex;
         align-items: flex-end;
-        .message-audio{
+        .message-audio {
           border-radius: 0 10px 10px 10px;
           background-color: #f1f3f4;
         }
@@ -144,21 +166,21 @@ export default {
         font-size: 12px;
         padding-left: 10px;
       }
-      .read-check-box{
-        display:none;
+      .read-check-box {
+        display: none;
       }
     }
 
     .message-layout-right {
-      p{
+      p {
         display: flex;
         align-items: flex-end;
         flex-flow: row-reverse;
-        .message-audio{
+        .message-audio {
           border-radius: 10px 0 10px 10px;
           background-color: #f1f3f4;
         }
-       }
+      }
       .message-avatar {
         float: right;
         margin-left: 10px;
@@ -177,23 +199,22 @@ export default {
         font-size: 12px;
         padding-right: 10px;
       }
-      .read-check-box{
+      .read-check-box {
         display: flex;
         justify-content: flex-end;
-        span{
-          img{
-            height:1em;
+        span {
+          img {
+            height: 1em;
           }
         }
-        .read-check{
+        .read-check {
           position: relative;
           left: 0.5em;
         }
-        .read-check2{
+        .read-check2 {
           left: 1em;
         }
       }
-
     }
 
     .message-avatar {
@@ -202,7 +223,6 @@ export default {
       border-radius: 2px;
       border: 1px solid #eeeeee;
     }
-
 
     .message-classic,
     .message-disabled {
@@ -218,20 +238,19 @@ export default {
       .red {
         height: 1.5em;
       }
-      img{
+      img {
         height: 6em;
       }
     }
-    .message-audio{
+    .message-audio {
       position: relative;
       max-width: 50%;
       height: 2.5em;
       margin-top: 1em;
       display: inline-block;
       border: 1px solid #eeeeee;
-
     }
-    .message-image{
+    .message-image {
       position: relative;
       margin-top: 1em;
       display: inline-block;
@@ -239,12 +258,11 @@ export default {
       color: #333333;
       background-color: #e5e4e4;
       border-radius: 10px;
-      img{
+      img {
         border-radius: 8px;
         width: 6em;
       }
     }
   }
 }
-
 </style>

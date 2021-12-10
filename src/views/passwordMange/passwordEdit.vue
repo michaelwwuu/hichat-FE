@@ -84,7 +84,10 @@
             maxLength="12"
             @input="
               (v) =>
-                (loginForm.newPasswordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (loginForm.newPasswordAganin = v.replace(
+                  /^[\u4E00-\u9FA5]+$/,
+                  ''
+                ))
             "
           >
           </el-input>
@@ -115,8 +118,11 @@
       class="dialog-style"
       width="90%"
       :show-close="false"
-      center>
-      <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
+      center
+    >
+      <div align="center">
+        <img src="./../../../static/images/success.png" alt="" />
+      </div>
       <div align="center">登录密码已修改。</div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/passwordMange">
@@ -136,30 +142,32 @@ export default {
     return {
       loginForm: {
         newPassword: "",
-        oldPassword: ""
+        oldPassword: "",
       },
-      email:localStorage.getItem("email"),
+      email: localStorage.getItem("email"),
       oldPasswordType: "password",
       newPasswordType: "password",
       newPasswordTypeAgain: "password",
-      notification:false,
+      notification: false,
       disabled: true,
-      dialogShow:false,
-    }
+      dialogShow: false,
+    };
   },
   watch: {
     loginForm: {
       handler(val) {
-        if(val.newPassword === val.newPasswordAganin) {
+        if (val.newPassword === val.newPasswordAganin) {
           if (
-            Object.values(val).every(el => el !== "") &&
+            Object.values(val).every((el) => el !== "") &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.oldPassword) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPassword) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPasswordAganin)
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
+              val.newPasswordAganin
+            )
           ) {
             this.disabled = false;
-          } 
-        }else{
+          }
+        } else {
           this.disabled = true;
         }
       },
@@ -169,23 +177,29 @@ export default {
   methods: {
     showPwd(value) {
       switch (value) {
-        case 'oldPassword':
-          this.oldPasswordType = this.oldPasswordType === "password" ? "" : "password";
+        case "oldPassword":
+          this.oldPasswordType =
+            this.oldPasswordType === "password" ? "" : "password";
           break;
-        case 'newPassword':
-          this.newPasswordType = this.newPasswordType === "password" ? "" : "password";
+        case "newPassword":
+          this.newPasswordType =
+            this.newPasswordType === "password" ? "" : "password";
           break;
-        case 'newPasswordAgain':
-          this.newPasswordTypeAgain = this.newPasswordTypeAgain === "password" ? "" : "password";
-          break;  
+        case "newPasswordAgain":
+          this.newPasswordTypeAgain =
+            this.newPasswordTypeAgain === "password" ? "" : "password";
+          break;
       }
       this.$nextTick(() => this.$refs.newPassword.focus());
     },
     submitForm(rules) {
       //驗證註冊表單是否通過
-      this.$refs[rules].validate(valid => {
+      this.$refs[rules].validate((valid) => {
         if (!valid) {
-          this.$message({ message: "修改失败，请重新输入并确认", type: "error", });
+          this.$message({
+            message: "修改失败，请重新输入并确认",
+            type: "error",
+          });
           return;
         }
         delete this.loginForm.newPasswordAganin;
@@ -193,24 +207,27 @@ export default {
           .then((res) => {
             //登录成功
             if (res.code === 200) {
-              this.dialogShow = true
+              this.dialogShow = true;
             }
           })
           .catch((err) => {
-            this.$message({ message: "修改失败，请重新输入并确认", type: "error",});
+            this.$message({
+              message: "修改失败，请重新输入并确认",
+              type: "error",
+            });
             return false;
           });
       });
     },
-    back(){
-      this.$router.back(-1)
-    }
+    back() {
+      this.$router.back(-1);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.home-wrapper{
+.home-wrapper {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
@@ -234,7 +251,7 @@ export default {
       color: #10686e;
       font-weight: 600;
     }
-    .home-add-user{
+    .home-add-user {
       width: 2em;
       height: 2em;
     }
@@ -314,31 +331,30 @@ export default {
       top: 2em;
     }
   }
-  .dialog-style{
-    /deep/.el-dialog{
+  .dialog-style {
+    /deep/.el-dialog {
       border-radius: 10px;
-      .el-dialog__body{
-        margin-top:-2.5em;
-        margin-bottom:-1.5em;
-        div{
+      .el-dialog__body {
+        margin-top: -2.5em;
+        margin-bottom: -1.5em;
+        div {
           margin: 2em 0;
-          img{
-            height:5em;
+          img {
+            height: 5em;
           }
         }
       }
-      .el-dialog__footer{
+      .el-dialog__footer {
         width: 100%;
-        .dialog-footer{
-          .el-button{
+        .dialog-footer {
+          .el-button {
             width: 90%;
             background-color: #fd5f3f;
-            color: #FFF;
+            color: #fff;
           }
         }
       }
     }
-    
   }
 }
 </style>

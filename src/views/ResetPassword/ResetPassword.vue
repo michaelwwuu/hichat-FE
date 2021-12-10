@@ -30,11 +30,13 @@
           </el-input>
           <el-button
             class="verification-style"
-            :style="disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''"
+            :style="
+              disabledTime ? 'border: 1px solid #b3b3b3; color: #b3b3b3;' : ''
+            "
             plain
             :disabled="disabledTime"
-            @click="getAuthCodeData(loginForm.email,false)"
-            >获取驗證碼 <span v-if="timer">({{count}})</span>
+            @click="getAuthCodeData(loginForm.email, false)"
+            >获取驗證碼 <span v-if="timer">({{ count }})</span>
           </el-button>
         </el-form-item>
         <span class="tip-text">请至注册邮箱确认验证码</span>
@@ -71,8 +73,7 @@
 </template>
 
 <script>
-
-import { unlockUser,genAuthCode } from "@/api";
+import { unlockUser, genAuthCode } from "@/api";
 
 export default {
   data() {
@@ -82,11 +83,11 @@ export default {
         authCode: "",
       },
       device: "",
-      count:60,
-      timer:false,
+      count: 60,
+      timer: false,
       disabled: true,
       dialogShow: false,
-      disabledTime:false,
+      disabledTime: false,
     };
   },
   watch: {
@@ -117,19 +118,19 @@ export default {
     }
   },
   methods: {
-    getAuthCodeData(email,key) {
-      if (email === '') {
+    getAuthCodeData(email, key) {
+      if (email === "") {
         this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
-        return 
+        return;
       }
       this.disabledTime = true;
-      let params = { email:email, forRegister:key }
-      genAuthCode(params).then((res)=>{
-        if(res.code === 200){
-          this.$message({ message: "请至邮件信箱获取验证码", type: "success"});
+      let params = { email: email, forRegister: key };
+      genAuthCode(params).then((res) => {
+        if (res.code === 200) {
+          this.$message({ message: "请至邮件信箱获取验证码", type: "success" });
           this.timer = true;
           let time = null;
-          time = setInterval(() =>{
+          time = setInterval(() => {
             if (this.count > 0) {
               this.count = this.count - 1;
             } else {
@@ -139,11 +140,11 @@ export default {
               this.disabledTime = false;
             }
           }, 1000);
-        } else{
+        } else {
           this.timer = false;
           this.disabledTime = false;
-        } 
-      })
+        }
+      });
     },
     //登录&&註冊
     submitForm(rules) {

@@ -44,8 +44,7 @@
             tabindex="2"
             maxLength="12"
             @input="
-              (v) =>
-                (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -105,8 +104,7 @@
             tabindex="1"
             maxLength="18"
             @input="
-              (v) =>
-                (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -146,11 +144,13 @@
           </el-input>
           <el-button
             class="verification-style"
-            :style="disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''"
+            :style="
+              disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
+            "
             plain
             :disabled="disabledTime"
-            @click="getAuthCodeData(loginForm.email,true)"
-            >获取驗證碼 <span v-if="timer">({{count}})</span>
+            @click="getAuthCodeData(loginForm.email, true)"
+            >获取驗證碼 <span v-if="timer">({{ count }})</span>
           </el-button>
         </el-form-item>
         <div class="register-footer">
@@ -169,8 +169,11 @@
       class="dialog-style"
       width="90%"
       :show-close="false"
-      center>
-      <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
+      center
+    >
+      <div align="center">
+        <img src="./../../../static/images/success.png" alt="" />
+      </div>
       <div align="center">注册完成，系统将自动登录</div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Home">
@@ -182,7 +185,7 @@
 </template>
 
 <script>
-import { register,genAuthCode } from "@/api";
+import { register, genAuthCode } from "@/api";
 import { setToken } from "_util/utils.js";
 
 export default {
@@ -199,28 +202,30 @@ export default {
       device: "",
       passwordType: "password",
       passwordTypeAgain: "password",
-      count:60,
-      timer:false,
-      disabledTime:false,
+      count: 60,
+      timer: false,
+      disabledTime: false,
       disabled: true,
-      dialogShow:false,
+      dialogShow: false,
     };
   },
   watch: {
     loginForm: {
       handler(val) {
-        if(val.password === val.passwordAganin) {
+        if (val.password === val.passwordAganin) {
           if (
-            Object.values(val).every(el => el !== "") &&
+            Object.values(val).every((el) => el !== "") &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
-            /^[A-Za-z0-9_\_]{5,}$/.test(val.username) 
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
+              val.passwordAganin
+            ) &&
+            /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
           ) {
             this.disabled = false;
           } else {
-            this.disabled = true; 
+            this.disabled = true;
           }
-        }else{
+        } else {
           this.disabled = true;
         }
       },
@@ -243,19 +248,19 @@ export default {
     }
   },
   methods: {
-    getAuthCodeData(email,key) {
-      if (email === '') {
+    getAuthCodeData(email, key) {
+      if (email === "") {
         this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
-        return 
+        return;
       }
       this.disabledTime = true;
-      let params = { email:email, forRegister:key }
-      genAuthCode(params).then((res)=>{
-        if(res.code === 200){
-          this.$message({ message: "请至邮件信箱获取验证码", type: "success"});
+      let params = { email: email, forRegister: key };
+      genAuthCode(params).then((res) => {
+        if (res.code === 200) {
+          this.$message({ message: "请至邮件信箱获取验证码", type: "success" });
           this.timer = true;
           let time = null;
-          time = setInterval(() =>{
+          time = setInterval(() => {
             if (this.count > 0) {
               this.count = this.count - 1;
             } else {
@@ -265,19 +270,21 @@ export default {
               this.disabledTime = false;
             }
           }, 1000);
-        } else{
+        } else {
           this.timer = false;
           this.disabledTime = false;
-        } 
-      })
+        }
+      });
     },
     showPwd(value) {
       switch (value) {
-        case 'password':
-          this.passwordType = this.passwordType === "password" ? "" : "password";
+        case "password":
+          this.passwordType =
+            this.passwordType === "password" ? "" : "password";
           break;
-        case 'passwordAgain':
-          this.passwordTypeAgain = this.passwordTypeAgain === "password" ? "" : "password";
+        case "passwordAgain":
+          this.passwordTypeAgain =
+            this.passwordTypeAgain === "password" ? "" : "password";
           break;
       }
       this.$nextTick(() => this.$refs.password.focus());
@@ -285,28 +292,33 @@ export default {
     //登录&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
-      this.$refs[rules].validate(valid => {
+      this.$refs[rules].validate((valid) => {
         if (!valid) {
-          this.$message({ message: "注册失败，请重新输入并确认", type: "error", });
+          this.$message({
+            message: "注册失败，请重新输入并确认",
+            type: "error",
+          });
           return;
         }
         delete this.loginForm.passwordAganin;
-        this.disabled = true
+        this.disabled = true;
         register(this.loginForm)
           .then((res) => {
             //登录成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              this.dialogShow = true
+              this.dialogShow = true;
             }
           })
           .catch((err) => {
-            this.$message({ message: "注册失败，请重新输入并确认", type: "error",});
+            this.$message({
+              message: "注册失败，请重新输入并确认",
+              type: "error",
+            });
             return false;
           });
       });
     },
-    
   },
 };
 </script>
@@ -413,31 +425,30 @@ export default {
       top: 2em;
     }
   }
-  .dialog-style{
-    /deep/.el-dialog{
+  .dialog-style {
+    /deep/.el-dialog {
       border-radius: 10px;
-      .el-dialog__body{
-        margin-top:-2.5em;
-        margin-bottom:-1.5em;
-        div{
+      .el-dialog__body {
+        margin-top: -2.5em;
+        margin-bottom: -1.5em;
+        div {
           margin: 2em 0;
-          img{
-            height:5em;
+          img {
+            height: 5em;
           }
         }
       }
-      .el-dialog__footer{
+      .el-dialog__footer {
         width: 100%;
-        .dialog-footer{
-          .el-button{
+        .dialog-footer {
+          .el-button {
             width: 90%;
             background-color: #fd5f3f;
-            color: #FFF;
+            color: #fff;
           }
         }
       }
     }
-    
   }
 }
 </style>

@@ -18,27 +18,26 @@
 </template>
 
 <script>
-
-import Scaner from './../../components/Scaner.vue';
+import Scaner from "./../../components/Scaner.vue";
 
 export default {
-  name: 'Scan',
+  name: "Scan",
   components: {
-    Scaner
+    Scaner,
   },
-  data () {
+  data() {
     return {
       errorMessage: "",
-      scanned: ""
-    }
+      scanned: "",
+    };
   },
   methods: {
-    back(){
-      this.$router.back(-1)
+    back() {
+      this.$router.back(-1);
     },
     codeScanned(code) {
       this.scanned = code;
-      window.location.replace(code)
+      window.location.replace(code);
     },
     errorCaptured(error) {
       switch (error.name) {
@@ -62,19 +61,20 @@ export default {
         default:
           this.errorMessage = "UNKNOWN ERROR: " + error.message;
       }
-      this.$message({message:'相机调用失败',type: "error"})
-    }
+      this.$message({ message: "相机调用失败", type: "error" });
+    },
   },
-  mounted () {
-    var str = navigator.userAgent.toLowerCase(); 
+  mounted() {
+    var str = navigator.userAgent.toLowerCase();
     var ver = str.match(/cpu iphone os (.*?) like mac os/);
-    if (ver && ver[1].replace(/_/g,".") < '10.3.3') this.$message({message:'相机调用失败',type: "error"})
-  }
-}
+    if (ver && ver[1].replace(/_/g, ".") < "10.3.3")
+      this.$message({ message: "相机调用失败", type: "error" });
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.home-wrapper{
+.home-wrapper {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
@@ -99,7 +99,7 @@ export default {
       color: #10686e;
       font-weight: 600;
     }
-    .home-add-user{
+    .home-add-user {
       width: 2em;
       height: 2em;
     }

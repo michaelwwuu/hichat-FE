@@ -12,20 +12,24 @@
         class="setting-button"
         v-for="(item, index) in aboutData"
         :key="index"
-        :class="{ 'border-bottom' : item.name === '修改登录密码'}"
+        :class="{ 'border-bottom': item.name === '修改登录密码' }"
         @click="developmentMessage(item.name)"
       >
-        <router-link :to="item.path" >
+        <router-link :to="item.path">
           <div class="setting-button-left">
             <img :src="item.icon" alt="" />
             <span>{{ item.name }}</span>
           </div>
-          <div class="setting-button-right version" v-if="item.name === '生物辨识'">
+          <div
+            class="setting-button-right version"
+            v-if="item.name === '生物辨识'"
+          >
             <el-switch
               v-model="notification"
               active-color="#fd5f3f"
               inactive-color="#666666"
-              disabled>
+              disabled
+            >
             </el-switch>
           </div>
           <div class="setting-button-right" v-else>
@@ -54,16 +58,15 @@ export default {
           path: "",
         },
       ],
-      developmentMessage:developmentMessage,
-      notification:false,
-    }
+      developmentMessage: developmentMessage,
+      notification: false,
+    };
   },
-
 };
 </script>
 
 <style lang="scss" scoped>
-.home-wrapper{
+.home-wrapper {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
@@ -87,7 +90,7 @@ export default {
       color: #10686e;
       font-weight: 600;
     }
-    .home-add-user{
+    .home-add-user {
       width: 2em;
       height: 2em;
     }
@@ -96,7 +99,7 @@ export default {
     .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
-      
+
       a {
         text-decoration: none;
         display: flex;
@@ -126,16 +129,16 @@ export default {
           color: #b3b3b3;
         }
       }
-      .version{
+      .version {
         span {
           margin-right: 0;
         }
       }
     }
-    .mt10{
+    .mt10 {
       margin-top: 1em;
     }
-    .border-bottom{
+    .border-bottom {
       &::after {
         content: "";
         display: block;

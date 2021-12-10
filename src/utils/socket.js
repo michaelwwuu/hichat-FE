@@ -1,7 +1,7 @@
 import Vue from "vue";
 // const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
-const wsUrl = "wss://test.hichat.tools/ws/im/echo";//pre 環境
+const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
+// const wsUrl = "wss://test.hichat.tools/ws/im/echo";//pre 環境
 
 // const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
 

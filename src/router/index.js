@@ -149,10 +149,10 @@ router.beforeEach((to, from, next) => {
       }, 2000);
       alert("请注意：由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登录页，谢谢。");
     })
-    
+
   }
-  if(to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ForgetPassword' && to.name !== 'ResetPassword'){
-    if(localStorage.getItem("token") === null) next({ path: '/login' });
+  if (to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ForgetPassword' && to.name !== 'ResetPassword') {
+    if (localStorage.getItem("token") === null) next({ path: '/login' });
   }
   next();
 });

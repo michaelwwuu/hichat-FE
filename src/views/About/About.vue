@@ -10,16 +10,19 @@
         class="setting-button"
         v-for="(item, index) in aboutData"
         :key="index"
-        :class="{ 'mt10 border-bottom' : item.name === '服务条款'}"
+        :class="{ 'mt10 border-bottom': item.name === '服务条款' }"
         @click="developmentMessage(item.name)"
       >
-        <router-link :to="item.path" >
+        <router-link :to="item.path">
           <div class="setting-button-left">
             <img :src="item.icon" alt="" />
             <span>{{ item.name }}</span>
           </div>
-          <div class="setting-button-right version" v-if="item.name === '使用版本'">
-            <span>{{item.version}}</span>
+          <div
+            class="setting-button-right version"
+            v-if="item.name === '使用版本'"
+          >
+            <span>{{ item.version }}</span>
           </div>
           <div class="setting-button-right" v-else>
             <img src="./../../../static/images/next.png" alt="" />
@@ -41,7 +44,7 @@ export default {
         {
           name: "使用版本",
           path: "",
-          version:"1.0.0",
+          version: "1.0.0",
         },
         {
           name: "服务条款",
@@ -52,19 +55,19 @@ export default {
           path: "",
         },
       ],
-      developmentMessage:developmentMessage,
-    }
+      developmentMessage: developmentMessage,
+    };
   },
   methods: {
-    back(){
-      this.$router.back(-1)
-    }
+    back() {
+      this.$router.back(-1);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.home-wrapper{
+.home-wrapper {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
@@ -88,7 +91,7 @@ export default {
       color: #10686e;
       font-weight: 600;
     }
-    .home-add-user{
+    .home-add-user {
       width: 2em;
       height: 2em;
     }
@@ -126,16 +129,16 @@ export default {
           color: #b3b3b3;
         }
       }
-      .version{
+      .version {
         span {
           margin-right: 0;
         }
       }
     }
-    .mt10{
+    .mt10 {
       margin-top: 1em;
     }
-    .border-bottom{
+    .border-bottom {
       border-bottom: 1px solid #b3b3b3;
     }
   }

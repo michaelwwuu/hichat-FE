@@ -11,15 +11,21 @@
       <el-input
         placeholder="输入欲搜寻的联络人"
         prefix-icon="el-icon-search"
-        v-model="searchKey">
+        v-model="searchKey"
+      >
       </el-input>
     </div>
-  <!-- ${contactList.length || 0} -->
-    <el-tabs v-model="activeName" >
+    <!-- ${contactList.length || 0} -->
+    <el-tabs v-model="activeName">
       <el-tab-pane label="联络人" name="address">
-        <div class="address-box" v-for="(item,index) in contactList" :key="index" @click="goContactPage(item)">
-          <el-image :src="item.icon" lazy/>
-          <span>{{item.name}}</span>
+        <div
+          class="address-box"
+          v-for="(item, index) in contactList"
+          :key="index"
+          @click="goContactPage(item)"
+        >
+          <el-image :src="item.icon" lazy />
+          <span>{{ item.name }}</span>
         </div>
       </el-tab-pane>
       <!-- <el-tab-pane label="群组" name="group">
@@ -30,70 +36,100 @@
       title="我的帐号"
       :visible.sync="centerDialogVisible"
       width="100%"
-      center>
+      center
+    >
       <div class="qrcode-box">
-        <vue-qr ref="Qrcode" :correctLevel="3" :autoColor="false" colorDark="#333333" :text="qrCodeConfig.text"  :download="downloadFilename" :size="100" :margin="0" :logoSrc="qrCodeConfig.logo" :logoCornerRadius="2" :logoMargin="1"></vue-qr>
+        <vue-qr
+          ref="Qrcode"
+          :correctLevel="3"
+          :autoColor="false"
+          colorDark="#333333"
+          :text="qrCodeConfig.text"
+          :download="downloadFilename"
+          :size="100"
+          :margin="0"
+          :logoSrc="qrCodeConfig.logo"
+          :logoCornerRadius="2"
+          :logoMargin="1"
+        ></vue-qr>
       </div>
-      <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
+      <span class="qrcode-box-text"
+        >嗨聊用户扫描此二维码后，可将您加入好友！</span
+      >
       <span slot="footer" class="dialog-footer">
-        <router-link :to="'/QRcode'"><img src="./../../../../static/images/scan.png" alt=""></router-link>
-        <img src="./../../../../static/images/share.png" alt="" @click="copyUrl">
-        <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
+        <router-link :to="'/QRcode'"
+          ><img src="./../../../../static/images/scan.png" alt=""
+        /></router-link>
+        <img
+          src="./../../../../static/images/share.png"
+          alt=""
+          @click="copyUrl"
+        />
+        <img
+          src="./../../../../static/images/download.png"
+          alt=""
+          @click="downloadImg"
+        />
       </span>
     </el-dialog>
-  </div>    
+  </div>
 </template>
 
 <script>
 import { getContactList } from "@/api";
-import VueQr from 'vue-qr'
+import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 
 export default {
   name: "Address",
   data() {
     return {
-      searchKey:'',
-      contactList:[],
-      activeName:'address',
-      centerDialogVisible : false,
-      qrCodeConfig:{
-        text:`https://${localStorage.getItem('dominHost')}#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
-        logo:require("./../../../../static/images/material_ic_logo.png"),
+      searchKey: "",
+      contactList: [],
+      activeName: "address",
+      centerDialogVisible: false,
+      qrCodeConfig: {
+        text: `https://${localStorage.getItem(
+          "dominHost"
+        )}#/AddUser?username=${localStorage.getItem(
+          "username"
+        )}&id=${localStorage.getItem("id")}`,
+        logo: require("./../../../../static/images/material_ic_logo.png"),
       },
-      downloadFilename:''
-    }
+      downloadFilename: "",
+    };
   },
   created() {
-    this.getAddressList()
+    this.getAddressList();
   },
   methods: {
-    copyUrl(){
+    copyUrl() {
       let url = this.qrCodeConfig.text;
       urlCopy(url);
     },
-    downloadImg () {
-      const iconUrl = this.$refs.Qrcode.$el.src
-      let a = document.createElement('a')
-      let event = new MouseEvent('click')
-      a.download = '二维码'
-      a.href = iconUrl
-      a.dispatchEvent(event)
-    },    
-    getAddressList(){
-      getContactList().then((res)=>{
-        this.contactList = res.data.list
-        this.contactList.forEach(res =>{
-          if(res.icon === undefined) res.icon = require("./../../../../static/images/image_user_defult.png")
-        })
-      })
+    downloadImg() {
+      const iconUrl = this.$refs.Qrcode.$el.src;
+      let a = document.createElement("a");
+      let event = new MouseEvent("click");
+      a.download = "二维码";
+      a.href = iconUrl;
+      a.dispatchEvent(event);
     },
-    goContactPage(data){
-      let userData = data
-      userData.toChatId = 'u' + data.contactId
-      localStorage.setItem('userData',JSON.stringify(userData))
-      this.$router.push({ name: "ContactPage"});
-    }
+    getAddressList() {
+      getContactList().then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined)
+            res.icon = require("./../../../../static/images/image_user_defult.png");
+        });
+      });
+    },
+    goContactPage(data) {
+      let userData = data;
+      userData.toChatId = "u" + data.contactId;
+      localStorage.setItem("userData", JSON.stringify(userData));
+      this.$router.push({ name: "ContactPage" });
+    },
   },
   components: {
     VueQr,
@@ -120,7 +156,7 @@ export default {
     color: #10686e;
     font-weight: 600;
   }
-  .home-add-user{
+  .home-add-user {
     width: 2em;
     height: 2em;
     border-radius: 10px;
@@ -131,96 +167,94 @@ export default {
     background-repeat: no-repeat;
   }
 }
-.home-search{
+.home-search {
   margin: 1em;
-  /deep/.el-input{
-    .el-input__inner{
+  /deep/.el-input {
+    .el-input__inner {
       background-color: #e9e8e8;
       color: #666666;
     }
-    .el-input__prefix{
+    .el-input__prefix {
       color: #666666;
     }
-    ::placeholder { /* CSS 3 標準 */
-      color: #666666;  
+    ::placeholder {
+      /* CSS 3 標準 */
+      color: #666666;
     }
   }
-  
 }
 
-/deep/.el-tabs__header{
+/deep/.el-tabs__header {
   background-color: #e2e0e0;
   display: flex;
   justify-content: space-evenly;
-  margin:0;
-  .el-tabs__nav-wrap{
+  margin: 0;
+  .el-tabs__nav-wrap {
     &:after {
       content: "";
-      display:none;
-    }
-    .el-tabs__active-bar{
       display: none;
     }
-    .el-tabs__item.is-active{
+    .el-tabs__active-bar {
+      display: none;
+    }
+    .el-tabs__item.is-active {
       color: #303133;
     }
-    .el-tabs__nav{
+    .el-tabs__nav {
       display: flex;
       justify-content: center;
-      .el-tabs__item{
+      .el-tabs__item {
         font-size: 15px;
         padding: 0 2.5em;
       }
     }
   }
-  
 }
-.address-box{
-  background-color: #FFFFFF;
+.address-box {
+  background-color: #ffffff;
   padding: 0.8em 1em;
   display: flex;
   align-items: center;
-  .el-image{
-    width:3em;
+  .el-image {
+    width: 3em;
     border-radius: 10px;
   }
-  span{
+  span {
     padding-left: 1em;
-    font-size:14px;
+    font-size: 14px;
   }
-  ::after{
+  ::after {
     content: "";
     display: block;
     position: absolute;
     margin-top: 1.5em;
-    width:100%;
+    width: 100%;
     border-bottom: 0.02em solid #b3b3b3;
   }
 }
-/deep/.el-dialog__wrapper{
+/deep/.el-dialog__wrapper {
   overflow: hidden;
-  .el-dialog{
+  .el-dialog {
     margin: 0 auto;
     border-radius: 20px 20px 0 0;
     position: absolute;
     bottom: 0;
-    .el-dialog__header{
-      .el-dialog__title{
+    .el-dialog__header {
+      .el-dialog__title {
         color: #10686e;
         font-weight: 600;
       }
-      .el-dialog__headerbtn{
+      .el-dialog__headerbtn {
         position: inherit;
         float: left;
-        .el-dialog__close{
-          color: #F60;
-
-        } 
+        .el-dialog__close {
+          color: #f60;
+        }
       }
     }
-    .el-dialog__body{
+    .el-dialog__body {
       text-align: center;
-      .qrcode-box{
+      .qrcode-box {
         width: 15em;
         height: 15em;
         border: 2px solid #333;
@@ -228,29 +262,28 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        img{
+        img {
           height: 14em;
         }
       }
-      .qrcode-box-text{
+      .qrcode-box-text {
         color: #0c0d0d;
         font-weight: 600;
         margin-top: 2em;
         display: block;
       }
     }
-    .el-dialog__footer{
+    .el-dialog__footer {
       padding: 20px 30px 20px 30px;
-      .dialog-footer{
+      .dialog-footer {
         display: flex;
         justify-content: space-between;
-        img{
+        img {
           height: 1em;
         }
       }
     }
   }
 }
-
 </style>
 

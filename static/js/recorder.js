@@ -102,18 +102,18 @@ export default class Recorder {
         offset += 4;
         // 写入采样数据
         if (sampleBits === 8) {
-          for (let i = 0; i < bytes.length; i++ , offset++) {
+          for (let i = 0; i < bytes.length; i++, offset++) {
             let s = Math.max(-1, Math.min(1, bytes[i]));
             let val = s < 0 ? s * 0x8000 : s * 0x7FFF;
             val = parseInt(255 / (65535 / (val + 32768)));
             data.setInt8(offset, val, true);
           }
         } else {
-          for (let i = 0; i < bytes.length; i++ , offset += 2) {
+          for (let i = 0; i < bytes.length; i++, offset += 2) {
             let s = Math.max(-1, Math.min(1, bytes[i]));
             data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
           }
-        }       
+        }
 
         return new Blob([data], { type: 'video/mp4' });
       }
@@ -121,7 +121,7 @@ export default class Recorder {
   }
 
   //开始录音
-  start () {
+  start() {
     this.audioInput.connect(this.recorder);
     this.recorder.connect(this.context.destination);
 
@@ -133,19 +133,19 @@ export default class Recorder {
   };
 
   //停止
-  stop () {
+  stop() {
     this.stream.getTracks().forEach((track) => track.stop())
     this.recorder.disconnect();
   };
 
   //获取音频文件
-  getBlob () {
+  getBlob() {
     this.stop();
     return this.audioData.encodeWAV();
   };
 
   //回放
-  play (audio) {
+  play(audio) {
     let audioElement = audio
     let sourceElement = document.createElement('audio')
 
@@ -155,24 +155,24 @@ export default class Recorder {
     sourceElement.setAttribute("id", "audioVoice");
 
     let audioName = document.getElementById('audioVoice')
-    
+
     let sourceAudio = document.createElement('source')
     audioName.appendChild(sourceAudio)
-    
+
     sourceAudio.src = window.URL.createObjectURL(this.getBlob())
     sourceAudio.type = 'audio/mp3' // or whatever
     // audio.src = window.URL.createObjectURL(this.getBlob());
   };
 
   //清理缓存的录音数据
-  clear (audio) {
+  clear(audio) {
     this.audioData.buffer = [];
     this.audioData.size = 0;
     audio.removeChild(audio.childNodes[0])
     // audio.src = ''
   };
 
-  static checkError (e) {
+  static checkError(e) {
     const { name } = e;
     let errorMsg = ''
     switch (name) {
@@ -189,7 +189,7 @@ export default class Recorder {
     return { error: errorMsg }
   };
 
-  static get (callback, config) {
+  static get(callback, config) {
     if (callback) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
@@ -198,7 +198,7 @@ export default class Recorder {
         }).catch((e) => {
           callback(Recorder.checkError(e));
         })
-      } else {        
+      } else {
         navigator.getUserMedia({ audio: true, video: false }).then((stream) => {
           let rec = new Recorder(stream, config);
           callback(rec);

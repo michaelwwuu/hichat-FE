@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "serve:test": "vue-cli-service serve --mode test",
+    "serve:pre": "vue-cli-service serve --mode pre"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",

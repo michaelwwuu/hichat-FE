@@ -9,46 +9,57 @@
     </div>
     <div class="address-content">
       <div class="user-data">
-        <el-image 
+        <el-image
           v-if="userData.icon !== undefined"
-          :src="userData.icon" 
-          :preview-src-list="[userData.icon]"/>
+          :src="userData.icon"
+          :preview-src-list="[userData.icon]"
+        />
         <div>
-          <span>{{userData.name}}</span>
-          <span class="user-data-id"> ID : <span class="user-paste" @click="copyPaste(userData.username)">{{ userData.username }}</span></span>
+          <span>{{ userData.name }}</span>
+          <span class="user-data-id">
+            ID :
+            <span class="user-paste" @click="copyPaste(userData.username)">{{
+              userData.username
+            }}</span></span
+          >
         </div>
       </div>
 
-      <div class="setting-button" v-for="(item,index) in settingData" :key="index" @click="developmentMessage(item.name)">
-        <span @click="goChatRoom(userData,item.path)">
+      <div
+        class="setting-button"
+        v-for="(item, index) in settingData"
+        :key="index"
+        @click="developmentMessage(item.name)"
+      >
+        <span @click="goChatRoom(userData, item.path)">
           <div class="setting-button-left">
-            <img :src="item.icon" alt="">
-            <span>{{item.name}}</span>        
+            <img :src="item.icon" alt="" />
+            <span>{{ item.name }}</span>
           </div>
-          <img src="./../../../static/images/next.png" alt=""> 
+          <img src="./../../../static/images/next.png" alt="" />
         </span>
       </div>
 
       <div class="setting-notification" @click="developmentMessage('提醒通知')">
         <div class="setting-button-left">
-          <img src="./../../../static/images/notification.png" alt="">
-          <span>提醒通知</span>        
+          <img src="./../../../static/images/notification.png" alt="" />
+          <span>提醒通知</span>
         </div>
         <el-switch
           v-model="notification"
           active-color="#fd5f3f"
           inactive-color="#666666"
-          disabled>
+          disabled
+        >
         </el-switch>
       </div>
 
       <div class="setting-disable" @click="developmentMessage('封锁联络人')">
         <div class="setting-button-left">
-          <img src="./../../../static/images/blockade.png" alt="">
-          <span>封锁联络人</span>        
+          <img src="./../../../static/images/blockade.png" alt="" />
+          <span>封锁联络人</span>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -60,57 +71,57 @@ export default {
   name: "ContactPage",
   data() {
     return {
-      userData:{},
-      settingData:[
+      userData: {},
+      settingData: [
         {
-          name:"传送讯息",
-          icon:require("./../../../static/images/chat_icon.png"),
-          path:"ChatMsg",
+          name: "传送讯息",
+          icon: require("./../../../static/images/chat_icon.png"),
+          path: "ChatMsg",
         },
         {
-          name:"在对话中搜寻",
-          icon:require("./../../../static/images/search.png"),
-          path:"",
+          name: "在对话中搜寻",
+          icon: require("./../../../static/images/search.png"),
+          path: "",
         },
         {
-          name:"查看相片和影片",
-          icon:require("./../../../static/images/image_icon.png"),
-          path:"",
-        }
+          name: "查看相片和影片",
+          icon: require("./../../../static/images/image_icon.png"),
+          path: "",
+        },
       ],
-      notification:true,
-      developmentMessage:developmentMessage
-    }
+      notification: true,
+      developmentMessage: developmentMessage,
+    };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem('userData'))
+    this.userData = JSON.parse(localStorage.getItem("userData"));
   },
   methods: {
-    copyPaste(data){
+    copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
       url.value = data;
       url.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(url);
       this.$message({
         message: `ID : ${data} 复制成功`,
-        type: 'success',
-        duration: 1000
+        type: "success",
+        duration: 1000,
       });
     },
-    goChatRoom(data,path){
-      this.$router.push({name:path,params:data}); 
+    goChatRoom(data, path) {
+      this.$router.push({ name: path, params: data });
     },
-    back(){
-      this.$router.back(-1)
-    }
+    back() {
+      this.$router.back(-1);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.home-wrapper{
+.home-wrapper {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
@@ -134,7 +145,7 @@ export default {
       color: #10686e;
       font-weight: 600;
     }
-    .home-add-user{
+    .home-add-user {
       width: 2em;
       height: 2em;
       border-radius: 10px;
@@ -145,7 +156,7 @@ export default {
       background-repeat: no-repeat;
     }
   }
-  .address-content{
+  .address-content {
     .user-data {
       margin: 2.5em auto;
       text-align: center;
@@ -154,7 +165,7 @@ export default {
         font-size: 13px;
         color: #b3b3b3;
       }
-      .user-paste{
+      .user-paste {
         width: 1em;
         display: contents;
       }
@@ -164,69 +175,70 @@ export default {
         height: 4.5em;
         font-weight: 600;
       }
-      .el-image{
+      .el-image {
         width: 4em;
         border-radius: 10px;
       }
     }
-    .setting-button{
-      padding:0.5em 0 0.5em 0.5em;
-      background-color: #FFF;
-      &::after{
+    .setting-button {
+      padding: 0.5em 0 0.5em 0.5em;
+      background-color: #fff;
+      &::after {
         content: "";
         display: block;
         border-bottom: 1px solid #b3b3b3;
         width: 100%;
         margin-left: 10px;
         position: relative;
-        top:9px;
+        top: 9px;
       }
-      span{
+      span {
         text-decoration: none;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding:0.5em 0.7em 0.5em 0;
+        padding: 0.5em 0.7em 0.5em 0;
         margin-left: 10px;
       }
-      img{
-        height:1.2em;
+      img {
+        height: 1.2em;
       }
-      .setting-button-left{
+      .setting-button-left {
         display: flex;
         align-items: center;
         width: 20em;
-        span{
+        span {
           margin-left: 1em;
           font-size: 15px;
           color: #333333;
         }
       }
     }
-    .setting-notification,.setting-disable{
-      padding:1em 0.5em 1em 0.5em;
-      background-color: #FFF;
-      margin:1em 0;
+    .setting-notification,
+    .setting-disable {
+      padding: 1em 0.5em 1em 0.5em;
+      background-color: #fff;
+      margin: 1em 0;
       display: flex;
       justify-content: space-between;
       align-content: center;
-      img{
-        height:1.2em;
+      img {
+        height: 1.2em;
       }
-      .setting-button-left{
+      .setting-button-left {
         display: flex;
         align-items: center;
         margin-left: 10px;
         width: 20em;
-        span{
+        span {
           margin-left: 1em;
           font-size: 15px;
           color: #333333;
         }
       }
     }
-    .setting-disable{
-      span{
+    .setting-disable {
+      span {
         color: #ee5253 !important;
       }
     }

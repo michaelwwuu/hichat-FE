@@ -3,33 +3,41 @@
     <div class="home-header">
       <div class="home-user" @click="centerDialogVisible = true"></div>
       <span class="home-header-title">设定</span>
-      <router-link :to="'/EditUser'"><div class="home-add-user" @click="goEditUserPage(userData)"></div></router-link>
+      <router-link :to="'/EditUser'"
+        ><div class="home-add-user" @click="goEditUserPage(userData)"></div
+      ></router-link>
     </div>
     <div class="address-content">
       <div class="user-data">
-        <el-image 
+        <el-image
           v-if="userData.icon !== undefined"
-          :src="userData.icon" 
+          :src="userData.icon"
           :preview-src-list="[userData.icon]"
-          lazy />
+          lazy
+        />
         <div>
           <span>{{ userData.nickname }}</span>
-          <span class="user-data-id"> ID : <span class="user-paste" @click="copyPaste(userData.username)">{{ userData.username }}</span></span>
+          <span class="user-data-id">
+            ID :
+            <span class="user-paste" @click="copyPaste(userData.username)">{{
+              userData.username
+            }}</span></span
+          >
         </div>
       </div>
       <div
         class="setting-button"
         v-for="(item, index) in settingData"
         :key="index"
-        :class="{ 'mt10': item.name === '提醒' || item.name === '关于HiChat'}"
+        :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
         @click="developmentMessage(item.name)"
       >
-        <router-link :to="item.path" >
+        <router-link :to="item.path">
           <div class="setting-button-left">
             <img :src="item.icon" alt="" />
             <span>{{ item.name }}</span>
           </div>
-          <div class="setting-button-right" >
+          <div class="setting-button-right">
             <span v-if="item.name === '提醒'">开启</span>
             <span v-if="item.name === '语言'">简体中文</span>
             <img src="./../../../../static/images/next.png" alt="" />
@@ -43,21 +51,45 @@
           <span>登出</span>
         </div>
       </div>
-      
     </div>
     <el-dialog
       title="我的帐号"
       :visible.sync="centerDialogVisible"
       width="100%"
-      center>
+      center
+    >
       <div class="qrcode-box">
-        <vue-qr ref="Qrcode" :correctLevel="3" :autoColor="false" colorDark="#333333" :text="qrCodeConfig.text"  :download="downloadFilename" :size="100" :margin="0" :logoSrc="qrCodeConfig.logo" :logoCornerRadius="2" :logoMargin="1"></vue-qr>
+        <vue-qr
+          ref="Qrcode"
+          :correctLevel="3"
+          :autoColor="false"
+          colorDark="#333333"
+          :text="qrCodeConfig.text"
+          :download="downloadFilename"
+          :size="100"
+          :margin="0"
+          :logoSrc="qrCodeConfig.logo"
+          :logoCornerRadius="2"
+          :logoMargin="1"
+        ></vue-qr>
       </div>
-      <span class="qrcode-box-text">嗨聊用户扫描此二维码后，可将您加入好友！</span>
+      <span class="qrcode-box-text"
+        >嗨聊用户扫描此二维码后，可将您加入好友！</span
+      >
       <span slot="footer" class="dialog-footer">
-        <router-link :to="'/QRcode'"><img src="./../../../../static/images/scan.png" alt=""></router-link>
-        <img src="./../../../../static/images/share.png" alt="" @click="copyUrl">
-        <img src="./../../../../static/images/download.png" alt="" @click="downloadImg">
+        <router-link :to="'/QRcode'"
+          ><img src="./../../../../static/images/scan.png" alt=""
+        /></router-link>
+        <img
+          src="./../../../../static/images/share.png"
+          alt=""
+          @click="copyUrl"
+        />
+        <img
+          src="./../../../../static/images/download.png"
+          alt=""
+          @click="downloadImg"
+        />
       </span>
     </el-dialog>
     <el-dialog
@@ -65,13 +97,16 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      center>
+      center
+    >
       <div class="loginOut-box">
-        <div><img src="./../../../../static/images/warn.png" alt=""></div>
+        <div><img src="./../../../../static/images/warn.png" alt="" /></div>
         <span>确认要登出嗎？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="loginOutDialogShow = false">取消</el-button>
+        <el-button class="border-red" @click="loginOutDialogShow = false"
+          >取消</el-button
+        >
         <el-button class="background-red" @click="loginOut">确认</el-button>
       </span>
     </el-dialog>
@@ -79,7 +114,7 @@
 </template>
 
 <script>
-import VueQr from 'vue-qr'
+import VueQr from "vue-qr";
 import { getUserInfo } from "@/api";
 import urlCopy from "@/utils/urlCopy.js";
 import { developmentMessage } from "@/assets/tools";
@@ -123,57 +158,62 @@ export default {
       ],
       notification: true,
       centerDialogVisible: false,
-      loginOutDialogShow:false,
-      qrCodeConfig:{
-        text:`https://${localStorage.getItem('dominHost')}#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
-        logo:require("./../../../../static/images/material_ic_logo.png"),
+      loginOutDialogShow: false,
+      qrCodeConfig: {
+        text: `https://${localStorage.getItem(
+          "dominHost"
+        )}#/AddUser?username=${localStorage.getItem(
+          "username"
+        )}&id=${localStorage.getItem("id")}`,
+        logo: require("./../../../../static/images/material_ic_logo.png"),
       },
-      downloadFilename:'',
-      developmentMessage:developmentMessage,
+      downloadFilename: "",
+      developmentMessage: developmentMessage,
     };
   },
   created() {
     this.getUserData();
   },
-  methods:{
-    copyPaste(data){
+  methods: {
+    copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
       url.value = data;
       url.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(url);
       this.$message({
         message: `ID : ${data} 复制成功`,
-        type: 'success',
-        duration: 1000
+        type: "success",
+        duration: 1000,
       });
     },
-    copyUrl(){
+    copyUrl() {
       let url = this.qrCodeConfig.text;
       urlCopy(url);
     },
-    downloadImg () {
-      const iconUrl = this.$refs.Qrcode.$el.src
-      let a = document.createElement('a')
-      let event = new MouseEvent('click')
-      a.download = '二维码'
-      a.href = iconUrl
-      a.dispatchEvent(event)
+    downloadImg() {
+      const iconUrl = this.$refs.Qrcode.$el.src;
+      let a = document.createElement("a");
+      let event = new MouseEvent("click");
+      a.download = "二维码";
+      a.href = iconUrl;
+      a.dispatchEvent(event);
     },
     getUserData() {
-      getUserInfo().then(res => {
-        if(res.data.icon === undefined ) res.data.icon = require("./../../../../static/images/image_user_defult.png");
+      getUserInfo().then((res) => {
+        if (res.data.icon === undefined)
+          res.data.icon = require("./../../../../static/images/image_user_defult.png");
         this.userData = res.data;
       });
     },
-    loginOut(){
-      this.$router.push({ path:'/login'}); 
-      localStorage.removeItem('id')
-      localStorage.removeItem('token')
-      localStorage.removeItem('username')
-      localStorage.removeItem('userData')
-      localStorage.removeItem('fromChatId')
+    loginOut() {
+      this.$router.push({ path: "/login" });
+      localStorage.removeItem("id");
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("userData");
+      localStorage.removeItem("fromChatId");
     },
   },
   components: {
@@ -222,7 +262,7 @@ export default {
       font-size: 13px;
       color: #b3b3b3;
     }
-    .user-paste{
+    .user-paste {
       width: 1em;
       display: contents;
     }
@@ -232,8 +272,8 @@ export default {
       height: 4.5em;
       font-weight: 600;
     }
-    
-    .el-image{
+
+    .el-image {
       width: 4em;
       border-radius: 10px;
     }
@@ -305,9 +345,8 @@ export default {
         color: #333333;
       }
     }
-    
   }
-  a{
+  a {
     text-decoration: none;
   }
   .setting-disable {
@@ -316,34 +355,33 @@ export default {
       color: #ee5253 !important;
     }
   }
-  .mt10{
+  .mt10 {
     margin-top: 1em;
   }
 }
-/deep/.el-dialog__wrapper{
+/deep/.el-dialog__wrapper {
   overflow: hidden;
-  .el-dialog{
+  .el-dialog {
     margin: 0 auto;
     border-radius: 20px 20px 0 0;
     position: absolute;
     bottom: 0;
-    .el-dialog__header{
-      .el-dialog__title{
+    .el-dialog__header {
+      .el-dialog__title {
         color: #10686e;
         font-weight: 600;
       }
-      .el-dialog__headerbtn{
+      .el-dialog__headerbtn {
         position: inherit;
         float: left;
-        .el-dialog__close{
-          color: #F60;
-
-        } 
+        .el-dialog__close {
+          color: #f60;
+        }
       }
     }
-    .el-dialog__body{
+    .el-dialog__body {
       text-align: center;
-      .qrcode-box{
+      .qrcode-box {
         width: 15em;
         height: 15em;
         border: 2px solid #333;
@@ -351,69 +389,69 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        img{
+        img {
           height: 14em;
         }
       }
-      .qrcode-box-text{
+      .qrcode-box-text {
         color: #0c0d0d;
         font-weight: 600;
         margin-top: 2em;
         display: block;
       }
     }
-    .el-dialog__footer{
+    .el-dialog__footer {
       padding: 20px 30px 20px 30px;
-      .dialog-footer{
+      .dialog-footer {
         display: flex;
         justify-content: space-between;
-        img{
+        img {
           height: 1em;
         }
       }
     }
   }
 }
-/deep/.el-dialog-loginOut{
+/deep/.el-dialog-loginOut {
   overflow: auto;
-  .el-dialog{
+  .el-dialog {
     position: relative;
     margin: 0 auto 50px;
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 10px;
     box-sizing: border-box;
     width: 50%;
-    .el-dialog__header{
+    .el-dialog__header {
       padding: 10px;
     }
-    .el-dialog__body{
+    .el-dialog__body {
       text-align: center;
       padding: 25px 25px 15px;
-      .loginOut-box{
-        img{
+      .loginOut-box {
+        img {
           height: 5em;
-           margin-bottom: 1.2em;
+          margin-bottom: 1.2em;
         }
       }
     }
-    .el-dialog__footer{
+    .el-dialog__footer {
       padding: 20px;
       padding-top: 10px;
       text-align: right;
       box-sizing: border-box;
-      .dialog-footer{
+      .dialog-footer {
         display: flex;
         justify-content: space-between;
-        .el-button{
+        .el-button {
           width: 100%;
           border-radius: 8px;
         }
-        .background-red{
+        .background-red {
           background-color: #ee5253;
-          color: #FFF;
+          color: #fff;
         }
-        .border-red{
-          border:1px solid #fe5f3f;
+        .border-red {
+          border: 1px solid #fe5f3f;
           color: #fe5f3f;
         }
       }

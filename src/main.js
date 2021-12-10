@@ -27,6 +27,7 @@ import './styles.scss'
 
 // 引入根组件mixins 日期格式
 import mixins from './mixins/root.js'
+
 Vue.use(ElementUI);
 
 Vue.prototype.$md5 = md5;

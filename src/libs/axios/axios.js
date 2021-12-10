@@ -7,15 +7,6 @@ axios.defaults.timeout = 48000
 
 // 前端axios添加withCredentials属性
 axios.defaults.withCredentials = true
-
-// axios.interceptors.response.use(function (response) {
-//   // 对响应数据做点什么
-//   return response;
-// }, function (error) {
-//   // 对响应错误做点什么
-//   return Promise.reject(error);
-// });
-
 class HttpRequest {
   constructor(baseUrl = baseURL) {
     this.baseUrl = baseUrl

@@ -1,9 +1,9 @@
 <template>
-  <div :class="[
-    { 'register-container-moblie': device === 'moblie' }
-  ]">
+  <div :class="[{ 'register-container-moblie': device === 'moblie' }]">
     <div class="register-header">
-      <router-link :to="'/Login'"><div class="register-back"></div></router-link>
+      <router-link :to="'/Login'"
+        ><div class="register-back"></div
+      ></router-link>
       <span class="register-header-title">忘记密码</span>
     </div>
     <div class="register-content">
@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item prop="authCode">
           <span class="svg-container">
-            <img src="./../../../static/images/code.png" alt="">
+            <img src="./../../../static/images/code.png" alt="" />
           </span>
           <el-input
             ref="authCode"
@@ -48,17 +48,19 @@
           </el-input>
           <el-button
             class="verification-style"
-            :style="disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''"
+            :style="
+              disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
+            "
             plain
             :disabled="disabledTime"
-            @click="getAuthCodeData(loginForm.email,false)"
-            >获取驗證碼 <span v-if="timer">({{count}})</span>
+            @click="getAuthCodeData(loginForm.email, false)"
+            >获取驗證碼 <span v-if="timer">({{ count }})</span>
           </el-button>
         </el-form-item>
         <div class="register-footer">
           <el-button
             style="width: 100%; margin-bottom: 30px"
-            :class="disabled ? 'gray-btn':'orange-btn'"
+            :class="disabled ? 'gray-btn' : 'orange-btn'"
             :disabled="disabled"
             @click="submitForm('loginForm')"
             >提交</el-button
@@ -71,8 +73,11 @@
       class="dialog-style"
       width="90%"
       :show-close="false"
-      center>
-      <div align="center"><img src="./../../../static/images/success.png" alt="" /></div>
+      center
+    >
+      <div align="center">
+        <img src="./../../../static/images/success.png" alt="" />
+      </div>
       <div align="center">密码已变更，请重新登录。</div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Login">
@@ -84,27 +89,27 @@
 </template>
 
 <script>
-import { forgetPassword,genAuthCode } from "@/api";
+import { forgetPassword, genAuthCode } from "@/api";
 
 export default {
   data() {
     return {
       loginForm: {
         email: "",
-        authCode:"",
+        authCode: "",
       },
-      device:'',
-      count:60,
-      timer:false,
-      disabled:true,
-      dialogShow:false,
-      disabledTime:false,
+      device: "",
+      count: 60,
+      timer: false,
+      disabled: true,
+      dialogShow: false,
+      disabledTime: false,
     };
   },
   watch: {
     loginForm: {
       handler(val) {
-        if (Object.values(val).every(el => el !== "")) {
+        if (Object.values(val).every((el) => el !== "")) {
           this.disabled = false;
         } else {
           this.disabled = true;
@@ -129,19 +134,19 @@ export default {
     }
   },
   methods: {
-    getAuthCodeData(email,key) {
-      if (email === '') {
+    getAuthCodeData(email, key) {
+      if (email === "") {
         this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
-        return 
+        return;
       }
       this.disabledTime = true;
-      let params = { email:email, forRegister:key }
-      genAuthCode(params).then((res)=>{
-        if(res.code === 200){
-          this.$message({ message: "请至邮件信箱获取验证码", type: "success"});
+      let params = { email: email, forRegister: key };
+      genAuthCode(params).then((res) => {
+        if (res.code === 200) {
+          this.$message({ message: "请至邮件信箱获取验证码", type: "success" });
           this.timer = true;
           let time = null;
-          time = setInterval(() =>{
+          time = setInterval(() => {
             if (this.count > 0) {
               this.count = this.count - 1;
             } else {
@@ -151,11 +156,11 @@ export default {
               this.disabledTime = false;
             }
           }, 1000);
-        } else{
+        } else {
           this.timer = false;
           this.disabledTime = false;
-        } 
-      })
+        }
+      });
     },
     //登录&&註冊
     submitForm(rules) {
@@ -168,21 +173,21 @@ export default {
           });
           return;
         }
-        this.disabled = true
+        this.disabled = true;
         forgetPassword(this.loginForm)
           .then((res) => {
-            if(res.code === 200) {
+            if (res.code === 200) {
               this.dialogShow = true;
             } else {
-              this.loginForm.authCode="";
+              this.loginForm.authCode = "";
             }
           })
           .catch((err) => {
+            this.disabled = false;
             this.$message({
               message: "输入失败，请重新输入并确认",
               type: "error",
             });
-            this.disabled = false
             return false;
           });
       });
@@ -192,39 +197,39 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.register-container-moblie{
+.register-container-moblie {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
-  .register-header{
+  .register-header {
     margin: 1em;
     display: flex;
     align-items: center;
-    .register-back{
+    .register-back {
       width: 2em;
       height: 2em;
       border-radius: 10px;
-      background-color: #FFF;
-      background-image: url('./../../../static/images/back.png');
+      background-color: #fff;
+      background-image: url("./../../../static/images/back.png");
       background-size: 50%;
-      background-position:center;
+      background-position: center;
       background-repeat: no-repeat;
     }
-    .register-header-title{
+    .register-header-title {
       margin: 0 auto;
       position: relative;
-      left:-0.5em;
+      left: -0.5em;
       color: #10686e;
       font-weight: 600;
     }
   }
-  .register-content{ 
-    .tip-text{
+  .register-content {
+    .tip-text {
       font-size: 12px;
       color: #6666667c;
       position: relative;
-      top:-10px;
+      top: -10px;
     }
     .login-form {
       position: relative;
@@ -233,8 +238,8 @@ export default {
       padding: 0.5em 0;
       margin: 1em;
       overflow: hidden;
-      .el-form-item{
-        background: #FFFFFF;
+      .el-form-item {
+        background: #ffffff;
         border-radius: 10px;
         color: #454545;
         margin-bottom: 20px;
@@ -242,8 +247,8 @@ export default {
           display: inline-block;
           height: 47px;
           width: 85%;
-          /deep/.el-input__inner{
-            border:0 !important;
+          /deep/.el-input__inner {
+            border: 0 !important;
           }
         }
       }
@@ -259,23 +264,23 @@ export default {
         color: #fd5f3f;
         border-radius: 5px;
       }
-      .gray-btn{
+      .gray-btn {
         background-color: #b3b3b3;
-        color: #FFF;
+        color: #fff;
       }
-      .orange-btn{
+      .orange-btn {
         background-color: #fe5f3f;
-        color: #FFF;
+        color: #fff;
       }
     }
-    .show-pwd{
-      height:2.1em;
+    .show-pwd {
+      height: 2.1em;
       line-height: 2.1em;
       position: absolute;
-      top:1em;
+      top: 1em;
       right: 1em;
-      img{
-        height:1.2em;
+      img {
+        height: 1.2em;
       }
     }
     .svg-container {
@@ -284,41 +289,40 @@ export default {
       width: 20px;
       font-size: 22px;
       display: inline-block;
-      img{
-        height:17px
+      img {
+        height: 17px;
       }
     }
-    .register-footer{
+    .register-footer {
       position: absolute;
       bottom: 0;
       width: 100%;
     }
   }
-  .dialog-style{
-    /deep/.el-dialog{
+  .dialog-style {
+    /deep/.el-dialog {
       border-radius: 10px;
-      .el-dialog__body{
-        margin-top:-2.5em;
-        margin-bottom:-1.5em;
-        div{
+      .el-dialog__body {
+        margin-top: -2.5em;
+        margin-bottom: -1.5em;
+        div {
           margin: 2em 0;
-          img{
-            height:5em;
+          img {
+            height: 5em;
           }
         }
       }
-      .el-dialog__footer{
+      .el-dialog__footer {
         width: 100%;
-        .dialog-footer{
-          .el-button{
+        .dialog-footer {
+          .el-button {
             width: 90%;
             background-color: #fd5f3f;
-            color: #FFF;
+            color: #fff;
           }
         }
       }
     }
-    
   }
 }
 </style>

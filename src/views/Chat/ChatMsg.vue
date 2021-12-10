@@ -4,17 +4,20 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <span  class="home-user-link">
+            <span class="home-user-link">
               <router-link :to="'/HiChat'">
                 <div class="home-user"></div>
               </router-link>
             </span>
-            <span class="home-header-title">{{userData.name}}</span>
+            <span class="home-header-title">{{ userData.name }}</span>
             <div class="home-user-search"></div>
             <span class="home-photo-link">
               <router-link :to="'/ContactPage'">
                 <div class="home-user-photo">
-                  <img src="./../../../static/images/image_user_defult.png" alt="">
+                  <img
+                    src="./../../../static/images/image_user_defult.png"
+                    alt=""
+                  />
                 </div>
               </router-link>
             </span>
@@ -32,7 +35,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { getSearchById } from '@/api'
+import { getSearchById } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -49,20 +52,20 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      userData:{},
-      readMsgData:[],
+      userData: {},
+      readMsgData: [],
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem('userData'))
-    if(this.userData.username === undefined) this.getUserId()
+    this.userData = JSON.parse(localStorage.getItem("userData"));
+    if (this.userData.username === undefined) this.getUserId();
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
   },
   mounted() {
-    this.getChatHistoryMessage()
+    this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
@@ -73,12 +76,12 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    getUserId(){
-      let id = this.userData.toChatId.replace("u","");
-      getSearchById({id}).then((res)=>{
-        this.userData.username = res.data.username       
-        localStorage.setItem('userData', JSON.stringify(this.userData))
-      })
+    getUserId() {
+      let id = this.userData.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        this.userData.username = res.data.username;
+        localStorage.setItem("userData", JSON.stringify(this.userData));
+      });
     },
     // 訊息統一格式
     messageList(data) {
@@ -87,27 +90,30 @@ export default {
         historyId: data.chat.historyId,
         message: {
           time: data.chat.sendTime,
-          content: data.chat.text
+          content: data.chat.text,
         },
-        isRead:data.isRead,
+        isRead: data.isRead,
         userChatId: data.chat.fromChatId,
       };
     },
 
     // 獲取歷史訊息
-    getChatHistoryMessage(){
-      let historyMessageData = this.userInfoData
+    getChatHistoryMessage() {
+      let historyMessageData = this.userInfoData;
       historyMessageData.chatType = "CLI_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId = this.userData.toChatId === undefined ? 'u'+ this.userData.contactId : this.userData.toChatId;
+      historyMessageData.toChatId =
+        this.userData.toChatId === undefined
+          ? "u" + this.userData.contactId
+          : this.userData.toChatId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
 
     // 已讀
-    readMsgShow(){
-      let sendReadMessageData = this.userInfoData
+    readMsgShow() {
+      let sendReadMessageData = this.userInfoData;
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
       sendReadMessageData.targetArray = this.readMsgData;
@@ -119,35 +125,35 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-        // 发送影片照片讯息成功 
+        // 发送影片照片讯息成功
         // 发送讯息成功
-        case "SRV_USER_IMAGE":  
+        case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          this.messageList(userInfo)
+          this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          this.readMsgData.push(userInfo.historyId)
+          this.readMsgData.push(userInfo.historyId);
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach(el => {
-            if(!el.isRead) this.readMsgData.push(el.chat.historyId)
-            this.messageList(el)
+          historyMsgList.forEach((el) => {
+            if (!el.isRead) this.readMsgData.push(el.chat.historyId);
+            this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
-          }); 
-          this.readMsgShow()
-          break;  
+          });
+          this.readMsgShow();
+          break;
         // 已讀
         case "SRV_MSG_READ":
-          this.messageData.forEach(res =>{
-            if(res.historyId === userInfo.historyId) res.isRead = true
-          })
-          break;  
-        // 撈取歷史訊息  
+          this.messageData.forEach((res) => {
+            if (res.historyId === userInfo.historyId) res.isRead = true;
+          });
+          break;
+        // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
-          this.getChatHistoryMessage()
-          break  
+          this.getChatHistoryMessage();
+          break;
       }
     },
   },
@@ -219,7 +225,7 @@ export default {
         margin: 1.5em 1em 1em 1em;
         display: flex;
         align-items: center;
-        .home-user-link{
+        .home-user-link {
           position: absolute;
           .home-user {
             width: 2em;
@@ -232,13 +238,14 @@ export default {
             background-repeat: no-repeat;
           }
         }
-        
+
         .home-header-title {
           margin: 0 auto;
           color: #10686e;
           font-weight: 600;
         }
-        .home-user-photo,.home-user-search{
+        .home-user-photo,
+        .home-user-search {
           width: 2em;
           height: 2em;
           border-radius: 10px;
@@ -247,19 +254,19 @@ export default {
           background-position: center;
           background-repeat: no-repeat;
         }
-        .home-user-search{
+        .home-user-search {
           margin-right: 10px;
           position: absolute;
           right: 50px;
           background-image: url("./../../../static/images/search_icon.png");
         }
-        .home-photo-link{
+        .home-photo-link {
           position: absolute;
           right: 14px;
-          .home-user-photo{
+          .home-user-photo {
             text-align: center;
-            img{
-              top:0;
+            img {
+              top: 0;
               height: 2em;
             }
           }
