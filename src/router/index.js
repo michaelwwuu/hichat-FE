@@ -151,7 +151,7 @@ router.beforeEach((to, from, next) => {
     })
 
   }
-  if (to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ForgetPassword' && to.name !== 'ResetPassword') {
+  if (!['Login','Register','ForgetPassword','ResetPassword'].includes(to.name)) {
     if (localStorage.getItem("token") === null) next({ path: '/login' });
   }
   next();
