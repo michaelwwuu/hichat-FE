@@ -117,7 +117,6 @@
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, getToken, setLocal } from "_util/utils.js";
 
 export default {
   data() {
@@ -127,7 +126,7 @@ export default {
         password: "",
       },
       device: "",
-      token: getToken("token"),
+      token: localStorage.getItem("token"),
       passwordType: "password",
       remember: true,
       disabled: true,
@@ -173,9 +172,9 @@ export default {
   mounted() {
     if (this.remember)
       this.loginForm.email =
-        localStorage.getItem("email") === null
-          ? ""
-          : localStorage.getItem("email");
+        localStorage.getItem("email") !== null
+          ? localStorage.getItem("email")
+          : "";
     this.getUUID();
   },
   methods: {
@@ -192,7 +191,7 @@ export default {
           return v.toString(16);
         }
       );
-      setLocal("UUID", "hiWeb" + number);
+      localStorage.setItem("UUID", "hiWeb" + number);
     },
     //登录&&註冊
     submitForm(rules) {
@@ -209,7 +208,7 @@ export default {
           .then((res) => {
             //登录成功
             if (res.code === 200) {
-              setToken(res.data.tokenHead + res.data.token);
+              localStorage.setItem(res.data.tokenHead + res.data.token);
               this.$router.push({ path: "/Home" });
             } else if (res.code === 10009) {
               //登录失敗

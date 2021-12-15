@@ -62,8 +62,9 @@ export default {
           : this.userData.contactId;
       updateContactNickName({ name }, contactId).then((res) => {
         if (res.code === 200) {
-          if (res.data.icon === undefined)
+          if (res.data.icon === undefined){
             res.data.icon = require("./../../../static/images/image_user_defult.png");
+          }
           this.back();
         }
       });

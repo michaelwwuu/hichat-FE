@@ -1,5 +1,8 @@
 <template>
-  <div id="app">
+  <div id="app" :class="[
+      { 'hichat-pc': device === 'pc' },
+      { 'hichat-moblie': device === 'moblie' },
+    ]">
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>	
     </keep-alive>
@@ -11,7 +14,19 @@
 export default {
   name: "App",
   created() {
-    localStorage.setItem('dominHost',location.host)
+    if (
+      navigator.userAgent.match(/Android/i) ||
+      navigator.userAgent.match(/webOS/i) ||
+      navigator.userAgent.match(/iPhone/i) ||
+      navigator.userAgent.match(/iPad/i) ||
+      navigator.userAgent.match(/iPod/i) ||
+      navigator.userAgent.match(/BlackBerry/i) ||
+      navigator.userAgent.match(/Windows Phone/i)
+    ) {
+      this.device = "moblie";
+    } else {
+      this.device = "pc";
+    }
   },
 };
 </script>
@@ -23,7 +38,6 @@ export default {
   height: 100vh;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑","Regular", Arial, sans-serif;
-  
   .el-button{
     border-radius: 10px;
   }

@@ -122,6 +122,10 @@ export default {
   margin: 1em;
   display: flex;
   align-items: center;
+  position: fixed;
+  width: -webkit-fill-available;
+  background-color: #eaf5fa;
+  z-index: 9;
   .home-user {
     width: 2em;
     height: 2em;
@@ -144,6 +148,11 @@ export default {
 }
 .home-search {
   margin: 1em;
+  position: fixed;
+  width: -webkit-fill-available;
+  top: 3em;
+  background-color: #eaf5fa;
+  z-index: 9;
   /deep/.el-input {
     .el-input__inner {
       background-color: #e9e8e8;
@@ -159,8 +168,12 @@ export default {
   }
 }
 .home-content {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 34.5em;
   position: relative;
+  top: 7.5em;
+  z-index: 8;
   .address-box {
     background-color: #ffffff;
     padding: 0.8em 1em;
@@ -202,7 +215,7 @@ export default {
     }
     img {
       width: 3em;
-      height: 3em;
+      height: auto;
       border-radius: 10px;
     }
   }

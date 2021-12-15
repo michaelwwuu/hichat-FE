@@ -160,9 +160,7 @@ export default {
       centerDialogVisible: false,
       loginOutDialogShow: false,
       qrCodeConfig: {
-        text: `https://${localStorage.getItem(
-          "dominHost"
-        )}#/AddUser?username=${localStorage.getItem(
+        text: `${process.env.VUE_APP_URL}#/AddUser?username=${localStorage.getItem(
           "username"
         )}&id=${localStorage.getItem("id")}`,
         logo: require("./../../../../static/images/material_ic_logo.png"),
@@ -227,6 +225,10 @@ export default {
   margin: 1em;
   display: flex;
   align-items: center;
+  position: fixed;
+  width: -webkit-fill-available;
+  background-color: #eaf5fa;
+  z-index: 9;
   .home-user {
     width: 2em;
     height: 2em;
@@ -254,6 +256,12 @@ export default {
   }
 }
 .address-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 83vh;
+  position: relative;
+  top: 2em;
+  z-index: 8;
   .user-data {
     margin: 2.5em auto;
     text-align: center;

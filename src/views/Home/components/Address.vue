@@ -15,7 +15,6 @@
       >
       </el-input>
     </div>
-    <!-- ${contactList.length || 0} -->
     <el-tabs v-model="activeName">
       <el-tab-pane label="联络人" name="address">
         <div
@@ -79,7 +78,6 @@
 import { getContactList } from "@/api";
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
-
 export default {
   name: "Address",
   data() {
@@ -89,9 +87,7 @@ export default {
       activeName: "address",
       centerDialogVisible: false,
       qrCodeConfig: {
-        text: `https://${localStorage.getItem(
-          "dominHost"
-        )}#/AddUser?username=${localStorage.getItem(
+        text: `${process.env.VUE_APP_URL}#/AddUser?username=${localStorage.getItem(
           "username"
         )}&id=${localStorage.getItem("id")}`,
         logo: require("./../../../../static/images/material_ic_logo.png"),
@@ -141,6 +137,10 @@ export default {
   margin: 1em;
   display: flex;
   align-items: center;
+  position: fixed;
+  width: -webkit-fill-available;
+  background-color: #eaf5fa;
+  z-index: 9;
   .home-user {
     width: 2em;
     height: 2em;
@@ -169,6 +169,12 @@ export default {
 }
 .home-search {
   margin: 1em;
+  position: fixed;
+  width: -webkit-fill-available;
+
+  top: 3em;
+  background-color: #eaf5fa;
+  z-index: 9;
   /deep/.el-input {
     .el-input__inner {
       background-color: #e9e8e8;
@@ -283,6 +289,28 @@ export default {
         }
       }
     }
+  }
+}
+/deep/.el-tabs{
+  position: fixed;
+  width: 100vw;
+  top: 8em;
+  background-color: #eaf5fa;
+  z-index: 9;
+  .el-tabs__header{
+    position: fixed;
+    width: 100vw;
+    top: 7.5em;
+    z-index: 9;
+
+  }
+  .el-tabs__content{
+    position: relative;
+    top: 2em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 32em;
+    z-index: 8;
   }
 }
 </style>

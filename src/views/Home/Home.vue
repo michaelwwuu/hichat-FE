@@ -70,8 +70,8 @@ export default {
   min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
-  overflow: hidden;
-
+  overflow-x: hidden;
+  overflow-y: auto;
   .home-footer {
     width: 100vw;
     background-color: #fff;
@@ -80,6 +80,9 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 0.5em 0;
+    border-top: 0.01em solid #d9d9d9;
+    -webkit-overflow-scrolling: none;
+    z-index: 9;
     .home-footer-btn {
       text-align: center;
       font-size: 12px;

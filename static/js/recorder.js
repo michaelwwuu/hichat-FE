@@ -114,7 +114,6 @@ export default class Recorder {
             data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
           }
         }
-
         return new Blob([data], { type: 'video/mp4' });
       }
     };
@@ -153,15 +152,11 @@ export default class Recorder {
     sourceElement.setAttribute("controls", "controls");
     sourceElement.setAttribute("class", "record-play-box");
     sourceElement.setAttribute("id", "audioVoice");
-
     let audioName = document.getElementById('audioVoice')
-
     let sourceAudio = document.createElement('source')
     audioName.appendChild(sourceAudio)
-
     sourceAudio.src = window.URL.createObjectURL(this.getBlob())
     sourceAudio.type = 'audio/mp3' // or whatever
-    // audio.src = window.URL.createObjectURL(this.getBlob());
   };
 
   //清理缓存的录音数据
