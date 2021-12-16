@@ -208,7 +208,7 @@ export default {
           .then((res) => {
             //登录成功
             if (res.code === 200) {
-              localStorage.setItem(res.data.tokenHead + res.data.token);
+              localStorage.setItem('token',res.data.tokenHead + res.data.token);
               this.$router.push({ path: "/Home" });
             } else if (res.code === 10009) {
               //登录失敗
