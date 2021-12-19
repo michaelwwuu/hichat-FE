@@ -401,32 +401,15 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .input-tools-right {
+  padding: 0 10px;
+  .input-tools-left,.input-tools-right {
     padding: 15px 0;
-    display: flex;
-    align-items: center;
-    margin: 0 auto;
-    position: relative;
-    left: 7px;
     img {
       height: 1.1em;
-      margin-right: 10px;
-    }
-  }
-  .input-tools-left {
-    padding: 15px 0;
-    display: flex;
-    align-items: center;
-    margin: 0 auto;
-    position: relative;
-    left: 3px;
-    img {
-      height: 1.1em;
-      margin-right: 10px;
     }
   }
   .text-send-box {
-    width: 20em;
+    width: 83vw;
     height: 35px;
     display: flex;
     align-items: center;

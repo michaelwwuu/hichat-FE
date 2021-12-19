@@ -171,7 +171,6 @@ export default {
   margin: 1em;
   position: fixed;
   width: -webkit-fill-available;
-
   top: 3em;
   background-color: #eaf5fa;
   z-index: 9;
@@ -309,7 +308,7 @@ export default {
     top: 2em;
     overflow-x: hidden;
     overflow-y: auto;
-    height: 32em;
+    height: 70vh;
     z-index: 8;
   }
 }
