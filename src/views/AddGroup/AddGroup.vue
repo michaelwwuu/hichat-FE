@@ -19,14 +19,28 @@
       </el-input>
     </div>
     <div class="home-content">
-      <el-checkbox-group v-model="checkList"  @change="handleCheckedCitiesChange">
-        <el-checkbox :label="item" v-for="(item, index) in contactList" :key="index">
+      <el-checkbox-group v-model="checkList" @change="handleCheckedChange">
+        <el-checkbox
+          :label="item"
+          v-for="(item, index) in contactList"
+          :key="index"
+        >
           <div class="address-box">
             <el-image :src="item.icon" lazy />
-            <div class="msg-box"><span>{{ item.name }}</span></div>
+            <div class="msg-box">
+              <span>{{ item.name }}</span>
+            </div>
           </div>
         </el-checkbox>
       </el-checkbox-group>
+    </div>
+    <div class="home-footer-btn">
+      <el-button
+        :class="disabled ? 'gray-btn' : 'orange-btn'"
+        :disabled="disabled"
+        @click="createGroup(contactList)"
+        >创建群组</el-button
+      >
     </div>
   </div>
 </template>
@@ -39,15 +53,21 @@ export default {
   name: "AddGroup",
   data() {
     return {
-      contactList:[],
+      contactList: [],
       searchKey: "",
-      checkList:[],
+      disabled: true,
+      checkList: [],
       avatarImg: require("./../../../static/images/image_user_defult.png"),
-      developmentMessage:developmentMessage
+      developmentMessage: developmentMessage,
     };
   },
   created() {
-    this.getAddressList()
+    this.getAddressList();
+  },
+  watch:{
+    checkList(val) {
+      this.disabled = !val.length > 0
+    }
   },
   methods: {
     getAddressList() {
@@ -59,10 +79,13 @@ export default {
         });
       });
     },
-    handleCheckedCitiesChange() {
-      console.log(this.checkList)
-
+    handleCheckedChange() {
+      console.log(this.checkList);
+      
     },
+    createGroup(contactList){
+      console.log(contactList)
+    }
   },
 };
 </script>
@@ -130,18 +153,18 @@ export default {
     position: relative;
     top: 7.5em;
     z-index: 8;
-    /deep/.el-checkbox{
+    /deep/.el-checkbox {
       display: flex;
       align-items: center;
       flex-flow: row-reverse;
-      background-color: #FFF;
+      background-color: #fff;
       width: 100vw;
-      .el-checkbox__input{
+      .el-checkbox__input {
         padding-right: 20px;
       }
-      .el-checkbox__label{
+      .el-checkbox__label {
         width: 100%;
-        padding-left:0;
+        padding-left: 0;
         .address-box {
           background-color: #ffffff;
           padding: 0.8em 1em;
@@ -156,7 +179,7 @@ export default {
               display: block;
               padding-left: 1em;
               font-size: 16px;
-              color: #666666 ;
+              color: #666666;
               &::after {
                 content: "";
                 display: block;
@@ -167,7 +190,7 @@ export default {
               }
             }
           }
-          .checkBox{
+          .checkBox {
             position: absolute;
             right: 1.5em;
             font-size: 14px;
@@ -176,6 +199,24 @@ export default {
       }
     }
   }
-
+  .home-footer-btn {
+    margin: 1em 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .el-button {
+      width: 93%;
+    }
+    .gray-btn {
+      background-color: #b3b3b3;
+      color: #fff;
+    }
+    .orange-btn {
+      background-color: #fe5f3f;
+      color: #fff;
+    }
+  }
 }
 </style>

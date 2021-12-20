@@ -4,7 +4,7 @@
       <div class="home-user" @click="centerDialogVisible = true"></div>
       <span class="home-header-title">设定</span>
       <router-link :to="'/EditUser'"
-        ><div class="home-add-user" @click="goEditUserPage(userData)"></div
+        ><div class="home-add-user"></div
       ></router-link>
     </div>
     <div class="address-content">
