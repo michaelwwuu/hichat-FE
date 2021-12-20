@@ -19,7 +19,7 @@
       </el-input>
     </div>
     <div class="home-content">
-      <el-checkbox-group v-model="checkList" @change="handleCheckedChange">
+      <el-checkbox-group v-model="checkList">
         <el-checkbox
           :label="item"
           v-for="(item, index) in contactList"
@@ -39,7 +39,7 @@
         :class="disabled ? 'gray-btn' : 'orange-btn'"
         :disabled="disabled"
         @click="createGroup"
-        >创建群组</el-button
+        >邀请联络人</el-button
       >
     </div>
   </div>
@@ -78,9 +78,6 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
       });
-    },
-    handleCheckedChange() {
-      
     },
     createGroup(){
       console.log(this.checkList)
@@ -160,6 +157,9 @@ export default {
       width: 100vw;
       .el-checkbox__input {
         padding-right: 20px;
+        .el-checkbox__inner{
+          border-radius: 10px;
+        }
       }
       .el-checkbox__label {
         width: 100%;
