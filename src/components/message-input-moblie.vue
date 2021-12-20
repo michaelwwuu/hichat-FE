@@ -378,7 +378,6 @@ export default {
       message.fromChatId = localStorage.getItem("fromChatId");
       message.toChatId = this.userData.toChatId;
       message.text = this.textAreaTran();
-      console.log(message);
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);

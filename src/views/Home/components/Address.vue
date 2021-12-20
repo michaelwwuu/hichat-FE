@@ -27,9 +27,9 @@
           <span>{{ item.name }}</span>
         </div>
       </el-tab-pane>
-      <!-- <el-tab-pane label="群组" name="group">
+      <el-tab-pane label="群组" name="group">
         <div></div>
-      </el-tab-pane> -->
+      </el-tab-pane>
     </el-tabs>
     <el-dialog
       title="我的帐号"
@@ -134,96 +134,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 .home-header {
-  margin: 1em;
-  display: flex;
-  align-items: center;
-  position: fixed;
-  width: -webkit-fill-available;
-  background-color: #eaf5fa;
-  z-index: 9;
   .home-user {
-    width: 2em;
-    height: 2em;
-    border-radius: 10px;
     background-color: #fff;
     background-image: url("./../../../../static/images/qrcode.png");
-    background-size: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .home-header-title {
-    margin: 0 auto;
-    color: #10686e;
-    font-weight: 600;
   }
   .home-add-user {
-    width: 2em;
-    height: 2em;
-    border-radius: 10px;
     background-color: #fff;
     background-image: url("./../../../../static/images/add_user.png");
-    background-size: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-}
-.home-search {
-  margin: 1em;
-  position: fixed;
-  width: -webkit-fill-available;
-  top: 3em;
-  background-color: #eaf5fa;
-  z-index: 9;
-  /deep/.el-input {
-    .el-input__inner {
-      background-color: #e9e8e8;
-      color: #666666;
-    }
-    .el-input__prefix {
-      color: #666666;
-    }
-    ::placeholder {
-      /* CSS 3 標準 */
-      color: #666666;
-    }
-  }
-}
-
-/deep/.el-tabs__header {
-  background-color: #e2e0e0;
-  display: flex;
-  justify-content: space-evenly;
-  margin: 0;
-  .el-tabs__nav-wrap {
-    &:after {
-      content: "";
-      display: none;
-    }
-    .el-tabs__active-bar {
-      display: none;
-    }
-    .el-tabs__item.is-active {
-      color: #303133;
-    }
-    .el-tabs__nav {
-      display: flex;
-      justify-content: center;
-      .el-tabs__item {
-        font-size: 15px;
-        padding: 0 2.5em;
-      }
-    }
   }
 }
 .address-box {
-  background-color: #ffffff;
-  padding: 0.8em 1em;
-  display: flex;
-  align-items: center;
-  .el-image {
-    width: 3em;
-    border-radius: 10px;
-  }
   span {
     padding-left: 1em;
     font-size: 14px;
@@ -237,6 +157,7 @@ export default {
     border-bottom: 0.02em solid #b3b3b3;
   }
 }
+
 /deep/.el-dialog__wrapper {
   overflow: hidden;
   .el-dialog {
@@ -288,28 +209,6 @@ export default {
         }
       }
     }
-  }
-}
-/deep/.el-tabs{
-  position: fixed;
-  width: 100vw;
-  top: 8em;
-  background-color: #eaf5fa;
-  z-index: 9;
-  .el-tabs__header{
-    position: fixed;
-    width: 100vw;
-    top: 7.5em;
-    z-index: 9;
-
-  }
-  .el-tabs__content{
-    position: relative;
-    top: 2em;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: 70vh;
-    z-index: 8;
   }
 }
 </style>

@@ -67,6 +67,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "AddUser" */ '@/views/AddUser/AddUser.vue'),
   },
   {
+    path: "/AddGroup",
+    name: "AddGroup",
+    component: () => import(/* webpackChunkName: "AddGroup" */ '@/views/AddGroup/AddGroup.vue'),
+  },
+  {
     path: "/ChatMsg",
     name: "ChatMsg",
     component: () => import(/* webpackChunkName: "ChatMsg" */ '@/views/Chat/ChatMsg.vue'),
