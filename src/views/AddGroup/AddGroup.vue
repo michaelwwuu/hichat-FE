@@ -38,7 +38,7 @@
       <el-button
         :class="disabled ? 'gray-btn' : 'orange-btn'"
         :disabled="disabled"
-        @click="createGroup(contactList)"
+        @click="createGroup"
         >创建群组</el-button
       >
     </div>
@@ -80,11 +80,10 @@ export default {
       });
     },
     handleCheckedChange() {
-      console.log(this.checkList);
       
     },
-    createGroup(contactList){
-      console.log(contactList)
+    createGroup(){
+      console.log(this.checkList)
     }
   },
 };
