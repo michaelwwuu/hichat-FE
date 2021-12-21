@@ -1,53 +1,59 @@
 <template>
   <div class="home-wrapper">
     <div class="home-header">
-      <router-link :to="'/Home'">
+      <router-link :to="'/Home'" v-if="groupEditShow">
         <div class="home-user"></div>
       </router-link>
+      <div class="home-user" v-else @click="groupEditShow = true"></div>
       <span class="home-header-title">创建群组</span>
-      <router-link :to="'/QRcode'"
-        ><div class="home-add-user"></div
-      ></router-link>
+      <div class="home-add-user"></div>
     </div>
-    <div class="home-search">
-      <el-input
-        placeholder="搜寻"
-        prefix-icon="el-icon-search"
-        v-model="searchKey"
-        @keyup.native.enter="developmentMessage(searchKey)"
-      >
-      </el-input>
-    </div>
-    <div class="home-content">
-      <el-checkbox-group v-model="checkList">
-        <el-checkbox
-          :label="item"
-          v-for="(item, index) in contactList"
-          :key="index"
+    <template v-if="groupEditShow">
+      <div class="home-search">
+        <el-input
+          placeholder="搜寻"
+          prefix-icon="el-icon-search"
+          v-model="searchKey"
+          @keyup.native.enter="developmentMessage(searchKey)"
         >
-          <div class="address-box">
-            <el-image :src="item.icon" lazy />
-            <div class="msg-box">
-              <span>{{ item.name }}</span>
+        </el-input>
+      </div>
+      <div class="home-content">
+        <el-checkbox-group v-model="checkList">
+          <el-checkbox
+            :label="item"
+            v-for="(item, index) in contactList"
+            :key="index"
+          >
+            <div class="address-box">
+              <el-image :src="item.icon" lazy />
+              <div class="msg-box">
+                <span>{{ item.name }}</span>
+              </div>
             </div>
-          </div>
-        </el-checkbox>
-      </el-checkbox-group>
-    </div>
-    <div class="home-footer-btn">
-      <el-button
-        :class="disabled ? 'gray-btn' : 'orange-btn'"
-        :disabled="disabled"
-        @click="createGroup"
-        >邀请联络人</el-button
-      >
-    </div>
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <div class="home-footer-btn">
+        <el-button
+          :class="disabled ? 'gray-btn' : 'orange-btn'"
+          :disabled="disabled"
+          @click="createGroup"
+          >邀请联络人</el-button
+        >
+      </div>
+    </template>
+    <template v-else>
+      <group-edit :checkList="checkList"/>
+    </template>
   </div>
 </template>
 
 <script>
 import { developmentMessage } from "@/assets/tools";
 import { getContactList } from "@/api";
+import GroupEdit from "./components/GroupEdit.vue";
+
 
 export default {
   name: "AddGroup",
@@ -56,6 +62,7 @@ export default {
       contactList: [],
       searchKey: "",
       disabled: true,
+      groupEditShow:true,
       checkList: [],
       avatarImg: require("./../../../static/images/image_user_defult.png"),
       developmentMessage: developmentMessage,
@@ -80,9 +87,12 @@ export default {
       });
     },
     createGroup(){
-      console.log(this.checkList)
+      if(this.checkList.length > 0) this.groupEditShow = false;
     }
   },
+  components:{
+    GroupEdit
+  }
 };
 </script>
 

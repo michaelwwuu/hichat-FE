@@ -54,13 +54,41 @@
         </el-switch>
       </div>
 
-      <div class="setting-disable" @click="developmentMessage('封锁联络人')">
-        <div class="setting-button-left">
-          <img src="./../../../static/images/blockade.png" alt="" />
-          <span>封锁联络人</span>
-        </div>
+      <div class="setting-disable" @click="dialogShow('block')">
+        <span>
+          <div class="setting-button-left">
+            <img src="./../../../static/images/blockade.png" alt="" />
+            <span>封锁联络人</span>
+          </div>
+        </span>
+      </div>
+      <div class="setting-delete" @click="dialogShow('delete')">
+        <span>
+          <div class="setting-button-left">
+            <img src="./../../../static/images/trash.png" alt="" />
+            <span>刪除联络人</span>
+          </div>
+        </span>
       </div>
     </div>
+    <el-dialog
+      :visible.sync="settingDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <span>{{dialogContent}}</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="settingDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="submitBtn(dialogContent)">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -89,7 +117,9 @@ export default {
           path: "",
         },
       ],
+      dialogContent:'',
       notification: true,
+      settingDialogShow:false,
       developmentMessage: developmentMessage,
     };
   },
@@ -116,6 +146,21 @@ export default {
     back() {
       this.$router.back(-1);
     },
+    dialogShow(type){
+      this.settingDialogShow = true;
+      this.dialogContent = `确认是否${type === 'block' ? '封锁':'删除'}好友${this.userData.name}？`
+    },
+    submitBtn(dialogContent){
+      switch (dialogContent) {
+        case `确认是否封锁好友${this.userData.name}？`:
+          console.log(123)
+          break;
+        case `确认是否删除好友${this.userData.name}？`:
+          console.log(456)
+          
+          break;
+      }
+    }
   },
 };
 </script>
@@ -180,7 +225,9 @@ export default {
         border-radius: 10px;
       }
     }
-    .setting-button {
+    .setting-button,
+    .setting-disable,
+    .setting-delete {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
       &::after {
@@ -214,8 +261,7 @@ export default {
         }
       }
     }
-    .setting-notification,
-    .setting-disable {
+    .setting-notification {
       padding: 1em 0.5em 1em 0.5em;
       background-color: #fff;
       margin: 1em 0;
@@ -237,11 +283,59 @@ export default {
         }
       }
     }
-    .setting-disable {
+
+    .setting-delete {
       span {
         color: #ee5253 !important;
       }
     }
+
   }
+  /deep/.el-dialog-loginOut {
+  overflow: auto;
+  .el-dialog {
+    position: relative;
+    margin: 0 auto 50px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 50%;
+    .el-dialog__header {
+      padding: 10px;
+    }
+    .el-dialog__body {
+      text-align: center;
+      padding: 25px 25px 15px;
+      .loginOut-box {
+        img {
+          height: 5em;
+          margin-bottom: 1.2em;
+        }
+      }
+    }
+    .el-dialog__footer {
+      padding: 20px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+      .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        .el-button {
+          width: 100%;
+          border-radius: 8px;
+        }
+        .background-red {
+          background-color: #ee5253;
+          color: #fff;
+        }
+        .border-red {
+          border: 1px solid #fe5f3f;
+          color: #fe5f3f;
+        }
+      }
+    }
+  }
+}
 }
 </style>

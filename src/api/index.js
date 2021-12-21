@@ -98,6 +98,16 @@ export const uploadIcon = data => {
   return axios.request(postData)
 }
 
+// 上傳群組頭像
+export const uploadGroupIcon = data => {
+  let postData = {
+    url: '/file/upload/uploadGroupIcon',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
 // 上傳圖片
 export const uploadMessageImage = data => {
   let postData = {
@@ -153,6 +163,16 @@ export const getSearchById = (params) => {
     url: '/api/member/profile/searchById',
     method: 'get',
     params
+  }
+  return axios.request(postData)
+}
+
+// 修改密碼
+export const addGroup = data => {
+  let postData = {
+    url: '/api/group/add',
+    method: 'post',
+    data
   }
   return axios.request(postData)
 }
