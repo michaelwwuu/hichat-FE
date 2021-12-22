@@ -84,6 +84,12 @@ const routes = [
     meta: { keepAlive: false },
   },
   {
+    path: "/GroupPage",
+    name: "GroupPage",
+    component: () => import(/* webpackChunkName: "GroupPage" */ '@/views/GroupPage/GroupPage.vue'),
+    meta: { keepAlive: false },
+  },  
+  {
     path: "/EditContact",
     name: "EditContact",
     component: () => import(/* webpackChunkName: "EditContact" */ '@/views/EditContact/EditContact.vue'),

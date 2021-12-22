@@ -57,6 +57,15 @@ export const getContactList = (params) => {
   }
   return axios.request(postData)
 }
+// 獲取群組清單
+export const getGroupList = (params) => {
+  let postData = {
+    url: '/api/group/list',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
 
 // 添加好友
 export const addContactUser = data => {
@@ -172,6 +181,36 @@ export const addGroup = data => {
   let postData = {
     url: '/api/group/add',
     method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 封鎖聯絡人
+export const addBlockUser = data => {
+  let postData = {
+    url: '/api/member/block/add',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 解除封鎖聯絡人
+export const unBlockUser = data => {
+  let postData = {
+    url: '/api/member/block/delete',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 刪除聯絡人
+export const deleteUser = data => {
+  let postData = {
+    url: `/api/member/contact/delete/${data}`,
+    method: 'delete',
     data
   }
   return axios.request(postData)

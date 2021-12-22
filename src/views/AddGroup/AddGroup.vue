@@ -26,7 +26,7 @@
             :key="index"
           >
             <div class="address-box">
-              <el-image :src="item.icon" lazy />
+              <el-image :src="item.icon"/>
               <div class="msg-box">
                 <span>{{ item.name }}</span>
               </div>

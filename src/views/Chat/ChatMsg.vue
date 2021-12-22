@@ -35,7 +35,6 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { getSearchById } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -58,7 +57,6 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    if (this.userData.username === undefined) this.getUserId();
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
@@ -76,13 +74,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-    getUserId() {
-      let id = this.userData.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        this.userData.username = res.data.username;
-        localStorage.setItem("userData", JSON.stringify(this.userData));
-      });
-    },
+
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {

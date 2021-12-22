@@ -3,9 +3,7 @@
     <div class="home-header">
       <div class="home-user" @click="back"></div>
       <span class="home-header-title"></span>
-      <router-link :to="'/EditContact'">
-        <div class="home-add-user"></div>
-      </router-link>
+      <div class="home-add-user"></div>
     </div>
     <div class="address-content">
       <div class="user-data">
@@ -17,11 +15,8 @@
         <div>
           <span>{{ userData.name }}</span>
           <span class="user-data-id">
-            ID :
-            <span class="user-paste" @click="copyPaste(userData.username)">{{
-              userData.username
-            }}</span></span
-          >
+            <span class="user-paste" ></span>
+          </span>
         </div>
       </div>
 
@@ -53,25 +48,16 @@
         >
         </el-switch>
       </div>
-      <div
-        class="setting-disable"
-        @click="dialogShow(!userData.isBlock ? 'block' : 'unBlock')"
-      >
-        <span>
-          <div class="setting-button-left">
-            <img src="./../../../static/images/blockade.png" alt="" />
-            <span>{{ blockContent }}</span>
-          </div>
-        </span>
-      </div>
+
       <div class="setting-delete" @click="dialogShow('delete')">
         <span>
           <div class="setting-button-left">
-            <img src="./../../../static/images/trash.png" alt="" />
-            <span>刪除联络人</span>
+            <img src="./../../../static/images/logout.png" alt="" />
+            <span>退出群组</span>
           </div>
         </span>
       </div>
+      
     </div>
     <el-dialog
       :visible.sync="settingDialogShow"
@@ -82,15 +68,13 @@
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>{{ dialogContent }}</span>
+        <span>{{dialogContent}}</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="border-red" @click="settingDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="submitBtn(dialogContent)"
-          >确认</el-button
-        >
+        <el-button class="background-red" @click="submitBtn(dialogContent)">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -98,10 +82,10 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { getSearchById, addBlockUser, unBlockUser, deleteUser } from "@/api";
+import { getSearchById,addBlockUser,unBlockUser,deleteUser } from "@/api";
 
 export default {
-  name: "ContactPage",
+  name: "GroupPage",
   data() {
     return {
       userData: {},
@@ -121,97 +105,29 @@ export default {
           icon: require("./../../../static/images/image_icon.png"),
           path: "",
         },
+        {
+          name: "成員",
+          icon: require("./../../../static/images/users.png"),
+          path: "",
+        },
       ],
-      dialogContent: "",
-      blockContent: "",
+      dialogContent:'',
       notification: true,
-      settingDialogShow: false,
+      settingDialogShow:false,
       developmentMessage: developmentMessage,
     };
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.getUserId();
   },
   methods: {
-    copyPaste(data) {
-      let url = document.createElement("input");
-      document.body.appendChild(url);
-      url.value = data;
-      url.select();
-      document.execCommand("copy");
-      document.body.removeChild(url);
-      this.$message({
-        message: `ID : ${data} 复制成功`,
-        type: "success",
-        duration: 1000,
-      });
-    },
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
-    },
-    getUserId() {
-      let id = this.userData.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-        this.userData.username = res.data.username;
-        this.userData.name = res.data.name;
-        this.userData.isBlock = res.data.isBlock;
-        localStorage.setItem("userData", JSON.stringify(this.userData));
-      });
     },
     back() {
       this.$router.back(-1);
     },
-    dialogShow(type) {
-      this.settingDialogShow = true;
-      console.log(type);
-      switch (type) {
-        case "block":
-        case "unBlock":
-          this.dialogContent = `确认是否${
-            type === "block" ? "封锁" : "解除封锁"
-          }好友${this.userData.name}？`;
-          break;
-        case "delete":
-          this.dialogContent = `确认是否${type === "delete" ? "删除" : ""}好友${
-            this.userData.name
-          }？`;
-          break;
-      }
-    },
-    submitBtn(dialogContent) {
-      switch (dialogContent) {
-        case `确认是否封锁好友${this.userData.name}？`:
-          let blockId = this.userData.toChatId.replace("u", "");
-          addBlockUser({ blockId }).then((res) => {
-            if (res.code === 200) {
-              this.settingDialogShow = false;
-              this.back()
-            }
-          });
-          break;
-        case `确认是否解除封锁好友${this.userData.name}？`:
-          let blockIdList = [this.userData.toChatId.replace("u", "")];
-          unBlockUser({ blockIdList }).then((res) => {
-            if (res.code === 200) {
-              this.settingDialogShow = false;
-              this.back()
-            }
-          });
-          break;
-        case `确认是否删除好友${this.userData.name}？`:
-          console.log(456);
-          let contactId = this.userData.toChatId.replace("u", "");
-          deleteUser(contactId).then((res) => {
-            if (res.code === 200) {
-              this.settingDialogShow = false;
-              this.$router.push({ name: "Address" });
-            }
-          });
-          break;
-      }
-    },
+
   },
 };
 </script>
@@ -244,12 +160,6 @@ export default {
     .home-add-user {
       width: 2em;
       height: 2em;
-      border-radius: 10px;
-      background-color: #fff;
-      background-image: url("./../../../static/images/edit.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
     }
   }
   .address-content {
@@ -278,7 +188,6 @@ export default {
       }
     }
     .setting-button,
-    .setting-disable,
     .setting-delete {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
@@ -341,52 +250,53 @@ export default {
         color: #ee5253 !important;
       }
     }
+
   }
   /deep/.el-dialog-loginOut {
-    overflow: auto;
-    .el-dialog {
-      position: relative;
-      margin: 0 auto 50px;
-      background: #ffffff;
-      border-radius: 10px;
-      box-sizing: border-box;
-      width: 50%;
-      .el-dialog__header {
-        padding: 10px;
-      }
-      .el-dialog__body {
-        text-align: center;
-        padding: 25px 25px 15px;
-        .loginOut-box {
-          img {
-            height: 5em;
-            margin-bottom: 1.2em;
-          }
+  overflow: auto;
+  .el-dialog {
+    position: relative;
+    margin: 0 auto 50px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 50%;
+    .el-dialog__header {
+      padding: 10px;
+    }
+    .el-dialog__body {
+      text-align: center;
+      padding: 25px 25px 15px;
+      .loginOut-box {
+        img {
+          height: 5em;
+          margin-bottom: 1.2em;
         }
       }
-      .el-dialog__footer {
-        padding: 20px;
-        padding-top: 10px;
-        text-align: right;
-        box-sizing: border-box;
-        .dialog-footer {
-          display: flex;
-          justify-content: space-between;
-          .el-button {
-            width: 100%;
-            border-radius: 8px;
-          }
-          .background-red {
-            background-color: #ee5253;
-            color: #fff;
-          }
-          .border-red {
-            border: 1px solid #fe5f3f;
-            color: #fe5f3f;
-          }
+    }
+    .el-dialog__footer {
+      padding: 20px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+      .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        .el-button {
+          width: 100%;
+          border-radius: 8px;
+        }
+        .background-red {
+          background-color: #ee5253;
+          color: #fff;
+        }
+        .border-red {
+          border: 1px solid #fe5f3f;
+          color: #fe5f3f;
         }
       }
     }
   }
+}
 }
 </style>

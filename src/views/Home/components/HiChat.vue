@@ -23,7 +23,7 @@
           :key="index"
           @click="goChatRoom(item)"
         >
-          <el-image :src="item.icon" lazy />
+          <el-image :src="item.icon"/>
           <div class="msg-box">
             <span>{{ item.name }}</span>
             <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{

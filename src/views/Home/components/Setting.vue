@@ -13,7 +13,6 @@
           v-if="userData.icon !== undefined"
           :src="userData.icon"
           :preview-src-list="[userData.icon]"
-          lazy
         />
         <div>
           <span>{{ userData.nickname }}</span>

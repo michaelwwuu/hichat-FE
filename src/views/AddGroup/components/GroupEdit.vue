@@ -28,7 +28,7 @@
     </div>
     <div class="home-content">
       <div class="address-box" v-for="(item, index) in checkList" :key="index">
-        <el-image :src="item.icon" lazy />
+        <el-image :src="item.icon" />
         <div class="msg-box">
           <span>{{ item.name }}</span>
         </div>
@@ -107,16 +107,16 @@ export default {
       });
     },
     editSubmit() {
+      let memberList = []
+      this.checkList.forEach(res => memberList.push(res.contactId));
       let params = {
         groupName: this.groupForm.name,
         icon:this.groupIcon,
-        memberList:this.checkList,
+        memberList:memberList,
       }
       addGroup(params).then((res) => {
         if (res.code === 200) {
           this.$router.push({ path: "/Address" });
-        } else {
-          this.$message({ message: res.message, type: "error" });
         }
       })
       .catch((err) => {

@@ -23,12 +23,20 @@
           :key="index"
           @click="goContactPage(item)"
         >
-          <el-image :src="item.icon" lazy />
+          <el-image :src="item.icon" />
           <span>{{ item.name }}</span>
         </div>
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
-        <div></div>
+        <div
+          class="address-box"
+          v-for="(item, index) in groupList"
+          :key="index"
+          @click="goGroupPage(item)"
+        >
+          <el-image :src="item.icon"/>
+          <span>{{ item.groupName }}</span>
+        </div>
       </el-tab-pane>
     </el-tabs>
     <el-dialog
@@ -75,7 +83,7 @@
 </template>
 
 <script>
-import { getContactList } from "@/api";
+import { getContactList,getGroupList } from "@/api";
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 export default {
@@ -84,6 +92,7 @@ export default {
     return {
       searchKey: "",
       contactList: [],
+      groupList:[],
       activeName: "address",
       centerDialogVisible: false,
       qrCodeConfig: {
@@ -97,6 +106,7 @@ export default {
   },
   created() {
     this.getAddressList();
+    this.getGroupDataList()
   },
   methods: {
     copyUrl() {
@@ -114,11 +124,21 @@ export default {
     getAddressList() {
       getContactList().then((res) => {
         this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined)
-            res.icon = require("./../../../../static/images/image_user_defult.png");
+        this.contactList.forEach((el) => {
+          if (el.icon === undefined)
+            el.icon = require("./../../../../static/images/image_user_defult.png");
         });
       });
+    },
+    getGroupDataList(){
+      getGroupList().then((res) => {
+        this.groupList = res.data.list
+        this.groupList.forEach((el) => {
+          console.log(el)
+          if (el.icon === "")
+            el.icon = require("./../../../../static/images/image_group_defult.png");
+        });
+      })
     },
     goContactPage(data) {
       let userData = data;
@@ -126,6 +146,17 @@ export default {
       localStorage.setItem("userData", JSON.stringify(userData));
       this.$router.push({ name: "ContactPage" });
     },
+    goGroupPage(data) {
+      localStorage.setItem("groupData", JSON.stringify(data));
+      this.$router.push({ name: "GroupPage" });
+    },    
+    // handleClick(tab) {
+    //   if(tab.name === 'address'){
+    //     this.getAddressList()
+    //   }else if(tab.name === 'group'){
+    //     this.getGroupDataList()
+    //   }
+    // }
   },
   components: {
     VueQr,
