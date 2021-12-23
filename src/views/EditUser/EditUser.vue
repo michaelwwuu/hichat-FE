@@ -7,7 +7,13 @@
     </div>
     <div class="add-content">
       <div class="user-data">
-        <span><img :src="userData.icon" alt="" /></span>
+        <span>
+          <el-image
+            v-if="userData.icon !== undefined"
+            :src="userData.icon"
+            :preview-src-list="[userData.icon]"
+          />
+        </span>
         <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
       </div>
       <div class="home-footer-btn">
@@ -113,32 +119,10 @@ export default {
 
 <style lang="scss" scoped>
 .home-wrapper {
-  min-height: 100%;
-  width: 100%;
-  background-color: #eaf5fa;
-  overflow: hidden;
   .home-header {
-    margin: 1em;
-    display: flex;
-    align-items: center;
     .home-user {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .home-header-title {
-      margin: 0 auto;
-      color: #10686e;
-      font-weight: 600;
-    }
-    .home-add-user {
-      width: 2em;
-      height: 2em;
     }
   }
   .user-edit-form {
@@ -164,10 +148,7 @@ export default {
         display: block;
         text-align: center;
         height: 4.5em;
-        img {
-          height: 4em;
-          border-radius: 10px;
-        }
+
       }
       .photo-edit {
         height: 1.5em;

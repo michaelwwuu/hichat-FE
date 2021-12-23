@@ -210,6 +210,7 @@ export default {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       localStorage.removeItem("userData");
+      localStorage.removeItem("groupData");
       localStorage.removeItem("fromChatId");
     },
   },
@@ -254,11 +255,6 @@ export default {
       text-align: center;
       height: 4.5em;
       font-weight: 600;
-    }
-
-    .el-image {
-      width: 4em;
-      border-radius: 10px;
     }
   }
   .setting-button {

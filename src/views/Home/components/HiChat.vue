@@ -5,7 +5,7 @@
       <span class="home-header-title">HiChat</span>
       <router-link :to="'/AddGroup'">
         <div class="home-add-user"></div>
-      </router-link>  
+      </router-link>
     </div>
     <div class="home-search">
       <el-input
@@ -18,12 +18,18 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="联络人" name="address">
         <div
-          class="address-box"
           v-for="(item, index) in hiChatDataList"
           :key="index"
+          class="address-box"
           @click="goChatRoom(item)"
         >
-          <el-image :src="item.icon"/>
+          <el-image
+            :src="
+              item.icon === null
+                ? require('./../../../../static/images/image_user_defult.png')
+                : item.icon
+            "
+          />
           <div class="msg-box">
             <span>{{ item.name }}</span>
             <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
@@ -49,13 +55,74 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
-        <div></div>
-      </el-tab-pane> 
-      <el-tab-pane label="陌生讯息" name="contact">
-        <div></div>
-      </el-tab-pane> 
-    </el-tabs> 
-
+        <div
+          v-for="(item, index) in groupDataList"
+          :key="index"
+          class="address-box"
+          @click="goChatRoom(item)"
+        >
+          <el-image :src="item.icon" />
+          <div class="msg-box">
+            <span>{{ item.name }}</span>
+            <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+              item.lastChat.text
+            }}</span>
+            <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+              >传送了语音</span
+            >
+            <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+              >传送了图片</span
+            >
+          </div>
+          <span class="time">
+            {{ $root.formatTimeDay(item.lastChat.sendTime) }}
+            <div class="el-badge-box">
+              <el-badge
+                :value="item.unreadCount"
+                class="item"
+                v-if="item.unreadCount !== 0"
+              ></el-badge>
+            </div>
+          </span>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane
+        label="陌生讯息"
+        name="contact"
+        v-if="contactDataList.length > 0"
+      >
+        <div
+          v-for="(item, index) in contactDataList"
+          :key="index"
+          class="address-box"
+          @click="goChatRoom(item)"
+        >
+          <el-image :src="item.icon" />
+          <div class="msg-box">
+            <span>{{ item.name }}</span>
+            <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+              item.lastChat.text
+            }}</span>
+            <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+              >传送了语音</span
+            >
+            <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+              >传送了图片</span
+            >
+          </div>
+          <span class="time">
+            {{ $root.formatTimeDay(item.lastChat.sendTime) }}
+            <div class="el-badge-box">
+              <el-badge
+                :value="item.unreadCount"
+                class="item"
+                v-if="item.unreadCount !== 0"
+              ></el-badge>
+            </div>
+          </span>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -70,6 +137,8 @@ export default {
       searchKey: "",
       activeName: "address",
       hiChatDataList: [],
+      contactDataList: [],
+      groupDataList: [],
       newMsgDataList: [],
     };
   },
@@ -84,6 +153,7 @@ export default {
       wsRes: (state) => state.ws.wsRes,
     }),
   },
+  watch: {},
   mounted() {
     this.getHiChatDataList();
   },
@@ -108,11 +178,15 @@ export default {
       switch (userInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
-          this.hiChatDataList = userInfo.recentChat;
-          this.hiChatDataList.forEach((res) => {
-            if (res.icon === null)
-              res.icon = require("./../../../../static/images/image_user_defult.png");
-          });
+          this.hiChatDataList = userInfo.recentChat.filter(
+            (item) => !item.isContact && !item.isGroup
+          );
+          this.groupDataList = userInfo.recentChat.filter(
+            (item) => item.isGroup
+          );
+          this.contactDataList = userInfo.recentChat.filter(
+            (item) => item.isContact
+          );
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":

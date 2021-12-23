@@ -213,5 +213,6 @@ export const deleteUser = data => {
     method: 'delete',
     data
   }
+  
   return axios.request(postData)
 }

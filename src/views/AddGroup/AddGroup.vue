@@ -98,41 +98,17 @@ export default {
 
 <style lang="scss" scoped>
 .home-wrapper {
-  min-height: 100%;
-  width: 100%;
-  background-color: #eaf5fa;
-  overflow-x: hidden;
-  overflow-y: auto;
   .home-header {
-    margin: 1em;
-    display: flex;
-    align-items: center;
     position: fixed;
     width: -webkit-fill-available;
     background-color: #eaf5fa;
     z-index: 9;
     .home-user {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .home-header-title {
-      margin: 0 auto;
-      color: #10686e;
-      font-weight: 600;
-    }
-    .home-add-user {
-      width: 2em;
-      height: 2em;
     }
   }
   .home-search {
-    margin: 1em;
     position: fixed;
     width: -webkit-fill-available;
     top: 3em;
@@ -180,9 +156,8 @@ export default {
           display: flex;
           align-items: center;
           .el-image {
-            width: 3em;
-            border-radius: 10px;
-          }
+            width: 4em;
+          }    
           .msg-box {
             span {
               display: block;

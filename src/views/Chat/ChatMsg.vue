@@ -230,7 +230,6 @@ export default {
             background-repeat: no-repeat;
           }
         }
-
         .home-header-title {
           margin: 0 auto;
           color: #10686e;

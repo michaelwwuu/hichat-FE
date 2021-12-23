@@ -8,12 +8,12 @@
     <div class="address-content">
       <div class="user-data">
         <el-image
-          v-if="userData.icon !== undefined"
-          :src="userData.icon"
-          :preview-src-list="[userData.icon]"
+          v-if="groupData.icon !== undefined"
+          :src="groupData.icon"
+          :preview-src-list="[groupData.icon]"
         />
         <div>
-          <span>{{ userData.name }}</span>
+          <span>{{ groupData.groupName }}</span>
           <span class="user-data-id">
             <span class="user-paste" ></span>
           </span>
@@ -26,7 +26,7 @@
         :key="index"
         @click="developmentMessage(item.name)"
       >
-        <span @click="goChatRoom(userData, item.path)">
+        <span @click="goChatRoom(groupData, item.path)">
           <div class="setting-button-left">
             <img :src="item.icon" alt="" />
             <span>{{ item.name }}</span>
@@ -57,7 +57,7 @@
           </div>
         </span>
       </div>
-      
+
     </div>
     <el-dialog
       :visible.sync="settingDialogShow"
@@ -88,7 +88,7 @@ export default {
   name: "GroupPage",
   data() {
     return {
-      userData: {},
+      groupData: {},
       settingData: [
         {
           name: "传送讯息",
@@ -118,7 +118,7 @@ export default {
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.groupData = JSON.parse(localStorage.getItem("groupData"));
   },
   methods: {
     goChatRoom(data, path) {
@@ -134,32 +134,10 @@ export default {
 
 <style lang="scss" scoped>
 .home-wrapper {
-  min-height: 100%;
-  width: 100%;
-  background-color: #eaf5fa;
-  overflow: hidden;
   .home-header {
-    margin: 1em;
-    display: flex;
-    align-items: center;
     .home-user {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .home-header-title {
-      margin: 0 auto;
-      color: #10686e;
-      font-weight: 600;
-    }
-    .home-add-user {
-      width: 2em;
-      height: 2em;
     }
   }
   .address-content {
@@ -184,8 +162,7 @@ export default {
       }
       .el-image {
         width: 4em;
-        border-radius: 10px;
-      }
+      }    
     }
     .setting-button,
     .setting-delete {

@@ -192,9 +192,8 @@ export default {
     display: flex;
     align-items: center;
     .el-image {
-      width: 3em;
-      border-radius: 10px;
-    }
+      width: 4em;
+    }    
     .msg-box {
       span {
         display: block;

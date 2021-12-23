@@ -134,7 +134,6 @@ export default {
       getGroupList().then((res) => {
         this.groupList = res.data.list
         this.groupList.forEach((el) => {
-          console.log(el)
           if (el.icon === "")
             el.icon = require("./../../../../static/images/image_group_defult.png");
         });

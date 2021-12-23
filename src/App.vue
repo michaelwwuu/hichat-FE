@@ -59,25 +59,5 @@ export default {
     }
   }
 }
-.home-footer{
-  width: 100vw;
-  background-color: #FFF;
-  position:fixed;
-  bottom:0;
-  display: flex;
-  justify-content: space-between;
-  padding:0.5em 0;
-  .home-footer-btn{
-    text-align: center;
-    font-size: 12px;
-    padding: 0 4em;
-    span{
-      display:block;
-    }
-    img{
-      margin-bottom: 5px;
-      height:2.2em;
-    }
-  }
-}
+
 </style>

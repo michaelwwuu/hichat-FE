@@ -218,38 +218,14 @@ export default {
 
 <style lang="scss" scoped>
 .home-wrapper {
-  min-height: 100%;
-  width: 100%;
-  background-color: #eaf5fa;
-  overflow: hidden;
   .home-header {
-    margin: 1em;
-    display: flex;
-    align-items: center;
     .home-user {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .home-header-title {
-      margin: 0 auto;
-      color: #10686e;
-      font-weight: 600;
     }
     .home-add-user {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
       background-color: #fff;
       background-image: url("./../../../static/images/edit.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
     }
   }
   .address-content {
@@ -274,8 +250,7 @@ export default {
       }
       .el-image {
         width: 4em;
-        border-radius: 10px;
-      }
+      }    
     }
     .setting-button,
     .setting-disable,
