@@ -28,14 +28,13 @@
             <div class="home-user-search"></div>
           </div>
         </el-header>
-        <el-header class="contact-box" height="55px" style="background-color:#FFFFFF">
+        <div class="contact-box" v-if="!userData.isContact">
           <ul>
             <li>封锁</li>
             <li>删除</li>
-            <li>加入联络人</li>
+            <li @click="addUser(userData)">加入联络人</li>
           </ul>
-        </el-header>
-
+        </div>
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -48,10 +47,12 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { addContactUser } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
+
 
 export default {
   name: "ChatMsg",
@@ -160,6 +161,20 @@ export default {
           this.getChatHistoryMessage();
           break;
       }
+    },
+    addUser(data) {
+      let parmas = {
+        contactId: data.toChatId.replace("u", ""),
+        name: data.name,
+      };
+      addContactUser(parmas).then((res) => {
+        if (res.code === 200) {
+          this.userData.isContact = true
+          localStorage.setItem("userData",JSON.stringify(this.userData))
+        } else {
+          this.$message({ message: res.message, type: "error" });
+        }
+      });
     },
   },
   components: {
@@ -301,12 +316,25 @@ export default {
       }
     }
     .contact-box{
-      background-color: #fff;
+      background-color: #FFFFFF;
+      width: 100vw;
       ul{
-        display:flex;
-        justify-content:space-between;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-        height: 2.5em;
+        background-color: #fff;
+        height: 3em;
+        width: 80vw;
+        margin: 0 auto; 
+        font-weight: 550;
+        li{
+          &:nth-child(1),&:nth-child(2){
+            color:#ee5253;
+          }
+          &:nth-child(3){
+            color:#363636
+          }
+        }
       }
     }
   }
