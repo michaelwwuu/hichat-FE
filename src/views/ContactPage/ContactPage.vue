@@ -198,6 +198,10 @@ export default {
               this.settingDialogShow = false;
               this.back()
             }
+          })
+          .catch((err) => {
+            this.$message({ message: err, type: "error"});
+            return false;
           });
           break;
         case `确认是否删除好友${this.userData.name}？`:
@@ -208,6 +212,10 @@ export default {
               this.settingDialogShow = false;
               this.$router.push({ name: "Address" });
             }
+          })
+          .catch((err) => {
+            this.$message({ message: err, type: "error"});
+            return false;
           });
           break;
       }

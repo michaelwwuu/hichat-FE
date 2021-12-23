@@ -30,8 +30,8 @@
         </el-header>
         <div class="contact-box" v-if="!userData.isContact">
           <ul>
-            <li>封锁</li>
-            <li>删除</li>
+            <li @click="blockUser(userData)">封锁</li>
+            <li @click="deleteUser(userData)">删除</li>
             <li @click="addUser(userData)">加入联络人</li>
           </ul>
         </div>
@@ -47,11 +47,12 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { addContactUser } from "@/api";
+import { addContactUser,addBlockUser,deleteUser } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
+
 
 
 export default {
@@ -176,6 +177,26 @@ export default {
         }
       });
     },
+    deleteUser(data){
+      let deleteContactId = data.toChatId.replace("u", "");
+      deleteUser(deleteContactId).then((res)=>{
+        if (res.code === 200) this.$router.push({ name: "HiChat" });
+      })
+      .catch((err) => {
+        this.$message({ message: err, type: "error"});
+        return false;
+      });
+    },
+    blockUser(data){
+      let blockId = data.toChatId.replace("u", "");
+      addBlockUser({blockId}).then((res)=>{
+        if (res.code === 200) this.$router.push({ name: "HiChat" });
+      })
+      .catch((err) => {
+        this.$message({ message: err, type: "error"});
+        return false;
+      });
+    }
   },
   components: {
     MessagePabel,
