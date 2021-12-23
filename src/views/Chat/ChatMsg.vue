@@ -22,7 +22,20 @@
               </router-link>
             </span>
           </div>
+          <div class="home-header">
+            <div class="home-user"></div>
+            <span class="home-header-title">{{ userData.name }}</span>
+            <div class="home-user-search"></div>
+          </div>
         </el-header>
+        <el-header class="contact-box" height="55px" style="background-color:#FFFFFF">
+          <ul>
+            <li>封锁</li>
+            <li>删除</li>
+            <li>加入联络人</li>
+          </ul>
+        </el-header>
+
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -263,6 +276,7 @@ export default {
           }
         }
       }
+    
       img {
         position: relative;
         top: 7px;
@@ -284,6 +298,15 @@ export default {
         margin-left: 5px;
         font-size: 16px;
         letter-spacing: 1px;
+      }
+    }
+    .contact-box{
+      background-color: #fff;
+      ul{
+        display:flex;
+        justify-content:space-between;
+        align-items: center;
+        height: 2.5em;
       }
     }
   }
