@@ -91,6 +91,10 @@
         name="contact"
         v-if="contactDataList.length > 0"
       >
+        <span slot="label" v-if="contactDataList.length > 0">
+          <span>陌生讯息</span>
+          <el-badge is-dot class="contact-badge"></el-badge>
+        </span>
         <div
           v-for="(item, index) in contactDataList"
           :key="index"
@@ -173,19 +177,20 @@ export default {
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
+      console.log('u'+localStorage.getItem('id'))
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
           this.hiChatDataList = userInfo.recentChat.filter(
-            (item) => !item.isContact && !item.isGroup
+            (item) => item.isContact
           );
           this.groupDataList = userInfo.recentChat.filter(
             (item) => item.isGroup
           );
           this.contactDataList = userInfo.recentChat.filter(
-            (item) => item.isContact
+            (item) => !item.isContact
           );
           break;
         case "SRV_USER_IMAGE":
@@ -246,5 +251,9 @@ export default {
       }
     }
   }
+}
+.contact-badge{
+  vertical-align: initial;
+  padding-left: 5px;
 }
 </style>

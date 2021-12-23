@@ -130,7 +130,7 @@ export default {
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (el.chat.fromChatId !== localStorage.getItem('fromChatId') && !el.isRead) this.readMsgData.push(el.chat.historyId);
+            if (el.chat.fromChatId !== 'u' + localStorage.getItem('id') && !el.isRead) this.readMsgData.push(el.chat.historyId);
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });

@@ -150,7 +150,6 @@ router.beforeEach((to, from, next) => {
       if (res.code === 200) {
         setLocal('username', res.data.username);
         setLocal('id', res.data.id);
-        setLocal('fromChatId', 'u' + res.data.id)
       } else {
         next({ path: '/login' });
       }

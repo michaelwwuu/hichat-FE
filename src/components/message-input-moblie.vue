@@ -189,7 +189,7 @@ export default {
           let message = this.userInfoData;
           message.chatType = "CLI_USER_IMAGE";
           message.id = Math.random();
-          message.fromChatId = localStorage.getItem("fromChatId");
+          message.fromChatId = 'u' + localStorage.getItem('id');
           message.toChatId = this.userData.toChatId;
           message.text = res.data;
           Socket.send(message);
@@ -328,7 +328,7 @@ export default {
           let message = this.userInfoData;
           message.chatType = "CLI_USER_AUDIO";
           message.id = Math.random();
-          message.fromChatId = localStorage.getItem("fromChatId");
+          message.fromChatId = 'u' + localStorage.getItem('id');
           message.toChatId = this.userData.toChatId;
           message.text = res.data;
           Socket.send(message);
@@ -375,7 +375,7 @@ export default {
       let message = this.userInfoData;
       message.chatType = "CLI_USER_SEND";
       message.id = Math.random();
-      message.fromChatId = localStorage.getItem("fromChatId");
+      message.fromChatId = 'u' + localStorage.getItem('id');
       message.toChatId = this.userData.toChatId;
       message.text = this.textAreaTran();
       if (this.blankTesting()) {

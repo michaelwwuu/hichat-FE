@@ -140,9 +140,8 @@ export default {
       })
     },
     goContactPage(data) {
-      let userData = data;
-      userData.toChatId = "u" + data.contactId;
-      localStorage.setItem("userData", JSON.stringify(userData));
+      data.toChatId = "u" + data.contactId;
+      localStorage.setItem("userData", JSON.stringify(data));
       this.$router.push({ name: "ContactPage" });
     },
     goGroupPage(data) {

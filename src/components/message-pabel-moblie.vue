@@ -56,7 +56,6 @@
 
 <script>
 import { gotoBottom } from "@/assets/tools";
-import { getLocal } from "_util/utils.js";
 export default {
   name: "MessagePabel",
   props: {
@@ -102,7 +101,7 @@ export default {
   methods: {
     // 判断讯息Class名称
     judgeClass(item) {
-      if (item.userChatId === getLocal("fromChatId")) {
+      if (item.userChatId === 'u' + localStorage.getItem('id')) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
