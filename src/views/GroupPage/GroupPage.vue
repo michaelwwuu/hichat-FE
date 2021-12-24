@@ -248,50 +248,50 @@ export default {
 
   }
   /deep/.el-dialog-loginOut {
-  overflow: auto;
-  .el-dialog {
-    position: relative;
-    margin: 0 auto 50px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-sizing: border-box;
-    width: 50%;
-    .el-dialog__header {
-      padding: 10px;
-    }
-    .el-dialog__body {
-      text-align: center;
-      padding: 25px 25px 15px;
-      .loginOut-box {
-        img {
-          height: 5em;
-          margin-bottom: 1.2em;
+    overflow: auto;
+    .el-dialog {
+      position: relative;
+      margin: 0 auto 50px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 10px;
+      }
+      .el-dialog__body {
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
         }
       }
-    }
-    .el-dialog__footer {
-      padding: 20px;
-      padding-top: 10px;
-      text-align: right;
-      box-sizing: border-box;
-      .dialog-footer {
-        display: flex;
-        justify-content: space-between;
-        .el-button {
-          width: 100%;
-          border-radius: 8px;
-        }
-        .background-red {
-          background-color: #ee5253;
-          color: #fff;
-        }
-        .border-red {
-          border: 1px solid #fe5f3f;
-          color: #fe5f3f;
+      .el-dialog__footer {
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
         }
       }
     }
   }
-}
 }
 </style>
