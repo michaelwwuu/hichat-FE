@@ -1,36 +1,44 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title">编辑群组</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="add-content">
-      <div class="user-data">
-        <span><img :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
-        <span class="photo-edit" @click="uploadImgShow = true"
-          >变更群组照片</span
-        >
-      </div>
-      <div class="home-footer-btn">
-        <el-button
-          :class="disabled ? 'gray-btn' : 'orange-btn'"
-          :disabled="disabled"
-          @click="editSubmit"
-          >创建群组</el-button
-        >
-      </div>
-    </div>
-    <div class="user-edit-form">
-      <el-form ref="form" :model="groupForm" label-width="100px">
-        <el-form-item label="群组名称">
-          <el-input
-            v-model="groupForm.name"
-            placeholder="群组名称"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-container>
+      <el-main>
+        <el-header height="60px">
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">编辑群组</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div>
+          <div class="add-content">
+            <div class="user-data">
+              <span><img :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
+              <span class="photo-edit" @click="uploadImgShow = true"
+                >变更群组照片</span
+              >
+            </div>
+            <div class="home-footer-btn">
+              <el-button
+                :class="disabled ? 'gray-btn' : 'orange-btn'"
+                :disabled="disabled"
+                @click="editSubmit"
+                >创建群组</el-button
+              >
+            </div>
+          </div>
+          <div class="user-edit-form">
+            <el-form ref="form" :model="groupForm" label-width="100px">
+              <el-form-item label="群组名称">
+                <el-input
+                  v-model="groupForm.name"
+                  placeholder="群组名称"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
     <el-dialog
       title="上傳群组照片"
       :visible.sync="uploadImgShow"
@@ -133,18 +141,14 @@ export default {
 }
 .add-content {
   .user-data {
-    margin: 2.5em auto 0 auto;
     span {
-      display: block;
-      text-align: center;
-      height: 4.5em;
       img {
         height: 4em;
         border-radius: 10px;
       }
     }
     .photo-edit {
-      height: 1.5em;
+      height: 1.5em !important;
       color: #fe5f3f;
     }
   }

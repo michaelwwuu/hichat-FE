@@ -1,41 +1,49 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <router-link :to="'/Home'">
-        <div class="home-user"></div>
-      </router-link>
-      <span class="home-header-title">新增联络人</span>
-      <router-link :to="'/QRcode'"
-        ><div class="home-add-user"></div
-      ></router-link>
-    </div>
-    <div class="home-search">
-      <el-input
-        placeholder="输入欲搜寻的邮箱或帐号ID"
-        prefix-icon="el-icon-search"
-        v-model="searchKey"
-        @keyup.native.enter="searchUserData(searchKey)"
-      >
-      </el-input>
-    </div>
-    <div class="no-data" v-show="noData">
-      <span>此用户不存在</span>
-      <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
-    </div>
+    <el-container>
+      <el-main>
+        <el-header height="125px">
+          <div class="home-header">
+            <router-link :to="'/Home'">
+              <div class="home-user"></div>
+            </router-link>
+            <span class="home-header-title">新增联络人</span>
+            <router-link :to="'/QRcode'"
+              ><div class="home-add-user"></div
+            ></router-link>
+          </div>
+          <div class="home-search">
+            <el-input
+              placeholder="输入欲搜寻的邮箱或帐号ID"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+              @keyup.native.enter="searchUserData(searchKey)"
+            >
+            </el-input>
+          </div>
+        </el-header>
+        <div class="no-data" v-show="noData">
+          <span>此用户不存在</span>
+          <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
+        </div>
 
-    <div v-if="addUser.username !== undefined" class="add-content">
-      <div class="user-data">
-        <span
-          ><img
-            :src="addUser.icon === undefined ? avatarImg : addUser.icon"
-            alt=""
-        /></span>
-        <span>{{ addUser.username }}</span>
-      </div>
-      <div class="home-footer-btn">
-        <el-button @click="joinUserButtom(addUser)">加入联络人</el-button>
-      </div>
-    </div>
+        <div v-if="addUser.username !== undefined" class="add-content">
+          <div class="user-data">
+            <span>
+              <el-image
+                v-if="addUser.icon !== undefined"
+                :src="addUser.icon === undefined ? avatarImg : addUser.icon"
+                :preview-src-list="[addUser.icon]"
+              />
+            </span>            
+            <span>{{ addUser.username }}</span>
+          </div>
+          <div class="home-footer-btn">
+            <el-button @click="joinUserButtom(addUser)">加入联络人</el-button>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -149,18 +157,18 @@ export default {
     }
   }
   .add-content {
-    .user-data {
-      margin: 2.5em auto;
-      span {
-        display: block;
-        text-align: center;
-        height: 5.5em;
-        img {
-          height: 5em;
-          border-radius: 10px;
-        }
-      }
-    }
+    // .user-data {
+    //   margin: 2.5em auto;
+    //   span {
+    //     display: block;
+    //     text-align: center;
+    //     height: 5.5em;
+    //     img {
+    //       height: 5em;
+    //       border-radius: 10px;
+    //     }
+    //   }
+    // }
     .home-footer-btn {
       margin: 1em 0;
       position: absolute;

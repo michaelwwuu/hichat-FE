@@ -1,51 +1,57 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <router-link :to="'/Home'" v-if="groupEditShow">
-        <div class="home-user"></div>
-      </router-link>
-      <div class="home-user" v-else @click="groupEditShow = true"></div>
-      <span class="home-header-title">创建群组</span>
-      <div class="home-add-user"></div>
-    </div>
-    <template v-if="groupEditShow">
-      <div class="home-search">
-        <el-input
-          placeholder="搜寻"
-          prefix-icon="el-icon-search"
-          v-model="searchKey"
-          @keyup.native.enter="developmentMessage(searchKey)"
-        >
-        </el-input>
-      </div>
-      <div class="home-content">
-        <el-checkbox-group v-model="checkList">
-          <el-checkbox
-            :label="item"
-            v-for="(item, index) in contactList"
-            :key="index"
-          >
-            <div class="address-box">
-              <el-image :src="item.icon"/>
-              <div class="msg-box">
-                <span>{{ item.name }}</span>
-              </div>
-            </div>
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div class="home-footer-btn">
-        <el-button
-          :class="disabled ? 'gray-btn' : 'orange-btn'"
-          :disabled="disabled"
-          @click="createGroup"
-          >邀请联络人</el-button
-        >
-      </div>
-    </template>
-    <template v-else>
-      <group-edit :checkList="checkList"/>
-    </template>
+    <el-container>
+      <el-main>
+        <el-header :height="groupEditShow?'125px':'60px'">
+          <div class="home-header">
+            <router-link :to="'/Home'" v-if="groupEditShow">
+              <div class="home-user"></div>
+            </router-link>
+            <div class="home-user" v-else @click="groupEditShow = true"></div>
+            <span class="home-header-title">创建群组</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <template v-if="groupEditShow">
+          <div class="home-search">
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+              @keyup.native.enter="developmentMessage(searchKey)"
+            >
+            </el-input>
+          </div>
+          <div class="home-content">
+            <el-checkbox-group v-model="checkList">
+              <el-checkbox
+                :label="item"
+                v-for="(item, index) in contactList"
+                :key="index"
+              >
+                <div class="address-box">
+                  <el-image :src="item.icon"/>
+                  <div class="msg-box">
+                    <span>{{ item.name }}</span>
+                  </div>
+                </div>
+              </el-checkbox>
+            </el-checkbox-group>
+          </div>
+          <div class="home-footer-btn">
+            <el-button
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="createGroup"
+              >邀请联络人</el-button
+            >
+          </div>
+        </template>
+        <template v-else>
+          <group-edit :checkList="checkList"/>
+        </template>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -98,10 +104,6 @@ export default {
 <style lang="scss" scoped>
 .home-wrapper {
   .home-header {
-    position: fixed;
-    width: -webkit-fill-available;
-    background-color: #eaf5fa;
-    z-index: 9;
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
@@ -128,12 +130,6 @@ export default {
     }
   }
   .home-content {
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: 34.5em;
-    position: relative;
-    top: 7.5em;
-    z-index: 8;
     /deep/.el-checkbox {
       display: flex;
       align-items: center;

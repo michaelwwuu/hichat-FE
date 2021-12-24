@@ -1,32 +1,38 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title">编辑个人资料</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="add-content">
-      <div class="user-data">
-        <span>
-          <el-image
-            v-if="userData.icon !== undefined"
-            :src="userData.icon"
-            :preview-src-list="[userData.icon]"
-          />
-        </span>
-        <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
-      </div>
-      <div class="home-footer-btn">
-        <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
-      </div>
-    </div>
-    <div class="user-edit-form">
-      <el-form ref="form" :model="userEditForm" label-width="100px">
-        <el-form-item label="用户昵称">
-          <el-input v-model="userEditForm.nickname"></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-container>
+      <el-main>
+        <el-header height="55px">
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">编辑个人资料</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div class="add-content">
+          <div class="user-data">
+            <span>
+              <el-image
+                v-if="userData.icon !== undefined"
+                :src="userData.icon"
+                :preview-src-list="[userData.icon]"
+              />
+            </span>
+            <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
+          </div>
+          <div class="home-footer-btn">
+            <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
+          </div>
+          <div class="user-edit-form">
+            <el-form ref="form" :model="userEditForm" label-width="100px">
+              <el-form-item label="用户昵称">
+                <el-input v-model="userEditForm.nickname"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
     <el-dialog
       title="上傳大頭貼"
       :visible.sync="uploadImgShow"
@@ -143,13 +149,6 @@ export default {
   }
   .add-content {
     .user-data {
-      margin: 2.5em auto 0 auto;
-      span {
-        display: block;
-        text-align: center;
-        height: 4.5em;
-
-      }
       .photo-edit {
         height: 1.5em;
         color: #fe5f3f;

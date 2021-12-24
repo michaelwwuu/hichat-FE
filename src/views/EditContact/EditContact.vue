@@ -1,38 +1,45 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title">编辑联络人</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="address-content">
-      <div class="user-data">
-        <el-image
-          v-if="userData.icon !== undefined"
-          :src="userData.icon"
-          :preview-src-list="[userData.icon]"
-        />
-        <div>
-          <span>{{ userData.name }}</span>
-          <span class="user-data-id">
-            ID :
-            <span class="user-paste" @click="copyPaste(userData.username)">{{
-              userData.username
-            }}</span></span
-          >
+    <el-container>
+      <el-main>
+        <el-header height="55px">
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">编辑联络人</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div class="address-content">
+          <div class="user-data">
+            <el-image
+              v-if="userData.icon !== undefined"
+              :src="userData.icon"
+              :preview-src-list="[userData.icon]"
+            />
+            <div>
+              <span>{{ userData.name }}</span>
+              <span class="user-data-id">
+                ID :
+                <span class="user-paste" @click="copyPaste(userData.username)">{{
+                  userData.username
+                }}</span></span
+              >
+            </div>
+          </div>
+          <div class="home-footer-btn">
+            <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
+          </div>
+          <div class="user-edit-form">
+          <el-form ref="form" :model="userEditForm" label-width="100px">
+            <el-form-item label="用户昵称">
+              <el-input v-model="userEditForm.nickname"></el-input>
+            </el-form-item>
+          </el-form>
         </div>
-      </div>
-      <div class="home-footer-btn">
-        <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
-      </div>
-    </div>
-    <div class="user-edit-form">
-      <el-form ref="form" :model="userEditForm" label-width="100px">
-        <el-form-item label="用户昵称">
-          <el-input v-model="userEditForm.nickname"></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
+        </div>
+
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -86,8 +93,6 @@ export default {
   }
   .address-content {
     .user-data {
-      margin: 2.5em auto;
-      text-align: center;
       .user-data-id {
         margin: -3.5em 0 -5em 0;
         font-size: 13px;

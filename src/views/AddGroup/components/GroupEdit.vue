@@ -2,7 +2,7 @@
   <div>
     <div class="add-content">
       <div class="user-data">
-        <span><img :src="groupIcon === ''?require('./../../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
+        <span><el-image :src="groupIcon === ''?require('./../../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
         <span class="photo-edit" @click="uploadImgShow = true"
           >变更群组照片</span
         >
@@ -146,18 +146,8 @@ export default {
 }
 .add-content {
   .user-data {
-    margin: 5em auto 0 auto;
-    span {
-      display: block;
-      text-align: center;
-      height: 4.5em;
-      img {
-        height: 4em;
-        border-radius: 10px;
-      }
-    }
     .photo-edit {
-      height: 1.5em;
+      height:1.5em !important;
       color: #fe5f3f;
     }
   }

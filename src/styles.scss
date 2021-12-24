@@ -61,6 +61,11 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         }
       }
     }
+    .home-content{
+      overflow-x: hidden;
+      flex: 1;
+      overflow-y: auto;
+    }
     .address-box {
       background-color: #ffffff;
       padding: 0.8em 1em;
@@ -94,6 +99,24 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
             font-size: 10px;
           }
         }   
+      }
+    }
+    .add-content{
+      .user-data{
+        margin: 1.5em auto 0 auto;
+        span {
+          display: block;
+          text-align: center;
+          height: 4.5em;
+        }
+        .el-image{
+          width: 4em;
+          border-radius: 10px;
+          .el-image__error{
+            height: 48px;
+            font-size: 10px;
+          }
+        }
       }
     }
     .home-footer {
