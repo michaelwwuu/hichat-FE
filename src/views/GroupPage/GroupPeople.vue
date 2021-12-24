@@ -1,14 +1,16 @@
 <template>
   <div class="home-wrapper">
     <div class="home-header">
-      <router-link :to="'/Home'" v-if="groupEditShow">
+      <router-link :to="'/GroupPage'" style="position: absolute;">
         <div class="home-user"></div>
       </router-link>
-      <div class="home-user" v-else @click="groupEditShow = true"></div>
-      <span class="home-header-title">创建群组</span>
-      <div class="home-add-user"></div>
+      <span class="home-header-title">成员 ({{contactList.length}}) </span>
+      <template v-if="groupData.isAdmin">
+        <div class="home-add-user"></div>
+        <div class="home-user-edit" @click="editBtnShow = true"></div>
+      </template>
     </div>
-    <template v-if="groupEditShow">
+    <template>
       <div class="home-search">
         <el-input
           placeholder="搜寻"
@@ -18,7 +20,7 @@
         >
         </el-input>
       </div>
-      <div class="home-content">
+      <div class="home-content" :class="{'noAdmin': groupData.isAdmin && !editBtnShow}">
         <el-checkbox-group v-model="checkList">
           <el-checkbox
             :label="item"
@@ -34,17 +36,14 @@
           </el-checkbox>
         </el-checkbox-group>
       </div>
-      <div class="home-footer-btn">
+      <div class="home-footer-btn" v-if="editBtnShow">
         <el-button
-          :class="disabled ? 'gray-btn' : 'orange-btn'"
+          :class="disabled ? 'gray-btn' : 'red-btn'"
           :disabled="disabled"
           @click="createGroup"
-          >邀请联络人</el-button
+          >退出</el-button
         >
       </div>
-    </template>
-    <template v-else>
-      <group-edit :checkList="checkList"/>
     </template>
   </div>
 </template>
@@ -52,23 +51,23 @@
 <script>
 import { developmentMessage } from "@/assets/tools";
 import { getContactList } from "@/api";
-import GroupEdit from "./components/GroupEdit.vue";
-
 
 export default {
-  name: "AddGroup",
+  name: "GroupPeople",
   data() {
     return {
+      groupData:{},
+      checkList: [],
       contactList: [],
       searchKey: "",
       disabled: true,
-      groupEditShow:true,
-      checkList: [],
+      editBtnShow:false,
       developmentMessage: developmentMessage,
     };
   },
   created() {
     this.getAddressList();
+    this.groupData = JSON.parse(localStorage.getItem("groupData"));
   },
   watch:{
     checkList(val) {
@@ -85,19 +84,15 @@ export default {
         });
       });
     },
-    createGroup(){
-      if(this.checkList.length > 0) this.groupEditShow = false;
-    }
+
   },
-  components:{
-    GroupEdit
-  }
 };
 </script>
 
 <style lang="scss" scoped>
 .home-wrapper {
   .home-header {
+    margin: 1.5em 1em 1em 1em;
     position: fixed;
     width: -webkit-fill-available;
     background-color: #eaf5fa;
@@ -105,6 +100,24 @@ export default {
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
+    }
+    .home-add-user{
+      background-color: #fff;
+      background-image: url("./../../../static/images/add.png");
+      position: absolute;
+      right: 45px;
+    }
+    .home-user-edit{
+      width: 2em;
+      height: 2em;
+      border-radius: 10px;
+      background-color: #fff;
+      background-image: url("./../../../static/images/edit.png");
+      background-size: 50%;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      right: 0;
     }
   }
   .home-search {
@@ -182,6 +195,11 @@ export default {
       }
     }
   }
+  .noAdmin{
+    /deep/.el-checkbox__input{
+      visibility: hidden;
+    }
+  }
   .home-footer-btn {
     margin: 1em 0;
     position: absolute;
@@ -196,8 +214,8 @@ export default {
       background-color: #b3b3b3;
       color: #fff;
     }
-    .orange-btn {
-      background-color: #fe5f3f;
+    .red-btn {
+      background-color: #ee5253;
       color: #fff;
     }
   }

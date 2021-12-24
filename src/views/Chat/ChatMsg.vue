@@ -31,7 +31,7 @@
         <div class="contact-box" v-if="!userData.isContact">
           <ul>
             <li @click="blockUser(userData)">封锁</li>
-            <li @click="deleteUser(userData)">删除</li>
+            <!-- <li @click="deleteUser(userData)">删除</li> -->
             <li @click="addUser(userData)">加入联络人</li>
           </ul>
         </div>
@@ -39,7 +39,8 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <message-input :userInfoData="userInfoData" :userData="userData" />
+        <div class="disabled-user" v-if="userData.isBlock"><span>該用戶已被封鎖</span></div>
+        <message-input :userInfoData="userInfoData" :userData="userData" v-else/>
       </el-main>
     </el-container>
   </div>
@@ -47,7 +48,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { addContactUser,addBlockUser,deleteUser } from "@/api";
+import { addContactUser,addBlockUser } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -175,22 +176,31 @@ export default {
         } else {
           this.$message({ message: res.message, type: "error" });
         }
-      });
-    },
-    deleteUser(data){
-      let deleteContactId = data.toChatId.replace("u", "");
-      deleteUser(deleteContactId).then((res)=>{
-        if (res.code === 200) this.$router.push({ name: "HiChat" });
       })
       .catch((err) => {
         this.$message({ message: err, type: "error"});
         return false;
       });
     },
+    // deleteUser(data){
+    //   let deleteContactId = data.toChatId.replace("u", "");
+    //   deleteUser(deleteContactId).then((res)=>{
+    //     if (res.code === 200) this.$router.push({ name: "HiChat" });
+    //   })
+    //   .catch((err) => {
+    //     this.$message({ message: err, type: "error"});
+    //     return false;
+    //   });
+    // },
     blockUser(data){
       let blockId = data.toChatId.replace("u", "");
       addBlockUser({blockId}).then((res)=>{
-        if (res.code === 200) this.$router.push({ name: "HiChat" });
+        if (res.code === 200) {
+          this.userData.isBlock = true
+          localStorage.setItem("userData",JSON.stringify(this.userData))
+        } else {
+          this.$message({ message: res.message, type: "error" });
+        }
       })
       .catch((err) => {
         this.$message({ message: err, type: "error"});
@@ -345,14 +355,14 @@ export default {
         align-items: center;
         background-color: #fff;
         height: 3em;
-        width: 80vw;
+        width: 55vw;
         margin: 0 auto; 
         font-weight: 550;
         li{
-          &:nth-child(1),&:nth-child(2){
+          &:nth-child(1){
             color:#ee5253;
           }
-          &:nth-child(3){
+          &:nth-child(2){
             color:#363636
           }
         }
@@ -376,6 +386,16 @@ export default {
       }
     }
   }
+}
+.disabled-user{
+  height: 50px;
+  background-color: rgba(225, 225, 225, 0.85);
+  border-top: 1px solid #dddddd;
+  display: flex;
+  color:#959393;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
 }
 /* width */
 ::-webkit-scrollbar {

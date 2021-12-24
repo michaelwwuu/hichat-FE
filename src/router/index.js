@@ -88,11 +88,22 @@ const routes = [
     name: "GroupPage",
     component: () => import(/* webpackChunkName: "GroupPage" */ '@/views/GroupPage/GroupPage.vue'),
     meta: { keepAlive: false },
-  },  
+  }, 
+  {
+    path: "/GroupPeople",
+    name: "GroupPeople",
+    component: () => import(/* webpackChunkName: "GroupPage" */ '@/views/GroupPage/GroupPeople.vue'),
+  },   
   {
     path: "/EditContact",
     name: "EditContact",
     component: () => import(/* webpackChunkName: "EditContact" */ '@/views/EditContact/EditContact.vue'),
+    meta: { keepAlive: false },
+  },
+  {
+    path: "/EditGroup",
+    name: "EditGroup",
+    component: () => import(/* webpackChunkName: "EditContact" */ '@/views/EditContact/EditGroup.vue'),
     meta: { keepAlive: false },
   },
   {

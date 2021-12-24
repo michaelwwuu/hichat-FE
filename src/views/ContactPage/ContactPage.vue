@@ -157,6 +157,7 @@ export default {
         this.userData.username = res.data.username;
         this.userData.name = res.data.name;
         this.userData.isBlock = res.data.isBlock;
+        this.userData.isContact = res.data.isContact;
         localStorage.setItem("userData", JSON.stringify(this.userData));
       });
     },
@@ -238,8 +239,6 @@ export default {
   }
   .address-content {
     .user-data {
-      margin: 2.5em auto;
-      text-align: center;
       .user-data-id {
         margin: -3.5em 0 -5em 0;
         font-size: 13px;

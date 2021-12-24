@@ -186,6 +186,15 @@ export const addGroup = data => {
   return axios.request(postData)
 }
 
+// 修改群組
+export const updateGroup = data => {
+  let postData = {
+    url: '/api/group/update',
+    method: 'put',
+    data
+  }
+  return axios.request(postData)
+}
 // 封鎖聯絡人
 export const addBlockUser = data => {
   let postData = {

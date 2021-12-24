@@ -18,6 +18,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       margin: 1em;
       display: flex;
       align-items: center;
+      position: fixed;
+      width: -webkit-fill-available;
+      background-color: #eaf5fa;
+      z-index: 9;
       .home-user {
         width: 2em;
         height: 2em;
@@ -42,6 +46,11 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     }
     .home-search {
       margin: 1em;
+      position: fixed;
+      width: -webkit-fill-available;
+      top: 3em;
+      background-color: #eaf5fa;
+      z-index: 9;
       .el-input {
         .el-input__inner {
           background-color: #e9e8e8;
@@ -71,7 +80,15 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }    
     }
     .address-content{
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 90vh;
+      position: relative;
+      top: 3em;
+      z-index: 8;
       .user-data{
+        margin: 1.5em auto 2.5em auto;
+        text-align: center;
         .el-image {
           width: 3em;
           border-radius: 10px;

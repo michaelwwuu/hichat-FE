@@ -102,6 +102,10 @@ export default {
         text-align: center;
         height: 4.5em;
         font-weight: 600;
+        margin-top: 0.3em;
+      }
+      .el-image{
+        width: 4em;
       }  
     }
     .home-footer-btn {

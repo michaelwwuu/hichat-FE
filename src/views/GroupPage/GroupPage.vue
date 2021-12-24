@@ -1,9 +1,14 @@
 <template>
   <div class="home-wrapper">
     <div class="home-header">
-      <div class="home-user" @click="back"></div>
+      <router-link :to="'/Address'">
+        <div class="home-user"></div>
+      </router-link>
       <span class="home-header-title"></span>
-      <div class="home-add-user"></div>
+       <router-link :to="'/EditGroup'" v-if="groupData.isAdmin">
+        <div class="home-add-user edit"></div>
+      </router-link>
+      <div class="home-add-user" v-else></div>
     </div>
     <div class="address-content">
       <div class="user-data">
@@ -49,6 +54,14 @@
         </el-switch>
       </div>
 
+      <div class="setting-disable" v-if="groupData.isAdmin">
+        <span @click="goChatRoom(groupData, '')">
+          <div class="setting-button-left">
+            <img src="./../../../static/images/key.png" alt="" />
+            <span>轉移管理者權限</span>
+          </div>
+        </span>
+      </div>
       <div class="setting-delete" @click="dialogShow('delete')">
         <span>
           <div class="setting-button-left">
@@ -82,7 +95,7 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { getSearchById,addBlockUser,unBlockUser,deleteUser } from "@/api";
+import {  } from "@/api";
 
 export default {
   name: "GroupPage",
@@ -108,7 +121,7 @@ export default {
         {
           name: "成員",
           icon: require("./../../../static/images/users.png"),
-          path: "",
+          path: "GroupPeople",
         },
       ],
       dialogContent:'',
@@ -124,10 +137,6 @@ export default {
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
-    back() {
-      this.$router.back(-1);
-    },
-
   },
 };
 </script>
@@ -139,11 +148,13 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
     }
+    .edit{
+      background-color: #fff;
+      background-image: url("./../../../static/images/edit.png");
+    }
   }
   .address-content {
     .user-data {
-      margin: 2.5em auto;
-      text-align: center;
       .user-data-id {
         margin: -3.5em 0 -5em 0;
         font-size: 13px;
@@ -165,7 +176,8 @@ export default {
       }    
     }
     .setting-button,
-    .setting-delete {
+    .setting-disable,
+    .setting-delete  {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
       &::after {

@@ -7,7 +7,7 @@ function gotoBottom() {
 }
 
 function developmentMessage(data) {
-  if (data === '传送讯息' || data === '关于HiChat' || data === '使用版本' || data === '密码管理' || data === '修改登录密码') return
+  if (data === '传送讯息' || data === '关于HiChat' || data === '使用版本' || data === '密码管理' || data === '修改登录密码'|| data === '成員') return
   this.$message({ message: "功能开发中", type: "warning" });
 }
 

@@ -233,12 +233,12 @@ export default {
 .address-content {
   overflow-x: hidden;
   overflow-y: auto;
-  height: 83vh;
+  height: calc(80vh - 58px);
   position: relative;
-  top: 2em;
+  top: 3em;
   z-index: 8;
   .user-data {
-    margin: 2.5em auto;
+    margin: 1.5em auto 2.5em auto;
     text-align: center;
     .user-data-id {
       margin: -3.5em 0 -5em 0;
