@@ -81,7 +81,7 @@
         <el-button class="border-red" @click="leaveUserDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red">确认</el-button>
+        <el-button class="background-red" @click="removeGroupMember">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -89,7 +89,7 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { getContactList } from "@/api";
+import { groupListMember,removeMember } from "@/api";
 
 export default {
   name: "GroupPeople",
@@ -106,8 +106,10 @@ export default {
     };
   },
   created() {
-    this.getAddressList();
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
+  },
+  mounted() {
+    this.getGroupListMember();
   },
   watch: {
     checkList(val) {
@@ -116,8 +118,9 @@ export default {
     },
   },
   methods: {
-    getAddressList() {
-      getContactList().then((res) => {
+    getGroupListMember() {
+      let groupId = this.groupData.groupId
+      groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
           if (res.icon === undefined)
@@ -125,6 +128,20 @@ export default {
         });
       });
     },
+    removeGroupMember(){
+      let param = {
+        groupId: this.groupData.groupId,
+        memberList: []
+      }
+      this.checkList.forEach((res)=>{
+        param.memberList.push(res.contactId)
+      })
+      removeMember(param).then((res)=>{
+        if(res.code === 200){
+          this.$router.push({ path: "/GroupPage" });
+        }
+      })
+    }
   },
 };
 </script>
@@ -132,11 +149,7 @@ export default {
 <style lang="scss" scoped>
 .home-wrapper {
   .home-header {
-    margin: 1.5em 1em 1em 1em;
-    position: fixed;
-    width: -webkit-fill-available;
-    background-color: #eaf5fa;
-    z-index: 9;
+    margin: 1.5em 1em 1em 1em !important;
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
@@ -144,8 +157,9 @@ export default {
     .home-add-user {
       background-color: #fff;
       background-image: url("./../../../static/images/add.png");
+      margin-right: 10px;
       position: absolute;
-      right: 45px;
+      right: 50px;
     }
     .home-user-edit {
       width: 2em;
@@ -157,7 +171,7 @@ export default {
       background-position: center;
       background-repeat: no-repeat;
       position: absolute;
-      right: 0;
+      right: 14px;
     }
   }
   .home-search {
@@ -199,13 +213,6 @@ export default {
         width: 100%;
         padding-left: 0;
         .address-box {
-          background-color: #ffffff;
-          padding: 0.8em 1em;
-          display: flex;
-          align-items: center;
-          .el-image {
-            width: 4em;
-          }
           .msg-box {
             span {
               display: block;
@@ -231,6 +238,19 @@ export default {
       }
     }
     .group-box {
+      background-color: #ffffff;
+      padding: 0.8em 1em;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      .el-image {
+        width: 3em;
+        border-radius: 10px;
+        .el-image__error{
+          height: 48px;
+          font-size: 10px;
+        }
+      }    
       span {
         padding-left: 1em;
         font-size: 14px;

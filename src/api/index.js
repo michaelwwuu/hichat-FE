@@ -225,3 +225,23 @@ export const deleteUser = data => {
   
   return axios.request(postData)
 }
+
+// 移除成員
+export const removeMember = data => {
+  let postData = {
+    url: '/api/group/removeMember',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 獲取會員訊息
+export const groupListMember = (params) => {
+  let postData = {
+    url: '/api/group/listMember',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
