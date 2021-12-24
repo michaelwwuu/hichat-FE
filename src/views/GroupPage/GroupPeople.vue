@@ -1,50 +1,55 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <router-link :to="'/GroupPage'" style="position: absolute;">
-        <div class="home-user"></div>
-      </router-link>
-      <span class="home-header-title">成员 ({{contactList.length}}) </span>
-      <template v-if="groupData.isAdmin">
-        <div class="home-add-user"></div>
-        <div class="home-user-edit" @click="editBtnShow = true"></div>
-      </template>
-    </div>
-    <template>
-      <div class="home-search">
-        <el-input
-          placeholder="搜寻"
-          prefix-icon="el-icon-search"
-          v-model="searchKey"
-          @keyup.native.enter="developmentMessage(searchKey)"
-        >
-        </el-input>
-      </div>
-      <div class="home-content" :class="{'noAdmin': groupData.isAdmin && !editBtnShow}">
-        <el-checkbox-group v-model="checkList">
-          <el-checkbox
-            :label="item"
-            v-for="(item, index) in contactList"
-            :key="index"
-          >
-            <div class="address-box">
-              <el-image :src="item.icon"/>
-              <div class="msg-box">
-                <span>{{ item.name }}</span>
+    <el-container>
+      <el-main>
+        <el-header height="125px">
+          <div class="home-header">
+            <router-link :to="'/GroupPage'" style="position: absolute;">
+              <div class="home-user"></div>
+            </router-link>
+            <span class="home-header-title">成员 ({{contactList.length}}) </span>
+            <template v-if="groupData.isAdmin">
+              <div class="home-add-user"></div>
+              <div class="home-user-edit" @click="editBtnShow = true"></div>
+            </template>
+          </div>
+          <div class="home-search">
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+              @keyup.native.enter="developmentMessage(searchKey)"
+            >
+            </el-input>
+          </div>
+        </el-header>
+
+        <div class="home-content" :class="{'noAdmin': groupData.isAdmin && !editBtnShow}">
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+              :label="item"
+              v-for="(item, index) in contactList"
+              :key="index"
+            >
+              <div class="address-box">
+                <el-image :src="item.icon"/>
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
+                </div>
               </div>
-            </div>
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div class="home-footer-btn" v-if="editBtnShow">
-        <el-button
-          :class="disabled ? 'gray-btn' : 'red-btn'"
-          :disabled="disabled"
-          @click="createGroup"
-          >退出</el-button
-        >
-      </div>
-    </template>
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <div class="home-footer-btn" v-if="editBtnShow">
+          <el-button
+            :class="disabled ? 'gray-btn' : 'red-btn'"
+            :disabled="disabled"
+            @click="createGroup"
+            >退出</el-button
+          >
+        </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -143,10 +148,6 @@ export default {
   .home-content {
     overflow-x: hidden;
     overflow-y: auto;
-    height: 34.5em;
-    position: relative;
-    top: 7.5em;
-    z-index: 8;
     /deep/.el-checkbox {
       display: flex;
       align-items: center;
@@ -219,5 +220,6 @@ export default {
       color: #fff;
     }
   }
+
 }
 </style>

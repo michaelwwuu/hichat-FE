@@ -1,78 +1,84 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title"></span>
-      <router-link :to="'/EditContact'">
-        <div class="home-add-user"></div>
-      </router-link>
-    </div>
-    <div class="address-content">
-      <div class="user-data">
-        <el-image
-          v-if="userData.icon !== undefined"
-          :src="userData.icon"
-          :preview-src-list="[userData.icon]"
-        />
-        <div>
-          <span>{{ userData.name }}</span>
-          <span class="user-data-id">
-            ID :
-            <span class="user-paste" @click="copyPaste(userData.username)">{{
-              userData.username
-            }}</span></span
+    <el-container>
+      <el-main>
+        <el-header height="60px">
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title"></span>
+            <router-link :to="'/EditContact'">
+              <div class="home-add-user"></div>
+            </router-link>
+          </div>
+        </el-header>
+        <div class="address-content">
+          <div class="user-data">
+            <el-image
+              v-if="userData.icon !== undefined"
+              :src="userData.icon"
+              :preview-src-list="[userData.icon]"
+            />
+            <div>
+              <span>{{ userData.name }}</span>
+              <span class="user-data-id">
+                ID :
+                <span class="user-paste" @click="copyPaste(userData.username)">{{
+                  userData.username
+                }}</span></span
+              >
+            </div>
+          </div>
+
+          <div
+            class="setting-button"
+            v-for="(item, index) in settingData"
+            :key="index"
+            @click="developmentMessage(item.name)"
           >
-        </div>
-      </div>
+            <span @click="goChatRoom(userData, item.path)">
+              <div class="setting-button-left">
+                <img :src="item.icon" alt="" />
+                <span>{{ item.name }}</span>
+              </div>
+              <img src="./../../../static/images/next.png" alt="" />
+            </span>
+          </div>
 
-      <div
-        class="setting-button"
-        v-for="(item, index) in settingData"
-        :key="index"
-        @click="developmentMessage(item.name)"
-      >
-        <span @click="goChatRoom(userData, item.path)">
-          <div class="setting-button-left">
-            <img :src="item.icon" alt="" />
-            <span>{{ item.name }}</span>
+          <div class="setting-notification" @click="developmentMessage('提醒通知')">
+            <div class="setting-button-left">
+              <img src="./../../../static/images/notification.png" alt="" />
+              <span>提醒通知</span>
+            </div>
+            <el-switch
+              v-model="notification"
+              active-color="#fd5f3f"
+              inactive-color="#666666"
+              disabled
+            >
+            </el-switch>
           </div>
-          <img src="./../../../static/images/next.png" alt="" />
-        </span>
-      </div>
-
-      <div class="setting-notification" @click="developmentMessage('提醒通知')">
-        <div class="setting-button-left">
-          <img src="./../../../static/images/notification.png" alt="" />
-          <span>提醒通知</span>
+          <div
+            class="setting-disable"
+            @click="dialogShow(!userData.isBlock ? 'block' : 'unBlock')"
+          >
+            <span>
+              <div class="setting-button-left">
+                <img src="./../../../static/images/blockade.png" alt="" />
+                <span>{{ blockContent }}</span>
+              </div>
+            </span>
+          </div>
+          <div class="setting-delete" @click="dialogShow('delete')">
+            <span>
+              <div class="setting-button-left">
+                <img src="./../../../static/images/trash.png" alt="" />
+                <span>刪除联络人</span>
+              </div>
+            </span>
+          </div>
         </div>
-        <el-switch
-          v-model="notification"
-          active-color="#fd5f3f"
-          inactive-color="#666666"
-          disabled
-        >
-        </el-switch>
-      </div>
-      <div
-        class="setting-disable"
-        @click="dialogShow(!userData.isBlock ? 'block' : 'unBlock')"
-      >
-        <span>
-          <div class="setting-button-left">
-            <img src="./../../../static/images/blockade.png" alt="" />
-            <span>{{ blockContent }}</span>
-          </div>
-        </span>
-      </div>
-      <div class="setting-delete" @click="dialogShow('delete')">
-        <span>
-          <div class="setting-button-left">
-            <img src="./../../../static/images/trash.png" alt="" />
-            <span>刪除联络人</span>
-          </div>
-        </span>
-      </div>
-    </div>
+      </el-main>
+    </el-container>
     <el-dialog
       :visible.sync="settingDialogShow"
       class="el-dialog-loginOut"

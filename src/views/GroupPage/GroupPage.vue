@@ -1,77 +1,83 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <router-link :to="'/Address'">
-        <div class="home-user"></div>
-      </router-link>
-      <span class="home-header-title"></span>
-       <router-link :to="'/EditGroup'" v-if="groupData.isAdmin">
-        <div class="home-add-user edit"></div>
-      </router-link>
-      <div class="home-add-user" v-else></div>
-    </div>
-    <div class="address-content">
-      <div class="user-data">
-        <el-image
-          v-if="groupData.icon !== undefined"
-          :src="groupData.icon"
-          :preview-src-list="[groupData.icon]"
-        />
-        <div>
-          <span>{{ groupData.groupName }}</span>
-          <span class="user-data-id">
-            <span class="user-paste" ></span>
-          </span>
+    <el-container>
+      <el-main>
+        <el-header height="60px">
+          <div class="home-header">
+            <router-link :to="'/Address'">
+              <div class="home-user"></div>
+            </router-link>
+            <span class="home-header-title"></span>
+            <router-link :to="'/EditGroup'" v-if="groupData.isAdmin">
+              <div class="home-add-user edit"></div>
+            </router-link>
+            <div class="home-add-user" v-else></div>
+          </div>
+        </el-header>
+        <div class="address-content">
+          <div class="user-data">
+            <el-image
+              v-if="groupData.icon !== undefined"
+              :src="groupData.icon"
+              :preview-src-list="[groupData.icon]"
+            />
+            <div>
+              <span>{{ groupData.groupName }}</span>
+              <span class="user-data-id">
+                <span class="user-paste" ></span>
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="setting-button"
+            v-for="(item, index) in settingData"
+            :key="index"
+            @click="developmentMessage(item.name)"
+          >
+            <span @click="goChatRoom(groupData, item.path)">
+              <div class="setting-button-left">
+                <img :src="item.icon" alt="" />
+                <span>{{ item.name }}</span>
+              </div>
+              <img src="./../../../static/images/next.png" alt="" />
+            </span>
+          </div>
+
+          <div class="setting-notification" @click="developmentMessage('提醒通知')">
+            <div class="setting-button-left">
+              <img src="./../../../static/images/notification.png" alt="" />
+              <span>提醒通知</span>
+            </div>
+            <el-switch
+              v-model="notification"
+              active-color="#fd5f3f"
+              inactive-color="#666666"
+              disabled
+            >
+            </el-switch>
+          </div>
+
+          <div class="setting-disable" v-if="groupData.isAdmin">
+            <span @click="goChatRoom(groupData, '')">
+              <div class="setting-button-left">
+                <img src="./../../../static/images/key.png" alt="" />
+                <span>轉移管理者權限</span>
+              </div>
+            </span>
+          </div>
+          <div class="setting-delete" @click="dialogShow('delete')">
+            <span>
+              <div class="setting-button-left">
+                <img src="./../../../static/images/logout.png" alt="" />
+                <span>退出群组</span>
+              </div>
+            </span>
+          </div>
+
         </div>
-      </div>
-
-      <div
-        class="setting-button"
-        v-for="(item, index) in settingData"
-        :key="index"
-        @click="developmentMessage(item.name)"
-      >
-        <span @click="goChatRoom(groupData, item.path)">
-          <div class="setting-button-left">
-            <img :src="item.icon" alt="" />
-            <span>{{ item.name }}</span>
-          </div>
-          <img src="./../../../static/images/next.png" alt="" />
-        </span>
-      </div>
-
-      <div class="setting-notification" @click="developmentMessage('提醒通知')">
-        <div class="setting-button-left">
-          <img src="./../../../static/images/notification.png" alt="" />
-          <span>提醒通知</span>
-        </div>
-        <el-switch
-          v-model="notification"
-          active-color="#fd5f3f"
-          inactive-color="#666666"
-          disabled
-        >
-        </el-switch>
-      </div>
-
-      <div class="setting-disable" v-if="groupData.isAdmin">
-        <span @click="goChatRoom(groupData, '')">
-          <div class="setting-button-left">
-            <img src="./../../../static/images/key.png" alt="" />
-            <span>轉移管理者權限</span>
-          </div>
-        </span>
-      </div>
-      <div class="setting-delete" @click="dialogShow('delete')">
-        <span>
-          <div class="setting-button-left">
-            <img src="./../../../static/images/logout.png" alt="" />
-            <span>退出群组</span>
-          </div>
-        </span>
-      </div>
-
-    </div>
+      </el-main>
+    </el-container>
     <el-dialog
       :visible.sync="settingDialogShow"
       class="el-dialog-loginOut"

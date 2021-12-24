@@ -18,10 +18,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       margin: 1em;
       display: flex;
       align-items: center;
-      position: fixed;
-      width: -webkit-fill-available;
-      background-color: #eaf5fa;
-      z-index: 9;
       .home-user {
         width: 2em;
         height: 2em;
@@ -81,11 +77,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     }
     .address-content{
       overflow-x: hidden;
+      flex: 1;
       overflow-y: auto;
-      height: 90vh;
-      position: relative;
-      top: 3em;
-      z-index: 8;
+      // height: 90vh;
+      // position: relative;
+      // top: 3em;
+      // z-index: 8;
       .user-data{
         margin: 1.5em auto 2.5em auto;
         text-align: center;
@@ -177,6 +174,151 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         z-index: 8;
       }
     }  
+    .el-container {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      .el-aside,
+      .el-main {
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        /deep/.el-row {
+          float: right;
+          .el-button {
+            background-image: linear-gradient(#579fff, #3481e8);
+            color: #ffffff;
+          }
+          .el-checkbox__inner {
+            border-radius: 0;
+            border: 1px solid #dcdfe6;
+            &::after {
+              border: 1px solid #4fba00;
+              border-left: 0;
+              border-top: 0;
+            }
+          }
+          .el-checkbox__input.is-checked .el-checkbox__inner {
+            background-color: #ffffff;
+          }
+          .el-checkbox__label {
+            color: #fff;
+          }
+        }
+      }
+      .el-aside {
+        border-radius: 6px 0px 6px 6px;
+      }
+      .el-main {
+        border-radius: 0px 6px 6px 6px;
+      }
+      .el-aside {
+        background: rgba(235, 233, 232, 0.8);
+      }
+      .el-main {
+        padding: 0;
+      }
+      .el-header {
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        border-right: 1px solid #ffffff;
+        .home-header {
+          margin: 1.5em 1em 1em 1em;
+          display: flex;
+          align-items: center;
+          .home-user-link {
+            position: absolute;
+            .home-user {
+              width: 2em;
+              height: 2em;
+              border-radius: 10px;
+              background-size: 50%;
+              background-position: center;
+              background-repeat: no-repeat;
+            }
+          }
+          .home-header-title {
+            margin: 0 auto;
+            color: #10686e;
+            font-weight: 600;
+          }
+          .home-user-photo,
+          .home-user-search {
+            width: 2em;
+            height: 2em;
+            border-radius: 10px;
+            background-color: #fff;
+            background-size: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+          .home-user-search {
+            margin-right: 10px;
+            position: absolute;
+            right: 50px;
+          }
+          .home-photo-link {
+            position: absolute;
+            right: 14px;
+            .home-user-photo {
+              text-align: center;
+              img {
+                top: 0;
+                height: 2em;
+              }
+            }
+          }
+        }
+      
+        img {
+          position: relative;
+          top: 7px;
+        }
+        .online-img {
+          position: relative;
+          top: 9px;
+        }
+        .title,
+        .icon-message {
+          color: #ffffff;
+        }
+        .icon-message {
+          font-size: 20px;
+          vertical-align: middle;
+        }
+        .title {
+          display: inline-block;
+          margin-left: 5px;
+          font-size: 16px;
+          letter-spacing: 1px;
+        }
+      }
+      .contact-box{
+        background-color: #FFFFFF;
+        width: 100vw;
+        ul{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #fff;
+          height: 3em;
+          width: 55vw;
+          margin: 0 auto; 
+          font-weight: 550;
+          li{
+            &:nth-child(1){
+              color:#ee5253;
+            }
+            &:nth-child(2){
+              color:#363636
+            }
+          }
+        }
+      }
+    }
   }
 }
 
