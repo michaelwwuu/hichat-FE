@@ -106,8 +106,10 @@ export default {
         this.contactList.forEach((res) => {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
-        });
+        })
+        .catch(err => console.log(err))
       });
+      
     },
     changeGroupAdmin(){
       let param = {
@@ -119,7 +121,7 @@ export default {
           this.$router.push({ name: "Address" });
         }
       })
-      .catch((err)=>{})
+      .catch(err => console.log(err))
     }
   },
 };

@@ -87,7 +87,11 @@
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>确认是否退出群組？</span>
+        <span v-if="groupData.isAdmin">
+          <span>管理者退出將解散群組</span>
+          <span>确认是否退出？</span>
+        </span>
+        <span v-else>确认是否退出群組？</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="border-red" @click="leaveGroupDialogShow = false"
@@ -147,13 +151,9 @@ export default {
     submitBtn(){
       let groupId = this.groupData.groupId
       leaveGroup({groupId}).then((res)=>{
-        if(res.code === 200){
-          this.$router.push({ path: "/Address" });
-        }
+        if(res.code === 200) this.$router.push({ path: "/Address" });
       })
-      .catch((err)=>{
-
-      })
+      .catch(err => console.log(err))
     }
   },
 };

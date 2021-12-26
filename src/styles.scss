@@ -73,6 +73,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       align-items: center;
       .el-image {
         width: 3em;
+        height: 48px;
         border-radius: 10px;
         .el-image__error{
           height: 48px;
@@ -84,15 +85,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       overflow-x: hidden;
       flex: 1;
       overflow-y: auto;
-      // height: 90vh;
-      // position: relative;
-      // top: 3em;
-      // z-index: 8;
       .user-data{
         margin: 1.5em auto 2.5em auto;
         text-align: center;
         .el-image {
           width: 3em;
+          height: 48px;
           border-radius: 10px;
           .el-image__error{
             height: 48px;
@@ -376,7 +374,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     }
 
   }
-
   .el-radio__inner:hover{
     border: 1px solid #DCDFE6;
   }

@@ -143,6 +143,7 @@ export default {
           this.$router.push({ path: "/GroupPage" });
         }
       })
+      .catch(err => console.log(err))
     }
   },
 };
@@ -254,6 +255,7 @@ export default {
       font-size: 14px;
       /deep/.el-image {
         width: 3em;
+        height: 48px;
         border-radius: 10px;
         .el-image__error{
           height: 48px;
