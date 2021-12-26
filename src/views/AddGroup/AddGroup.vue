@@ -152,6 +152,7 @@ export default {
           align-items: center;
           .el-image {
             width: 4em;
+            height: 4em;
           }    
           .msg-box {
             span {

@@ -263,6 +263,7 @@ export default {
       }
       .el-image {
         width: 4em;
+        height: 4em;
       }    
     }
     .setting-button,

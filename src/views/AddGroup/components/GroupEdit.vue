@@ -39,6 +39,7 @@
       :visible.sync="uploadImgShow"
       width="80%"
       center
+      append-to-body
     >
       <el-upload
         class="upload-demo"
@@ -183,6 +184,7 @@ export default {
     align-items: center;
     .el-image {
       width: 4em;
+      height: 4em;
     }    
     .msg-box {
       span {
@@ -207,8 +209,8 @@ export default {
     }
   }
 }
-/deep/.el-dialog__wrapper {
-  .el-dialog__body {
+.el-dialog__wrapper {
+  /deep/.el-dialog__body {
     .upload-demo {
       .el-upload-list {
         .el-upload-list__item {

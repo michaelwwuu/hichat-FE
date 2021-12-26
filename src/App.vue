@@ -26,6 +26,12 @@ export default {
       this.device = "moblie";
     } else {
       this.device = "pc";
+      this.$confirm('PC 版本開發中', '提示', {
+        showConfirmButton:false,
+        showCancelButton:false,
+        type: 'warning',
+        center: true
+      })
     }
   },
 };
