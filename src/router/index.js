@@ -95,6 +95,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "GroupPage" */ '@/views/GroupPage/GroupPeople.vue'),
   },   
   {
+    path: "/GroupAdminChange",
+    name: "GroupAdminChange",
+    component: () => import(/* webpackChunkName: "GroupPage" */ '@/views/GroupPage/GroupAdminChange.vue'),
+  },  
+  {
     path: "/EditContact",
     name: "EditContact",
     component: () => import(/* webpackChunkName: "EditContact" */ '@/views/EditContact/EditContact.vue'),

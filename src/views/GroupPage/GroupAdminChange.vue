@@ -4,19 +4,11 @@
       <el-main>
         <el-header height="125px">
           <div class="home-header">
-            <router-link :to="'/GroupPage'" style="position: absolute">
+            <router-link :to="'/GroupPage'">
               <div class="home-user"></div>
             </router-link>
-            <span class="home-header-title"
-              >成员 ({{ contactList.length }})
-            </span>
-            <template v-if="groupData.isAdmin && !editBtnShow">
-              <div class="home-add-user"></div>
-              <div class="home-user-edit" @click="editBtnShow = true"></div>
-            </template>
-            <template v-else-if="groupData.isAdmin">
-              <div class="cancel"  @click="editBtnShow = false">取消</div>
-            </template>
+            <span class="home-header-title">转移管理者权限</span>
+            <div class="home-add-user"></div>
           </div>
           <div class="home-search">
             <el-input
@@ -28,51 +20,37 @@
             </el-input>
           </div>
         </el-header>
-        <template v-if="!editBtnShow">
-          <div
-            class="home-content"
-            
-          >
-            <div class="group-box"
+        <div
+          class="home-content"
+          
+        >
+          <el-radio-group v-model="checkList">
+            <el-radio
               v-for="(item, index) in contactList"
-              :key="index">
-              <el-image :src="item.icon" />
-              <div class="msg-box">
-                <span>{{ item.name }}</span>
-              </div>
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <div class="home-content">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox
-                v-for="(item, index) in contactList"
-                :label="item.memberId"
-                :key="index"
-              >
-                <div class="address-box">
-                  <el-image :src="item.icon" />
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
+              :label="item.memberId"
+              :key="index"
+            >
+              <div class="address-box">
+                <el-image :src="item.icon" />
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
                 </div>
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-        </template>
-        <div class="home-footer-btn" v-if="editBtnShow">
+              </div>
+            </el-radio>
+          </el-radio-group>
+        </div>
+        <div class="home-footer-btn">
           <el-button
             :class="disabled ? 'gray-btn' : 'red-btn'"
             :disabled="disabled"
-            @click="leaveUserDialogShow = true"
-            >退出</el-button
+            @click="GroupAdminChange = true"
+            >转移</el-button
           >
         </div>
       </el-main>
     </el-container>
     <el-dialog
-      :visible.sync="leaveUserDialogShow"
+      :visible.sync="GroupAdminChange"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -80,13 +58,13 @@
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>确认是否将所选的联络人退出群组？</span>
+        <span>确认是否將管理者權限轉移給 XXX ？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="leaveUserDialogShow = false"
+        <el-button class="border-red" @click="GroupAdminChange = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="removeGroupMember">确认</el-button>
+        <el-button class="background-red" @click="changeGroupAdmin">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -94,19 +72,18 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember,removeMember } from "@/api";
+import { groupListMember,changeAdmin } from "@/api";
 
 export default {
-  name: "GroupPeople",
+  name: "GroupAdminChange",
   data() {
     return {
       groupData: {},
-      checkList: [],
+      checkList: "",
       contactList: [],
       searchKey: "",
       disabled: true,
-      editBtnShow: false,
-      leaveUserDialogShow: false,
+      GroupAdminChange: false,
       developmentMessage: developmentMessage,
     };
   },
@@ -118,8 +95,7 @@ export default {
   },
   watch: {
     checkList(val) {
-      console.log(val);
-      this.disabled = !val.length > 0;
+      this.disabled = val === '';
     },
   },
   methods: {
@@ -133,16 +109,17 @@ export default {
         });
       });
     },
-    removeGroupMember(){
+    changeGroupAdmin(){
       let param = {
         groupId: this.groupData.groupId,
-        memberList: this.checkList
+        memberId: this.checkList
       }
-      removeMember(param).then((res)=>{
+      changeAdmin(param).then((res)=>{
         if(res.code === 200){
-          this.$router.push({ path: "/GroupPage" });
+          this.$router.push({ name: "Address" });
         }
       })
+      .catch((err)=>{})
     }
   },
 };
@@ -151,36 +128,9 @@ export default {
 <style lang="scss" scoped>
 .home-wrapper {
   .home-header {
-    margin: 1.5em 1em 1em 1em !important;
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-    }
-    .home-add-user {
-      background-color: #fff;
-      background-image: url("./../../../static/images/add.png");
-      margin-right: 10px;
-      position: absolute;
-      right: 50px;
-    }
-    .home-user-edit {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
-      background-color: #fff;
-      background-image: url("./../../../static/images/edit.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: absolute;
-      right: 14px;
-    }
-    .cancel{
-      position: absolute;
-      right: 14px;
-      color:#fe5f3f;
-      font-weight:550;
-      font-size:17px
     }
   }
   .home-search {
@@ -206,19 +156,19 @@ export default {
   .home-content {
     overflow-x: hidden;
     overflow-y: auto;
-    /deep/.el-checkbox {
+    /deep/.el-radio {
       display: flex;
       align-items: center;
       flex-flow: row-reverse;
       background-color: #fff;
       width: 100vw;
-      .el-checkbox__input {
+      .el-radio__input {
         padding-right: 20px;
-        .el-checkbox__inner {
+        .el-radio__inner {
           border-radius: 10px;
         }
       }
-      .el-checkbox__label {
+      .el-radio__label {
         width: 100%;
         padding-left: 0;
         .address-box {
@@ -242,37 +192,6 @@ export default {
             position: absolute;
             right: 1.5em;
             font-size: 14px;
-          }
-        }
-      }
-    }
-    .group-box {
-      background-color: #ffffff;
-      padding: 0.8em 1em;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      /deep/.el-image {
-        width: 3em;
-        border-radius: 10px;
-        .el-image__error{
-          height: 48px;
-          font-size: 10px;
-        }
-      }    
-      .msg-box {
-        span {
-          display: block;
-          padding-left: 1em;
-          font-size: 16px;
-          color: #666666;
-          &::after {
-            content: "";
-            display: block;
-            position: absolute;
-            margin-top: 1em;
-            width: 100%;
-            border-bottom: 0.02em solid #b3b3b3;
           }
         }
       }

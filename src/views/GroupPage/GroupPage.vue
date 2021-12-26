@@ -59,14 +59,14 @@
           </div>
 
           <div class="setting-disable" v-if="groupData.isAdmin">
-            <span @click="goChatRoom(groupData, '')">
+            <span @click="goChatRoom(groupData, 'GroupAdminChange')">
               <div class="setting-button-left">
                 <img src="./../../../static/images/key.png" alt="" />
                 <span>轉移管理者權限</span>
               </div>
             </span>
           </div>
-          <div class="setting-delete" @click="dialogShow('delete')">
+          <div class="setting-delete" @click="leaveGroupDialogShow = true">
             <span>
               <div class="setting-button-left">
                 <img src="./../../../static/images/logout.png" alt="" />
@@ -79,7 +79,7 @@
       </el-main>
     </el-container>
     <el-dialog
-      :visible.sync="settingDialogShow"
+      :visible.sync="leaveGroupDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -87,13 +87,13 @@
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>{{dialogContent}}</span>
+        <span>确认是否退出群組？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="settingDialogShow = false"
+        <el-button class="border-red" @click="leaveGroupDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="submitBtn(dialogContent)">确认</el-button>
+        <el-button class="background-red" @click="submitBtn">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -101,7 +101,8 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import {  } from "@/api";
+import { leaveGroup } from "@/api";
+
 
 export default {
   name: "GroupPage",
@@ -132,7 +133,7 @@ export default {
       ],
       dialogContent:'',
       notification: true,
-      settingDialogShow:false,
+      leaveGroupDialogShow:false,
       developmentMessage: developmentMessage,
     };
   },
@@ -143,6 +144,17 @@ export default {
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
+    submitBtn(){
+      let groupId = this.groupData.groupId
+      leaveGroup({groupId}).then((res)=>{
+        if(res.code === 200){
+          this.$router.push({ path: "/Address" });
+        }
+      })
+      .catch((err)=>{
+
+      })
+    }
   },
 };
 </script>

@@ -348,9 +348,36 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       background-color: #fe5f3f;
       border-color: #fe5f3f;
     }
-    
   }
-  .el-checkbox__inner:hover{
+
+  .el-radio__inner:hover{
+    border: 1px solid #DCDFE6;
+  }
+  .el-radio__input.is-checked{
+    .el-radio__inner{
+      background-color: #fe5f3f;
+      border-color: #fe5f3f;
+      &::after{
+        content: '';
+        width:8px;
+        height: 3px;
+        border: 2px solid white;
+        border-top: transparent;
+        border-right: transparent;
+        text-align: center;
+        display: block;
+        position: absolute;
+        top: 2px;
+        left: 1px;
+        transform: rotate(-45deg);
+        border-radius: 0px;
+        background: none;
+      }
+    }
+
+  }
+
+  .el-radio__inner:hover{
     border: 1px solid #DCDFE6;
   }
 }

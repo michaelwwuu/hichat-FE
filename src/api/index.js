@@ -245,3 +245,22 @@ export const groupListMember = (params) => {
   }
   return axios.request(postData)
 }
+
+// 更換管理者
+export const changeAdmin = data => {
+  let postData = {
+    url: '/api/group/changeAdmin',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+// 更換管理者
+export const leaveGroup = data => {
+  let postData = {
+    url: '/api/group/leaveGroup',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
