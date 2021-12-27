@@ -182,10 +182,6 @@ export default {
     padding: 0.8em 1em;
     display: flex;
     align-items: center;
-    // .el-image {
-    //   width: 4em;
-    //   height: 4em;
-    // }    
     .msg-box {
       span {
         display: block;
