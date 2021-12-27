@@ -73,7 +73,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       align-items: center;
       .el-image {
         width: 3em;
-        height: 48px;
         border-radius: 10px;
         .el-image__error{
           height: 48px;
@@ -90,7 +89,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         text-align: center;
         .el-image {
           width: 3em;
-          height: 48px;
           border-radius: 10px;
           .el-image__error{
             height: 48px;
@@ -108,7 +106,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           height: 4.5em;
         }
         .el-image{
-          width: 4em;
+          width: 3em;
           border-radius: 10px;
           .el-image__error{
             height: 48px;
@@ -289,6 +287,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
               img {
                 top: 0;
                 height: 2em;
+                
               }
             }
           }

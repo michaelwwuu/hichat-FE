@@ -21,7 +21,7 @@
           v-for="(item, index) in hiChatDataList"
           :key="index"
           class="address-box"
-          @click="goChatRoom(item)"
+          @click="goChatRoom(item,'ChatMsg')"
         >
           <el-image
             :src="
@@ -59,18 +59,18 @@
           v-for="(item, index) in groupDataList"
           :key="index"
           class="address-box"
-          @click="goChatRoom(item)"
+          @click="goChatRoom(item,'ChatGroupMsg')"
         >
           <el-image :src="item.icon" />
           <div class="msg-box">
             <span>{{ item.name }}</span>
-            <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+            <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{
               item.lastChat.text
             }}</span>
-            <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+            <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
               >传送了语音</span
             >
-            <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+            <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
               >传送了图片</span
             >
           </div>
@@ -99,7 +99,7 @@
           v-for="(item, index) in contactDataList"
           :key="index"
           class="address-box"
-          @click="goChatRoom(item)"
+          @click="goChatRoom(item,'ChatMsg')"
         >
           <el-image :src="item.icon" />
           <div class="msg-box">
@@ -177,7 +177,6 @@ export default {
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
-      console.log('u'+localStorage.getItem('id'))
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
@@ -190,19 +189,20 @@ export default {
             (item) => item.isGroup
           );
           this.contactDataList = userInfo.recentChat.filter(
-            (item) => !item.isContact
+            (item) => !item.isContact && item.isContact !==null
           );
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
+        case "SRV_GROUP_SEND":
           this.getHiChatDataList();
           break;
       }
     },
-    goChatRoom(data) {
+    goChatRoom(data,path) {
       localStorage.setItem("userData", JSON.stringify(data));
-      this.$router.push({ name: "ChatMsg" });
+      this.$router.push({ name: path });
     },
   },
 };

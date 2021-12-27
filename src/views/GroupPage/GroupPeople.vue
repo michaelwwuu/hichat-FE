@@ -174,7 +174,7 @@ export default {
       background-position: center;
       background-repeat: no-repeat;
       position: absolute;
-      right: 14px;
+      right: 16px;
     }
     .cancel{
       position: absolute;

@@ -170,9 +170,10 @@ export default {
       type: Object,
     },
     // 当前用户
-    userData: {
+    groupData: {
       type: Object,
     },
+    
   },
   methods: {
     // 取得圖片
@@ -187,14 +188,15 @@ export default {
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
-          message.chatType = "CLI_USER_IMAGE";
+          message.chatType = "CLI_GROUP_IMAGE";
           message.id = Math.random();
           message.fromChatId = 'u' + localStorage.getItem('id');
-          message.toChatId = this.userData.toChatId;
+          message.toChatId = 'g' + this.groupData.groupId;
           message.text = res.data;
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
+          
         }
       });
     },
@@ -279,6 +281,7 @@ export default {
           this.endHandler();
           this.isVoice = false;
           this.disabledPlay = false;
+          this.sendAduioShow = false;
           this.endDisabledPlay = true;
           this.$message({ message: e, type: "warning" });
         },
@@ -326,10 +329,10 @@ export default {
       uploadMessageFile(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
-          message.chatType = "CLI_USER_AUDIO";
+          message.chatType = "CLI_GROUP_AUDIO";
           message.id = Math.random();
           message.fromChatId = 'u' + localStorage.getItem('id');
-          message.toChatId = this.userData.toChatId;
+          message.toChatId = 'g' + this.groupData.groupId,
           message.text = res.data;
           Socket.send(message);
           this.sendAduioShow = false;
@@ -373,13 +376,13 @@ export default {
     // 发送消息
     sendMessage() {
       let message = { 
-        chatType: "CLI_USER_SEND",
+        chatType: "CLI_GROUP_SEND",
         id: Math.random(),
-        tokenType: 0,
-        toChatId:this.userData.toChatId,
+        toChatId:'g' + this.groupData.groupId,
         text:this.textAreaTran(),
         deviceId: localStorage.getItem('UUID'),
-        token: localStorage.getItem('token')
+        token: localStorage.getItem('token'),
+        tokenType: 0,
       }
       if (this.blankTesting()) {
         // 发送服务器

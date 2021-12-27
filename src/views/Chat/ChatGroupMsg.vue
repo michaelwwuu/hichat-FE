@@ -9,13 +9,13 @@
                 <div class="home-user"></div>
               </router-link>
             </span>
-            <span class="home-header-title">{{ userData.name }}</span>
-            <div class="home-user-search"></div>
+            <span class="home-header-title">{{ groupData.groupName }}</span>
+            <!-- <div class="home-user-search"></div> -->
             <span class="home-photo-link">
-              <router-link :to="'/ContactPage'">
+              <router-link :to="'/GroupPage'">
                 <div class="home-user-photo">
                   <img
-                    src="./../../../static/images/image_user_defult.png"
+                    :src="groupData.icon === undefined ?'./../../../static/images/image_user_defult.png':groupData.icon"
                     alt=""
                   />
                 </div>
@@ -23,19 +23,11 @@
             </span>
           </div>
         </el-header>
-        <div class="contact-box" v-if="!userData.isContact">
-          <ul>
-            <li @click="blockUser(userData)">封锁</li>
-            <!-- <li @click="deleteUser(userData)">删除</li> -->
-            <li @click="addUser(userData)">加入联络人</li>
-          </ul>
-        </div>
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="disabled-user" v-if="userData.isBlock"><span>該用戶已被封鎖</span></div>
-        <message-input :userInfoData="userInfoData" :userData="userData" v-else/>
+        <message-input :userInfoData="userInfoData" :groupData="groupData"/>
       </el-main>
     </el-container>
   </div>
@@ -43,16 +35,14 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { addContactUser,addBlockUser } from "@/api";
+import { groupListMember } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
-import MessagePabel from "@/components/message-pabel-moblie";
-import MessageInput from "@/components/message-input-moblie";
-
-
+import MessagePabel from "@/components/message-group-moblie";
+import MessageInput from "@/components/message-group-input-moblie";
 
 export default {
-  name: "ChatMsg",
+  name: "ChatGroupMsg",
   data() {
     return {
       concats: [],
@@ -62,12 +52,14 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      userData: {},
+      groupData: {},
       readMsgData: [],
+      contactList:[],
     };
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.groupData = JSON.parse(localStorage.getItem("groupData"));
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
@@ -75,6 +67,7 @@ export default {
   },
   mounted() {
     this.getChatHistoryMessage();
+    this.getGroupListMember()
   },
   computed: {
     ...mapState({
@@ -85,7 +78,17 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-
+    getGroupListMember() {
+      let groupId = this.groupData.groupId
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined)
+            res.icon = require("./../../../static/images/image_user_defult.png");
+        });
+        localStorage.setItem("groupUserList", JSON.stringify(this.contactList))
+      });
+    },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -103,12 +106,9 @@ export default {
     // 獲取歷史訊息
     getChatHistoryMessage() {
       let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_HISTORY_REQ";
+      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId =
-        this.userData.toChatId === undefined
-          ? "u" + this.userData.contactId
-          : this.userData.toChatId;
+      historyMessageData.toChatId = "g" + this.groupData.groupId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
@@ -130,14 +130,14 @@ export default {
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         // 发送讯息成功
-        case "SRV_USER_IMAGE":
-        case "SRV_USER_AUDIO":
-        case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
+        case "SRV_GROUP_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
           break;
         // 历史讯息
-        case "SRV_HISTORY_RSP":
+        case "SRV_GROUP_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (el.chat.fromChatId !== 'u' + localStorage.getItem('id') && !el.isRead) this.readMsgData.push(el.chat.historyId);
@@ -158,49 +158,7 @@ export default {
           break;
       }
     },
-    addUser(data) {
-      let parmas = {
-        contactId: data.toChatId.replace("u", ""),
-        name: data.name,
-      };
-      addContactUser(parmas).then((res) => {
-        if (res.code === 200) {
-          this.userData.isContact = true
-          localStorage.setItem("userData",JSON.stringify(this.userData))
-        } else {
-          this.$message({ message: res.message, type: "error" });
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
-    },
-    // deleteUser(data){
-    //   let deleteContactId = data.toChatId.replace("u", "");
-    //   deleteUser(deleteContactId).then((res)=>{
-    //     if (res.code === 200) this.$router.push({ name: "HiChat" });
-    //   })
-    //   .catch((err) => {
-    //     this.$message({ message: err, type: "error"});
-    //     return false;
-    //   });
-    // },
-    blockUser(data){
-      let blockId = data.toChatId.replace("u", "");
-      addBlockUser({blockId}).then((res)=>{
-        if (res.code === 200) {
-          this.userData.isBlock = true
-          localStorage.setItem("userData",JSON.stringify(this.userData))
-        } else {
-          this.$message({ message: res.message, type: "error" });
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
-    }
+    
   },
   components: {
     MessagePabel,

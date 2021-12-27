@@ -12,7 +12,7 @@
         <div>
           <div class="add-content">
             <div class="user-data">
-              <span><img :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
+              <span><img :src="groupData.icon === ''?require('./../../../static/images/image_group_defult.png') : groupData.icon" alt="" /></span>
               <span class="photo-edit" @click="uploadImgShow = true"
                 >变更群组照片</span
               >
@@ -106,7 +106,7 @@ export default {
         if (res.code === 200) {
           this.fileList = [];
           this.uploadImgShow = false;
-          this.groupIcon = res.data
+          this.groupData.icon = res.data
         }
       });
     },

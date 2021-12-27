@@ -217,6 +217,9 @@ export default {
       localStorage.removeItem("username");
       localStorage.removeItem("userData");
       localStorage.removeItem("groupData");
+      localStorage.removeItem("fromChatId");
+      localStorage.removeItem("groupUserList");
+      window.location.reload();
     },
   },
   components: {

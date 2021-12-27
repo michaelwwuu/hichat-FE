@@ -4,7 +4,7 @@
       <el-main>
         <el-header height="60px">
           <div class="home-header">
-            <router-link :to="'/Address'">
+            <router-link :to="'/hiChat'">
               <div class="home-user"></div>
             </router-link>
             <span class="home-header-title"></span>
@@ -117,7 +117,7 @@ export default {
         {
           name: "传送讯息",
           icon: require("./../../../static/images/chat_icon.png"),
-          path: "ChatMsg",
+          path: "ChatGroupMsg",
         },
         {
           name: "在对话中搜寻",
@@ -154,7 +154,10 @@ export default {
         if(res.code === 200) this.$router.push({ path: "/Address" });
       })
       .catch(err => console.log(err))
-    }
+    },
+    back() {
+      this.$router.back(-1);
+    },
   },
 };
 </script>

@@ -157,18 +157,6 @@ export default {
     }
   }
   .add-content {
-    // .user-data {
-    //   margin: 2.5em auto;
-    //   span {
-    //     display: block;
-    //     text-align: center;
-    //     height: 5.5em;
-    //     img {
-    //       height: 5em;
-    //       border-radius: 10px;
-    //     }
-    //   }
-    // }
     .home-footer-btn {
       margin: 1em 0;
       position: absolute;
