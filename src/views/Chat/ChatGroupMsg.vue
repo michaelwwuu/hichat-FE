@@ -86,14 +86,16 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
-        localStorage.setItem("groupUserList", JSON.stringify(this.contactList))
       });
     },
     // 訊息統一格式
     messageList(data) {
+      console.log('data',data)
       this.chatRoomMsg = {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
+        icon:data.chat.icon,
+        name:data.chat.name,
         message: {
           time: data.chat.sendTime,
           content: data.chat.text,
@@ -133,6 +135,12 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+          this.contactList.forEach((item) => {
+            if (userInfo.chat.fromChatId === "u" + item.memberId) {
+              userInfo.chat.icon = item.icon;
+              userInfo.chat.name = item.name;
+            }
+          });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
           break;
@@ -141,6 +149,12 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (el.chat.fromChatId !== 'u' + localStorage.getItem('id') && !el.isRead) this.readMsgData.push(el.chat.historyId);
+            this.contactList.forEach((item) => {
+              if (el.chat.fromChatId === "u" + item.memberId) {
+                el.chat.icon = item.icon;
+                el.chat.name = item.name;
+              }
+            });
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });

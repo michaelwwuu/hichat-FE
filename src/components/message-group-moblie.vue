@@ -80,32 +80,19 @@ export default {
       message: [],
       newMessageData: {},
       gotoBottom: gotoBottom,
-      groupUserList: [],
+      
     };
-  },
-  created() {
-    this.groupUserList = JSON.parse(localStorage.getItem("groupUserList"));
   },
   watch: {
     messageData(val) {
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>!set.has(item.historyId) ? set.add(item.historyId) : false);
-      console.log(val)
       this.gotoBottom();
     },
     message(val) {
       this.newMessageData = {};
-      val.forEach((el) => {
-        this.$nextTick(() => {
-          this.groupUserList.forEach((item) => {
-            if (el.userChatId === "u" + item.memberId) {
-              el.icon = item.icon;
-              el.name = item.name;
-            }
-          });
-        });
-        
+      val.forEach((el) => {      
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
