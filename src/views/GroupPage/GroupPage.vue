@@ -4,9 +4,7 @@
       <el-main>
         <el-header height="60px">
           <div class="home-header">
-            <router-link :to="'/hiChat'">
-              <div class="home-user"></div>
-            </router-link>
+            <div class="home-user" @click="back"></div>
             <span class="home-header-title"></span>
             <router-link :to="'/EditGroup'" v-if="groupData.isAdmin">
               <div class="home-add-user edit"></div>
@@ -158,6 +156,7 @@ export default {
     back() {
       this.$router.back(-1);
     },
+
   },
 };
 </script>

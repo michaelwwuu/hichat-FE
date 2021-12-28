@@ -21,7 +21,7 @@
           class="address-box"
           v-for="(item, index) in contactList"
           :key="index"
-          @click="goContactPage(item)"
+          @click="goContactPage(item,'ContactPage')"
         >
           <el-image :src="item.icon" />
           <span>{{ item.name }}</span>
@@ -32,7 +32,7 @@
           class="address-box"
           v-for="(item, index) in groupList"
           :key="index"
-          @click="goGroupPage(item)"
+          @click="goContactPage(item,'GroupPage')"
         >
           <el-image :src="item.icon"/>
           <span>{{ item.groupName }}</span>
@@ -107,6 +107,7 @@ export default {
   created() {
     this.getAddressList();
     this.getGroupDataList()
+    this.userData = JSON.parse(localStorage.getItem("userData")); 
   },
   methods: {
     copyUrl() {
@@ -139,22 +140,15 @@ export default {
         });
       })
     },
-    goContactPage(data) {
-      data.toChatId = "u" + data.contactId;
-      localStorage.setItem("userData", JSON.stringify(data));
-      this.$router.push({ name: "ContactPage" });
-    },
-    goGroupPage(data) {
-      localStorage.setItem("groupData", JSON.stringify(data));
-      this.$router.push({ name: "GroupPage" });
-    },    
-    // handleClick(tab) {
-    //   if(tab.name === 'address'){
-    //     this.getAddressList()
-    //   }else if(tab.name === 'group'){
-    //     this.getGroupDataList()
-    //   }
-    // }
+    goContactPage(data,path) {
+      if(path === 'ContactPage'){
+        data.toChatId = "u" + data.contactId;
+        localStorage.setItem("userData", JSON.stringify(data));
+      }else{
+        localStorage.setItem("groupData", JSON.stringify(data));
+      }
+      this.$router.push({ name: path });
+    },   
   },
   components: {
     VueQr,

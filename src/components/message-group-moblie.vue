@@ -64,6 +64,8 @@
 
 <script>
 import { gotoBottom } from "@/assets/tools";
+import { groupListMember } from "@/api";
+
 export default {
   name: "MessagePabel",
   props: {
@@ -80,11 +82,12 @@ export default {
       message: [],
       newMessageData: {},
       gotoBottom: gotoBottom,
-      groupDataList:[],
+      contactList:[],
     };
   },
   created() {
-    this.groupDataList = JSON.parse(localStorage.getItem('groupDataList'))
+    this.groupData = JSON.parse(localStorage.getItem('groupData'))
+    this.getGroupListMember()
   },
   watch: {
     messageData(val) {
@@ -95,13 +98,7 @@ export default {
     },
     message(val) {
       this.newMessageData = {};
-      val.forEach((el) => {      
-        this.groupDataList.forEach((item) =>{
-          if(el.userChatId === 'u'+item.memberId){
-            el.icon = item.icon
-            el.name = item.name
-          }
-        })
+      val.forEach((el) => {   
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
@@ -122,6 +119,24 @@ export default {
       } else {
         return "message-layout-left";
       }
+    },
+    getGroupListMember() {
+      let groupId = this.groupData.groupId
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined){
+            res.icon = require("./../../static/images/image_user_defult.png");
+          }
+          this.message.forEach((el) => {
+            if(el.userChatId === 'u' + res.memberId){
+              el.icon = res.icon
+              el.name = res.name
+            }
+          })
+        });
+
+      });
     },
   },
 };
@@ -168,6 +183,11 @@ export default {
             .message-name{
               font-size: 13px;
               color: #919191;
+              padding-bottom: 10px;
+            }
+            audio{
+              width: 44vw;
+              height: 1em;
             }
           }
         }

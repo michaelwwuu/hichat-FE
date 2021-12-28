@@ -68,7 +68,15 @@
               </div>
             </span>
           </div>
-          <div class="setting-delete" @click="dialogShow('delete')">
+          <div class="setting-delete" v-if="!userData.isContact" @click="dialogShow('add')">
+            <span>
+              <div class="setting-button-left">
+                <img src="./../../../static/images/add_user.png" alt="" />
+                <span>加入联络人</span>
+              </div>
+            </span>
+          </div>
+          <div class="setting-delete" v-else @click="dialogShow('delete')">
             <span>
               <div class="setting-button-left">
                 <img src="./../../../static/images/trash.png" alt="" />
@@ -76,6 +84,7 @@
               </div>
             </span>
           </div>
+          
         </div>
       </el-main>
     </el-container>
@@ -99,12 +108,29 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="addContactDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>已加入联络人</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="back()"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { getSearchById, addBlockUser, unBlockUser, deleteUser } from "@/api";
+import { getSearchById, addBlockUser, unBlockUser, deleteUser,addContactUser } from "@/api";
 
 export default {
   name: "ContactPage",
@@ -128,10 +154,12 @@ export default {
           path: "",
         },
       ],
+      groupDataList:[],
       dialogContent: "",
       blockContent: "",
       notification: true,
       settingDialogShow: false,
+      addContactDialogShow:false,
       developmentMessage: developmentMessage,
     };
   },
@@ -172,7 +200,6 @@ export default {
     },
     dialogShow(type) {
       this.settingDialogShow = true;
-      console.log(type);
       switch (type) {
         case "block":
         case "unBlock":
@@ -185,6 +212,9 @@ export default {
             this.userData.name
           }？`;
           break;
+        case "add":
+          this.dialogContent = `确认是否将${this.userData.name}加入联络人`;
+          break;  
       }
     },
     submitBtn(dialogContent) {
@@ -212,7 +242,6 @@ export default {
           });
           break;
         case `确认是否删除好友${this.userData.name}？`:
-          console.log(456);
           let contactId = this.userData.toChatId.replace("u", "");
           deleteUser(contactId).then((res) => {
             if (res.code === 200) {
@@ -225,6 +254,17 @@ export default {
             return false;
           });
           break;
+        case `确认是否将${this.userData.name}加入联络人`:
+          let parmas = {
+            contactId: this.userData.memberId,
+            name: this.userData.username,
+          };
+          addContactUser(parmas).then((res) => {
+            if (res.code === 200) {
+              this.settingDialogShow = false;
+              this.addContactDialogShow = true;
+            } 
+          });
       }
     },
   },
@@ -367,6 +407,10 @@ export default {
           }
           .background-red {
             background-color: #ee5253;
+            color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
             color: #fff;
           }
           .border-red {

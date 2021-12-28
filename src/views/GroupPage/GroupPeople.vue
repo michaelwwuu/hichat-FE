@@ -4,9 +4,7 @@
       <el-main>
         <el-header height="125px">
           <div class="home-header">
-            <router-link :to="'/GroupPage'" style="position: absolute">
-              <div class="home-user"></div>
-            </router-link>
+            <div class="home-user" @click="back" style="position: absolute"></div>
             <span class="home-header-title"
               >成员 ({{ contactList.length }})
             </span>
@@ -29,14 +27,12 @@
           </div>
         </el-header>
         <template v-if="!editBtnShow">
-          <div
-            class="home-content"
-            
-          >
+          <div class="home-content" >
             <div class="group-box"
               v-for="(item, index) in contactList"
-              :key="index">
-              <el-image :src="item.icon" />
+              :key="index"
+              @click="goContactPage(item)">
+              <el-image :src="item.icon" v-if="item.icon !== undefined" lazy/>
               <div class="msg-box">
                 <span>{{ item.name }}</span>
               </div>
@@ -118,7 +114,6 @@ export default {
   },
   watch: {
     checkList(val) {
-      console.log(val);
       this.disabled = !val.length > 0;
     },
   },
@@ -128,8 +123,9 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
-          if (res.icon === undefined)
+          if (res.icon === undefined){
             res.icon = require("./../../../static/images/image_user_defult.png");
+          }
         });
       });
     },
@@ -139,11 +135,23 @@ export default {
         memberList: this.checkList
       }
       removeMember(param).then((res)=>{
-        if(res.code === 200){
-          this.$router.push({ path: "/GroupPage" });
-        }
+        if(res.code === 200) this.$router.push({ path: "/GroupPage" });
       })
       .catch(err => console.log(err))
+    },
+    back() {
+      this.$router.back(-1);
+    },
+    goContactPage(data){
+      if(data.memberId === JSON.parse(localStorage.getItem("id"))){
+        this.$message({ message: "此即为您的帐号", type: "warning" });
+      }else{
+        data.toChatId = "u" + data.memberId;
+        localStorage.setItem("userData", JSON.stringify(data));
+        this.$router.push({ name: 'ContactPage' });
+      }
+
+      
     }
   },
 };
@@ -255,7 +263,6 @@ export default {
       font-size: 14px;
       /deep/.el-image {
         width: 3em;
-        height: 48px;
         border-radius: 10px;
         .el-image__error{
           height: 48px;

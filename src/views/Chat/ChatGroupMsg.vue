@@ -58,7 +58,6 @@ export default {
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     Socket.$on("message", this.handleGetMessage); 
   },
@@ -109,7 +108,7 @@ export default {
       let historyMessageData = this.userInfoData;
       historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId = "g" + this.groupData.groupId;
+      historyMessageData.toChatId = 'g' + this.groupData.groupId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
