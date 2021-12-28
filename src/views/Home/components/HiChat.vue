@@ -157,7 +157,6 @@ export default {
       wsRes: (state) => state.ws.wsRes,
     }),
   },
-  watch: {},
   mounted() {
     this.getHiChatDataList();
   },

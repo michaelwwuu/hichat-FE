@@ -60,14 +60,14 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    Socket.$on("message", this.handleGetMessage);
+    Socket.$on("message", this.handleGetMessage); 
+  },
+  mounted() {
+    this.getGroupListMember()
+    this.getChatHistoryMessage();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
-  },
-  mounted() {
-    this.getChatHistoryMessage();
-    this.getGroupListMember()
   },
   computed: {
     ...mapState({
@@ -86,11 +86,11 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
+        localStorage.setItem('groupDataList',JSON.stringify(this.contactList))
       });
     },
     // 訊息統一格式
     messageList(data) {
-      console.log('data',data)
       this.chatRoomMsg = {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
@@ -104,7 +104,6 @@ export default {
         userChatId: data.chat.fromChatId,
       };
     },
-
     // 獲取歷史訊息
     getChatHistoryMessage() {
       let historyMessageData = this.userInfoData;
@@ -115,7 +114,6 @@ export default {
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
-
     // 已讀
     readMsgShow() {
       let sendReadMessageData = this.userInfoData;
@@ -124,14 +122,12 @@ export default {
       sendReadMessageData.targetArray = this.readMsgData;
       Socket.send(sendReadMessageData);
     },
-
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
-        // 发送讯息成功
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
@@ -149,12 +145,6 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (el.chat.fromChatId !== 'u' + localStorage.getItem('id') && !el.isRead) this.readMsgData.push(el.chat.historyId);
-            this.contactList.forEach((item) => {
-              if (el.chat.fromChatId === "u" + item.memberId) {
-                el.chat.icon = item.icon;
-                el.chat.name = item.name;
-              }
-            });
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });

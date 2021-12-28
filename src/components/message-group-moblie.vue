@@ -80,8 +80,11 @@ export default {
       message: [],
       newMessageData: {},
       gotoBottom: gotoBottom,
-      
+      groupDataList:[],
     };
+  },
+  created() {
+    this.groupDataList = JSON.parse(localStorage.getItem('groupDataList'))
   },
   watch: {
     messageData(val) {
@@ -93,6 +96,12 @@ export default {
     message(val) {
       this.newMessageData = {};
       val.forEach((el) => {      
+        this.groupDataList.forEach((item) =>{
+          if(el.userChatId === 'u'+item.memberId){
+            el.icon = item.icon
+            el.name = item.name
+          }
+        })
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
