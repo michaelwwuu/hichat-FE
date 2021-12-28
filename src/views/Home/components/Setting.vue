@@ -133,12 +133,12 @@ export default {
         {
           name: "密码管理",
           icon: require("./../../../../static/images/safe.png"),
-          path: "/passwordMange",
+          path: "/PasswordMange",
         },
         {
           name: "封锁名单",
           icon: require("./../../../../static/images/blockade_green.png"),
-          path: "",
+          path: "/BlockMange",
         },
         {
           name: "提醒",

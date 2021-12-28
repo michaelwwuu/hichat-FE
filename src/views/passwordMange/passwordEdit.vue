@@ -125,7 +125,7 @@
       </div>
       <div align="center">登录密码已修改。</div>
       <span slot="footer" class="dialog-footer">
-        <router-link to="/passwordMange">
+        <router-link to="/PasswordMange">
           <el-button @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
@@ -137,7 +137,7 @@
 import { updatePassword } from "@/api";
 
 export default {
-  name: "passwordEdit",
+  name: "PasswordEdit",
   data() {
     return {
       loginForm: {

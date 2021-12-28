@@ -45,13 +45,13 @@
 import { developmentMessage } from "@/assets/tools";
 
 export default {
-  name: "passwordMange",
+  name: "PasswordMange",
   data() {
     return {
       aboutData: [
         {
           name: "修改登录密码",
-          path: "/passwordEdit",
+          path: "/PasswordEdit",
         },
         {
           name: "生物辨识",

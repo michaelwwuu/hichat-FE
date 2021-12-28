@@ -273,3 +273,13 @@ export const addMember = data => {
   }
   return axios.request(postData)
 }
+
+// 查詢封鎖名單
+export const blockListMember = (params) => {
+  let postData = {
+    url: '/api/member/block/list',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
