@@ -264,3 +264,12 @@ export const leaveGroup = data => {
   }
   return axios.request(postData)
 }
+// 添加成員
+export const addMember = data => {
+  let postData = {
+    url: '/api/group/addMember',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}

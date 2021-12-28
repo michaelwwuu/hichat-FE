@@ -4,19 +4,9 @@
       <el-main>
         <el-header height="125px">
           <div class="home-header">
-            <div class="home-user" @click="back" style="position: absolute"></div>
-            <span class="home-header-title"
-              >成员 ({{ contactList.length }})
-            </span>
-            <template v-if="groupData.isAdmin && !editBtnShow">
-              <router-link :to="'GroupAddPeople'" style="position: absolute; right: 50px;">
-                <div class="home-add-user" ></div>
-              </router-link>  
-              <div class="home-user-edit" @click="editBtnShow = true"></div>
-            </template>
-            <template v-else-if="groupData.isAdmin">
-              <div class="cancel"  @click="editBtnShow = false">取消</div>
-            </template>
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">邀请联络人</span>
+            <div class="home-add-user"></div>
           </div>
           <div class="home-search">
             <el-input
@@ -28,63 +18,47 @@
             </el-input>
           </div>
         </el-header>
-        <template v-if="!editBtnShow">
-          <div class="home-content" >
-            <div class="group-box"
-              v-for="(item, index) in contactList"
+        <div class="home-content">
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+              v-for="(item, index) in newContactDataList"
+              :label="item.memberId"
               :key="index"
-              @click="goContactPage(item)">
-              <el-image :src="item.icon" v-if="item.icon !== undefined" lazy/>
-              <div class="msg-box">
-                <span>{{ item.name }}</span>
-              </div>
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <div class="home-content">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox
-                v-for="(item, index) in contactList"
-                :label="item.memberId"
-                :key="index"
-              >
-                <div class="address-box">
-                  <el-image :src="item.icon" />
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
+              :disabled="item.disabled"
+              :class="{'hidden':item.disabled}"
+            >
+              <div class="address-box">
+                <el-image :src="item.icon" />
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
                 </div>
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-        </template>
-        <div class="home-footer-btn" v-if="editBtnShow">
+              </div>
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <div class="home-footer-btn">
           <el-button
-            :class="disabled ? 'gray-btn' : 'red-btn'"
+            :class="disabled ? 'gray-btn' : 'orange-btn'"
             :disabled="disabled"
-            @click="leaveUserDialogShow = true"
-            >退出</el-button
+            @click="addMemberSubmitBtn"
+            >邀请联络人</el-button
           >
         </div>
       </el-main>
     </el-container>
     <el-dialog
-      :visible.sync="leaveUserDialogShow"
+      :visible.sync="addUserDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>确认是否将所选的联络人退出群组？</span>
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="leaveUserDialogShow = false"
-          >取消</el-button
-        >
-        <el-button class="background-red" @click="removeGroupMember">确认</el-button>
+        <el-button class="background-orange" @click="back">確認</el-button>
       </span>
     </el-dialog>
   </div>
@@ -92,7 +66,7 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember,removeMember } from "@/api";
+import { groupListMember,addMember } from "@/api";
 
 export default {
   name: "GroupPeople",
@@ -101,15 +75,16 @@ export default {
       groupData: {},
       checkList: [],
       contactList: [],
+      newContactDataList:[],
       searchKey: "",
       disabled: true,
-      editBtnShow: false,
-      leaveUserDialogShow: false,
+      addUserDialogShow: false,
       developmentMessage: developmentMessage,
     };
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.myContactDataList = JSON.parse(localStorage.getItem("myContactDataList"));
   },
   mounted() {
     this.getGroupListMember();
@@ -129,32 +104,27 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
+        this.myContactDataList.forEach(el => el.memberId = el.contactId)
+        this.newContactDataList = this.contactList.concat(this.myContactDataList)
+        this.newContactDataList.forEach(el => {
+          el.disabled = el.memberId === JSON.parse(localStorage.getItem('id'))
+        })
       });
     },
-    removeGroupMember(){
-      let param = {
+    addMemberSubmitBtn(){
+      let params = {
         groupId: this.groupData.groupId,
         memberList: this.checkList
       }
-      removeMember(param).then((res)=>{
-        if(res.code === 200) this.$router.push({ path: "/GroupPage" });
+      addMember(params).then((res) => {
+        if(res.code === 200){
+          this.addUserDialogShow = true;
+        }
       })
-      .catch(err => console.log(err))
     },
     back() {
       this.$router.back(-1);
     },
-    goContactPage(data){
-      if(data.memberId === JSON.parse(localStorage.getItem("id"))){
-        this.$message({ message: "此即为您的帐号", type: "warning" });
-      }else{
-        data.toChatId = "u" + data.memberId;
-        localStorage.setItem("userData", JSON.stringify(data));
-        this.$router.push({ name: 'ContactPage' });
-      }
-
-      
-    }
   },
 };
 </script>
@@ -162,34 +132,10 @@ export default {
 <style lang="scss" scoped>
 .home-wrapper {
   .home-header {
-    margin: 1.5em 1em 1em 1em !important;
+    margin: 1em;
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-    }
-    .home-add-user {
-      background-color: #fff;
-      background-image: url("./../../../static/images/add.png");
-      margin-right: 10px;
-    }
-    .home-user-edit {
-      width: 2em;
-      height: 2em;
-      border-radius: 10px;
-      background-color: #fff;
-      background-image: url("./../../../static/images/edit.png");
-      background-size: 50%;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: absolute;
-      right: 16px;
-    }
-    .cancel{
-      position: absolute;
-      right: 14px;
-      color:#fe5f3f;
-      font-weight:550;
-      font-size:17px
     }
   }
   .home-search {
@@ -227,6 +173,9 @@ export default {
           border-radius: 10px;
         }
       }
+      .is-disabled{
+        visibility: hidden;
+      }
       .el-checkbox__label {
         width: 100%;
         padding-left: 0;
@@ -255,37 +204,6 @@ export default {
         }
       }
     }
-    .group-box {
-      background-color: #ffffff;
-      padding: 0.8em 1em;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      /deep/.el-image {
-        width: 3em;
-        border-radius: 10px;
-        .el-image__error{
-          height: 48px;
-          font-size: 10px;
-        }
-      }    
-      .msg-box {
-        span {
-          display: block;
-          padding-left: 1em;
-          font-size: 16px;
-          color: #666666;
-          &::after {
-            content: "";
-            display: block;
-            position: absolute;
-            margin-top: 1em;
-            width: 100%;
-            border-bottom: 0.02em solid #b3b3b3;
-          }
-        }
-      }
-    }
   }
   .home-footer-btn {
     margin: 1em 0;
@@ -303,6 +221,10 @@ export default {
     }
     .red-btn {
       background-color: #ee5253;
+      color: #fff;
+    }
+    .orange-btn{
+      background-color: #fe5f3f;
       color: #fff;
     }
   }
@@ -340,8 +262,8 @@ export default {
             width: 100%;
             border-radius: 8px;
           }
-          .background-red {
-            background-color: #ee5253;
+          .background-orange {
+            background-color: #fe5f3f;
             color: #fff;
           }
           .border-red {
