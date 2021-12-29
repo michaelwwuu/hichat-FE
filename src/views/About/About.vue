@@ -44,7 +44,7 @@ export default {
         {
           name: "使用版本",
           path: "",
-          version: "1.0.0",
+          version: "1.1.1",
         },
         {
           name: "服务条款",
