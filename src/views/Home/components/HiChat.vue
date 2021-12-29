@@ -222,7 +222,6 @@ export default {
     background-image: url("./../../../../static/images/add_chat.png");
   }
 }
-
 .address-box {
   .msg-box {
     span {
@@ -239,7 +238,7 @@ export default {
           content: "";
           display: block;
           position: absolute;
-          margin-top: 1em;
+          margin-top: 0.5em;
           width: 100%;
           border-bottom: 0.02em solid #b3b3b3;
         }

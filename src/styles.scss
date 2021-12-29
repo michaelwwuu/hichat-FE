@@ -346,10 +346,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       border-color: #fe5f3f;
     }
   }
-
-  .el-radio__inner:hover{
-    border: 1px solid #DCDFE6;
-  }
+  
   .el-radio__input.is-checked{
     .el-radio__inner{
       background-color: #fe5f3f;
@@ -371,7 +368,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         background: none;
       }
     }
-
   }
   .el-radio__inner:hover{
     border: 1px solid #DCDFE6;
