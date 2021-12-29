@@ -12,7 +12,7 @@
               <router-link :to="'GroupAddPeople'" style="position: absolute; right: 50px;">
                 <div class="home-add-user" ></div>
               </router-link>  
-              <div class="home-user-edit" @click="editBtnShow = true"></div>
+              <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
             </template>
             <template v-else-if="groupData.isAdmin">
               <div class="cancel"  @click="editBtnShow = false">取消</div>
