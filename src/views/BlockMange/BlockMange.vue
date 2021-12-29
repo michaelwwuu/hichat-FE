@@ -119,7 +119,10 @@ export default {
           this.blockData = res.data;
         }
       })
-      .catch((err)=>{})
+      .catch((err) => {
+        this.$message({ message: err, type: "error"});
+        return false;
+      });
     },
     unBlockSubmit(){
       let blockIdList = this.checkList
@@ -132,7 +135,10 @@ export default {
           this.getBlockDataList()
         }
       })
-      .catch((err)=>{})
+      .catch((err) => {
+        this.$message({ message: err, type: "error"});
+        return false;
+      });
     }
   },
 };

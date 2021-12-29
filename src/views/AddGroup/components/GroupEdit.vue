@@ -121,8 +121,9 @@ export default {
         }
       })
       .catch((err) => {
-        this.$message({ message: err, type: "error" });
-      })
+        this.$message({ message: err, type: "error"});
+        return false;
+      });
     },
   },
 };

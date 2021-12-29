@@ -220,6 +220,8 @@ export default {
               message: "登录验证失败，请重输入并确认",
               type: "error",
             });
+            localStorage.clear();
+            window.location.reload();
             return false;
           });
       });

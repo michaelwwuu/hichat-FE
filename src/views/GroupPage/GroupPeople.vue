@@ -43,7 +43,6 @@
                     </div>
                   </div>
                 </span>
-                
               </label>
             </div>
 

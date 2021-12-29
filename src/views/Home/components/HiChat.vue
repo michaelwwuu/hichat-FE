@@ -200,16 +200,14 @@ export default {
       }
     },
     goChatRoom(data,path) {
-      console.log(data)
       if(path === 'ChatMsg'){
         localStorage.setItem("userData", JSON.stringify(data));
       } else {
-        this.groupData = JSON.parse(localStorage.getItem("groupData"))
-        this.groupData.groupId = data.toChatId.replace("g", ""),
-        this.groupData.groupName = data.name
-        this.groupData.memberId = data.forChatId.replace("u", ""),
-        this.groupData.icon = data.icon
-        localStorage.setItem("groupData", JSON.stringify(this.groupData));
+        data.icon = data.icon
+        data.groupName = data.name
+        data.groupId = data.toChatId.replace("g", ""),
+        data.memberId = data.forChatId.replace("u", ""),
+        localStorage.setItem("groupData", JSON.stringify(data));
       }
       this.$router.push({ name: path });
     },

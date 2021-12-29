@@ -212,7 +212,7 @@ export default {
     },
     loginOut() {
       this.$router.push({ path: "/login" });
-      localStorage.removeItem("id");
+      // localStorage.removeItem("id");
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       localStorage.removeItem("userData");
