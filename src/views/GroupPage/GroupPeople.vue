@@ -30,15 +30,23 @@
         </el-header>
         <template v-if="!editBtnShow">
           <div class="home-content" >
-            <div class="group-box"
-              v-for="(item, index) in contactList"
-              :key="index"
-              @click="goContactPage(item)">
-              <el-image :src="item.icon" v-if="item.icon !== undefined" lazy/>
-              <div class="msg-box">
-                <span>{{ item.name }}</span>
-              </div>
+            <div class="el-checkbox-group">
+              <label class="el-checkbox">
+                <span class="el-checkbox__label">
+                  <div class="address-box"
+                    v-for="(item, index) in contactList"
+                    :key="index"
+                    @click="goContactPage(item)">
+                    <el-image :src="item.icon" v-if="item.icon !== undefined" lazy/>
+                    <div class="msg-box">
+                      <span>{{ item.name }}</span>
+                    </div>
+                  </div>
+                </span>
+                
+              </label>
             </div>
+
           </div>
         </template>
         <template v-else>
@@ -129,6 +137,7 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
+        localStorage.setItem('groupDataList',JSON.stringify(this.contactList))
       });
     },
     removeGroupMember(){
@@ -213,8 +222,10 @@ export default {
     }
   }
   .home-content {
-    overflow-x: hidden;
+    padding: 0;
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     /deep/.el-checkbox {
       display: flex;
       align-items: center;
@@ -255,7 +266,7 @@ export default {
         }
       }
     }
-    .group-box {
+    .address-box {
       background-color: #ffffff;
       padding: 0.8em 1em;
       display: flex;
@@ -289,11 +300,10 @@ export default {
   }
   .home-footer-btn {
     margin: 1em 0;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    background-color: #eaf5fa;
     .el-button {
       width: 93%;
     }

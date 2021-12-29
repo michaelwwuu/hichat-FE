@@ -98,16 +98,18 @@ export default {
     getGroupListMember() {
       let groupId = this.groupData.groupId
       groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined){
-            res.icon = require("./../../../static/images/image_user_defult.png");
-          }
-        });
-        this.myContactDataList.forEach(el => el.memberId = el.contactId)
-        this.newContactDataList = this.contactList.concat(this.myContactDataList)
-        this.newContactDataList.forEach(el => {
-          el.disabled = el.memberId === JSON.parse(localStorage.getItem('id'))
+        this.contactList = res.data.list
+        this.contactDataList = this.contactList.concat(this.myContactDataList)
+        this.contactDataList.forEach(el => {
+          if (el.contactId !== undefined) el.memberId = JSON.parse(el.contactId)
+        })
+        const set = new Set();
+        this.newContactDataList = this.contactDataList.filter((item) =>!set.has(item.memberId) ? set.add(item.memberId) : false);
+        this.newContactDataList.forEach(el =>{
+          this.contactList.forEach((item)=>{
+            if(el.memberId === item.memberId) el.disabled = true;
+            if(item.icon === undefined) item.icon = require("./../../../static/images/image_user_defult.png")
+          })
         })
       });
     },
@@ -159,8 +161,10 @@ export default {
     }
   }
   .home-content {
-    overflow-x: hidden;
+    padding: 0;
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     /deep/.el-checkbox {
       display: flex;
       align-items: center;
@@ -207,11 +211,10 @@ export default {
   }
   .home-footer-btn {
     margin: 1em 0;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    background-color: #eaf5fa;
     .el-button {
       width: 93%;
     }
