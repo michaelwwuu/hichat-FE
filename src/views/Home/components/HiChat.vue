@@ -203,6 +203,7 @@ export default {
       if(path === 'ChatMsg'){
         localStorage.setItem("userData", JSON.stringify(data));
       } else {
+        console.log(data)
         data.icon = data.icon
         data.groupName = data.name
         data.groupId = data.toChatId.replace("g", ""),
@@ -238,7 +239,7 @@ export default {
           content: "";
           display: block;
           position: absolute;
-          margin-top: 0.5em;
+          margin-top: 1em;
           width: 100%;
           border-bottom: 0.02em solid #b3b3b3;
         }

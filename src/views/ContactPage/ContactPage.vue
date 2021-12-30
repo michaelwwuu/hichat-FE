@@ -2,7 +2,7 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="60px">
+        <el-header height="55px">
           <div class="home-header">
             <div class="home-user" @click="back"></div>
             <span class="home-header-title"></span>

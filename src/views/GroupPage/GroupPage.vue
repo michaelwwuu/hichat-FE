@@ -2,7 +2,7 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="60px">
+        <el-header height="55px">
           <div class="home-header">
             <div class="home-user" @click="back"></div>
             <span class="home-header-title"></span>
@@ -151,7 +151,9 @@ export default {
       leaveGroup({groupId}).then((res)=>{
         if(res.code === 200) this.$router.push({ path: "/Address" });
       })
-      .catch(err => console.log(err))
+      .catch((err) => {
+        console.log(err)
+      })
     },
     back() {
       this.$router.back(-1);

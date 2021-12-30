@@ -147,7 +147,7 @@ export default {
       removeMember(param).then((res)=>{
         if(res.code === 200) this.$router.push({ path: "/GroupPage" });
       })
-      .catch(err => console.log(err))
+      .catch((err) => {console.log(err)})
     },
     back() {
       this.$router.back(-1);
@@ -160,8 +160,6 @@ export default {
         localStorage.setItem("userData", JSON.stringify(data));
         this.$router.push({ name: 'ContactPage' });
       }
-
-      
     }
   },
 };
@@ -251,7 +249,7 @@ export default {
                 content: "";
                 display: block;
                 position: absolute;
-                margin-top: 0.5em;
+                margin-top: 1em;
                 width: 100%;
                 border-bottom: 0.02em solid #b3b3b3;
               }
@@ -273,7 +271,12 @@ export default {
       font-size: 14px;
       /deep/.el-image {
         width: 3em;
+        height: 48px;
         border-radius: 10px;
+        .el-image__inner{
+          height: auto;
+          border-radius: 10px;
+        }
         .el-image__error{
           height: 48px;
           font-size: 10px;
@@ -289,7 +292,7 @@ export default {
             content: "";
             display: block;
             position: absolute;
-            margin-top: 0.5em;
+            margin-top: 1em;
             width: 100%;
             border-bottom: 0.02em solid #b3b3b3;
           }

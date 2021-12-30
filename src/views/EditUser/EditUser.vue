@@ -148,12 +148,6 @@ export default {
     }
   }
   .add-content {
-    .user-data {
-      .photo-edit {
-        height: 1.5em;
-        color: #fe5f3f;
-      }
-    }
     .home-footer-btn {
       margin: 1em 0;
       position: absolute;

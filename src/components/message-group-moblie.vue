@@ -99,6 +99,12 @@ export default {
     message(val) {
       this.newMessageData = {};
       val.forEach((el) => {   
+        this.contactList.forEach((res)=>{
+          if(el.userChatId === 'u' + res.memberId){
+            el.icon = res.icon
+            el.name = res.name
+          }
+        })
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
@@ -174,7 +180,7 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background: #FFFFFF;
+          background-color: #fafcff !important;
           max-width: 65%;
           height: auto;
           padding: 9px 12px;
@@ -251,9 +257,14 @@ export default {
         align-items: flex-end;
         flex-flow: row-reverse;
         .message-audio {
-          border-radius: 10px 0 10px 10px;
+          border-radius: 0 10px 10px 10px;
           background-color: #f1f3f4;
+          audio {
+            width: 11em;
+            filter: sepia(0%) grayscale(100%);
+          }
         }
+        
       }
       .message-avatar,
       .message-name {

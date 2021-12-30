@@ -173,8 +173,8 @@ export default {
             navigator.mediaDevices
               .getUserMedia({ video: true })
               .then(handleSuccess)
-              .catch(error => {
-                this.$emit("error-captured", error);
+              .catch((err) => {
+                this.$emit("error-captured", err);
               });
           });
       }

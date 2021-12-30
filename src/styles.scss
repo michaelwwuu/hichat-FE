@@ -73,7 +73,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       align-items: center;
       .el-image {
         width: 3em;
+        height: 48px;
         border-radius: 10px;
+        .el-image__inner{
+          height: auto;
+          border-radius: 10px;
+        }
         .el-image__error{
           height: 48px;
           font-size: 10px;
@@ -89,7 +94,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         text-align: center;
         .el-image {
           width: 3em;
+          height: 48px;
           border-radius: 10px;
+          .el-image__inner{
+            height: auto;
+            border-radius: 10px;
+          }
           .el-image__error{
             height: 48px;
             font-size: 10px;
@@ -103,15 +113,24 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         span {
           display: block;
           text-align: center;
-          height: 4.5em;
+          height: 3.5em;
         }
         .el-image{
           width: 3em;
+          height: 48px;
           border-radius: 10px;
+          .el-image__inner{
+            height: auto;
+            border-radius: 10px;
+          }
           .el-image__error{
             height: 48px;
             font-size: 10px;
           }
+        }
+        .photo-edit {
+          height: 1.5em !important;
+          color: #fe5f3f;
         }
       }
     }

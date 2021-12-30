@@ -107,7 +107,9 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         })
-        .catch(err => console.log(err))
+        .catch((err) => {
+          console.log(err)
+        })
       });
       
     },
@@ -121,7 +123,9 @@ export default {
           this.$router.push({ name: "Address" });
         }
       })
-      .catch(err => console.log(err))
+      .catch((err) => {
+        console.log(err)
+      })
     }
   },
 };
@@ -184,7 +188,7 @@ export default {
                 content: "";
                 display: block;
                 position: absolute;
-                margin-top: 0.5em;
+                margin-top: 1em;
                 width: 100%;
                 border-bottom: 0.02em solid #b3b3b3;
               }

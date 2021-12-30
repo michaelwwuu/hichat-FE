@@ -128,7 +128,7 @@ export default {
         this.contactList.forEach((el) => {
           if (el.icon === undefined)el.icon = require("./../../../../static/images/image_user_defult.png")
         });
-        localStorage.setItem("contactDataList",JSON.stringify(this.contactList))
+        localStorage.setItem("myContactDataList",JSON.stringify(this.contactList))
       });
     },
     getGroupDataList(){
