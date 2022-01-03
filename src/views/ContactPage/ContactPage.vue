@@ -223,7 +223,9 @@ export default {
           let blockId = this.userData.toChatId.replace("u", "");
           addBlockUser({ blockId }).then((res) => {
             if (res.code === 200) {
+              this.userData.isBlock = true;
               this.settingDialogShow = false;
+              localStorage.setItem("userData",JSON.stringify(this.userData))
               this.back()
             }
           });
@@ -232,7 +234,9 @@ export default {
           let blockIdList = [this.userData.toChatId.replace("u", "")];
           unBlockUser({ blockIdList }).then((res) => {
             if (res.code === 200) {
+              this.userData.isBlock = false;
               this.settingDialogShow = false;
+              localStorage.setItem("userData",JSON.stringify(this.userData))
               this.back()
             }
           })

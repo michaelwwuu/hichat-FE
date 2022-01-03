@@ -31,9 +31,8 @@
           <div class="user-data">
             <span>
               <el-image
-                v-if="addUser.icon !== undefined"
                 :src="addUser.icon === undefined ? avatarImg : addUser.icon"
-                :preview-src-list="[addUser.icon]"
+                :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
               />
             </span>            
             <span>{{ addUser.username }}</span>
@@ -108,8 +107,6 @@ export default {
       addContactUser(parmas).then((res) => {
         if (res.code === 200) {
           this.$router.push({ path: "/Address" });
-        } else {
-          this.$message({ message: res.message, type: "error" });
         }
       });
     },

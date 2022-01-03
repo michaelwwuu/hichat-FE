@@ -93,7 +93,7 @@
       >
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>
-          <el-badge is-dot class="contact-badge"></el-badge>
+          <el-badge v-if="contactDataList.unreadCount > 0" is-dot class="contact-badge"></el-badge>
         </span>
         <div
           v-for="(item, index) in contactDataList"
@@ -203,12 +203,12 @@ export default {
       if(path === 'ChatMsg'){
         localStorage.setItem("userData", JSON.stringify(data));
       } else {
-        console.log(data)
         data.icon = data.icon
         data.groupName = data.name
-        data.groupId = data.toChatId.replace("g", ""),
-        data.memberId = data.forChatId.replace("u", ""),
-        localStorage.setItem("groupData", JSON.stringify(data));
+        data.groupId = data.toChatId.replace("g", "");
+        data.memberId = data.forChatId.replace("u", "");
+        data.isAdmin = localStorage.getItem("groupData").isAdmin
+        localStorage.setItem("groupData", JSON.stringify(data))
       }
       this.$router.push({ name: path });
     },

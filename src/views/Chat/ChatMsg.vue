@@ -4,20 +4,17 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <span class="home-user-link">
+            <span class="home-user-link" :style="!userData.isContact ? 'position:none;' : ''">
               <router-link :to="'/HiChat'">
                 <div class="home-user"></div>
               </router-link>
             </span>
-            <span class="home-header-title">{{ userData.name }}</span>
-            <div class="home-user-search"></div>
-            <span class="home-photo-link">
+            <span class="home-header-title" >{{ userData.name }}</span>
+            <div class="home-user-search" :style="!userData.isContact ? 'position:none;right:0;' : ''"></div>
+            <span class="home-photo-link" v-if="userData.isContact">
               <router-link :to="'/ContactPage'">
                 <div class="home-user-photo">
-                  <img
-                    src="./../../../static/images/image_user_defult.png"
-                    alt=""
-                  />
+                  <img :src="userData.icon"/>
                 </div>
               </router-link>
             </span>
@@ -25,7 +22,7 @@
         </el-header>
         <div class="contact-box" v-if="!userData.isContact">
           <ul>
-            <li @click="blockUser(userData)">封锁</li>
+            <li @click="isBlockDialogShow = true">{{userData.isBlock ? '解除封锁':'封锁'}}</li>
             <!-- <li @click="deleteUser(userData)">删除</li> -->
             <li @click="addUser(userData)">加入联络人</li>
           </ul>
@@ -38,18 +35,36 @@
         <message-input :userInfoData="userInfoData" :userData="userData" v-else/>
       </el-main>
     </el-container>
+    <el-dialog
+      :visible.sync="isBlockDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <span>确认是否{{userData.isBlock?'解除封锁':'封锁'}}{{ userData.name }}？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="isBlockDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="blockSubmitBtn(userData)"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
-import { addContactUser,addBlockUser } from "@/api";
+import { addContactUser,addBlockUser,unBlockUser } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
-
-
 
 export default {
   name: "ChatMsg",
@@ -62,6 +77,7 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
+      isBlockDialogShow:false,
       userData: {},
       readMsgData: [],
     };
@@ -186,20 +202,37 @@ export default {
     //     return false;
     //   });
     // },
-    blockUser(data){
-      let blockId = data.toChatId.replace("u", "");
-      addBlockUser({blockId}).then((res)=>{
-        if (res.code === 200) {
-          this.userData.isBlock = true
-          localStorage.setItem("userData",JSON.stringify(this.userData))
-        } else {
-          this.$message({ message: res.message, type: "error" });
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
+    blockSubmitBtn(data){
+      if(this.userData.isBlock){
+        let blockIdList = [this.userData.toChatId.replace("u", "")];
+        unBlockUser({ blockIdList }).then((res) => {
+          if (res.code === 200) {
+            this.userData.isBlock = false;
+            this.isBlockDialogShow = false;
+            localStorage.setItem("userData",JSON.stringify(this.userData))
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error"});
+          return false;
+        });
+      } else{
+        let blockId = data.toChatId.replace("u", "");
+        addBlockUser({blockId}).then((res)=>{
+          if (res.code === 200) {
+            this.userData.isBlock = true;
+            this.isBlockDialogShow = false;
+            localStorage.setItem("userData",JSON.stringify(this.userData))
+          } else {
+            this.$message({ message: res.message, type: "error" });
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error"});
+          return false;
+        });
+      }
+
     }
   },
   components: {
@@ -396,4 +429,54 @@ export default {
 ::-webkit-scrollbar {
   width: 10px;
 }
+  /deep/.el-dialog-loginOut {
+    overflow: auto;
+    .el-dialog {
+      position: relative;
+      margin: 0 auto 50px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 10px;
+      }
+      .el-dialog__body {
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
+        }
+      }
+    }
+  }
 </style>

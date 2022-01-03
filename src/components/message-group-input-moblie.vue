@@ -367,6 +367,7 @@ export default {
       if (this.textArea.replace(/\s+/g, "") === "") {
         this.$alert("不能发送空白消息", "提示", {
           confirmButtonText: "确定",
+          customClass: 'winClass',//弹窗样式
         });
         return false;
       }
@@ -532,5 +533,8 @@ export default {
       }
     }
   }
+}
+.winClass{
+  width: 90%;
 }
 </style>

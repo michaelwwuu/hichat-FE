@@ -22,7 +22,7 @@
                 :class="disabled ? 'gray-btn' : 'orange-btn'"
                 :disabled="disabled"
                 @click="editSubmit"
-                >创建群组</el-button
+                >编辑群组</el-button
               >
             </div>
           </div>
@@ -107,6 +107,8 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.groupData.icon = res.data
+          this.groupIcon = res.data
+          localStorage.setItem("groupData",JSON.stringify(this.groupData))
         }
       });
     },
@@ -118,7 +120,7 @@ export default {
       }
       updateGroup(params).then((res) => {
         if (res.code === 200) {
-          this.$router.push({ path: "/Address" });
+          this.back()
         }
       })
       .catch((err) => {
@@ -143,8 +145,9 @@ export default {
 .add-content {
   .user-data {
     span {
+      height: 4.5em !important;
       img {
-        height: 4em;
+        width: 4em;
         border-radius: 10px;
       }
     }

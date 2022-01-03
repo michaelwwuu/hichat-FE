@@ -128,7 +128,6 @@ export default {
       let blockIdList = this.checkList
       unBlockUser({blockIdList}).then((res) => {
         if(res.code === 200){
-          console.log(res)
           this.settingDialogShow = false;
           this.unblockDialogShow = false;
           this.editBtnShow = true;

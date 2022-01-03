@@ -7,14 +7,6 @@
           >变更群组照片</span
         >
       </div>
-      <div class="home-footer-btn">
-        <el-button
-          :class="disabled ? 'gray-btn' : 'orange-btn'"
-          :disabled="disabled"
-          @click="editSubmit"
-          >创建群组</el-button
-        >
-      </div>
     </div>
     <div class="user-edit-form">
       <el-form ref="form" :model="groupForm" label-width="100px">
@@ -33,6 +25,14 @@
           <span>{{ item.name }}</span>
         </div>
       </div>
+    </div>
+    <div class="home-footer-btn">
+      <el-button
+        :class="disabled ? 'gray-btn' : 'orange-btn'"
+        :disabled="disabled"
+        @click="editSubmit"
+        >创建群组</el-button
+      >
     </div>
     <el-dialog
       title="上傳群组照片"
@@ -117,7 +117,15 @@ export default {
       }
       addGroup(params).then((res) => {
         if (res.code === 200) {
-          this.$router.push({ path: "/Address" });
+          let groupData = { 
+            groupId: res.data.id,
+            groupName: res.data.groupName,
+            icon: this.groupIcon,
+            isAdmin: true,
+            memberId: JSON.parse(localStorage.getItem("id")),
+          }
+          localStorage.setItem("groupData", JSON.stringify(groupData))
+          this.$router.push({ path: "/ChatGroupMsg" });
         }
       })
       .catch((err) => {
@@ -153,25 +161,7 @@ export default {
       color: #fe5f3f;
     }
   }
-  .home-footer-btn {
-    margin: 1em 0;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    .el-button {
-      width: 93%;
-    }
-    .gray-btn {
-      background-color: #b3b3b3;
-      color: #fff;
-    }
-    .orange-btn {
-      background-color: #fe5f3f;
-      color: #fff;
-    }
-  }
+
 }
 .home-content {
   overflow-x: hidden;
@@ -204,6 +194,25 @@ export default {
       right: 1.5em;
       font-size: 14px;
     }
+  }
+}
+.home-footer-btn {
+  margin: 1em 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  .el-button {
+    width: 93%;
+  }
+  .gray-btn {
+    background-color: #b3b3b3;
+    color: #fff;
+  }
+  .orange-btn {
+    background-color: #fe5f3f;
+    color: #fff;
   }
 }
 .el-dialog__wrapper {

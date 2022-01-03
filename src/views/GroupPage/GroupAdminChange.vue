@@ -107,11 +107,10 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         })
-        .catch((err) => {
-          console.log(err)
-        })
-      });
-      
+      })
+      .catch((err) => {
+        console.log(err)
+      })  
     },
     changeGroupAdmin(){
       let param = {
@@ -120,13 +119,16 @@ export default {
       }
       changeAdmin(param).then((res)=>{
         if(res.code === 200){
-          this.$router.push({ name: "Address" });
+          this.back()
         }
       })
       .catch((err) => {
         console.log(err)
       })
-    }
+    },
+    back() {
+      this.$router.back(-1);
+    },
   },
 };
 </script>

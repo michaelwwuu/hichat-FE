@@ -15,7 +15,7 @@
               <router-link :to="'/GroupPage'">
                 <div class="home-user-photo">
                   <img
-                    :src="groupData.icon === undefined ?'./../../../static/images/image_user_defult.png':groupData.icon"
+                    :src="groupData.icon === undefined ?require('./../../../static/images/image_user_defult.png'):groupData.icon"
                     alt=""
                   />
                 </div>
@@ -147,6 +147,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
+
           this.readMsgShow();
           break;
         // 已讀
