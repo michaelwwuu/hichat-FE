@@ -99,14 +99,14 @@ export default {
     },
   },
   methods: {
-
     getGroupListMember() {
       let groupId = this.groupData.groupId
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
-          if (res.icon === undefined)
+          if (res.icon === undefined){
             res.icon = require("./../../../static/images/image_user_defult.png");
+          }
           if(res.memberId === this.groupData.memberId){
             this.checkList = res.memberId
           }  
@@ -123,6 +123,8 @@ export default {
       }
       changeAdmin(param).then((res)=>{
         if(res.code === 200){
+          this.groupData.isAdmin = false
+          localStorage.setItem("groupData",JSON.stringify(this.groupData))
           this.back()
         }
       })

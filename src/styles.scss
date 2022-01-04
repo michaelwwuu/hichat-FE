@@ -391,7 +391,59 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   .el-radio__inner:hover{
     border: 1px solid #DCDFE6;
   }
-
+/deep/.el-dialog__wrapper {
+  overflow: hidden;
+  .el-dialog {
+    margin: 0 auto;
+    border-radius: 20px 20px 0 0;
+    position: absolute;
+    bottom: 0;
+    .el-dialog__header {
+      .el-dialog__title {
+        color: #10686e;
+        font-weight: 600;
+      }
+      .el-dialog__headerbtn {
+        position: inherit;
+        float: left;
+        .el-dialog__close {
+          color: #f60;
+        }
+      }
+    }
+    .el-dialog__body {
+      text-align: center;
+      .qrcode-box {
+        width: 15em;
+        height: 15em;
+        border: 2px solid #333;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          height: 14em;
+        }
+      }
+      .qrcode-box-text {
+        color: #0c0d0d;
+        font-weight: 600;
+        margin-top: 2em;
+        display: block;
+      }
+    }
+    .el-dialog__footer {
+      padding: 20px 30px 20px 30px;
+      .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        img {
+          height: 1em;
+        }
+      }
+    }
+  }
+}
 }
 .hichat-pc{
   display: none;

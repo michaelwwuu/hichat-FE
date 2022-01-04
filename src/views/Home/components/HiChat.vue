@@ -25,33 +25,40 @@
         >
           <el-image
             :src="
-              item.icon === null
+              item.icon === undefined || item.icon === null || item.icon === ''
                 ? require('./../../../../static/images/image_user_defult.png')
                 : item.icon
             "
           />
-          <div class="msg-box">
-            <span>{{ item.name }}</span>
-            <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
-              item.lastChat.text
-            }}</span>
-            <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
-              >传送了语音</span
-            >
-            <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
-              >传送了图片</span
-            >
-          </div>
-          <span class="time">
-            {{ $root.formatTimeDay(item.lastChat.sendTime) }}
-            <div class="el-badge-box">
-              <el-badge
-                :value="item.unreadCount"
-                class="item"
-                v-if="item.unreadCount !== 0"
-              ></el-badge>
+          <div class="contont-box">
+            <div class="msg-box">
+              <div>
+                <span>{{ item.name }}</span>
+                <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'" class="content-text">
+                  <span>{{item.lastChat.text}}</span>
+                  <span v-if="item.lastChat.text.length > 55">...</span>
+                </span>
+                
+                <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'" class="content-text">
+                  >传送了语音</span
+                >
+                <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'" class="content-text">
+                  >传送了图片</span
+                >
+              </div>
+              <div class="time">
+                {{ $root.formatTimeDay(item.lastChat.sendTime) }}
+                <div class="el-badge-box">
+                  <el-badge
+                    :value="item.unreadCount"
+                    class="item"
+                    v-if="item.unreadCount !== 0"
+                  ></el-badge>
+                </div>
+              </div>
             </div>
-          </span>
+            <div class="contont-border-bottom"></div>
+          </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
@@ -61,29 +68,42 @@
           class="address-box"
           @click="goChatRoom(item,'ChatGroupMsg')"
         >
-          <el-image :src="item.icon" />
-          <div class="msg-box">
-            <span>{{ item.name }}</span>
-            <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{
-              item.lastChat.text
-            }}</span>
-            <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
-              >传送了语音</span
-            >
-            <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
-              >传送了图片</span
-            >
-          </div>
-          <span class="time">
-            {{ $root.formatTimeDay(item.lastChat.sendTime) }}
-            <div class="el-badge-box">
-              <el-badge
-                :value="item.unreadCount"
-                class="item"
-                v-if="item.unreadCount !== 0"
-              ></el-badge>
+          <el-image
+            :src="
+              item.icon === undefined || item.icon === null || item.icon === ''
+                ? require('./../../../../static/images/image_group_defult.png')
+                : item.icon
+            "
+          />
+          
+          <div class="contont-box">
+            <div class="msg-box">
+              <div>
+                <span>{{ item.name }}</span>
+                <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'"  class="content-text">                 
+                  <span>{{item.lastChat.text}}</span>
+                  <span v-if="item.lastChat.text.length > 55">...</span>
+                </span>
+                <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'" class="content-text"
+                  >传送了语音</span
+                >
+                <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'" class="content-text"
+                  >传送了图片</span
+                >
+              </div>
+              <div class="time">
+                {{ $root.formatTimeDay(item.lastChat.sendTime) }}
+                <div class="el-badge-box">
+                  <el-badge
+                    :value="item.unreadCount"
+                    class="item"
+                    v-if="item.unreadCount !== 0"
+                  ></el-badge>
+                </div>
+              </div>
             </div>
-          </span>
+            <div class="contont-border-bottom"></div>
+          </div>
         </div>
       </el-tab-pane>
       <el-tab-pane
@@ -101,29 +121,42 @@
           class="address-box"
           @click="goChatRoom(item,'ChatMsg')"
         >
-          <el-image :src="item.icon" />
-          <div class="msg-box">
-            <span>{{ item.name }}</span>
-            <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
-              item.lastChat.text
-            }}</span>
-            <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
-              >传送了语音</span
-            >
-            <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
-              >传送了图片</span
-            >
-          </div>
-          <span class="time">
-            {{ $root.formatTimeDay(item.lastChat.sendTime) }}
-            <div class="el-badge-box">
-              <el-badge
-                :value="item.unreadCount"
-                class="item"
-                v-if="item.unreadCount !== 0"
-              ></el-badge>
+          <el-image
+            :src="
+              item.icon === undefined || item.icon === null || item.icon === ''
+                ? require('./../../../../static/images/image_user_defult.png')
+                : item.icon
+            "
+          />
+          <div class="contont-box">
+            <div class="msg-box">
+              <div>
+                <span>{{ item.name }}</span>
+                <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'" class="content-text">
+                  <span>{{item.lastChat.text}}</span>
+                  <span v-if="item.lastChat.text.length > 55">...</span>
+                </span>
+                
+                <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'" class="content-text">
+                  >传送了语音</span
+                >
+                <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'" class="content-text">
+                  >传送了图片</span
+                >
+              </div>
+              <div class="time">
+                {{ $root.formatTimeDay(item.lastChat.sendTime) }}
+                <div class="el-badge-box">
+                  <el-badge
+                    :value="item.unreadCount"
+                    class="item"
+                    v-if="item.unreadCount !== 0"
+                  ></el-badge>
+                </div>
+              </div>
             </div>
-          </span>
+            <div class="contont-border-bottom"></div>
+          </div>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -236,38 +269,53 @@ export default {
   }
 }
 .address-box {
-  .msg-box {
-    span {
-      display: block;
-      padding-left: 1em;
-      font-size: 16px;
-      &:nth-child(1) {
-        margin-bottom: 7px;
+  .contont-box{
+    padding-left: 1em;
+    height:48px;
+    .msg-box {
+      height: 48px;
+      display: flex;
+      span {
+        display: block;
+        font-size: 16px;
+        &:nth-child(1) {
+          margin-bottom: 7px;
+        }
       }
-      &:nth-child(2) {
+      .content-text{
+        display: flex;
         font-size: 14px;
         opacity: 0.5;
-        &::after {
-          content: "";
-          display: block;
-          position: absolute;
-          margin-top: 1em;
-          width: 100%;
-          border-bottom: 0.02em solid #b3b3b3;
+        span{
+          &:nth-child(1) {
+            width: 10em;
+            overflow: hidden;
+            margin-bottom:0;
+            font-size: 14px;
+          }
+          &:nth-child(2) {
+            opacity: 1;
+            font-size: 14px;
+          }
+        }
+      }
+      .time {
+        position: absolute;
+        right: 1.5em;
+        font-size: 14px;
+        .el-badge-box {
+          height: 25px;
+          .el-badge {
+            display: block;
+            top: 5px;
+          }
         }
       }
     }
-  }
-  .time {
-    position: absolute;
-    right: 1.5em;
-    font-size: 14px;
-    .el-badge-box {
-      height: 25px;
-      .el-badge {
-        display: block;
-        top: 5px;
-      }
+    .contont-border-bottom{
+      width: 100vw;
+      border-bottom: 0.02em solid #b3b3b3;
+      position: absolute
     }
   }
 }

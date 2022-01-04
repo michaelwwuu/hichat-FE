@@ -1,23 +1,27 @@
 <template>
   <div class="home-wrapper">
-    <keep-alive>
-      <router-view v-if="$route.meta.keepAlive"></router-view>
-    </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive"></router-view>
-    <div class="home-footer">
-      <div
-        class="home-footer-btn"
-        v-for="(item, index) in routerNav"
-        :key="index"
-        @click="changeImg(index)"
-      >
-        <router-link :to="item.path">
-          <span><img alt="" :src="item.icon" v-show="index !== num" /></span>
-          <span><img alt="" :src="item.active" v-show="index === num" /></span>
-          <span>{{ item.name }}</span>
-        </router-link>
+    <el-container>
+    <el-main>
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
+      <div class="home-footer">
+        <div
+          class="home-footer-btn"
+          v-for="(item, index) in routerNav"
+          :key="index"
+          @click="changeImg(index)"
+        >
+          <router-link :to="item.path">
+            <span><img alt="" :src="item.icon" v-show="index !== num" /></span>
+            <span><img alt="" :src="item.active" v-show="index === num" /></span>
+            <span>{{ item.name }}</span>
+          </router-link>
+        </div>
       </div>
-    </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -81,4 +85,5 @@ export default {
     z-index: 9;
   }
 }
+
 </style>

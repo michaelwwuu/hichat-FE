@@ -1,6 +1,6 @@
 import Vue from "vue";
-// 
 // const wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
+
 const wsUrl = 'ws://test.hichat.tools/ws/im/echo';//動態環境
 var socket = new WebSocket(wsUrl);
 

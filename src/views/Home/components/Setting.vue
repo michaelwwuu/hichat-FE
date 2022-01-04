@@ -1,67 +1,65 @@
 <template>
   <div>
-    <el-container>
-      <el-main>
-        <el-header height="55px">
-          <div class="home-header">
-            <div class="home-user" @click="centerDialogVisible = true"></div>
-            <span class="home-header-title">设定</span>
-            <router-link :to="'/EditUser'"
-              ><div class="home-add-user"></div
-            ></router-link>
-          </div>
-        </el-header>
-        <div class="address-content">
-          <div class="user-data">
-            <el-image
-              v-if="userData.icon !== undefined"
-              :src="userData.icon"
-              :preview-src-list="[userData.icon]"
-            />
-            <div>
-              <span>{{ userData.nickname }}</span>
-              <span class="user-data-id">
-                ID :
-                <span class="user-paste" @click="copyPaste(userData.username)">{{
-                  userData.username
-                }}</span></span
-              >
-            </div>
-          </div>
-          <div
-            class="setting-button"
-            v-for="(item, index) in settingData"
-            :key="index"
-            :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
-            @click="developmentMessage(item.name)"
+    <el-header height="55px">
+      <div class="home-header">
+        <div class="home-user" @click="centerDialogVisible = true"></div>
+        <span class="home-header-title">设定</span>
+        <router-link :to="'/EditUser'"
+          ><div class="home-add-user"></div
+        ></router-link>
+      </div>
+    </el-header>
+    <div class="address-content">
+      <div class="user-data">
+        <el-image
+          v-if="userData.icon !== undefined"
+          :src="userData.icon"
+          :preview-src-list="[userData.icon]"
+        />
+        <div>
+          <span>{{ userData.nickname }}</span>
+          <span class="user-data-id">
+            ID :
+            <span class="user-paste" @click="copyPaste(userData.username)">{{
+              userData.username
+            }}</span></span
           >
-            <router-link :to="item.path">
-              <div class="setting-button-left">
-                <img :src="item.icon" alt="" />
-                <span>{{ item.name }}</span>
-              </div>
-              <div class="setting-button-right">
-                <span v-if="item.name === '提醒'">开启</span>
-                <span v-if="item.name === '语言'">简体中文</span>
-                <img src="./../../../../static/images/next.png" alt="" />
-              </div>
-            </router-link>
-          </div>
-
-          <div class="setting-disable" @click="loginOutDialogShow = true">
-            <div class="setting-button-left">
-              <img src="./../../../../static/images/logout.png" alt="" />
-              <span>登出</span>
-            </div>
-          </div>
         </div>
-      </el-main>
-    </el-container>
+      </div>
+      <div
+        class="setting-button"
+        v-for="(item, index) in settingData"
+        :key="index"
+        :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
+        @click="developmentMessage(item.name)"
+      >
+        <router-link :to="item.path">
+          <div class="setting-button-left">
+            <img :src="item.icon" alt="" />
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="setting-button-right">
+            <span v-if="item.name === '提醒'">开启</span>
+            <span v-if="item.name === '语言'">简体中文</span>
+            <img src="./../../../../static/images/next.png" alt="" />
+          </div>
+        </router-link>
+      </div>
+
+      <div class="setting-disable" @click="loginOutDialogShow = true">
+        <div class="setting-button-left">
+          <img src="./../../../../static/images/logout.png" alt="" />
+          <span>登出</span>
+        </div>
+      </div>
+    </div>
     <el-dialog
       title="我的帐号"
       :visible.sync="centerDialogVisible"
       width="100%"
       center
+      append-to-body
+
     >
       <div class="qrcode-box">
         <vue-qr
@@ -103,6 +101,7 @@
       width="70%"
       :show-close="false"
       center
+      append-to-body
     >
       <div class="loginOut-box">
         <div><img src="./../../../../static/images/warn.png" alt="" /></div>
@@ -165,7 +164,7 @@ export default {
       centerDialogVisible: false,
       loginOutDialogShow: false,
       qrCodeConfig: {
-        text: `${process.env.VUE_APP_URL}#/AddUser?username=${localStorage.getItem(
+        text: `${process.env.VUE_APP_URL}/fe/#/AddUser?username=${localStorage.getItem(
           "username"
         )}&id=${localStorage.getItem("id")}`,
         logo: require("./../../../../static/images/material_ic_logo.png"),
@@ -240,12 +239,6 @@ export default {
   }
 }
 .address-content {
-  // overflow-x: hidden;
-  // overflow-y: auto;
-  // height: calc(80vh - 58px);
-  // position: relative;
-  // top: 3em;
-  // z-index: 8;
   .user-data {
     .user-data-id {
       margin: -3.5em 0 -5em 0;
@@ -344,9 +337,9 @@ export default {
     margin-top: 1em;
   }
 }
-/deep/.el-dialog__wrapper {
+.el-dialog__wrapper {
   overflow: hidden;
-  .el-dialog {
+  /deep/.el-dialog {
     margin: 0 auto;
     border-radius: 20px 20px 0 0;
     position: absolute;
@@ -398,13 +391,13 @@ export default {
   }
 }
 
-/deep/.el-dialog-loginOut {
+.el-dialog-loginOut {
   overflow: auto;
-  .el-dialog {
-    position: relative;
+  /deep/.el-dialog {
     margin: 0 auto 50px;
     background: #ffffff;
     border-radius: 10px;
+    position: relative;
     box-sizing: border-box;
     width: 50%;
     .el-dialog__header {

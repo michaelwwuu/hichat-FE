@@ -80,9 +80,9 @@ export default {
         return "";
       }
     },
-
     searchUserData(token) {
       this.noData = false;
+      this.addUser = {};
       if (token === "") {
         this.addUser = {};
         this.noData = true;

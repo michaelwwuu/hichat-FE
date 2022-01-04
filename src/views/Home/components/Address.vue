@@ -24,7 +24,10 @@
           @click="goContactPage(item,'ContactPage')"
         >
           <el-image :src="item.icon" />
-          <span>{{ item.name }}</span>
+          <div class="contont-box">
+            <span>{{ item.name }}</span>
+            <div class="contont-border-bottom"></div>
+          </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
@@ -35,7 +38,10 @@
           @click="goContactPage(item,'GroupPage')"
         >
           <el-image :src="item.icon"/>
-          <span>{{ item.groupName }}</span>
+          <div class="contont-box">
+            <span>{{ item.groupName }}</span>
+            <div class="contont-border-bottom"></div>
+          </div>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -44,6 +50,7 @@
       :visible.sync="centerDialogVisible"
       width="100%"
       center
+      append-to-body
     >
       <div class="qrcode-box">
         <vue-qr
@@ -96,7 +103,7 @@ export default {
       activeName: "address",
       centerDialogVisible: false,
       qrCodeConfig: {
-        text: `${process.env.VUE_APP_URL}#/AddUser?username=${localStorage.getItem(
+        text: `${process.env.VUE_APP_URL}/fe/#/AddUser?username=${localStorage.getItem(
           "username"
         )}&id=${localStorage.getItem("id")}`,
         logo: require("./../../../../static/images/material_ic_logo.png"),
@@ -167,23 +174,26 @@ export default {
   }
 }
 .address-box {
-  span {
+  .contont-box{
     padding-left: 1em;
-    font-size: 14px;
-  }
-  ::after {
-    content: "";
-    display: block;
-    position: absolute;
-    margin-top: 1.5em;
-    width: 100%;
-    border-bottom: 0.02em solid #b3b3b3;
+    height:48px;
+    span {
+      font-size: 14px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+    }
+    .contont-border-bottom{
+      width: 100vw;
+      border-bottom: 0.02em solid #b3b3b3;
+      position: absolute
+    }
   }
 }
 
-/deep/.el-dialog__wrapper {
+.el-dialog__wrapper {
   overflow: hidden;
-  .el-dialog {
+  /deep/.el-dialog {
     margin: 0 auto;
     border-radius: 20px 20px 0 0;
     position: absolute;
