@@ -4,18 +4,21 @@
       <el-main>
         <el-header height="125px">
           <div class="home-header">
-            <div class="home-user" @click="back" style="position: absolute"></div>
+            <template v-if="groupData.isAdmin && !editBtnShow">
+              <div class="home-user" @click="back" style="position: absolute"></div>
+            </template>
+            <template v-else-if="groupData.isAdmin">
+              <div class="home-user" @click="editBtnShow = false" style="position: absolute"></div>
+            </template>
             <span class="home-header-title"
-              >成员 ({{ contactList.length }})
+              >成员 ({{ !editBtnShow? contactList.length :checkDataList.length}})
             </span>
+
             <template v-if="groupData.isAdmin && !editBtnShow">
               <router-link :to="'GroupAddPeople'" style="position: absolute; right: 50px;">
                 <div class="home-add-user" ></div>
               </router-link>  
               <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
-            </template>
-            <template v-else-if="groupData.isAdmin">
-              <div class="cancel"  @click="editBtnShow = false">取消</div>
             </template>
           </div>
           <div class="home-search">
@@ -52,7 +55,7 @@
           <div class="home-content">
             <el-checkbox-group v-model="checkList">
               <el-checkbox
-                v-for="(item, index) in contactList"
+                v-for="(item, index) in checkDataList"
                 :label="item.memberId"
                 :key="index"
               >
@@ -108,6 +111,7 @@ export default {
       groupData: {},
       checkList: [],
       contactList: [],
+      checkDataList:[],
       searchKey: "",
       disabled: true,
       editBtnShow: false,
@@ -137,6 +141,7 @@ export default {
           }
         });
         localStorage.setItem('groupDataList',JSON.stringify(this.contactList))
+        this.checkDataList = this.contactList.filter(el=> el.memberId !== this.groupData.memberId)
       });
     },
     removeGroupMember(){

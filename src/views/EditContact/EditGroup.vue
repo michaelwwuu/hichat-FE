@@ -120,6 +120,8 @@ export default {
       }
       updateGroup(params).then((res) => {
         if (res.code === 200) {
+          this.groupData.groupName = this.groupForm.name
+          localStorage.setItem("groupData",JSON.stringify(this.groupData))
           this.back()
         }
       })

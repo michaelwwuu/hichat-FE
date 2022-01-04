@@ -231,6 +231,7 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: #eaf5fa;
+    border-top: none;
     .el-button {
       width: 95%;
     }

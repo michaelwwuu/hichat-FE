@@ -14,7 +14,9 @@
             <span class="home-photo-link" v-if="userData.isContact">
               <router-link :to="'/ContactPage'">
                 <div class="home-user-photo">
-                  <img :src="userData.icon"/>
+                  <img
+                    :src="userData.icon === undefined || userData.icon === null || userData.icon === '' ? require('./../../../static/images/image_user_defult.png'): userData.icon"
+                  />
                 </div>
               </router-link>
             </span>

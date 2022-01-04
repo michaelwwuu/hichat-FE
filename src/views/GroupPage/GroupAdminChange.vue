@@ -4,9 +4,7 @@
       <el-main>
         <el-header height="125px">
           <div class="home-header">
-            <router-link :to="'/GroupPage'">
-              <div class="home-user"></div>
-            </router-link>
+            <div class="home-user" @click="back"></div>
             <span class="home-header-title">转移管理者权限</span>
             <div class="home-add-user"></div>
           </div>
@@ -52,13 +50,13 @@
     <el-dialog
       :visible.sync="GroupAdminChange"
       class="el-dialog-loginOut"
-      width="70%"
+      width="75%"
       :show-close="false"
       center
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>确认是否將管理者權限轉移給 XXX ？</span>
+        <span>确认是否將管理者權限轉移給 {{checkMember.name}} ？</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="border-red" @click="GroupAdminChange = false"
@@ -80,6 +78,7 @@ export default {
     return {
       groupData: {},
       checkList: "",
+      checkMember:'',
       contactList: [],
       searchKey: "",
       disabled: true,
@@ -96,9 +95,11 @@ export default {
   watch: {
     checkList(val) {
       this.disabled = val === '';
+      this.checkMember = this.contactList.filter(el=> el.memberId === val)[0]
     },
   },
   methods: {
+
     getGroupListMember() {
       let groupId = this.groupData.groupId
       groupListMember({ groupId }).then((res) => {
@@ -106,6 +107,9 @@ export default {
         this.contactList.forEach((res) => {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
+          if(res.memberId === this.groupData.memberId){
+            this.checkList = res.memberId
+          }  
         })
       })
       .catch((err) => {

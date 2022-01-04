@@ -133,6 +133,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
+import { getGroupList } from "@/api";
 
 export default {
   name: "HiChat",
@@ -144,10 +145,12 @@ export default {
       contactDataList: [],
       groupDataList: [],
       newMsgDataList: [],
+      groupList:{},
     };
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
+    this.getGroupDataList()
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -199,6 +202,11 @@ export default {
           break;
       }
     },
+    getGroupDataList(){
+      getGroupList().then((res) => {
+        this.groupList = res.data.list
+      })
+    },
     goChatRoom(data,path) {
       if(path === 'ChatMsg'){
         localStorage.setItem("userData", JSON.stringify(data));
@@ -206,8 +214,12 @@ export default {
         data.icon = data.icon
         data.groupName = data.name
         data.groupId = data.toChatId.replace("g", "");
-        data.memberId = data.forChatId.replace("u", "");
-        data.isAdmin = localStorage.getItem("groupData").isAdmin
+        data.memberId = JSON.parse(data.forChatId.replace("u", ""));
+        this.groupList.forEach((item)=>{
+          if(item.groupName === data.groupName){
+            return data.isAdmin = item.isAdmin
+          }
+        })
         localStorage.setItem("groupData", JSON.stringify(data))
       }
       this.$router.push({ name: path });

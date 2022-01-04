@@ -22,11 +22,10 @@
           <el-checkbox-group v-model="checkList"> 
             <el-checkbox
               v-for="(item, index) in newContactDataList"
-              :label="item.memberId"
+              :label="item.contactId"
               :key="index"
               :disabled="item.disabled"
               :class="{'hidden':item.disabled}"
-              
             >
               <div class="address-box">
                 <el-image :src="item.icon" />
@@ -100,14 +99,10 @@ export default {
       let groupId = this.groupData.groupId
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list
-        this.newContactDataList = this.contactList.filter((item) =>{
-          return this.myContactDataList.filter((el)=>{
-            return JSON.parse(el.contactId) === item.memberId
-          })
-        })
+        this.newContactDataList = this.myContactDataList
         this.newContactDataList.forEach(el =>{
           this.contactList.forEach((item)=>{
-            if(el.memberId === item.memberId) el.disabled = true;
+            if(el.username === item.username) el.disabled = true
             if(item.icon === undefined) item.icon = require("./../../../static/images/image_user_defult.png")
           })
         })
@@ -127,9 +122,6 @@ export default {
     back() {
       this.$router.back(-1);
     },
-    notJoinTip(){
-      console.log(123)
-    }
   },
 };
 </script>

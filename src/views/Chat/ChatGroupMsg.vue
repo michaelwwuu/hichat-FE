@@ -15,8 +15,7 @@
               <router-link :to="'/GroupPage'">
                 <div class="home-user-photo">
                   <img
-                    :src="groupData.icon === undefined ?require('./../../../static/images/image_user_defult.png'):groupData.icon"
-                    alt=""
+                    :src="groupData.icon === undefined || groupData.icon === '' ? require('./../../../static/images/image_user_defult.png'): groupData.icon"
                   />
                 </div>
               </router-link>
