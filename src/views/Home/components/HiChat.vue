@@ -113,7 +113,7 @@
       >
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>
-          <el-badge v-if="contactDataList.unreadCount > 0" is-dot class="contact-badge"></el-badge>
+          <el-badge v-if="messageNum" is-dot class="contact-badge"></el-badge>
         </span>
         <div
           v-for="(item, index) in contactDataList"
@@ -174,11 +174,12 @@ export default {
     return {
       searchKey: "",
       activeName: "address",
-      hiChatDataList: [],
-      contactDataList: [],
-      groupDataList: [],
-      newMsgDataList: [],
       groupList:{},
+      groupDataList: [],
+      hiChatDataList: [],
+      newMsgDataList: [],
+      contactDataList: [],
+      messageNum:false,
     };
   },
   created() {
@@ -226,7 +227,8 @@ export default {
           this.contactDataList = userInfo.recentChat.filter(
             (item) => !item.isContact && item.isContact !==null
           );
-          break;
+          this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
+           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
