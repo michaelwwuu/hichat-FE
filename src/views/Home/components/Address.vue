@@ -1,22 +1,7 @@
 <template>
-  <div>
-    <div class="home-header">
-      <div class="home-user" @click="centerDialogVisible = true"></div>
-      <span class="home-header-title">通讯录</span>
-      <router-link :to="'/AddUser'">
-        <div class="home-add-user"></div>
-      </router-link>
-    </div>
-    <div class="home-search">
-      <el-input
-        placeholder="输入欲搜寻的联络人"
-        prefix-icon="el-icon-search"
-        v-model="searchKey"
-      >
-      </el-input>
-    </div>
+  <div style="flex:1; overflow-y: auto;">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="联络人" name="address">
+      <el-tab-pane label="联络人" name="address" class="address" >
         <div
           class="address-box"
           v-for="(item, index) in contactList"
@@ -30,7 +15,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="群组" name="group">
+      <el-tab-pane label="群组" name="group" class="address" >
         <div
           class="address-box"
           v-for="(item, index) in groupList"
@@ -109,12 +94,20 @@ export default {
         logo: require("./../../../../static/images/material_ic_logo.png"),
       },
       downloadFilename: "",
+      elementHeight:0,
     };
   },
   created() {
     this.getAddressList();
     this.getGroupDataList()
     this.userData = JSON.parse(localStorage.getItem("userData")); 
+    
+  },
+  mounted() {;
+    let element = document.getElementById('pane-address');  //100
+    setTimeout(()=>{
+      console.log(element.clientHeight)
+    },1000)
   },
   methods: {
     copyUrl() {

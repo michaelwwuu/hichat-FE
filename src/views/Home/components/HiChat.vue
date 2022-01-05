@@ -1,22 +1,24 @@
 <template>
-  <div>
-    <div class="home-header">
-      <div class="home-user"></div>
-      <span class="home-header-title">HiChat</span>
-      <router-link :to="'/AddGroup'">
-        <div class="home-add-user"></div>
-      </router-link>
-    </div>
-    <div class="home-search">
-      <el-input
-        placeholder="搜索"
-        prefix-icon="el-icon-search"
-        v-model="searchKey"
-      >
-      </el-input>
-    </div>
+  <div style="flex:1; overflow-y: auto;">
+    <!-- <el-header height="120px" style="background-color: #eaf5fa; z-index:9;">
+      <div class="home-header">
+        <div class="home-user"></div>
+        <span class="home-header-title">HiChat</span>
+        <router-link :to="'/AddGroup'">
+          <div class="home-add-user"></div>
+        </router-link>
+      </div> 
+      <div class="home-search">
+        <el-input
+          placeholder="搜索"
+          prefix-icon="el-icon-search"
+          v-model="searchKey"
+        >
+        </el-input>
+      </div>
+    </el-header> -->
     <el-tabs v-model="activeName">
-      <el-tab-pane label="联络人" name="address">
+      <el-tab-pane label="联络人" name="address" class="address">
         <div
           v-for="(item, index) in hiChatDataList"
           :key="index"
@@ -61,7 +63,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="群组" name="group">
+      <el-tab-pane label="群组" name="group" class="address">
         <div
           v-for="(item, index) in groupDataList"
           :key="index"
@@ -110,6 +112,7 @@
         label="陌生讯息"
         name="contact"
         v-if="contactDataList.length > 0"
+        class="address"
       >
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>

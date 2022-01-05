@@ -47,6 +47,7 @@ export default {
   .el-button{
     border-radius: 10px;
   }
+  overflow: hidden;
 }
 .el-notification__content {
   margin-top: 20px;

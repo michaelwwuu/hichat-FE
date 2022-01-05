@@ -89,6 +89,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       overflow-x: hidden;
       flex: 1;
       overflow-y: auto;
+      padding-bottom:20px;
       .user-data{
         margin: 1.5em auto 2.5em auto;
         text-align: center;
@@ -135,16 +136,22 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
     .home-footer {
-      width: 100vw;
-      background-color: #fff;
-      position: fixed;
-      bottom: 0;
+      // width: 100vw;
+      // background-color: #fff;
+      // // position: fixed;
+      // // bottom: 0;
+      // display: flex;
+      // justify-content: space-between;
+      // padding: 0.5em 0;
+      // border-top: 0.01em solid #d9d9d9;
+      // z-index: 9;
+      height: 55px;
+      background-color: rgba(255, 255, 255, 0.85);
+      border-top: 1px solid #dddddd;
       display: flex;
       justify-content: space-between;
-      padding: 0.5em 0;
-      border-top: 0.01em solid #d9d9d9;
-      -webkit-overflow-scrolling: none;
-      z-index: 9;
+      align-items: center;
+      padding: 0 10px;
       .home-footer-btn {
         text-align: center;
         font-size: 12px;
@@ -167,15 +174,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
     .el-tabs{
-      position: fixed;
+      // position: fixed;
       width: 100vw;
-      top: 8em;
+      // top: 8em;
       background-color: #eaf5fa;
-      z-index: 9;
+      z-index: 8;
       .el-tabs__header{
         position: fixed;
         width: 100vw;
-        top: 7.5em;
         z-index: 9;
         background-color: #e2e0e0;
         display: flex;
@@ -205,11 +211,15 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
       .el-tabs__content{
         position: relative;
-        top: 2em;
+        top: 2.4em;
         overflow-x: hidden;
         overflow-y: auto;
-        height: 70vh;
-        z-index: 8;
+        z-index: 5;
+        .address{
+          // height: 52vh;
+          // padding-top:36px;
+          z-index: 8;
+        }
       }
     }  
     .el-container {

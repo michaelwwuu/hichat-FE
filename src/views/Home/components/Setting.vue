@@ -1,14 +1,5 @@
 <template>
-  <div>
-    <el-header height="55px">
-      <div class="home-header">
-        <div class="home-user" @click="centerDialogVisible = true"></div>
-        <span class="home-header-title">设定</span>
-        <router-link :to="'/EditUser'"
-          ><div class="home-add-user"></div
-        ></router-link>
-      </div>
-    </el-header>
+  <div style="flex:1; overflow-y: auto;">
     <div class="address-content">
       <div class="user-data">
         <el-image
