@@ -141,7 +141,17 @@ export default {
   name: "Home",
   data() {
     return {
+      num: 0,
       searchKey: "",
+      qrCodeConfig: {
+        text: `${
+          process.env.VUE_APP_URL
+        }fe/#/AddUser?username=${localStorage.getItem(
+          "username"
+        )}&id=${localStorage.getItem("id")}`,
+        logo: require("./../../../static/images/material_ic_logo.png"),
+      },
+      downloadFilename: "",
       routerNav: [
         {
           icon: require("./../../../static/images/address.png"),
@@ -162,18 +172,7 @@ export default {
           name: "设定",
         },
       ],
-      num: 0,
-      centerDialogVisible: false,
-      qrCodeConfig: {
-        text: `${
-          process.env.VUE_APP_URL
-        }/fe/#/AddUser?username=${localStorage.getItem(
-          "username"
-        )}&id=${localStorage.getItem("id")}`,
-        logo: require("./../../../static/images/material_ic_logo.png"),
-      },
-      downloadFilename: "",
-      
+      centerDialogVisible: false,      
     };
   },
   created() {
