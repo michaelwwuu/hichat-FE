@@ -1,22 +1,5 @@
 <template>
   <div style="flex:1; overflow-y: auto;">
-    <!-- <el-header height="120px" style="background-color: #eaf5fa; z-index:9;">
-      <div class="home-header">
-        <div class="home-user"></div>
-        <span class="home-header-title">HiChat</span>
-        <router-link :to="'/AddGroup'">
-          <div class="home-add-user"></div>
-        </router-link>
-      </div> 
-      <div class="home-search">
-        <el-input
-          placeholder="搜索"
-          prefix-icon="el-icon-search"
-          v-model="searchKey"
-        >
-        </el-input>
-      </div>
-    </el-header> -->
     <el-tabs v-model="activeName">
       <el-tab-pane label="联络人" name="address" class="address">
         <div
@@ -267,12 +250,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home-header {
-  .home-add-user {
-    background-color: #fff;
-    background-image: url("./../../../../static/images/add_chat.png");
-  }
-}
 .address-box {
   .contont-box{
     padding-left: 1em;

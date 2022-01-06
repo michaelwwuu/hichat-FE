@@ -45,48 +45,6 @@
       </div>
     </div>
     <el-dialog
-      title="我的帐号"
-      :visible.sync="centerDialogVisible"
-      width="100%"
-      center
-      append-to-body
-
-    >
-      <div class="qrcode-box">
-        <vue-qr
-          ref="Qrcode"
-          :correctLevel="3"
-          :autoColor="false"
-          colorDark="#333333"
-          :text="qrCodeConfig.text"
-          :download="downloadFilename"
-          :size="100"
-          :margin="0"
-          :logoSrc="qrCodeConfig.logo"
-          :logoCornerRadius="2"
-          :logoMargin="1"
-        ></vue-qr>
-      </div>
-      <span class="qrcode-box-text"
-        >嗨聊用户扫描此二维码后，可将您加入好友！</span
-      >
-      <span slot="footer" class="dialog-footer">
-        <router-link :to="'/QRcode'"
-          ><img src="./../../../../static/images/scan.png" alt=""
-        /></router-link>
-        <img
-          src="./../../../../static/images/share.png"
-          alt=""
-          @click="copyUrl"
-        />
-        <img
-          src="./../../../../static/images/download.png"
-          alt=""
-          @click="downloadImg"
-        />
-      </span>
-    </el-dialog>
-    <el-dialog
       :visible.sync="loginOutDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -109,9 +67,7 @@
 </template>
 
 <script>
-import VueQr from "vue-qr";
 import { getUserInfo } from "@/api";
-import urlCopy from "@/utils/urlCopy.js";
 import { developmentMessage } from "@/assets/tools";
 
 export default {
@@ -152,15 +108,7 @@ export default {
         },
       ],
       notification: true,
-      centerDialogVisible: false,
       loginOutDialogShow: false,
-      qrCodeConfig: {
-        text: `${process.env.VUE_APP_URL}/fe/#/AddUser?username=${localStorage.getItem(
-          "username"
-        )}&id=${localStorage.getItem("id")}`,
-        logo: require("./../../../../static/images/material_ic_logo.png"),
-      },
-      downloadFilename: "",
       developmentMessage: developmentMessage,
     };
   },
@@ -181,18 +129,6 @@ export default {
         duration: 1000,
       });
     },
-    copyUrl() {
-      let url = this.qrCodeConfig.text;
-      urlCopy(url);
-    },
-    downloadImg() {
-      const iconUrl = this.$refs.Qrcode.$el.src;
-      let a = document.createElement("a");
-      let event = new MouseEvent("click");
-      a.download = "二维码";
-      a.href = iconUrl;
-      a.dispatchEvent(event);
-    },
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined)
@@ -212,23 +148,10 @@ export default {
       window.location.reload();
     },
   },
-  components: {
-    VueQr,
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.home-header {
-  .home-user {
-    background-color: #fff;
-    background-image: url("./../../../../static/images/qrcode.png");
-  }
-  .home-add-user {
-    background-color: #fff;
-    background-image: url("./../../../../static/images/edit.png");
-  }
-}
 .address-content {
   .user-data {
     .user-data-id {
@@ -328,60 +251,6 @@ export default {
     margin-top: 1em;
   }
 }
-.el-dialog__wrapper {
-  overflow: hidden;
-  /deep/.el-dialog {
-    margin: 0 auto;
-    border-radius: 20px 20px 0 0;
-    position: absolute;
-    bottom: 0;
-    .el-dialog__header {
-      .el-dialog__title {
-        color: #10686e;
-        font-weight: 600;
-      }
-      .el-dialog__headerbtn {
-        position: inherit;
-        float: left;
-        .el-dialog__close {
-          color: #f60;
-        }
-      }
-    }
-    .el-dialog__body {
-      text-align: center;
-      .qrcode-box {
-        width: 15em;
-        height: 15em;
-        border: 2px solid #333;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        img {
-          height: 14em;
-        }
-      }
-      .qrcode-box-text {
-        color: #0c0d0d;
-        font-weight: 600;
-        margin-top: 2em;
-        display: block;
-      }
-    }
-    .el-dialog__footer {
-      padding: 20px 30px 20px 30px;
-      .dialog-footer {
-        display: flex;
-        justify-content: space-between;
-        img {
-          height: 1em;
-        }
-      }
-    }
-  }
-}
-
 .el-dialog-loginOut {
   overflow: auto;
   /deep/.el-dialog {
