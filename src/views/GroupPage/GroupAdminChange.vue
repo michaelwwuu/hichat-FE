@@ -41,14 +41,14 @@
           <el-button
             :class="disabled ? 'gray-btn' : 'red-btn'"
             :disabled="disabled"
-            @click="GroupAdminChange = true"
+            @click="groupAdminChange = true"
             >转移</el-button
           >
         </div>
       </el-main>
     </el-container>
     <el-dialog
-      :visible.sync="GroupAdminChange"
+      :visible.sync="groupAdminChange"
       class="el-dialog-loginOut"
       width="75%"
       :show-close="false"
@@ -59,10 +59,25 @@
         <span>确认是否將管理者權限轉移給 {{checkMember.name}} ？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="GroupAdminChange = false"
+        <el-button class="border-red" @click="groupAdminChange = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="changeGroupAdmin">确认</el-button>
+        <el-button class="background-red" @click="addDialogShow = true">确认</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="addDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="changeGroupAdmin">確認</el-button>
       </span>
     </el-dialog>
   </div>
@@ -82,7 +97,8 @@ export default {
       contactList: [],
       searchKey: "",
       disabled: true,
-      GroupAdminChange: false,
+      addDialogShow:false,
+      groupAdminChange: false,
       developmentMessage: developmentMessage,
     };
   },
@@ -266,6 +282,10 @@ export default {
           }
           .background-red {
             background-color: #ee5253;
+            color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
             color: #fff;
           }
           .border-red {

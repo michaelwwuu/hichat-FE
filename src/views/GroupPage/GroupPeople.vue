@@ -94,7 +94,22 @@
         <el-button class="border-red" @click="leaveUserDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="removeGroupMember">确认</el-button>
+        <el-button class="background-red" @click="addDialogShow = true">确认</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="addDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="removeGroupMember">確認</el-button>
       </span>
     </el-dialog>
   </div>
@@ -115,6 +130,7 @@ export default {
       searchKey: "",
       disabled: true,
       editBtnShow: false,
+      addDialogShow:false,
       leaveUserDialogShow: false,
       developmentMessage: developmentMessage,
     };
@@ -152,6 +168,7 @@ export default {
       removeMember(param).then((res)=>{
         if(res.code === 200) {
           this.editBtnShow = false
+          this.addDialogShow = false
           this.leaveUserDialogShow = false
           this.getGroupListMember();
         }
@@ -363,6 +380,10 @@ export default {
           }
           .background-red {
             background-color: #ee5253;
+            color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
             color: #fff;
           }
           .border-red {

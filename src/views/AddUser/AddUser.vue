@@ -43,6 +43,21 @@
         </div>
       </el-main>
     </el-container>
+    <el-dialog
+      :visible.sync="addDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="back">確認</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -57,6 +72,7 @@ export default {
       searchKey: "",
       avatarImg: require("./../../../static/images/image_user_defult.png"),
       noData: false,
+      addDialogShow:false,
     };
   },
   created() {
@@ -106,10 +122,13 @@ export default {
       };
       addContactUser(parmas).then((res) => {
         if (res.code === 200) {
-          this.$router.push({ path: "/Address" });
+          this.addDialogShow = true
         }
       });
     },
+    back(){
+      this.$router.push({ path: "/Address" });
+    }
   },
 };
 </script>
@@ -165,6 +184,56 @@ export default {
         width: 93%;
         background-color: #fe5f3f;
         color: #fff;
+      }
+    }
+  }
+  /deep/.el-dialog-loginOut {
+    overflow: auto;
+    .el-dialog {
+      position: relative;
+      margin: 0 auto 50px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 10px;
+      }
+      .el-dialog__body {
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
+        }
       }
     }
   }

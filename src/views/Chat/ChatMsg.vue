@@ -57,6 +57,21 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="addDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="addDialogShow = false">確認</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -79,6 +94,7 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
+      addDialogShow:false,
       isBlockDialogShow:false,
       userData: {},
       readMsgData: [],
@@ -183,6 +199,7 @@ export default {
       };
       addContactUser(parmas).then((res) => {
         if (res.code === 200) {
+          this.addDialogShow = true
           this.userData.isContact = true
           localStorage.setItem("userData",JSON.stringify(this.userData))
         } else {

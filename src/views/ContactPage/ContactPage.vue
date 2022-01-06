@@ -125,6 +125,21 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="addDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="back">確認</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -158,6 +173,7 @@ export default {
       dialogContent: "",
       blockContent: "",
       notification: true,
+      addDialogShow:false,
       settingDialogShow: false,
       addContactDialogShow:false,
       developmentMessage: developmentMessage,
@@ -223,10 +239,9 @@ export default {
           let blockId = this.userData.toChatId.replace("u", "");
           addBlockUser({ blockId }).then((res) => {
             if (res.code === 200) {
+              this.addDialogShow = true
               this.userData.isBlock = true;
-              this.settingDialogShow = false;
               localStorage.setItem("userData",JSON.stringify(this.userData))
-              this.back()
             }
           });
           break;
@@ -234,10 +249,9 @@ export default {
           let blockIdList = [this.userData.toChatId.replace("u", "")];
           unBlockUser({ blockIdList }).then((res) => {
             if (res.code === 200) {
+              this.addDialogShow = true
               this.userData.isBlock = false;
-              this.settingDialogShow = false;
               localStorage.setItem("userData",JSON.stringify(this.userData))
-              this.back()
             }
           })
           .catch((err) => {
