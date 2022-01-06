@@ -2,80 +2,46 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <!-- <template>
-          <el-header height="120px">
-            <div>
-              <div class="home-header">
-                <div class="home-user QRcode-img" @click="centerDialogVisible = true"></div>
-                <span class="home-header-title">通讯录</span>
-                <router-link :to="'/AddUser'">
-                  <div class="home-add-user"></div>
-                </router-link>
-              </div>
-            </div>
-            <div class="home-search">
-              <el-input
-                placeholder="输入欲搜寻的联络人"
-                prefix-icon="el-icon-search"
-                v-model="searchKey"
-              >
-              </el-input>
-            </div>
-          </el-header>
-        </template> -->
-        <template>
-          <el-header :style="num === 2?'height:55px':'height:120px'">
-            <div class="home-header">
-              <div
-                class="home-user"
-                :class="{ 'QRcode-img': num === 0 || num === 2 }"
-                @click="
-                  num === 0 || num === 2 ? (centerDialogVisible = true) : ''
-                "
-              ></div>
-              <span class="home-header-title">{{num === 0 ? '通讯录':num === 1 ?'HiChat':'设定'}}</span>
-              <template v-if="num === 0">
-                <router-link :to="'/AddUser'">
-                  <div class="home-add-user address-img"></div>
-                </router-link>
-              </template>
-              <template v-else-if="num === 1">
-                <router-link :to="'/AddGroup'">
-                  <div class="home-add-user hichat-img"></div>
-                </router-link>
-              </template>
-              <template v-else>
-                <router-link :to="'/EditUser'"
-                  ><div class="home-add-user setting-img"></div
-                ></router-link>
-              </template>
-            </div>
-            <div class="home-search" v-if="num !== 2">
-              <el-input
-                placeholder="搜索"
-                prefix-icon="el-icon-search"
-                v-model="searchKey"
-              >
-              </el-input>
-            </div>
-          </el-header>
-        </template>
-        <!-- <template>
-          <el-header height="55px">
-            <div class="home-header">
-              <div class="home-user" @click="centerDialogVisible = true"></div>
-              <span class="home-header-title">设定</span>
+        <el-header :style="num === 2?'height:55px':'height:120px'">
+          <div class="home-header">
+            <div
+              class="home-user"
+              :class="{ 'QRcode-img': num === 0 || num === 2 }"
+              @click="
+                num === 0 || num === 2 ? (centerDialogVisible = true) : ''
+              "
+            ></div>
+            <span class="home-header-title">{{num === 0 ? '通讯录':num === 1 ?'HiChat':'设定'}}</span>
+            <template v-if="num === 0">
+              <router-link :to="'/AddUser'">
+                <div class="home-add-user address-img"></div>
+              </router-link>
+            </template>
+            <template v-else-if="num === 1">
+              <router-link :to="'/AddGroup'">
+                <div class="home-add-user hichat-img"></div>
+              </router-link>
+            </template>
+            <template v-else>
               <router-link :to="'/EditUser'"
-                ><div class="home-add-user" style="background-color: #fff; background-image: url('./../../../static/images/edit.png')"></div
+                ><div class="home-add-user setting-img"></div
               ></router-link>
-            </div>
-          </el-header>
-        </template> -->
+            </template>
+          </div>
+          <div class="home-search" v-if="num !== 2">
+            <el-input
+              placeholder="搜索"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+            >
+            </el-input>
+          </div>
+        </el-header>
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive"></router-view>
-        <div class="home-footer">
+        <el-footer class="home-footer">
           <div
             class="home-footer-btn"
             v-for="(item, index) in routerNav"
@@ -92,7 +58,8 @@
               <span>{{ item.name }}</span>
             </router-link>
           </div>
-        </div>
+        </el-footer>
+
       </el-main>
     </el-container>
     <el-dialog
