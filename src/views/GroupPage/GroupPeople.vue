@@ -4,7 +4,7 @@
       <el-main>
         <el-header height="125px">
           <div class="home-header">
-            <template v-if="groupData.isAdmin && !editBtnShow">
+            <template v-if="!editBtnShow">
               <div class="home-user" @click="back" style="position: absolute"></div>
             </template>
             <template v-else-if="groupData.isAdmin">
@@ -150,7 +150,11 @@ export default {
         memberList: this.checkList
       }
       removeMember(param).then((res)=>{
-        if(res.code === 200) this.$router.push({ path: "/GroupPage" });
+        if(res.code === 200) {
+          this.editBtnShow = false
+          this.leaveUserDialogShow = false
+          this.getGroupListMember();
+        }
       })
       .catch((err) => {console.log(err)})
     },
