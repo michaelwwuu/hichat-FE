@@ -141,17 +141,6 @@ export default {
   name: "Home",
   data() {
     return {
-      num: 0,
-      searchKey: "",
-      qrCodeConfig: {
-        text: `${
-          process.env.VUE_APP_URL
-        }fe/#/AddUser?username=${localStorage.getItem(
-          "username"
-        )}&id=${localStorage.getItem("id")}`,
-        logo: require("./../../../static/images/material_ic_logo.png"),
-      },
-      downloadFilename: "",
       routerNav: [
         {
           icon: require("./../../../static/images/address.png"),
@@ -172,16 +161,27 @@ export default {
           name: "设定",
         },
       ],
+      qrCodeConfig: {
+        text: `${
+          process.env.VUE_APP_URL
+        }fe/#/AddUser?username=${localStorage.getItem(
+          "username"
+        )}&id=${localStorage.getItem("id")}`,
+        logo: require("./../../../static/images/material_ic_logo.png"),
+      },
+      num: 0,
+      searchKey: "",
+      downloadFilename: "",
       centerDialogVisible: false,      
     };
   },
   created() {
     this.num =
-      this.$route.fullPath === "/HiChat"
+      this.$route.fullPath === "/Address"
+        ? 0
+        : this.$route.fullPath === "/Hichat"
         ? 1
-        : this.$route.fullPath === "/Setting"
-        ? 2
-        : 0;
+        : 2;
   },
   methods: {
     changeImg(index) {
@@ -207,9 +207,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .home-wrapper {
-
   .el-container {
     /deep/.el-main {
       .el-header {
@@ -231,60 +229,6 @@ export default {
           .setting-img {
             background-image: url("./../../../static/images/edit.png");
           }
-        }
-      }
-    }
-  }
-}
-
-/deep/.el-dialog__wrapper {
-  overflow: hidden;
-  .el-dialog {
-    margin: 0 auto;
-    border-radius: 20px 20px 0 0;
-    position: absolute;
-    bottom: 0;
-    .el-dialog__header {
-      .el-dialog__title {
-        color: #10686e;
-        font-weight: 600;
-      }
-      .el-dialog__headerbtn {
-        position: inherit;
-        float: left;
-        .el-dialog__close {
-          color: #f60;
-        }
-      }
-    }
-    .el-dialog__body {
-      text-align: center;
-      .qrcode-box {
-        width: 15em;
-        height: 15em;
-        border: 2px solid #333;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        img {
-          height: 14em;
-        }
-      }
-      .qrcode-box-text {
-        color: #0c0d0d;
-        font-weight: 600;
-        margin-top: 2em;
-        display: block;
-      }
-    }
-    .el-dialog__footer {
-      padding: 20px 30px 20px 30px;
-      .dialog-footer {
-        display: flex;
-        justify-content: space-between;
-        img {
-          height: 1em;
         }
       }
     }
