@@ -1,7 +1,7 @@
 <template>
   <div style="flex:1; overflow-y: auto;">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="联络人" name="address" class="address">
+      <el-tab-pane label="联络人" name="address">
         <div
           v-for="(item, index) in hiChatDataList"
           :key="index"
@@ -46,7 +46,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="群组" name="group" class="address">
+      <el-tab-pane label="群组" name="group">
         <div
           v-for="(item, index) in groupDataList"
           :key="index"
@@ -95,7 +95,6 @@
         label="陌生讯息"
         name="contact"
         v-if="contactDataList.length > 0"
-        class="address"
       >
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>

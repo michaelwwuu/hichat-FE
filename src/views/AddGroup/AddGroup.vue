@@ -11,9 +11,7 @@
             <span class="home-header-title">创建群组</span>
             <div class="home-add-user"></div>
           </div>
-        </el-header>
-        <template v-if="groupEditShow">
-          <div class="home-search">
+          <div class="home-search" v-if="groupEditShow">
             <el-input
               placeholder="搜寻"
               prefix-icon="el-icon-search"
@@ -22,6 +20,8 @@
             >
             </el-input>
           </div>
+        </el-header>
+        <template v-if="groupEditShow">
           <div class="home-content">
             <el-checkbox-group v-model="checkList">
               <el-checkbox
@@ -107,26 +107,6 @@ export default {
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
-    }
-  }
-  .home-search {
-    position: fixed;
-    width: -webkit-fill-available;
-    top: 3em;
-    background-color: #eaf5fa;
-    z-index: 9;
-    /deep/.el-input {
-      .el-input__inner {
-        background-color: #e9e8e8;
-        color: #666666;
-      }
-      .el-input__prefix {
-        color: #666666;
-      }
-      ::placeholder {
-        /* CSS 3 標準 */
-        color: #666666;
-      }
     }
   }
   .home-content {

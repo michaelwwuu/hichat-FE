@@ -179,7 +179,7 @@ export default {
     this.num =
       this.$route.fullPath === "/Address"
         ? 0
-        : this.$route.fullPath === "/Hichat"
+        : this.$route.fullPath === "/HiChat"
         ? 1
         : 2;
   },

@@ -1,7 +1,7 @@
 <template>
   <div style="flex:1; overflow-y: auto;">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="联络人" name="address" class="address" >
+      <el-tab-pane label="联络人" name="address">
         <div
           class="address-box"
           v-for="(item, index) in contactList"
@@ -15,7 +15,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="群组" name="group" class="address" >
+      <el-tab-pane label="群组" name="group">
         <div
           class="address-box"
           v-for="(item, index) in groupList"
