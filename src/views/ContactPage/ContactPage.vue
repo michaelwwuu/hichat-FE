@@ -263,8 +263,9 @@ export default {
           let contactId = this.userData.toChatId.replace("u", "");
           deleteUser(contactId).then((res) => {
             if (res.code === 200) {
-              this.settingDialogShow = false;
-              this.$router.push({ name: "Address" });
+              // this.settingDialogShow = false;
+              this.addDialogShow = true
+              // this.$router.push({ name: "Address" });
             }
           })
           .catch((err) => {

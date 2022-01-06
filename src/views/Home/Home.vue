@@ -186,7 +186,6 @@ export default {
   methods: {
     changeImg(index) {
       this.num = index;
-      console.log(this.num);
     },
     copyUrl() {
       let url = this.qrCodeConfig.text;
