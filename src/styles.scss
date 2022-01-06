@@ -68,19 +68,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .user-data{
         margin: 1.5em auto 2.5em auto;
         text-align: center;
-        .el-image {
-          width: 3em;
-          height: 48px;
-          border-radius: 10px;
-          .el-image__inner{
-            height: auto;
-            border-radius: 10px;
-          }
-          .el-image__error{
-            // height: 48px;
-            font-size: 10px;
-          }
-        }   
       }
     }
 
@@ -90,19 +77,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       padding: 0.8em 1em;
       display: flex;
       align-items: center;
-      .el-image {
-        width: 3em;
-        height: 48px;
-        border-radius: 10px;
-        .el-image__inner{
-          height: auto;
-          border-radius: 10px;
-        }
-        .el-image__error{
-          height: 48px;
-          font-size: 10px;
-        }
-      }    
     }
 
     .add-content{
@@ -112,19 +86,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           display: block;
           text-align: center;
           height: 3.5em;
-        }
-        .el-image{
-          width: 3em;
-          height: 48px;
-          border-radius: 10px;
-          .el-image__inner{
-            height: auto;
-            border-radius: 10px;
-          }
-          .el-image__error{
-            height: 48px;
-            font-size: 10px;
-          }
         }
         .photo-edit {
           height: 1.5em !important;
@@ -278,8 +239,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
             width: 2em;
             height: 2em;
             border-radius: 10px;
-            background-color: #fff;
             background-size: 50%;
+            background-color: #fff;
             background-position: center;
             background-repeat: no-repeat;
           }
@@ -430,6 +391,19 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           }
         }
       }
+    }
+  }
+  .el-image{
+    width: 3em;
+    height: 48px;
+    border-radius: 10px;
+    .el-image__inner{
+      height: auto;
+      border-radius: 10px;
+    }
+    .el-image__error{
+      height: 48px;
+      font-size: 10px;
     }
   }
 }

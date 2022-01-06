@@ -295,19 +295,6 @@ export default {
       display: flex;
       align-items: center;
       font-size: 14px;
-      /deep/.el-image {
-        width: 3em;
-        height: 48px;
-        border-radius: 10px;
-        .el-image__inner{
-          height: auto;
-          border-radius: 10px;
-        }
-        .el-image__error{
-          height: 48px;
-          font-size: 10px;
-        }
-      }    
       .msg-box {
         span {
           display: block;
