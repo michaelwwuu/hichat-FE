@@ -22,7 +22,7 @@
           </div>
         </template>
         <template v-else>
-          <div class="message-pabel-box">
+          <div class="home-content">
             <el-checkbox-group v-model="checkList">
               <el-checkbox
                 v-for="(item, index) in blockData"
@@ -41,7 +41,7 @@
             </el-checkbox-group>
           </div>  
         </template>
-        <div class="message-input-box" v-if="!editBtnShow">
+        <div class="home-footer-btn" v-if="!editBtnShow">
           <el-button
             :class="disabled ? 'gray-btn' : 'orange-btn'"
             :disabled="disabled"
@@ -176,7 +176,7 @@ export default {
     }
 
   }
-  .message-pabel-box {
+  .home-content {
     padding: 1em 0 0 0;
     flex: 1;
     overflow-y: auto;
@@ -225,7 +225,7 @@ export default {
       }
     }
   }
-  .message-input-box {
+  .home-footer-btn {
     margin: 1em 0;
     display: flex;
     justify-content: center;
@@ -233,7 +233,7 @@ export default {
     background-color: #eaf5fa;
     border-top: none;
     .el-button {
-      width: 95%;
+      width: 93%;
     }
     .gray-btn {
       background-color: #b3b3b3;

@@ -48,28 +48,97 @@
           </div>
         </template>
         <template v-else>
-          <group-edit :checkList="checkList"/>
+          <div class="add-content">
+            <div class="user-data">
+              <span><el-image :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
+              <span class="photo-edit" @click="uploadImgShow = true"
+                >变更群组照片</span
+              >
+            </div>
+          </div>
+          <div class="user-edit-form">
+            <el-form ref="form" :model="groupForm" label-width="100px">
+              <el-form-item label="群组名称">
+                <el-input
+                  v-model="groupForm.name"
+                  placeholder="群组名称"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div class="home-content">
+            <label class="el-checkbox">
+              <span class="el-checkbox__label">
+                <div class="address-box" v-for="(item, index) in checkList" :key="index">
+                  <el-image :src="item.icon" />
+                  <div class="msg-box">
+                    <span>{{ item.name }}</span>
+                  </div>
+                </div>
+              </span>
+            </label>
+          </div>
+          <div class="home-footer-btn">
+            <el-button
+              :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
+              :disabled="disableEditSubmit"
+              @click="editSubmit"
+              >创建群组</el-button
+            >
+          </div>
         </template>
+
       </el-main>
     </el-container>
+    <el-dialog
+      title="上傳群组照片"
+      :visible.sync="uploadImgShow"
+      width="100%"
+      center
+    >
+      <el-upload
+        class="upload-demo"
+        action="#"
+        :on-change="uploadImg"
+        :auto-upload="false"
+        :file-list="fileList"
+        list-type="picture"
+        limit="1"
+      >
+        <el-button type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">
+          只能上传 jpg / png 圖片，且不超过500kb
+        </div>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+        <el-button @click="uploadImgShow = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { getContactList } from "@/api";
-import GroupEdit from "./components/GroupEdit.vue";
-
+import { getContactList,uploadGroupIcon,addGroup } from "@/api";
 
 export default {
   name: "AddGroup",
   data() {
     return {
+      checkList: [],
       contactList: [],
+      groupForm: {
+        name: ""
+      },
       searchKey: "",
+      groupIcon: "",
+      fileList: [],
+      formData: new FormData(),
       disabled: true,
       groupEditShow:true,
-      checkList: [],
+      uploadImgShow: false,
+      disableEditSubmit:true,
       developmentMessage: developmentMessage,
     };
   },
@@ -79,6 +148,12 @@ export default {
   watch:{
     checkList(val) {
       this.disabled = !val.length > 0
+    },
+    groupForm:{
+      handler(val) {
+        this.disableEditSubmit = !val.name
+      },
+      deep: true,
     }
   },
   methods: {
@@ -93,11 +168,47 @@ export default {
     },
     createGroup(){
       if(this.checkList.length > 0) this.groupEditShow = false;
-    }
+    },
+    uploadImg(file, fileList) {
+      this.fileList = fileList;
+    },
+    submitAvatarUpload() {
+      this.formData.append("file", this.fileList[0].raw);
+      uploadGroupIcon(this.formData).then((res) => {
+        if (res.code === 200) {
+          this.fileList = [];
+          this.uploadImgShow = false;
+          this.groupIcon = res.data
+        }
+      });
+    },
+    editSubmit() {
+      let memberList = []
+      this.checkList.forEach(res => memberList.push(res.contactId));
+      let params = {
+        groupName: this.groupForm.name,
+        icon:this.groupIcon,
+        memberList:memberList,
+      }
+      addGroup(params).then((res) => {
+        if (res.code === 200) {
+          let groupData = { 
+            groupId: res.data.id,
+            groupName: res.data.groupName,
+            icon: this.groupIcon,
+            isAdmin: true,
+            memberId: JSON.parse(localStorage.getItem("id")),
+          }
+          localStorage.setItem("groupData", JSON.stringify(groupData))
+          this.$router.push({ path: "/ChatGroupMsg" });
+        }
+      })
+      .catch((err) => {
+        this.$message({ message: err, type: "error"});
+        return false;
+      });
+    },
   },
-  components:{
-    GroupEdit
-  }
 };
 </script>
 
@@ -155,6 +266,34 @@ export default {
       }
     }
   }
+  .user-edit-form {
+    margin: 1em;
+    background-color: #fff;
+    border-radius: 10px;
+    /deep/.el-form {
+      .el-form-item{
+        margin-bottom: 0px;
+        .el-form-item__label {
+          font-size: 17px;
+        }
+        .el-input {
+          font-size: 19px;
+          .el-input__inner {
+            border: none;
+          }
+        }
+      }
+
+    }
+  }
+  .add-content {
+    .user-data {
+      .photo-edit {
+        height:1.5em !important;
+        color: #fe5f3f;
+      }
+    }
+  }
   .home-footer-btn {
     margin: 1em 0;
     width: 100%;
@@ -172,5 +311,20 @@ export default {
       color: #fff;
     }
   }
+  
 }
+/deep/.el-dialog__wrapper {
+    .el-dialog{
+      .el-dialog__body {
+        .upload-demo {
+          .el-upload-list {
+            .el-upload-list__item {
+              margin-top: -72px;
+            }
+          }
+        }
+      }
+    }
+    
+  }
 </style>

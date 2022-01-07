@@ -143,10 +143,15 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f1f3f4;
+          background-color: #FFFFFF;
         }
         audio {
+          width: 60vw;
           filter: sepia(30%) grayscale(100%);
+        }
+        .el-image{
+          width: auto !important;
+          height: auto !important;
         }
       }
       .message-avatar {
@@ -178,6 +183,10 @@ export default {
         .message-audio {
           border-radius: 10px 0 10px 10px;
           background-color: #f1f3f4;
+        }
+        .el-image{
+          width: auto !important;
+          height: auto !important;
         }
       }
       .message-avatar {
@@ -242,8 +251,6 @@ export default {
       }
     }
     .message-audio {
-      position: relative;
-      max-width: 50%;
       height: 2.5em;
       margin-top: 1em;
       display: inline-block;

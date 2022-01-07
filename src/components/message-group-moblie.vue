@@ -180,26 +180,23 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #fafcff !important;
-          max-width: 65%;
+          background-color: #FFFFFF !important; 
           height: auto;
-          padding: 9px 12px;
+          padding: 9px 12px 0 12px;
           .message-box{
             background: #FFFFFF;
             .message-name{
               font-size: 13px;
               color: #919191;
-              padding-bottom: 10px;
+              padding-bottom: 5px;
             }
-            audio{
-              width: 44vw;
-              height: 1em;
+            audio {
+              width: 60vw;
+              filter: sepia(30%) grayscale(100%);
             }
           }
         }
-        audio {
-          filter: sepia(30%) grayscale(100%);
-        }
+        
       }
       .message-avatar {
         float: left;
@@ -242,6 +239,8 @@ export default {
             padding-bottom: 5px;
           }
           .el-image {
+            width: auto !important;
+            height: auto !important;
             img {
               border-radius: 8px;
               width: 6em;
@@ -260,7 +259,7 @@ export default {
           border-radius: 0 10px 10px 10px;
           background-color: #f1f3f4;
           audio {
-            width: 11em;
+            width: 60vw;
             filter: sepia(0%) grayscale(100%);
           }
         }
@@ -308,10 +307,15 @@ export default {
         color: #333333;
         background-color: #e5e4e4;
         border-radius: 10px;
-        img {
-          border-radius: 8px;
-          width: 6em;
+        .el-image{
+          width: auto !important;
+          height: auto !important;
+          img {
+            border-radius: 8px;
+            width: 6em;
+          }
         }
+
       }
     }
 
@@ -342,7 +346,6 @@ export default {
     }
     .message-audio {
       position: relative;
-      max-width: 50%;
       height: 2.5em;
       margin-top: 1em;
       display: inline-block;

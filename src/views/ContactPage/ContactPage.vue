@@ -265,6 +265,8 @@ export default {
             if (res.code === 200) {
               // this.settingDialogShow = false;
               this.addDialogShow = true
+              this.userData.isContact = false;
+              localStorage.setItem("userData",JSON.stringify(this.userData))
               // this.$router.push({ name: "Address" });
             }
           })
@@ -281,7 +283,9 @@ export default {
           addContactUser(parmas).then((res) => {
             if (res.code === 200) {
               this.settingDialogShow = false;
+              this.userData.isContact = true;
               this.addContactDialogShow = true;
+              localStorage.setItem("userData",JSON.stringify(this.userData))
             } 
           });
       }

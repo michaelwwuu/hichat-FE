@@ -229,8 +229,6 @@ export default {
   }
   .home-footer-btn {
     margin: 1em 0;
-    position: absolute;
-    bottom: 0;
     width: 100%;
     display: flex;
     justify-content: center;

@@ -66,7 +66,7 @@
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>操作成功</span>
+        <span>加入成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-orange" @click="addDialogShow = false">確認</el-button>

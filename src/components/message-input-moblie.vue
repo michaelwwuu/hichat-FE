@@ -67,11 +67,37 @@
         <img src="./../../static/images/send.png" alt="" />
       </div>
     </div>
+
+    <el-dialog
+      title="上传图片"
+      :visible.sync="uploadImgShow"
+      width="100%"
+      center
+      append-to-body
+    >
+      <el-upload
+        class="upload-demo"
+        action="#"
+        :on-change="uploadImg"
+        :auto-upload="false"
+        :file-list="fileList"
+        list-type="picture"
+        limit="1"
+      >
+        <el-button type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">
+          只能上传 jpg / png 图片，且不超过500kb
+        </div>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+        <el-button @click="uploadImgShow = false">取消</el-button>
+      </span>
+    </el-dialog>
     <el-dialog
       title="录音"
       :visible.sync="sendAduioShow"
-      width="90%"
-      class="audio-box"
+      width="100%"
       append-to-body
       :before-close="closeAduioShow"
       center
@@ -95,32 +121,6 @@
           @click="onAudioFile"
           >上传录音</el-button
         >
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="上传图片"
-      :visible.sync="uploadImgShow"
-      append-to-body
-      class="upload-box"
-      width="80%"
-      center
-    >
-      <el-upload
-        class="upload-demo"
-        action="#"
-        :on-change="uploadImg"
-        :auto-upload="false"
-        :file-list="fileList"
-        list-type="picture"
-      >
-        <el-button type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">
-          只能上传 jpg / png 图片，且不超过500kb
-        </div>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-        <el-button @click="uploadImgShow = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -485,12 +485,55 @@ export default {
     height: 20px;
   }
 }
-.audio-box {
-  position: absolute;
-  top: 5em;
+
+.el-dialog__wrapper {
+  overflow: hidden;
   .el-dialog {
-    border-radius: 10px;
+    margin: 0 auto;
+    border-radius: 20px 20px 0 0;
+    position: absolute;
+    bottom: 0;
+    .el-dialog__header {
+      .el-dialog__title {
+        color: #10686e;
+        font-weight: 600;
+      }
+      .el-dialog__headerbtn {
+        position: inherit;
+        float: left;
+        .el-dialog__close {
+          color: #f60;
+        }
+      }
+    }
     .el-dialog__body {
+      text-align: center;
+      .qrcode-box {
+        width: 15em;
+        height: 15em;
+        border: 2px solid #333;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          height: 14em;
+        }
+      }
+      .qrcode-box-text {
+        color: #0c0d0d;
+        font-weight: 600;
+        margin-top: 2em;
+        display: block;
+      }
+      .upload-demo {
+        line-height: 1.5em;
+        .el-upload-list {
+          .el-upload-list__item {
+            margin-top: -72px;
+          }
+        }
+      }
       .record-play {
         .record-play-box {
           margin-top: 1em;
@@ -505,27 +548,15 @@ export default {
       }
     }
     .el-dialog__footer {
-      padding: 20px 10px;
+      padding: 20px 30px 20px 30px;
       .dialog-footer {
-        .el-button {
-          width: 7em;
+        display: flex;
+        justify-content: space-between;
+        .el-button{
+          width: 90%;
         }
-      }
-    }
-  }
-}
-.upload-box {
-  .el-dialog {
-    border-radius: 10px;
-    .el-dialog__body {
-      .upload-demo {
-        .el-upload-list {
-          .el-upload-list__item {
-            margin-top: -72px;
-          }
-        }
-        .el-upload__tip {
-          font-size: 13px;
+        img {
+          height: 1em;
         }
       }
     }

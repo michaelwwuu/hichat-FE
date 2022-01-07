@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="overflow: hidden;">
     <div class="add-content">
       <div class="user-data">
         <span><el-image :src="groupIcon === ''?require('./../../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
@@ -26,44 +26,11 @@
         </div>
       </div>
     </div>
-    <div class="home-footer-btn">
-      <el-button
-        :class="disabled ? 'gray-btn' : 'orange-btn'"
-        :disabled="disabled"
-        @click="editSubmit"
-        >创建群组</el-button
-      >
-    </div>
-    <el-dialog
-      title="上傳群组照片"
-      :visible.sync="uploadImgShow"
-      width="80%"
-      center
-      append-to-body
-    >
-      <el-upload
-        class="upload-demo"
-        action="#"
-        :on-change="uploadImg"
-        :auto-upload="false"
-        :file-list="fileList"
-        list-type="picture"
-      >
-        <el-button size="small" type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">
-          只能上传 jpg / png 圖片，且不超过500kb
-        </div>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-        <el-button @click="uploadImgShow = false">取 消</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { uploadGroupIcon,addGroup } from "@/api";
+import { uploadGroupIcon } from "@/api";
 
 export default {
   name: "AddGroup",
@@ -107,32 +74,6 @@ export default {
         }
       });
     },
-    editSubmit() {
-      let memberList = []
-      this.checkList.forEach(res => memberList.push(res.contactId));
-      let params = {
-        groupName: this.groupForm.name,
-        icon:this.groupIcon,
-        memberList:memberList,
-      }
-      addGroup(params).then((res) => {
-        if (res.code === 200) {
-          let groupData = { 
-            groupId: res.data.id,
-            groupName: res.data.groupName,
-            icon: this.groupIcon,
-            isAdmin: true,
-            memberId: JSON.parse(localStorage.getItem("id")),
-          }
-          localStorage.setItem("groupData", JSON.stringify(groupData))
-          this.$router.push({ path: "/ChatGroupMsg" });
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
-    },
   },
 };
 </script>
@@ -161,7 +102,6 @@ export default {
       color: #fe5f3f;
     }
   }
-
 }
 .home-content {
   overflow-x: hidden;
@@ -198,8 +138,6 @@ export default {
 }
 .home-footer-btn {
   margin: 1em 0;
-  position: absolute;
-  bottom: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -213,17 +151,6 @@ export default {
   .orange-btn {
     background-color: #fe5f3f;
     color: #fff;
-  }
-}
-.el-dialog__wrapper {
-  /deep/.el-dialog__body {
-    .upload-demo {
-      .el-upload-list {
-        .el-upload-list__item {
-          margin-top: -72px;
-        }
-      }
-    }
   }
 }
 </style>

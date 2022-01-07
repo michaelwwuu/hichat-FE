@@ -38,7 +38,7 @@
             <span>{{ addUser.username }}</span>
           </div>
           <div class="home-footer-btn">
-            <el-button @click="joinUserButtom(addUser)">加入联络人</el-button>
+            <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
           </div>
         </div>
       </el-main>
@@ -182,6 +182,8 @@ export default {
       justify-content: center;
       .el-button {
         width: 93%;
+      }
+      .orange-btn {
         background-color: #fe5f3f;
         color: #fff;
       }
