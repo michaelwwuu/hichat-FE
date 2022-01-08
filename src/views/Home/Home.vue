@@ -41,9 +41,9 @@
           <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive"></router-view>
-        <el-footer class="home-nav-footer">
+        <el-footer class="home-footer-nav">
           <div
-            class="home-nav-btn"
+            class="footer-nav-btn"
             v-for="(item, index) in routerNav"
             :key="index"
             @click="changeImg(index)"
