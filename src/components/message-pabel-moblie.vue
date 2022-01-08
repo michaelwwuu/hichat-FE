@@ -143,11 +143,12 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #FFFFFF;
+          background-color: #f3f9ff; 
+          height: auto;
+          padding: 9px 12px;
         }
         audio {
-          width: 60vw;
-          filter: sepia(30%) grayscale(100%);
+          width: 190px;
         }
         .el-image{
           width: auto !important;
@@ -181,8 +182,11 @@ export default {
         align-items: flex-end;
         flex-flow: row-reverse;
         .message-audio {
-          border-radius: 10px 0 10px 10px;
+          border-radius: 0 10px 10px 10px;
           background-color: #f1f3f4;
+          audio {
+            width: 190px;
+          }
         }
         .el-image{
           width: auto !important;
@@ -251,6 +255,7 @@ export default {
       }
     }
     .message-audio {
+      width: 190px;
       height: 2.5em;
       margin-top: 1em;
       display: inline-block;

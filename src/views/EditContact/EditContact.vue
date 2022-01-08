@@ -9,7 +9,7 @@
             <div class="home-add-user"></div>
           </div>
         </el-header>
-        <div class="address-content">
+        <div class="home-content">
           <div class="user-data">
             <el-image
               v-if="userData.icon !== undefined"
@@ -26,18 +26,17 @@
               >
             </div>
           </div>
-          <div class="home-footer-btn">
-            <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
-          </div>
           <div class="user-edit-form">
-          <el-form ref="form" :model="userEditForm" label-width="100px">
-            <el-form-item label="用户昵称">
-              <el-input v-model="userEditForm.nickname"></el-input>
-            </el-form-item>
-          </el-form>
+            <el-form ref="form" :model="userEditForm" label-width="100px">
+              <el-form-item label="用户昵称">
+                <el-input v-model="userEditForm.nickname"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
+        <div class="home-footer-btn">
+          <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
         </div>
-
       </el-main>
     </el-container>
   </div>
@@ -91,7 +90,7 @@ export default {
       background-image: url("./../../../static/images/back.png");
     }
   }
-  .address-content {
+  .home-content {
     .user-data {
       .user-data-id {
         margin: -3.5em 0 -5em 0;
@@ -113,19 +112,6 @@ export default {
         width: 4em;
         height: 4em;
       }  
-    }
-    .home-footer-btn {
-      margin: 1em 0;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      .el-button {
-        width: 93%;
-        background-color: #fe5f3f;
-        color: #fff;
-      }
     }
   }
   .user-edit-form {

@@ -9,22 +9,12 @@
             <div class="home-add-user"></div>
           </div>
         </el-header>
-        <div>
-          <div class="add-content">
-            <div class="user-data">
-              <span><img :src="groupData.icon === ''?require('./../../../static/images/image_group_defult.png') : groupData.icon" alt="" /></span>
-              <span class="photo-edit" @click="uploadImgShow = true"
-                >变更群组照片</span
-              >
-            </div>
-            <div class="home-footer-btn">
-              <el-button
-                :class="disabled ? 'gray-btn' : 'orange-btn'"
-                :disabled="disabled"
-                @click="editSubmit"
-                >编辑群组</el-button
-              >
-            </div>
+        <div class="home-content">
+          <div class="group-data">
+            <span><img :src="groupData.icon === ''?require('./../../../static/images/image_group_defult.png') : groupData.icon" alt="" /></span>
+            <span class="photo-edit" @click="uploadImgShow = true"
+              >变更群组照片</span
+            >
           </div>
           <div class="user-edit-form">
             <el-form ref="form" :model="groupForm" label-width="100px">
@@ -36,6 +26,15 @@
               </el-form-item>
             </el-form>
           </div>
+        </div>
+
+        <div class="home-footer-btn">
+          <el-button
+            :class="disabled ? 'gray-btn' : 'orange-btn'"
+            :disabled="disabled"
+            @click="editSubmit"
+            >编辑群组</el-button
+          >
         </div>
       </el-main>
     </el-container>
@@ -145,8 +144,8 @@ export default {
     background-image: url("./../../../static/images/back.png");
   }
 }
-.add-content {
-  .user-data {
+.home-content {
+  .group-data {
     span {
       height: 4.5em !important;
       img {
@@ -159,40 +158,26 @@ export default {
       color: #fe5f3f;
     }
   }
-  .home-footer-btn {
-    margin: 1em 0;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    .el-button {
-      width: 93%;
-    }
-    .gray-btn {
-      background-color: #b3b3b3;
-      color: #fff;
-    }
-    .orange-btn {
-      background-color: #fe5f3f;
-      color: #fff;
-    }
-  }
+
 }
 .user-edit-form {
   margin: 1em;
   background-color: #fff;
   border-radius: 10px;
   /deep/.el-form {
-    .el-form-item__label {
-      font-size: 17px;
-    }
-    .el-input {
-      font-size: 19px;
-      .el-input__inner {
-        border: none;
+    .el-form-item{
+      margin-bottom: 0;
+      .el-form-item__label {
+        font-size: 17px;
+      }
+      .el-input {
+        font-size: 19px;
+        .el-input__inner {
+          border: none;
+        }
       }
     }
+    
   }
 }
 </style>

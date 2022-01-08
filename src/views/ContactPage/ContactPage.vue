@@ -11,7 +11,7 @@
             </router-link>
           </div>
         </el-header>
-        <div class="address-content">
+        <div class="home-content">
           <div class="user-data">
             <el-image
               v-if="userData.icon !== undefined"
@@ -28,7 +28,6 @@
               >
             </div>
           </div>
-
           <div
             class="setting-button"
             v-for="(item, index) in settingData"
@@ -306,7 +305,7 @@ export default {
       background-image: url("./../../../static/images/edit.png");
     }
   }
-  .address-content {
+  .home-content {
     .user-data {
       .user-data-id {
         margin: -3.5em 0 -5em 0;

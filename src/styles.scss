@@ -60,17 +60,23 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       overflow-x: hidden;
       flex: 1;
       overflow-y: auto;
-    }
-    .address-content{
-      overflow-x: hidden;
-      flex: 1;
-      overflow-y: auto;
       .user-data{
         margin: 1.5em auto 2.5em auto;
         text-align: center;
       }
+      .group-data{
+        margin: 1.5em auto 0 auto;
+        span {
+          display: block;
+          text-align: center;
+          height: 3.5em;
+        }
+        .photo-edit {
+          height: 1.5em !important;
+          color: #fe5f3f;
+        }
+      }
     }
-
     //訊息內容
     .address-box {
       background-color: #ffffff;
@@ -93,17 +99,17 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         }
       }
     }
-    .home-footer {
+
+    .home-nav-footer {
       background-color: rgba(255, 255, 255, 0.85);
       border-top: 1px solid #dddddd;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 10px;
-      .home-footer-btn {
+      .home-nav-btn {
         text-align: center;
         font-size: 12px;
-        padding: 0;
         margin: 0 auto;
         a {
           text-decoration: none;
@@ -119,6 +125,28 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         .router-link-exact-active {
           color: #fe5f3f;
         }
+      }
+    }
+    .home-footer-btn {
+      margin: 1em 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #eaf5fa;
+      .el-button {
+        width: 93%;
+      }
+      .gray-btn {
+        background-color: #b3b3b3;
+        color: #fff;
+      }
+      .red-btn {
+        background-color: #ee5253;
+        color: #fff;
+      }
+      .orange-btn{
+        background-color: #fe5f3f;
+        color: #fff;
       }
     }
     .el-tabs{
@@ -163,6 +191,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         z-index: 5;
       }
     }  
+
     .el-container {
       position: fixed;
       top: 0;

@@ -180,19 +180,17 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #FFFFFF !important; 
+          background-color: #f3f9ff; 
           height: auto;
-          padding: 9px 12px 0 12px;
+          padding: 9px 12px;
           .message-box{
-            background: #FFFFFF;
             .message-name{
               font-size: 13px;
               color: #919191;
               padding-bottom: 5px;
             }
             audio {
-              width: 60vw;
-              filter: sepia(30%) grayscale(100%);
+              width: 190px;
             }
           }
         }
@@ -259,8 +257,7 @@ export default {
           border-radius: 0 10px 10px 10px;
           background-color: #f1f3f4;
           audio {
-            width: 60vw;
-            filter: sepia(0%) grayscale(100%);
+            width: 190px;
           }
         }
         
@@ -345,7 +342,7 @@ export default {
       }
     }
     .message-audio {
-      position: relative;
+      width: 190px;
       height: 2.5em;
       margin-top: 1em;
       display: inline-block;

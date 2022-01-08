@@ -27,8 +27,8 @@
           <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
         </div>
 
-        <div v-if="addUser.username !== undefined" class="add-content">
-          <div class="user-data">
+        <div v-if="addUser.username !== undefined" class="home-content">
+          <div class="group-data">
             <span>
               <el-image
                 :src="addUser.icon === undefined ? avatarImg : addUser.icon"
@@ -37,9 +37,10 @@
             </span>            
             <span>{{ addUser.username }}</span>
           </div>
-          <div class="home-footer-btn">
-            <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
-          </div>
+          
+        </div>
+        <div v-if="addUser.username !== undefined" class="home-footer-btn">
+          <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
         </div>
       </el-main>
     </el-container>
@@ -169,23 +170,6 @@ export default {
       &:nth-child(2) {
         color: #b3b3b3;
         font-size: 14px;
-      }
-    }
-  }
-  .add-content {
-    .home-footer-btn {
-      margin: 1em 0;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      .el-button {
-        width: 93%;
-      }
-      .orange-btn {
-        background-color: #fe5f3f;
-        color: #fff;
       }
     }
   }

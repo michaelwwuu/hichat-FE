@@ -9,8 +9,8 @@
             <div class="home-add-user"></div>
           </div>
         </el-header>
-        <div class="add-content">
-          <div class="user-data">
+        <div class="home-content">
+          <div class="group-data">
             <span>
               <el-image
                 v-if="userData.icon !== undefined"
@@ -20,9 +20,6 @@
             </span>
             <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
           </div>
-          <div class="home-footer-btn">
-            <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
-          </div>
           <div class="user-edit-form">
             <el-form ref="form" :model="userEditForm" label-width="100px">
               <el-form-item label="用户昵称">
@@ -30,6 +27,9 @@
               </el-form-item>
             </el-form>
           </div>
+        </div>
+        <div class="home-footer-btn">
+          <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
         </div>
       </el-main>
     </el-container>
@@ -145,21 +145,6 @@ export default {
         .el-input__inner {
           border: none;
         }
-      }
-    }
-  }
-  .add-content {
-    .home-footer-btn {
-      margin: 1em 0;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      .el-button {
-        width: 93%;
-        background-color: #fe5f3f;
-        color: #fff;
       }
     }
   }

@@ -5,7 +5,7 @@
       <span class="home-header-title">关于HiChat</span>
       <div class="home-add-user"></div>
     </div>
-    <div class="address-content">
+    <div class="home-content">
       <div
         class="setting-button"
         v-for="(item, index) in aboutData"
@@ -74,7 +74,7 @@ export default {
       background-image: url("./../../../static/images/back.png");
     }
   }
-  .address-content {
+  .home-content {
     .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;

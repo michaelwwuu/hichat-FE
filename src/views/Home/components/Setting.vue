@@ -1,6 +1,6 @@
 <template>
   <div style="flex:1; overflow-y: auto;">
-    <div class="address-content">
+    <div class="home-content">
       <div class="user-data">
         <el-image
           v-if="userData.icon !== undefined"
@@ -152,7 +152,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.address-content {
+.home-content {
   .user-data {
     .user-data-id {
       margin: -3.5em 0 -5em 0;

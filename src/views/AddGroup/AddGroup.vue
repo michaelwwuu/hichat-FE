@@ -55,17 +55,18 @@
                 >变更群组照片</span
               >
             </div>
+            <div class="user-edit-form">
+              <el-form ref="form" :model="groupForm" label-width="100px">
+                <el-form-item label="群组名称">
+                  <el-input
+                    v-model="groupForm.name"
+                    placeholder="群组名称"
+                  ></el-input>
+                </el-form-item>
+              </el-form>
+            </div>
           </div>
-          <div class="user-edit-form">
-            <el-form ref="form" :model="groupForm" label-width="100px">
-              <el-form-item label="群组名称">
-                <el-input
-                  v-model="groupForm.name"
-                  placeholder="群组名称"
-                ></el-input>
-              </el-form-item>
-            </el-form>
-          </div>
+          
           <div class="home-content">
             <label class="el-checkbox">
               <span class="el-checkbox__label">
@@ -294,37 +295,18 @@ export default {
       }
     }
   }
-  .home-footer-btn {
-    margin: 1em 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    .el-button {
-      width: 93%;
-    }
-    .gray-btn {
-      background-color: #b3b3b3;
-      color: #fff;
-    }
-    .orange-btn {
-      background-color: #fe5f3f;
-      color: #fff;
-    }
-  }
-  
 }
 /deep/.el-dialog__wrapper {
-    .el-dialog{
-      .el-dialog__body {
-        .upload-demo {
-          .el-upload-list {
-            .el-upload-list__item {
-              margin-top: -72px;
-            }
+  .el-dialog{
+    .el-dialog__body {
+      .upload-demo {
+        .el-upload-list {
+          .el-upload-list__item {
+            margin-top: -72px;
           }
         }
       }
     }
-    
   }
+}
 </style>

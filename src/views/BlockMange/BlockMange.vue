@@ -225,25 +225,6 @@ export default {
       }
     }
   }
-  .home-footer-btn {
-    margin: 1em 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #eaf5fa;
-    border-top: none;
-    .el-button {
-      width: 93%;
-    }
-    .gray-btn {
-      background-color: #b3b3b3;
-      color: #fff;
-    }
-    .orange-btn {
-      background-color: #fe5f3f;
-      color: #fff;
-    }
-  }
   .no-data {
     margin: 1em 0;
     text-align: center;

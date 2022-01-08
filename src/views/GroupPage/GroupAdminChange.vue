@@ -227,23 +227,6 @@ export default {
       }
     }
   }
-  .home-footer-btn {
-    margin: 1em 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    .el-button {
-      width: 93%;
-    }
-    .gray-btn {
-      background-color: #b3b3b3;
-      color: #fff;
-    }
-    .red-btn {
-      background-color: #ee5253;
-      color: #fff;
-    }
-  }
   /deep/.el-dialog-loginOut {
     overflow: auto;
     .el-dialog {
