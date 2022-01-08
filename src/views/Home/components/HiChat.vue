@@ -123,10 +123,10 @@
                 </span>
                 
                 <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'" class="content-text">
-                  >传送了语音</span
+                  传送了语音</span
                 >
                 <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'" class="content-text">
-                  >传送了图片</span
+                  传送了图片</span
                 >
               </div>
               <div class="time">

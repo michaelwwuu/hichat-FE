@@ -254,7 +254,7 @@ export default {
           width: 2em;
           height: 2em;
           border-radius: 10px;
-          background-color: #fff;
+          // background-color: #fff;
           background-size: 50%;
           background-position: center;
           background-repeat: no-repeat;
@@ -273,7 +273,7 @@ export default {
             img {
               top: 0;
               height: 2em;
-              border-radius: 10px;
+              border-radius: 6px;
             }
           }
         }

@@ -287,10 +287,16 @@ export default {
 
     }
   }
-  .add-content {
-    .user-data {
+  .add-content{
+    .user-data{
+      margin: 1.5em auto 0 auto;
+      span {
+        display: block;
+        text-align: center;
+        height: 3.5em;
+      }
       .photo-edit {
-        height:1.5em !important;
+        height: 1.5em !important;
         color: #fe5f3f;
       }
     }
