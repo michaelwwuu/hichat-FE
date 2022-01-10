@@ -192,10 +192,8 @@ export default {
             audio {
               width: 190px;
             }
-          }
-          
+          } 
         }
-        
       }
       .message-avatar {
         float: left;

@@ -43,6 +43,7 @@
           <span>登出</span>
         </div>
       </div>
+
     </div>
     <el-dialog
       :visible.sync="loginOutDialogShow"
@@ -106,6 +107,7 @@ export default {
           icon: require("./../../../../static/images/about.png"),
           path: "/About",
         },
+        
       ],
       notification: true,
       loginOutDialogShow: false,

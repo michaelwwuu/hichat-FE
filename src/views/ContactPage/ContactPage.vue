@@ -34,13 +34,13 @@
             :key="index"
             @click="developmentMessage(item.name)"
           >
-            <span @click="goChatRoom(userData, item.path)">
+            <a @click="goChatRoom(userData, item.path)">
               <div class="setting-button-left">
                 <img :src="item.icon" alt="" />
                 <span>{{ item.name }}</span>
               </div>
               <img src="./../../../static/images/next.png" alt="" />
-            </span>
+            </a>
           </div>
 
           <div class="setting-notification" @click="developmentMessage('提醒通知')">
@@ -60,28 +60,28 @@
             class="setting-disable"
             @click="dialogShow(!userData.isBlock ? 'block' : 'unBlock')"
           >
-            <span>
+            <a>
               <div class="setting-button-left">
                 <img src="./../../../static/images/blockade.png" alt="" />
                 <span>{{ blockContent }}</span>
               </div>
-            </span>
+            </a>
           </div>
           <div class="setting-delete" v-if="!userData.isContact" @click="dialogShow('add')">
-            <span>
+            <a>
               <div class="setting-button-left">
                 <img src="./../../../static/images/add_user.png" alt="" />
                 <span>加入联络人</span>
               </div>
-            </span>
+            </a>
           </div>
           <div class="setting-delete" v-else @click="dialogShow('delete')">
-            <span>
+            <a>
               <div class="setting-button-left">
                 <img src="./../../../static/images/trash.png" alt="" />
                 <span>刪除联络人</span>
               </div>
-            </span>
+            </a>
           </div>
           
         </div>
@@ -320,13 +320,8 @@ export default {
         display: block;
         text-align: center;
         height: 4.5em;
-        margin-top: 0.3em;
         font-weight: 600;
       }
-      .el-image {
-        width: 4em;
-        height: 4em;
-      }    
     }
     .setting-button,
     .setting-disable,
@@ -342,7 +337,7 @@ export default {
         position: relative;
         top: 9px;
       }
-      span {
+      a {
         text-decoration: none;
         display: flex;
         justify-content: space-between;
