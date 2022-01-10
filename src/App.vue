@@ -44,10 +44,6 @@ export default {
   height: 100vh;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑","Regular", Arial, sans-serif;
-  .el-button{
-    border-radius: 10px;
-  }
-  overflow: hidden;
 }
 .el-notification__content {
   margin-top: 20px;

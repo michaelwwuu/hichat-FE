@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="home-footer-btn">
-          <el-button @click="editSubmit(userEditForm.nickname)">保存</el-button>
+          <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
         </div>
       </el-main>
     </el-container>

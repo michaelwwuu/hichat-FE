@@ -226,7 +226,6 @@ export default {
       padding: 0;
       position: relative;
       overflow: hidden;
-      border-right: 1px solid #ffffff;
       .home-header {
         margin: 1.5em 1em 1em 1em;
         display: flex;

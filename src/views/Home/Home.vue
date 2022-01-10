@@ -178,7 +178,6 @@ export default {
   .el-container {
     /deep/.el-main {
       .el-header {
-        border-right: none;
         .home-header {
           .QRcode-img {
             background-color: #fff;

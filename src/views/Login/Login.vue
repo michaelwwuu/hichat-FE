@@ -368,8 +368,8 @@ $light_gray: #eee;
 }
 
 .login-container-moblie {
-  min-height: 100%;
   width: 100%;
+  height: 100%;
   background-color: $bg;
   overflow: hidden;
   .title-container {
