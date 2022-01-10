@@ -111,7 +111,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .message-pabel-box {
   padding: 0 15px 0 20px;
   flex: 1;
@@ -144,8 +144,6 @@ export default {
         .message-audio {
           border-radius: 0 10px 10px 10px;
           background-color: #f3f9ff; 
-          height: auto;
-          padding: 9px 12px;
         }
         audio {
           width: 190px;
