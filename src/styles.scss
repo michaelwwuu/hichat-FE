@@ -10,11 +10,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 .hichat-moblie{
   overflow: hidden;
   position: static;
-  
+  background-color: #eaf5fa;
   .home-wrapper {
     min-height: 100%;
     width: 100%;
-    background-color: #eaf5fa;
     .home-header {
       margin: 1em;
       display: flex;
