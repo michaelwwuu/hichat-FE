@@ -94,11 +94,11 @@
         <el-button class="border-red" @click="leaveUserDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="addDialogShow = true">确认</el-button>
+        <el-button class="background-red" @click="successDialogShow = true">确认</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="addDialogShow"
+      :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -130,7 +130,7 @@ export default {
       searchKey: "",
       disabled: true,
       editBtnShow: false,
-      addDialogShow:false,
+      successDialogShow:false,
       leaveUserDialogShow: false,
       developmentMessage: developmentMessage,
     };
@@ -168,7 +168,7 @@ export default {
       removeMember(param).then((res)=>{
         if(res.code === 200) {
           this.editBtnShow = false
-          this.addDialogShow = false
+          this.successDialogShow = false
           this.leaveUserDialogShow = false
           this.getGroupListMember();
         }

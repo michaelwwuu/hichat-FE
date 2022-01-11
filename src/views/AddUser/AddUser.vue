@@ -45,7 +45,7 @@
       </el-main>
     </el-container>
     <el-dialog
-      :visible.sync="addDialogShow"
+      :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -73,7 +73,7 @@ export default {
       searchKey: "",
       avatarImg: require("./../../../static/images/image_user_defult.png"),
       noData: false,
-      addDialogShow:false,
+      successDialogShow:false,
     };
   },
   created() {
@@ -123,7 +123,7 @@ export default {
       };
       addContactUser(parmas).then((res) => {
         if (res.code === 200) {
-          this.addDialogShow = true
+          this.successDialogShow = true
         }
       });
     },

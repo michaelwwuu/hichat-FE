@@ -4,18 +4,30 @@
       <el-main>
         <el-header height="55px">
           <div class="home-header">
-            <span class="home-user-link" :style="!userData.isContact ? 'position:none;' : ''">
+            <span
+              class="home-user-link"
+              :style="!userData.isContact ? 'position:none;' : ''"
+            >
               <router-link :to="'/HiChat'">
                 <div class="home-user"></div>
               </router-link>
             </span>
-            <span class="home-header-title" >{{ userData.name }}</span>
-            <div class="home-user-search" :style="!userData.isContact ? 'position:none;right:0;' : ''"></div>
+            <span class="home-header-title">{{ userData.name }}</span>
+            <div
+              class="home-user-search"
+              :style="!userData.isContact ? 'position:none;right:0;' : ''"
+            ></div>
             <span class="home-photo-link" v-if="userData.isContact">
               <router-link :to="'/ContactPage'">
                 <div class="home-user-photo">
                   <img
-                    :src="userData.icon === undefined || userData.icon === null || userData.icon === '' ? require('./../../../static/images/image_user_defult.png'): userData.icon"
+                    :src="
+                      userData.icon === undefined ||
+                      userData.icon === null ||
+                      userData.icon === ''
+                        ? require('./../../../static/images/image_user_defult.png')
+                        : userData.icon
+                    "
                   />
                 </div>
               </router-link>
@@ -24,8 +36,9 @@
         </el-header>
         <div class="contact-box" v-if="!userData.isContact">
           <ul>
-            <li @click="isBlockDialogShow = true">{{userData.isBlock ? '解除封锁':'封锁'}}</li>
-            <!-- <li @click="deleteUser(userData)">删除</li> -->
+            <li @click="isBlockDialogShow = true">
+              {{ userData.isBlock ? "解除封锁" : "封锁" }}
+            </li>
             <li @click="addUser(userData)">加入联络人</li>
           </ul>
         </div>
@@ -33,8 +46,14 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="disabled-user" v-if="userData.isBlock"><span>該用戶已被封鎖</span></div>
-        <message-input :userInfoData="userInfoData" :userData="userData" v-else/>
+        <div class="disabled-user" v-if="userData.isBlock">
+          <span>該用戶已被封鎖</span>
+        </div>
+        <message-input
+          :userInfoData="userInfoData"
+          :userData="userData"
+          v-else
+        />
       </el-main>
     </el-container>
     <el-dialog
@@ -46,7 +65,10 @@
     >
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>确认是否{{userData.isBlock?'解除封锁':'封锁'}}{{ userData.name }}？</span>
+        <span
+          >确认是否{{ userData.isBlock ? "解除封锁" : "封锁"
+          }}{{ userData.name }}？</span
+        >
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="border-red" @click="isBlockDialogShow = false"
@@ -58,7 +80,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="addDialogShow"
+      :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -69,7 +91,9 @@
         <span>加入成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="addDialogShow = false">確認</el-button>
+        <el-button class="background-orange" @click="successDialogShow = false"
+          >確認</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -77,7 +101,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { addContactUser,addBlockUser,unBlockUser } from "@/api";
+import { addContactUser, addBlockContactUser, unBlockUser } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -94,8 +118,8 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      addDialogShow:false,
-      isBlockDialogShow:false,
+      successDialogShow: false,
+      isBlockDialogShow: false,
       userData: {},
       readMsgData: [],
     };
@@ -174,7 +198,11 @@ export default {
         case "SRV_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (el.chat.fromChatId !== 'u' + localStorage.getItem('id') && !el.isRead) this.readMsgData.push(el.chat.historyId);
+            if (
+              el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
+              !el.isRead
+            )
+              this.readMsgData.push(el.chat.historyId);
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
@@ -197,62 +225,54 @@ export default {
         contactId: data.toChatId.replace("u", ""),
         name: data.name,
       };
-      addContactUser(parmas).then((res) => {
-        if (res.code === 200) {
-          this.addDialogShow = true
-          this.userData.isContact = true
-          localStorage.setItem("userData",JSON.stringify(this.userData))
-        } else {
-          this.$message({ message: res.message, type: "error" });
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
-    },
-    // deleteUser(data){
-    //   let deleteContactId = data.toChatId.replace("u", "");
-    //   deleteUser(deleteContactId).then((res)=>{
-    //     if (res.code === 200) this.$router.push({ name: "HiChat" });
-    //   })
-    //   .catch((err) => {
-    //     this.$message({ message: err, type: "error"});
-    //     return false;
-    //   });
-    // },
-    blockSubmitBtn(data){
-      if(this.userData.isBlock){
-        let blockIdList = [this.userData.toChatId.replace("u", "")];
-        unBlockUser({ blockIdList }).then((res) => {
+      addContactUser(parmas)
+        .then((res) => {
           if (res.code === 200) {
-            this.userData.isBlock = false;
-            this.isBlockDialogShow = false;
-            localStorage.setItem("userData",JSON.stringify(this.userData))
-          }
-        })
-        .catch((err) => {
-          this.$message({ message: err, type: "error"});
-          return false;
-        });
-      } else{
-        let blockId = data.toChatId.replace("u", "");
-        addBlockUser({blockId}).then((res)=>{
-          if (res.code === 200) {
-            this.userData.isBlock = true;
-            this.isBlockDialogShow = false;
-            localStorage.setItem("userData",JSON.stringify(this.userData))
+            this.successDialogShow = true;
+            this.userData.isContact = true;
+            localStorage.setItem("userData", JSON.stringify(this.userData));
           } else {
             this.$message({ message: res.message, type: "error" });
           }
         })
         .catch((err) => {
-          this.$message({ message: err, type: "error"});
+          this.$message({ message: err, type: "error" });
           return false;
         });
+    },
+    blockSubmitBtn(data) {
+      if (this.userData.isBlock) {
+        let blockIdList = [this.userData.toChatId.replace("u", "")];
+        unBlockUser({ blockIdList })
+          .then((res) => {
+            if (res.code === 200) {
+              this.userData.isBlock = false;
+              this.isBlockDialogShow = false;
+              localStorage.setItem("userData", JSON.stringify(this.userData));
+            }
+          })
+          .catch((err) => {
+            this.$message({ message: err, type: "error" });
+            return false;
+          });
+      } else {
+        let blockId = data.toChatId.replace("u", "");
+        addBlockContactUser({ blockId })
+          .then((res) => {
+            if (res.code === 200) {
+              this.userData.isBlock = true;
+              this.isBlockDialogShow = false;
+              localStorage.setItem("userData", JSON.stringify(this.userData));
+            } else {
+              this.$message({ message: res.message, type: "error" });
+            }
+          })
+          .catch((err) => {
+            this.$message({ message: err, type: "error" });
+            return false;
+          });
       }
-
-    }
+    },
   },
   components: {
     MessagePabel,
@@ -368,7 +388,7 @@ export default {
           }
         }
       }
-    
+
       img {
         position: relative;
         top: 7px;
@@ -392,24 +412,24 @@ export default {
         letter-spacing: 1px;
       }
     }
-    .contact-box{
-      background-color: #FFFFFF;
+    .contact-box {
+      background-color: #ffffff;
       width: 100vw;
-      ul{
+      ul {
         display: flex;
         justify-content: space-between;
         align-items: center;
         background-color: #fff;
         height: 3em;
         width: 55vw;
-        margin: 0 auto; 
+        margin: 0 auto;
         font-weight: 550;
-        li{
-          &:nth-child(1){
-            color:#ee5253;
+        li {
+          &:nth-child(1) {
+            color: #ee5253;
           }
-          &:nth-child(2){
-            color:#363636
+          &:nth-child(2) {
+            color: #363636;
           }
         }
       }
@@ -433,12 +453,12 @@ export default {
     }
   }
 }
-.disabled-user{
+.disabled-user {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
   border-top: 1px solid #dddddd;
   display: flex;
-  color:#959393;
+  color: #959393;
   justify-content: center;
   align-items: center;
   padding: 0 10px;
@@ -447,54 +467,54 @@ export default {
 ::-webkit-scrollbar {
   width: 10px;
 }
-  /deep/.el-dialog-loginOut {
-    overflow: auto;
-    .el-dialog {
-      position: relative;
-      margin: 0 auto 50px;
-      background: #ffffff;
-      border-radius: 10px;
-      box-sizing: border-box;
-      width: 50%;
-      .el-dialog__header {
-        padding: 10px;
-      }
-      .el-dialog__body {
-        text-align: center;
-        padding: 25px 25px 15px;
-        .loginOut-box {
-          img {
-            height: 5em;
-            margin-bottom: 1.2em;
-          }
+/deep/.el-dialog-loginOut {
+  overflow: auto;
+  .el-dialog {
+    position: relative;
+    margin: 0 auto 50px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 50%;
+    .el-dialog__header {
+      padding: 10px;
+    }
+    .el-dialog__body {
+      text-align: center;
+      padding: 25px 25px 15px;
+      .loginOut-box {
+        img {
+          height: 5em;
+          margin-bottom: 1.2em;
         }
       }
-      .el-dialog__footer {
-        padding: 20px;
-        padding-top: 10px;
-        text-align: right;
-        box-sizing: border-box;
-        .dialog-footer {
-          display: flex;
-          justify-content: space-between;
-          .el-button {
-            width: 100%;
-            border-radius: 8px;
-          }
-          .background-red {
-            background-color: #ee5253;
-            color: #fff;
-          }
-          .background-orange {
-            background-color: #fe5f3f;
-            color: #fff;
-          }
-          .border-red {
-            border: 1px solid #fe5f3f;
-            color: #fe5f3f;
-          }
+    }
+    .el-dialog__footer {
+      padding: 20px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+      .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        .el-button {
+          width: 100%;
+          border-radius: 8px;
+        }
+        .background-red {
+          background-color: #ee5253;
+          color: #fff;
+        }
+        .background-orange {
+          background-color: #fe5f3f;
+          color: #fff;
+        }
+        .border-red {
+          border: 1px solid #fe5f3f;
+          color: #fe5f3f;
         }
       }
     }
   }
+}
 </style>

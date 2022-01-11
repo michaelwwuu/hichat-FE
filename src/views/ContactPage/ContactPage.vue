@@ -22,9 +22,11 @@
               <span>{{ userData.name }}</span>
               <span class="user-data-id">
                 ID :
-                <span class="user-paste" @click="copyPaste(userData.username)">{{
-                  userData.username
-                }}</span></span
+                <span
+                  class="user-paste"
+                  @click="copyPaste(userData.username)"
+                  >{{ userData.username }}</span
+                ></span
               >
             </div>
           </div>
@@ -43,7 +45,10 @@
             </a>
           </div>
 
-          <div class="setting-notification" @click="developmentMessage('提醒通知')">
+          <div
+            class="setting-notification"
+            @click="developmentMessage('提醒通知')"
+          >
             <div class="setting-button-left">
               <img src="./../../../static/images/notification.png" alt="" />
               <span>提醒通知</span>
@@ -57,7 +62,7 @@
             </el-switch>
           </div>
           <div
-            class="setting-disable"
+            class="setting-button"
             @click="dialogShow(!userData.isBlock ? 'block' : 'unBlock')"
           >
             <a>
@@ -67,23 +72,26 @@
               </div>
             </a>
           </div>
-          <div class="setting-delete" v-if="!userData.isContact" @click="dialogShow('add')">
+          <div
+            class="setting-button"
+            @click="dialogShow(!userData.isContact ? 'add' : 'delete')"
+          >
             <a>
               <div class="setting-button-left">
-                <img src="./../../../static/images/add_user.png" alt="" />
-                <span>加入联络人</span>
+                <img
+                  :src="
+                    require(`./../../../static/images/${
+                      !userData.isContact ? 'add_user' : 'trash'
+                    }.png`)
+                  "
+                  alt=""
+                />
+                <span class="red-text">{{
+                  !userData.isContact ? "加入联络人" : "刪除联络人"
+                }}</span>
               </div>
             </a>
           </div>
-          <div class="setting-delete" v-else @click="dialogShow('delete')">
-            <a>
-              <div class="setting-button-left">
-                <img src="./../../../static/images/trash.png" alt="" />
-                <span>刪除联络人</span>
-              </div>
-            </a>
-          </div>
-          
         </div>
       </el-main>
     </el-container>
@@ -119,13 +127,11 @@
         <span>已加入联络人</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="back()"
-          >确认</el-button
-        >
+        <el-button class="background-orange" @click="back()">确认</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="addDialogShow"
+      :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -144,7 +150,13 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { getSearchById, addBlockUser, unBlockUser, deleteUser,addContactUser } from "@/api";
+import {
+  getSearchById,
+  addContactUser,
+  addBlockContactUser,
+  unBlockContactUser,
+  deleteContactUser,
+} from "@/api";
 
 export default {
   name: "ContactPage",
@@ -168,13 +180,13 @@ export default {
           path: "",
         },
       ],
-      groupDataList:[],
+      groupDataList: [],
       dialogContent: "",
       blockContent: "",
       notification: true,
-      addDialogShow:false,
+      successDialogShow: false,
       settingDialogShow: false,
-      addContactDialogShow:false,
+      addContactDialogShow: false,
       developmentMessage: developmentMessage,
     };
   },
@@ -229,50 +241,50 @@ export default {
           break;
         case "add":
           this.dialogContent = `确认是否将${this.userData.name}加入联络人`;
-          break;  
+          break;
       }
     },
     submitBtn(dialogContent) {
       switch (dialogContent) {
         case `确认是否封锁好友${this.userData.name}？`:
           let blockId = this.userData.toChatId.replace("u", "");
-          addBlockUser({ blockId }).then((res) => {
+          addBlockContactUser({ blockId }).then((res) => {
             if (res.code === 200) {
-              this.addDialogShow = true
+              this.successDialogShow = true;
               this.userData.isBlock = true;
-              localStorage.setItem("userData",JSON.stringify(this.userData))
+              localStorage.setItem("userData", JSON.stringify(this.userData));
             }
           });
           break;
         case `确认是否解除封锁好友${this.userData.name}？`:
           let blockIdList = [this.userData.toChatId.replace("u", "")];
-          unBlockUser({ blockIdList }).then((res) => {
-            if (res.code === 200) {
-              this.addDialogShow = true
-              this.userData.isBlock = false;
-              localStorage.setItem("userData",JSON.stringify(this.userData))
-            }
-          })
-          .catch((err) => {
-            this.$message({ message: err, type: "error"});
-            return false;
-          });
+          unBlockContactUser({ blockIdList })
+            .then((res) => {
+              if (res.code === 200) {
+                this.successDialogShow = true;
+                this.userData.isBlock = false;
+                localStorage.setItem("userData", JSON.stringify(this.userData));
+              }
+            })
+            .catch((err) => {
+              this.$message({ message: err, type: "error" });
+              return false;
+            });
           break;
         case `确认是否删除好友${this.userData.name}？`:
           let contactId = this.userData.toChatId.replace("u", "");
-          deleteUser(contactId).then((res) => {
-            if (res.code === 200) {
-              // this.settingDialogShow = false;
-              this.addDialogShow = true
-              this.userData.isContact = false;
-              localStorage.setItem("userData",JSON.stringify(this.userData))
-              // this.$router.push({ name: "Address" });
-            }
-          })
-          .catch((err) => {
-            this.$message({ message: err, type: "error"});
-            return false;
-          });
+          deleteContactUser(contactId)
+            .then((res) => {
+              if (res.code === 200) {
+                this.successDialogShow = true;
+                this.userData.isContact = false;
+                localStorage.setItem("userData", JSON.stringify(this.userData));
+              }
+            })
+            .catch((err) => {
+              this.$message({ message: err, type: "error" });
+              return false;
+            });
           break;
         case `确认是否将${this.userData.name}加入联络人`:
           let parmas = {
@@ -284,8 +296,8 @@ export default {
               this.settingDialogShow = false;
               this.userData.isContact = true;
               this.addContactDialogShow = true;
-              localStorage.setItem("userData",JSON.stringify(this.userData))
-            } 
+              localStorage.setItem("userData", JSON.stringify(this.userData));
+            }
           });
       }
     },
@@ -323,9 +335,7 @@ export default {
         font-weight: 600;
       }
     }
-    .setting-button,
-    .setting-disable,
-    .setting-delete {
+    .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
       &::after {
@@ -381,11 +391,8 @@ export default {
         }
       }
     }
-
-    .setting-delete {
-      span {
-        color: #ee5253 !important;
-      }
+    .red-text {
+      color: #ee5253 !important;
     }
   }
   /deep/.el-dialog-loginOut {

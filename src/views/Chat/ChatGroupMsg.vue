@@ -15,7 +15,11 @@
               <router-link :to="'/GroupPage'">
                 <div class="home-user-photo">
                   <img
-                    :src="groupData.icon === undefined || groupData.icon === '' ? require('./../../../static/images/image_user_defult.png'): groupData.icon"
+                    :src="
+                      groupData.icon === undefined || groupData.icon === ''
+                        ? require('./../../../static/images/image_user_defult.png')
+                        : groupData.icon
+                    "
                   />
                 </div>
               </router-link>
@@ -26,7 +30,7 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <message-input :userInfoData="userInfoData" :groupData="groupData"/>
+        <message-input :userInfoData="userInfoData" :groupData="groupData" />
       </el-main>
     </el-container>
   </div>
@@ -53,15 +57,15 @@ export default {
       },
       groupData: {},
       readMsgData: [],
-      contactList:[],
+      contactList: [],
     };
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    Socket.$on("message", this.handleGetMessage); 
+    Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
-    this.getGroupListMember()
+    this.getGroupListMember();
     this.getChatHistoryMessage();
   },
   beforeDestroy() {
@@ -77,14 +81,14 @@ export default {
       setWsRes: "ws/setWsRes",
     }),
     getGroupListMember() {
-      let groupId = this.groupData.groupId
+      let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
-        localStorage.setItem('groupDataList',JSON.stringify(this.contactList))
+        localStorage.setItem("groupDataList", JSON.stringify(this.contactList));
       });
     },
     // 訊息統一格式
@@ -92,8 +96,8 @@ export default {
       this.chatRoomMsg = {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
-        icon:data.chat.icon,
-        name:data.chat.name,
+        icon: data.chat.icon,
+        name: data.chat.name,
         message: {
           time: data.chat.sendTime,
           content: data.chat.text,
@@ -107,7 +111,7 @@ export default {
       let historyMessageData = this.userInfoData;
       historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId = 'g' + this.groupData.groupId;
+      historyMessageData.toChatId = "g" + this.groupData.groupId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
@@ -142,7 +146,11 @@ export default {
         case "SRV_GROUP_HISTORY_RSP":
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (el.chat.fromChatId !== 'u' + localStorage.getItem('id') && !el.isRead) this.readMsgData.push(el.chat.historyId);
+            if (
+              el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
+              !el.isRead
+            )
+              this.readMsgData.push(el.chat.historyId);
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
@@ -161,7 +169,6 @@ export default {
           break;
       }
     },
-    
   },
   components: {
     MessagePabel,
@@ -277,7 +284,7 @@ export default {
           }
         }
       }
-    
+
       img {
         position: relative;
         top: 7px;
@@ -301,24 +308,24 @@ export default {
         letter-spacing: 1px;
       }
     }
-    .contact-box{
-      background-color: #FFFFFF;
+    .contact-box {
+      background-color: #ffffff;
       width: 100vw;
-      ul{
+      ul {
         display: flex;
         justify-content: space-between;
         align-items: center;
         background-color: #fff;
         height: 3em;
         width: 55vw;
-        margin: 0 auto; 
+        margin: 0 auto;
         font-weight: 550;
-        li{
-          &:nth-child(1){
-            color:#ee5253;
+        li {
+          &:nth-child(1) {
+            color: #ee5253;
           }
-          &:nth-child(2){
-            color:#363636
+          &:nth-child(2) {
+            color: #363636;
           }
         }
       }
@@ -342,12 +349,12 @@ export default {
     }
   }
 }
-.disabled-user{
+.disabled-user {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
   border-top: 1px solid #dddddd;
   display: flex;
-  color:#959393;
+  color: #959393;
   justify-content: center;
   align-items: center;
   padding: 0 10px;

@@ -62,11 +62,11 @@
         <el-button class="border-red" @click="groupAdminChange = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="addDialogShow = true">确认</el-button>
+        <el-button class="background-red" @click="successDialogShow = true">确认</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="addDialogShow"
+      :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -97,7 +97,7 @@ export default {
       contactList: [],
       searchKey: "",
       disabled: true,
-      addDialogShow:false,
+      successDialogShow:false,
       groupAdminChange: false,
       developmentMessage: developmentMessage,
     };

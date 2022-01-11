@@ -1,49 +1,46 @@
 <template>
-  <div style="flex:1; overflow-y: auto;">
-    <div class="home-content">
-      <div class="user-data">
-        <el-image
-          v-if="userData.icon !== undefined"
-          :src="userData.icon"
-          :preview-src-list="[userData.icon]"
-        />
-        <div>
-          <span>{{ userData.nickname }}</span>
-          <span class="user-data-id">
-            ID :
-            <span class="user-paste" @click="copyPaste(userData.username)">{{
-              userData.username
-            }}</span></span
-          >
-        </div>
+  <div class="home-content">
+    <div class="user-data">
+      <el-image
+        v-if="userData.icon !== undefined"
+        :src="userData.icon"
+        :preview-src-list="[userData.icon]"
+      />
+      <div>
+        <span>{{ userData.nickname }}</span>
+        <span class="user-data-id">
+          ID :
+          <span class="user-paste" @click="copyPaste(userData.username)">{{
+            userData.username
+          }}</span></span
+        >
       </div>
-      <div
-        class="setting-button"
-        v-for="(item, index) in settingData"
-        :key="index"
-        :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
-        @click="developmentMessage(item.name)"
-      >
-        <router-link :to="item.path">
-          <div class="setting-button-left">
-            <img :src="item.icon" alt="" />
-            <span>{{ item.name }}</span>
-          </div>
-          <div class="setting-button-right">
-            <span v-if="item.name === '提醒'">开启</span>
-            <span v-if="item.name === '语言'">简体中文</span>
-            <img src="./../../../../static/images/next.png" alt="" />
-          </div>
-        </router-link>
-      </div>
-
-      <div class="setting-disable" @click="loginOutDialogShow = true">
+    </div>
+    <div
+      class="setting-button"
+      v-for="(item, index) in settingData"
+      :key="index"
+      :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
+      @click="developmentMessage(item.name)"
+    >
+      <router-link :to="item.path">
         <div class="setting-button-left">
-          <img src="./../../../../static/images/logout.png" alt="" />
-          <span>登出</span>
+          <img :src="item.icon" alt="" />
+          <span>{{ item.name }}</span>
         </div>
-      </div>
+        <div class="setting-button-right">
+          <span v-if="item.name === '提醒'">开启</span>
+          <span v-if="item.name === '语言'">简体中文</span>
+          <img src="./../../../../static/images/next.png" alt="" />
+        </div>
+      </router-link>
+    </div>
 
+    <div class="setting-disable" @click="loginOutDialogShow = true">
+      <div class="setting-button-left">
+        <img src="./../../../../static/images/logout.png" alt="" />
+        <span>登出</span>
+      </div>
     </div>
     <el-dialog
       :visible.sync="loginOutDialogShow"
@@ -107,7 +104,6 @@ export default {
           icon: require("./../../../../static/images/about.png"),
           path: "/About",
         },
-        
       ],
       notification: true,
       loginOutDialogShow: false,

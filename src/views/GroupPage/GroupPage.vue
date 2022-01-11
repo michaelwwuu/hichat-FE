@@ -33,13 +33,13 @@
             :key="index"
             @click="developmentMessage(item.name)"
           >
-            <span @click="goChatRoom(groupData, item.path)">
+            <a @click="goChatRoom(groupData, item.path)">
               <div class="setting-button-left">
                 <img :src="item.icon" alt="" />
                 <span>{{ item.name }}</span>
               </div>
               <img src="./../../../static/images/next.png" alt="" />
-            </span>
+            </a>
           </div>
 
           <div class="setting-notification" @click="developmentMessage('提醒通知')">
@@ -56,21 +56,21 @@
             </el-switch>
           </div>
 
-          <div class="setting-disable" v-if="groupData.isAdmin">
-            <span @click="goChatRoom(groupData, 'GroupAdminChange')">
+          <div class="setting-button" v-if="groupData.isAdmin">
+            <a @click="goChatRoom(groupData, 'GroupAdminChange')">
               <div class="setting-button-left">
                 <img src="./../../../static/images/key.png" alt="" />
                 <span>轉移管理者權限</span>
               </div>
-            </span>
+            </a>
           </div>
-          <div class="setting-delete" @click="leaveGroupDialogShow = true">
-            <span>
+          <div class="setting-button" @click="leaveGroupDialogShow = true">
+            <a>
               <div class="setting-button-left">
                 <img src="./../../../static/images/logout.png" alt="" />
-                <span>退出群组</span>
+                <span class="red-text">退出群组</span>
               </div>
-            </span>
+            </a>
           </div>
 
         </div>
@@ -190,17 +190,10 @@ export default {
         display: block;
         text-align: center;
         height: 4.5em;
-        margin-top: 0.3em;
         font-weight: 600;
-      }
-      .el-image {
-        width: 4em;
-        height: 4em;
-      }    
+      } 
     }
-    .setting-button,
-    .setting-disable,
-    .setting-delete  {
+    .setting-button{
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
       &::after {
@@ -212,7 +205,7 @@ export default {
         position: relative;
         top: 9px;
       }
-      span {
+      a {
         text-decoration: none;
         display: flex;
         justify-content: space-between;
@@ -256,13 +249,9 @@ export default {
         }
       }
     }
-
-    .setting-delete {
-      span {
-        color: #ee5253 !important;
-      }
+    .red-text{
+      color: #ee5253 !important;
     }
-
   }
   /deep/.el-dialog-loginOut {
     overflow: auto;

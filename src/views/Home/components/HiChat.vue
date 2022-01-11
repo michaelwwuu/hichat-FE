@@ -1,5 +1,5 @@
 <template>
-  <div style="flex:1; overflow-y: auto;">
+  <div class="home-content">
     <el-tabs v-model="activeName">
       <el-tab-pane label="联络人" name="address">
         <div
