@@ -275,7 +275,7 @@ export default {
                 content: "";
                 display: block;
                 position: absolute;
-                margin-top: 1em;
+                margin-top: 0.5em;
                 width: 100%;
                 border-bottom: 0.02em solid #b3b3b3;
               }
@@ -294,7 +294,6 @@ export default {
       padding: 0.8em 1em;
       display: flex;
       align-items: center;
-      font-size: 14px;
       .msg-box {
         span {
           display: block;
@@ -305,7 +304,7 @@ export default {
             content: "";
             display: block;
             position: absolute;
-            margin-top: 1em;
+            margin-top: 0.5em;
             width: 100%;
             border-bottom: 0.02em solid #b3b3b3;
           }

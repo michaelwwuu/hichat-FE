@@ -36,14 +36,16 @@
       </router-link>
     </div>
 
-    <div class="setting-disable" @click="loginOutDialogShow = true">
-      <div class="setting-button-left">
-        <img src="./../../../../static/images/logout.png" alt="" />
-        <span>登出</span>
-      </div>
+    <div class="setting-button" @click="logoutDialogShow = true">
+      <a>
+        <div class="setting-button-left">
+          <img src="./../../../../static/images/logout.png" alt="" />
+          <span class="red-text">登出</span>
+        </div>
+      </a>
     </div>
     <el-dialog
-      :visible.sync="loginOutDialogShow"
+      :visible.sync="logoutDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
@@ -55,7 +57,7 @@
         <span>确认要登出嗎？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="loginOutDialogShow = false"
+        <el-button class="border-red" @click="logoutDialogShow = false"
           >取消</el-button
         >
         <el-button class="background-red" @click="loginOut">确认</el-button>
@@ -106,7 +108,7 @@ export default {
         },
       ],
       notification: true,
-      loginOutDialogShow: false,
+      logoutDialogShow: false,
       developmentMessage: developmentMessage,
     };
   },
@@ -136,13 +138,7 @@ export default {
     },
     loginOut() {
       this.$router.push({ path: "/login" });
-      // localStorage.removeItem("id");
       localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      localStorage.removeItem("userData");
-      localStorage.removeItem("groupData");
-      localStorage.removeItem("fromChatId");
-      localStorage.removeItem("groupUserList");
       window.location.reload();
     },
   },
@@ -163,7 +159,6 @@ export default {
     }
     span {
       display: block;
-      text-align: center;
       height: 4.5em;
       font-weight: 600;
     }
@@ -213,9 +208,8 @@ export default {
       }
     }
   }
-  .setting-notification,
-  .setting-disable {
-    padding: 1em 0.5em 1em 0.5em;
+  .setting-notification {
+    padding: 1em 0.5em;
     background-color: #fff;
     margin: 1em 0;
     display: flex;
@@ -236,14 +230,8 @@ export default {
       }
     }
   }
-  a {
-    text-decoration: none;
-  }
-  .setting-disable {
-    margin: 0;
-    span {
-      color: #ee5253 !important;
-    }
+  .red-text {
+    color: #ee5253 !important;
   }
   .mt10 {
     margin-top: 1em;

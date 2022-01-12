@@ -228,7 +228,7 @@ export default {
       }
     }
     .setting-notification {
-      padding: 1em 0.5em 1em 0.5em;
+      padding: 1em 0.5em;
       background-color: #fff;
       margin: 1em 0;
       display: flex;
