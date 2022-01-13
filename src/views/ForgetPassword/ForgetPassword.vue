@@ -70,19 +70,17 @@
     </div>
     <el-dialog
       :visible.sync="dialogShow"
-      class="dialog-style"
-      width="90%"
+      class="el-dialog-loginOut"
+      width="70%"
       :show-close="false"
       center
     >
-      <div align="center">
-        <img src="./../../../static/images/success.png" alt="" />
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>密码已变更，请重新登录。</span>
       </div>
-      <div align="center">密码已变更，请重新登录。</div>
       <span slot="footer" class="dialog-footer">
-        <router-link to="/Login">
-          <el-button @click="dialogShow = false">确认</el-button>
-        </router-link>
+        <el-button class="background-orange" @click="back">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -192,7 +190,9 @@ export default {
           });
       });
     },
-    //清空表格
+    back() {
+      this.$router.back(-1);
+    },
   },
 };
 </script>
@@ -299,26 +299,51 @@ export default {
       width: 100%;
     }
   }
-  .dialog-style {
-    /deep/.el-dialog {
+  /deep/.el-dialog-loginOut {
+    overflow: auto;
+    .el-dialog {
+      position: relative;
+      margin: 0 auto 50px;
+      background: #ffffff;
       border-radius: 10px;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 10px;
+      }
       .el-dialog__body {
-        margin-top: -2.5em;
-        margin-bottom: -1.5em;
-        div {
-          margin: 2em 0;
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
           img {
             height: 5em;
+            margin-bottom: 1.2em;
           }
         }
       }
       .el-dialog__footer {
-        width: 100%;
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
         .dialog-footer {
+          display: flex;
+          justify-content: space-between;
           .el-button {
-            width: 90%;
-            background-color: #fd5f3f;
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
             color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
           }
         }
       }
