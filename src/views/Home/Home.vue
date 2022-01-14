@@ -50,10 +50,7 @@
           >
             <router-link :to="item.path">
               <span
-                ><img alt="" :src="item.icon" v-show="index !== num"
-              /></span>
-              <span
-                ><img alt="" :src="item.active" v-show="index === num"
+                ><img :src="index !== num ? item.icon : item.active" 
               /></span>
               <span>{{ item.name }}</span>
             </router-link>
@@ -149,7 +146,7 @@ export default {
         : this.$route.fullPath === "/HiChat"
         ? 1
         : 2;
-    Socket.$on("message", this.handleGetMessage);   
+    // Socket.$on("message", this.handleGetMessage);   
   },
   methods: {
     changeImg(index) {

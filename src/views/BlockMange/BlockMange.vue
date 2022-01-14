@@ -91,7 +91,7 @@
 
 <script>
 
-import { blockListMember,unBlockUser } from "@/api";
+import { blockListMember,unBlockContactUser } from "@/api";
 export default {
   name: "BlockMange",
   data() {
@@ -126,7 +126,7 @@ export default {
     },
     unBlockSubmit(){
       let blockIdList = this.checkList
-      unBlockUser({blockIdList}).then((res) => {
+      unBlockContactUser({blockIdList}).then((res) => {
         if(res.code === 200){
           this.settingDialogShow = false;
           this.unblockDialogShow = false;

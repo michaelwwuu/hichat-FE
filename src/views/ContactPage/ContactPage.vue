@@ -15,8 +15,8 @@
           <div class="user-data">
             <el-image
               v-if="userData.icon !== undefined"
-              :src="userData.icon"
-              :preview-src-list="[userData.icon]"
+              :src="noIconShow(userData)"
+              :preview-src-list="[noIconShow(userData)]"
             />
             <div>
               <span>{{ userData.name }}</span>
@@ -181,8 +181,9 @@ export default {
         },
       ],
       groupDataList: [],
-      dialogContent: "",
       blockContent: "",
+      dialogContent: "",
+      noIcon:require("./../../../static/images/image_user_defult.png"),
       notification: true,
       successDialogShow: false,
       settingDialogShow: false,
@@ -195,6 +196,13 @@ export default {
     this.getUserId();
   },
   methods: {
+    noIconShow(iconData){
+      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
+        return this.noIcon
+      }else{
+        return iconData.icon
+      }
+    },
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);

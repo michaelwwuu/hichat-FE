@@ -15,9 +15,8 @@
         <div class="home-content">
           <div class="user-data">
             <el-image
-              v-if="groupData.icon !== undefined"
-              :src="groupData.icon"
-              :preview-src-list="[groupData.icon]"
+              :src="noIconShow(groupData)"
+              :preview-src-list="[noIconShow(groupData)]"
             />
             <div>
               <span>{{ groupData.groupName }}</span>
@@ -134,6 +133,7 @@ export default {
         },
       ],
       dialogContent:'',
+      noIcon:require("./../../../static/images/image_group_defult.png"),
       notification: true,
       leaveGroupDialogShow:false,
       developmentMessage: developmentMessage,
@@ -143,6 +143,13 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
   },
   methods: {
+    noIconShow(iconData){
+      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
+        return this.noIcon
+      }else{
+        return iconData.icon
+      }
+    },
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
@@ -158,7 +165,6 @@ export default {
     back() {
       this.$router.back(-1);
     },
-
   },
 };
 </script>

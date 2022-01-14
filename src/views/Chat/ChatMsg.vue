@@ -13,12 +13,9 @@
               </router-link>
             </span>
             <span class="home-header-title">{{ userData.name }}</span>
-            <div
-              class="home-user-search"
-              :style="!userData.isContact ? 'position:none;right:0;' : ''"
-            ></div>
-            <span class="home-photo-link" v-if="userData.isContact">
-              <router-link :to="'/ContactPage'">
+            <div v-if="userData.isContact" class="home-user-search"></div>
+            <span class="home-photo-link">
+              <router-link :to="'/ContactPage'" v-if="userData.isContact">
                 <div class="home-user-photo">
                   <img
                     :src="
@@ -31,6 +28,9 @@
                   />
                 </div>
               </router-link>
+              <div class="home-user-photo" v-else>
+                <img :src="noIconShow(userData)" />
+              </div>
             </span>
           </div>
         </el-header>
@@ -39,6 +39,7 @@
             <li @click="isBlockDialogShow = true">
               {{ userData.isBlock ? "解除封锁" : "封锁" }}
             </li>
+            <li @click="deleteRecent(userData)">删除</li>
             <li @click="addUser(userData)">加入联络人</li>
           </ul>
         </div>
@@ -101,7 +102,12 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { addContactUser, addBlockContactUser, unBlockUser } from "@/api";
+import {
+  addContactUser,
+  addBlockContactUser,
+  unBlockContactUser,
+  deleteRecentChat,
+} from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -118,10 +124,11 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      successDialogShow: false,
-      isBlockDialogShow: false,
       userData: {},
       readMsgData: [],
+      noIcon: require("./../../../static/images/image_user_defult.png"),
+      isBlockDialogShow: false,
+      successDialogShow: false,
     };
   },
   created() {
@@ -140,10 +147,20 @@ export default {
     }),
   },
   methods: {
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
+      }
+    },
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
-
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -157,7 +174,6 @@ export default {
         userChatId: data.chat.fromChatId,
       };
     },
-
     // 獲取歷史訊息
     getChatHistoryMessage() {
       let historyMessageData = this.userInfoData;
@@ -171,7 +187,6 @@ export default {
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
-
     // 已讀
     readMsgShow() {
       let sendReadMessageData = this.userInfoData;
@@ -180,7 +195,6 @@ export default {
       sendReadMessageData.targetArray = this.readMsgData;
       Socket.send(sendReadMessageData);
     },
-
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -193,6 +207,10 @@ export default {
         case "SRV_USER_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
+          if(userInfo.isRead){
+            this.readMsgData.push(userInfo.historyId)
+            this.readMsgShow();
+          }
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
@@ -202,7 +220,7 @@ export default {
               el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
               !el.isRead
             )
-              this.readMsgData.push(el.chat.historyId);
+            this.readMsgData.push(el.chat.historyId);
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
@@ -240,10 +258,28 @@ export default {
           return false;
         });
     },
+    deleteRecent(data) {
+      let parmas = {
+        fullDelete: false,
+        historyId: "",
+        toChatId: data.toChatId,
+      };
+      deleteRecentChat(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            this.successDialogShow = true;
+            localStorage.removeItem("userData");
+            this.back();
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+        });
+    },
     blockSubmitBtn(data) {
       if (this.userData.isBlock) {
         let blockIdList = [this.userData.toChatId.replace("u", "")];
-        unBlockUser({ blockIdList })
+        unBlockContactUser({ blockIdList })
           .then((res) => {
             if (res.code === 200) {
               this.userData.isBlock = false;
@@ -272,6 +308,9 @@ export default {
             return false;
           });
       }
+    },
+    back() {
+      this.$router.back(-1);
     },
   },
   components: {
@@ -421,7 +460,7 @@ export default {
         align-items: center;
         background-color: #fff;
         height: 3em;
-        width: 55vw;
+        width: 85%;
         margin: 0 auto;
         font-weight: 550;
         li {
@@ -429,6 +468,9 @@ export default {
             color: #ee5253;
           }
           &:nth-child(2) {
+            color: #ee5253;
+          }
+          &:nth-child(3) {
             color: #363636;
           }
         }

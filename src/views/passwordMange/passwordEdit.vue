@@ -124,7 +124,6 @@
         <div><img src="./../../../static/images/success.png" alt="" /></div>
         <span>登录密码已修改。</span>
       </div>
-      <div align="center">登录密码已修改。</div>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-orange" @click="back">确认</el-button>
       </span>

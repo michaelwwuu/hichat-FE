@@ -204,6 +204,15 @@ export const addBlockContactUser = data => {
   }
   return axios.request(postData)
 }
+// 刪除陌生訊息
+export const deleteRecentChat = data => {
+  let postData = {
+    url: '/api/chat/deleteRecentChat',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
 
 // 解除封鎖聯絡人
 export const unBlockContactUser = data => {
