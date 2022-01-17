@@ -17,7 +17,7 @@
                   <img
                     :src="
                       groupData.icon === undefined || groupData.icon === ''
-                        ? require('./../../../static/images/image_user_defult.png')
+                        ? require('./../../../static/images/image_group_defult.png')
                         : groupData.icon
                     "
                   />

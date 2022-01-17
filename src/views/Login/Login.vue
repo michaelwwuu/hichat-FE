@@ -84,7 +84,6 @@
           <el-button
             style="
               width: 100%;
-              margin-bottom: 30px;
               background-color: #67c23a00;
               border: 1px solid #fd5f3f;
               color: #fd5f3f;

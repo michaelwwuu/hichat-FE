@@ -97,6 +97,23 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="deleteDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>刪除成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="$router.push({ path: '/Address' })"
+          >確認</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -127,6 +144,7 @@ export default {
       userData: {},
       readMsgData: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
+      deleteDialogShow:false,
       isBlockDialogShow: false,
       successDialogShow: false,
     };
@@ -267,9 +285,8 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.successDialogShow = true;
+            this.deleteDialogShow = true;
             localStorage.removeItem("userData");
-            this.back();
           }
         })
         .catch((err) => {

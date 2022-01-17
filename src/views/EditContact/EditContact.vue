@@ -13,8 +13,8 @@
           <div class="user-data">
             <el-image
               v-if="userData.icon !== undefined"
-              :src="userData.icon"
-              :preview-src-list="[userData.icon]"
+              :src="noIconShow(userData)"
+              :preview-src-list="[noIconShow(userData)]"
             />
             <div>
               <span>{{ userData.name }}</span>
@@ -53,6 +53,7 @@ export default {
       userEditForm: {
         nickname: "",
       },
+      noIcon:require("./../../../static/images/image_user_defult.png"),
     };
   },
   created() {
@@ -60,6 +61,13 @@ export default {
     this.userEditForm.nickname = this.userData.name;
   },
   methods: {
+      noIconShow(iconData){
+      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
+        return this.noIcon
+      }else{
+        return iconData.icon
+      }
+    },
     editSubmit() {
       let name = this.userEditForm.nickname;
       let contactId =

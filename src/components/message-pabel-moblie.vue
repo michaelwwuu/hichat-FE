@@ -74,6 +74,9 @@ export default {
       gotoBottom: gotoBottom,
     };
   },
+  mounted() {
+
+  },
   watch: {
     messageData(val) {
       //去除重复
@@ -149,8 +152,11 @@ export default {
           width: 190px;
         }
         .el-image{
-          width: auto !important;
-          height: auto !important;
+          width:10em !important;
+          height:10em !important;
+          /deep/.el-image__inner{
+            height: 100%;
+          }
         }
       }
       .message-avatar {
@@ -187,8 +193,11 @@ export default {
           }
         }
         .el-image{
-          width: auto !important;
-          height: auto !important;
+          width:10em !important;
+          height:10em !important;
+          /deep/.el-image__inner{
+            height: 100%;
+          }
         }
       }
       .message-avatar {

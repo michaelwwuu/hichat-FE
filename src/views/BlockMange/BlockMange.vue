@@ -32,7 +32,7 @@
                 :class="{'hidden':editBtnShow}"
               >
                 <div class="address-box">
-                  <el-image :src="item.icon" />
+                  <el-image :src="item.icon === undefined ? noIcon:item.icon" />
                   <div class="msg-box">
                     <span>{{ item.name }}</span>
                   </div>
@@ -98,6 +98,7 @@ export default {
     return {
       blockData:[],
       checkList: [],
+      noIcon: require("./../../../static/images/image_user_defult.png"),
       disabled: true,
       editBtnShow:true,
       settingDialogShow:false,

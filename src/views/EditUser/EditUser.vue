@@ -11,14 +11,16 @@
         </el-header>
         <div class="home-content">
           <div class="group-data">
-            <span>
-              <el-image
-                v-if="userData.icon !== undefined"
-                :src="userData.icon"
-                :preview-src-list="[userData.icon]"
-              />
-            </span>
-            <span class="photo-edit" @click="uploadImgShow = true">变更头像</span>
+            <span
+              ><el-image
+                :src="noIconShow(userData)"
+                :preview-src-list="[noIconShow(userData)]"
+            /></span>
+             <div>
+              <span class="photo-edit" @click="uploadImgShow = true"
+                >变更头像</span
+              >
+            </div>
           </div>
           <div class="user-edit-form">
             <el-form ref="form" :model="userEditForm" label-width="100px">
@@ -74,12 +76,24 @@ export default {
       uploadImgShow: false,
       formData: new FormData(),
       fileList: [],
+      noIcon: require("./../../../static/images/image_group_defult.png"),
     };
   },
   created() {
     this.getUserData();
   },
   methods: {
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
+      }
+    },
     editSubmit() {
       if (this.userEditForm.nickname === "") {
         this.$message({ message: "昵称不可为空白", type: "error" });
@@ -94,13 +108,15 @@ export default {
     },
     getUserData() {
       getUserInfo().then((res) => {
-        if (res.data.icon === undefined)
+        if (res.data.icon === undefined){
           res.data.icon = require("./../../../static/images/image_user_defult.png");
+        }
         this.userData = res.data;
         this.userEditForm.nickname = this.userData.nickname.replace(
           /\["|"]/g,
           ""
         );
+        localStorage.setItem("userData", JSON.stringify(this.userData));
       });
     },
     back() {
@@ -115,7 +131,8 @@ export default {
         if (res.code === 200) {
           this.fileList = [];
           this.uploadImgShow = false;
-          this.getUserData();
+          this.userData.icon = res.data;
+          localStorage.setItem("userData", JSON.stringify(this.userData));
         }
       });
     },
@@ -129,6 +146,26 @@ export default {
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
+    }
+  }
+  .home-content {
+    .group-data {
+      .el-image {
+        width: 4em;
+        height: 4em;
+      }
+      span {
+        height: 4.5em !important;
+        overflow: hidden;
+        img {
+          width: 4em;
+          border-radius: 10px;
+        }
+      }
+      .photo-edit {
+        height: 1.5em !important;
+        color: #fe5f3f;
+      }
     }
   }
   .user-edit-form {

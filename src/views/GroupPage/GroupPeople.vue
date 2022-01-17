@@ -265,6 +265,11 @@ export default {
         width: 100%;
         padding-left: 0;
         .address-box {
+          .el-image{
+            width: 3em;
+            height: 3em;
+            border-radius: 10px;
+          }
           .msg-box {
             span {
               display: block;
@@ -275,7 +280,7 @@ export default {
                 content: "";
                 display: block;
                 position: absolute;
-                margin-top: 0.5em;
+                margin-top: 0.6em;
                 width: 100%;
                 border-bottom: 0.02em solid #b3b3b3;
               }

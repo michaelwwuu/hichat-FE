@@ -11,10 +11,16 @@
         </el-header>
         <div class="home-content">
           <div class="group-data">
-            <span><img :src="groupData.icon === ''?require('./../../../static/images/image_group_defult.png') : groupData.icon" alt="" /></span>
-            <span class="photo-edit" @click="uploadImgShow = true"
-              >变更群组照片</span
-            >
+            <span
+              ><el-image
+                :src="noIconShow(groupData)"
+                :preview-src-list="[noIconShow(groupData)]"
+            /></span>
+            <div>
+              <span class="photo-edit" @click="uploadImgShow = true"
+                >变更群组照片</span
+              >
+            </div>
           </div>
           <div class="user-edit-form">
             <el-form ref="form" :model="groupForm" label-width="100px">
@@ -66,7 +72,7 @@
 </template>
 
 <script>
-import { uploadGroupIcon,updateGroup } from "@/api";
+import { uploadGroupIcon, updateGroup } from "@/api";
 
 export default {
   name: "EditContact",
@@ -74,28 +80,40 @@ export default {
     return {
       groupData: {},
       groupForm: {
-        name: ""
+        name: "",
       },
-      groupIcon: '',
+      groupIcon: "",
       uploadImgShow: false,
       formData: new FormData(),
       fileList: [],
       disabled: true,
+      noIcon: require("./../../../static/images/image_group_defult.png"),
     };
   },
-  watch:{
-    groupForm:{
+  watch: {
+    groupForm: {
       handler(val) {
-        this.disabled = !val.name
+        this.disabled = !val.name;
       },
       deep: true,
-    }
+    },
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.groupForm.name = this.groupData.groupName;
   },
   methods: {
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
+      }
+    },
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
@@ -105,29 +123,30 @@ export default {
         if (res.code === 200) {
           this.fileList = [];
           this.uploadImgShow = false;
-          this.groupData.icon = res.data
-          this.groupIcon = res.data
-          localStorage.setItem("groupData",JSON.stringify(this.groupData))
+          this.groupData.icon = res.data;
+          this.groupIcon = res.data;
+          localStorage.setItem("groupData", JSON.stringify(this.groupData));
         }
       });
     },
     editSubmit() {
       let params = {
-        groupId:this.groupData.groupId,
+        groupId: this.groupData.groupId,
         groupName: this.groupForm.name,
-        icon:this.groupIcon,
-      }
-      updateGroup(params).then((res) => {
-        if (res.code === 200) {
-          this.groupData.groupName = this.groupForm.name
-          localStorage.setItem("groupData",JSON.stringify(this.groupData))
-          this.back()
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
+        icon: this.groupIcon,
+      };
+      updateGroup(params)
+        .then((res) => {
+          if (res.code === 200) {
+            this.groupData.groupName = this.groupForm.name;
+            localStorage.setItem("groupData", JSON.stringify(this.groupData));
+            this.back();
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+          return false;
+        });
     },
     back() {
       this.$router.back(-1);
@@ -145,8 +164,13 @@ export default {
 }
 .home-content {
   .group-data {
+    .el-image {
+      width: 4em;
+      height: 4em;
+    }
     span {
       height: 4.5em !important;
+      overflow: hidden;
       img {
         width: 4em;
         border-radius: 10px;
@@ -157,14 +181,13 @@ export default {
       color: #fe5f3f;
     }
   }
-
 }
 .user-edit-form {
   margin: 1em;
   background-color: #fff;
   border-radius: 10px;
   /deep/.el-form {
-    .el-form-item{
+    .el-form-item {
       margin-bottom: 0;
       .el-form-item__label {
         font-size: 17px;
@@ -176,7 +199,6 @@ export default {
         }
       }
     }
-    
   }
 }
 </style>

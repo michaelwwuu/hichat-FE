@@ -236,11 +236,10 @@ export default {
             padding-bottom: 5px;
           }
           .el-image {
-            width: auto !important;
-            height: auto !important;
-            img {
-              border-radius: 8px;
-              width: 6em;
+            width:10em !important;
+            height:10em !important;
+            /deep/.el-image__inner{
+              height: 100%;
             }
           }
         }
@@ -304,11 +303,10 @@ export default {
         background-color: #e5e4e4;
         border-radius: 10px;
         .el-image{
-          width: auto !important;
-          height: auto !important;
-          img {
-            border-radius: 8px;
-            width: 6em;
+          width:10em !important;
+          height:10em !important;
+          /deep/.el-image__inner{
+            height: 100%;
           }
         }
 

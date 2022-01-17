@@ -16,6 +16,7 @@
         type="textarea"
         resize="none"
         :autosize="{ minRows: 1, maxRows: 1 }"
+        autofocus="true"
         placeholder="Aa"
         v-model="textArea"
       >
@@ -161,6 +162,7 @@ export default {
       abc: 0, // 秒的計數
       cde: 0, // 分的計數
       efg: 0, // 時的計數
+      scrollTop: 0,
     };
   },
   props: {
