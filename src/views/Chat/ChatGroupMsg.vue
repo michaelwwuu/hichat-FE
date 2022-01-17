@@ -276,6 +276,7 @@ export default {
           right: 14px;
           .home-user-photo {
             text-align: center;
+            overflow: hidden;
             img {
               top: 0;
               height: 2em;

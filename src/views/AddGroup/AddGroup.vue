@@ -134,7 +134,6 @@ export default {
       searchKey: "",
       groupIcon: "",
       fileList: [],
-      formData: new FormData(),
       disabled: true,
       groupEditShow:true,
       uploadImgShow: false,
@@ -173,8 +172,9 @@ export default {
       this.fileList = fileList;
     },
     submitAvatarUpload() {
-      this.formData.append("file", this.fileList[0].raw);
-      uploadGroupIcon(this.formData).then((res) => {
+      let formData = new FormData();
+      formData.append("file", this.fileList[0].raw);
+      uploadGroupIcon(formData).then((res) => {
         if (res.code === 200) {
           this.fileList = [];
           this.uploadImgShow = false;

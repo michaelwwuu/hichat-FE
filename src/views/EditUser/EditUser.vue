@@ -74,16 +74,18 @@ export default {
         nickname: "",
       },
       uploadImgShow: false,
-      formData: new FormData(),
       fileList: [],
-      noIcon: require("./../../../static/images/image_group_defult.png"),
+      noIcon: require("./../../../static/images/image_user_defult.png"),
     };
   },
   created() {
-    this.getUserData();
+    // this.getUserData();
+    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.userEditForm.nickname = this.userData.nickname;
   },
   methods: {
     noIconShow(iconData) {
+      console.log(iconData.icon)
       if (
         iconData.icon === undefined ||
         iconData.icon === null ||
@@ -94,6 +96,37 @@ export default {
         return iconData.icon;
       }
     },
+    // getUserData() {
+    //   getUserInfo().then((res) => {
+    //     if (res.data.icon === undefined){
+    //       res.data.icon = require("./../../../static/images/image_user_defult.png");
+    //     }
+    //     this.userData = res.data;
+    //     this.userEditForm.nickname = this.userData.nickname.replace(
+    //       /\["|"]/g,
+    //       ""
+    //     );
+    //   });
+    // },
+    back() {
+      this.$router.back(-1);
+    },
+    uploadImg(file, fileList) {
+      this.fileList = fileList;
+      console.log(this.fileList)
+    },
+    submitAvatarUpload() {
+      let formData = new FormData();
+      formData.append("file", this.fileList[0].raw);
+      uploadIcon(formData).then((res) => {
+        if (res.code === 200) {
+          this.fileList = [];
+          this.uploadImgShow = false;
+          this.userData.icon = res.data;
+          localStorage.setItem("userData", JSON.stringify(this.userData));
+        }
+      });
+    },
     editSubmit() {
       if (this.userEditForm.nickname === "") {
         this.$message({ message: "昵称不可为空白", type: "error" });
@@ -101,38 +134,8 @@ export default {
       }
       updateNickname(this.userEditForm.nickname).then((res) => {
         if (res.code === 200) {
-          this.getUserData();
+          // this.getUserData();
           this.back();
-        }
-      });
-    },
-    getUserData() {
-      getUserInfo().then((res) => {
-        if (res.data.icon === undefined){
-          res.data.icon = require("./../../../static/images/image_user_defult.png");
-        }
-        this.userData = res.data;
-        this.userEditForm.nickname = this.userData.nickname.replace(
-          /\["|"]/g,
-          ""
-        );
-        localStorage.setItem("userData", JSON.stringify(this.userData));
-      });
-    },
-    back() {
-      this.$router.back(-1);
-    },
-    uploadImg(file, fileList) {
-      this.fileList = fileList;
-    },
-    submitAvatarUpload() {
-      this.formData.append("file", this.fileList[0].raw);
-      uploadIcon(this.formData).then((res) => {
-        if (res.code === 200) {
-          this.fileList = [];
-          this.uploadImgShow = false;
-          this.userData.icon = res.data;
-          localStorage.setItem("userData", JSON.stringify(this.userData));
         }
       });
     },

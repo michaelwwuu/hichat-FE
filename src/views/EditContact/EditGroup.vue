@@ -84,7 +84,6 @@ export default {
       },
       groupIcon: "",
       uploadImgShow: false,
-      formData: new FormData(),
       fileList: [],
       disabled: true,
       noIcon: require("./../../../static/images/image_group_defult.png"),
@@ -116,15 +115,16 @@ export default {
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;
+      console.log(this.fileList)
     },
     submitAvatarUpload() {
-      this.formData.append("file", this.fileList[0].raw);
-      uploadGroupIcon(this.formData).then((res) => {
+      let formData = new FormData();
+      formData.append("file", this.fileList[0].raw);
+      uploadGroupIcon(formData).then((res) => {
         if (res.code === 200) {
           this.fileList = [];
           this.uploadImgShow = false;
           this.groupData.icon = res.data;
-          this.groupIcon = res.data;
           localStorage.setItem("groupData", JSON.stringify(this.groupData));
         }
       });
@@ -133,7 +133,7 @@ export default {
       let params = {
         groupId: this.groupData.groupId,
         groupName: this.groupForm.name,
-        icon: this.groupIcon,
+        icon: this.groupData.icon,
       };
       updateGroup(params)
         .then((res) => {

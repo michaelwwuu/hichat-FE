@@ -131,9 +131,11 @@ export default {
     },
     getUserData() {
       getUserInfo().then((res) => {
-        if (res.data.icon === undefined)
+        if (res.data.icon === undefined){
           res.data.icon = require("./../../../../static/images/image_user_defult.png");
+        }
         this.userData = res.data;
+        localStorage.setItem("userData", JSON.stringify(this.userData));
       });
     },
     loginOut() {
