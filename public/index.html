@@ -11,9 +11,17 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
       body {
-        overflow-y:auto;
-        -webkit-overflow-scrolling:touch;
+        /* overflow-y:auto;
+        -webkit-overflow-scrolling:touch; */
         background-color: #eaf5fa;
+      }
+      html {
+        height: -webkit-fill-available;
+      }
+      body {
+        min-height: 100vh;
+        /* mobile viewport bug fix */
+        min-height: -webkit-fill-available;
       }
     </style>
   </head>

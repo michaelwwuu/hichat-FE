@@ -41,7 +41,8 @@ export default {
 <style lang="scss">
 #app {
   max-width: 100vw;
-  height: 100vh;
+  // min-height: 100vh;
+  // min-height: webkit-fill-available;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑","Regular", Arial, sans-serif;
 }

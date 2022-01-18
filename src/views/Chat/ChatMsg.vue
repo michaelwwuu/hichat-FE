@@ -339,7 +339,8 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  min-height: 100%;
+  // min-height: 100vh;
+  // min-height: webkit-fill-available;
   width: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
