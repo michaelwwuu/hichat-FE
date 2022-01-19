@@ -162,7 +162,7 @@ const routes = [
     path: "/About",
     name: "About",
     component: () => import(/* webpackChunkName: "About" */ '@/views/About/About.vue'),
-    meta: { keepAlive: false },
+    meta: { keepAlive: true },
   },
   {
     path: "*",

@@ -16,7 +16,6 @@
         type="textarea"
         resize="none"
         :autosize="{ minRows: 1, maxRows: 1 }"
-        autofocus="true"
         placeholder="Aa"
         v-model="textArea"
       >
