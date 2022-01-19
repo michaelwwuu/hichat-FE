@@ -29,19 +29,6 @@ export default {
       this.device = "pc";
     }
     localStorage.setItem("device", this.device)
-    // if (navigator.userAgent.toLocaleLowerCase().includes('iphone')) {
-    //   // @ts-ignore
-    //   this.intervalFlag = setInterval(() => {
-    //     document.querySelector('body').scrollTop = 0;
-    //   }, 200);
-    // }
-    // setTimeout(() => {
-    //   if (navigator.userAgent.toLowerCase().includes('iphone')) {
-    //     document.querySelector('#app').addEventListener('touchmove', (e) => {
-    //       e.preventDefault();
-    //     });
-    //   }
-    // }, 100);
     document.body.addEventListener('touchmove', (e) => {
       if (e._isScroller) return;
       e.preventDefault()
@@ -50,18 +37,6 @@ export default {
     })
   },
   mounted() {
-    // // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-    // let vh = window.innerHeight * 0.01
-    // // Then we set the value in the --vh custom property to the root of the document 
-    // document.documentElement.style.setProperty('--vh', `${vh}px`)
-    // // alert(vh)
-    // // We listen to the resize event
-    // window.addEventListener('resize', () => {
-    //   // We execute the same script as before
-    //   let vh = window.innerHeight * 0.01
-    //   // alert(vh)
-    //   document.documentElement.style.setProperty('--vh', `${vh}px`)
-    // })
     if(this.device === "moblie") this.safariHacks();
   },
   methods: {
