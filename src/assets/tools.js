@@ -1,6 +1,7 @@
 /* 返回底部 */
 function gotoBottom() {
   const box = document.getElementsByClassName('message-pabel-box')[0]
+  console.log(box)
   this.$nextTick(() => {
     box.scrollTop = box.scrollHeight
   })

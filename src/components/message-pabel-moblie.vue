@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box">
+  <div class="message-pabel-box" @touchmove="handleTouch">
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -74,9 +74,6 @@ export default {
       gotoBottom: gotoBottom,
     };
   },
-  mounted() {
-
-  },
   watch: {
     messageData(val) {
       //去除重复
@@ -102,6 +99,9 @@ export default {
     },
   },
   methods: {
+    handleTouch (e) {
+      e._isScroller = true
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === 'u' + localStorage.getItem('id')) {

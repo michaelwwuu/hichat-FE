@@ -2,10 +2,12 @@
   <div id="app" :class="[
       { 'hichat-pc': device === 'pc' },
       { 'hichat-moblie': device === 'moblie' },
-    ]">
+    ]"
+    >
     <keep-alive>
-      <router-view></router-view>	
+      <router-view v-if="$route.meta.keepAlive"></router-view>    
     </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>    
   </div>
 </template>
 
@@ -40,6 +42,12 @@ export default {
     //     });
     //   }
     // }, 100);
+    document.body.addEventListener('touchmove', (e) => {
+      if (e._isScroller) return;
+      e.preventDefault()
+    }, {
+      passive: false
+    })
   },
   mounted() {
     // // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
@@ -63,6 +71,9 @@ export default {
       window.addEventListener('resize', function() {
           document.querySelector('.hichat-moblie').style.setProperty('--vh', windowsVH + 'px');
       });
+    },
+    handleTouch (e) {
+    //   e._isScroller = true
     }
   },
 };
@@ -70,11 +81,18 @@ export default {
 
 
 <style lang="scss">
+html,body {
+  height: 100vh;
+  min-height: -webkit-fill-available; 
+  overflow: hidden;
+  // background-color: #eaf5fa;
+}
 #app {
   max-width: 100vw;
-  // height: 100vh; /* Fallback for browsers that do not support Custom Properties */
-  // height: calc(var(--vh, 1vh) * 100);
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+  height: 100vh;
+  min-height: -webkit-fill-available; 
+  overflow: hidden;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑","Regular", Arial, sans-serif;
 }
 .el-notification__content {
