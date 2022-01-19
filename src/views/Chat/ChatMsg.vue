@@ -341,6 +341,7 @@ export default {
 .wrapper {
   // min-height: 100vh;
   // min-height: webkit-fill-available;
+  overflow: hidden;
   width: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
@@ -350,6 +351,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
+    
     .el-aside,
     .el-main {
       display: flex;
@@ -391,9 +393,8 @@ export default {
       padding: 0;
     }
     .el-header {
-      padding: 0;
       position: relative;
-      overflow: hidden;
+      padding: 0;
       .home-header {
         margin: 1.5em 1em 1em 1em;
         display: flex;

@@ -6,14 +6,17 @@
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />    
+    <meta name="format-detection" content="telephone=no" /> 
 
     <link rel="icon" href="./material_ic_logo.png">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
       body {
-        /* overflow-y:auto;
-        -webkit-overflow-scrolling:touch; */
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
         background-color: #eaf5fa;
+        /* overflow: hidden; */
       }
       html {
         height: -webkit-fill-available;
@@ -21,7 +24,7 @@
       body {
         min-height: 100vh;
         /* mobile viewport bug fix */
-        min-height: -webkit-fill-available;
+        min-height: -webkit-fill-available; 
       }
     </style>
   </head>

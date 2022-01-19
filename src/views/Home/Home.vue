@@ -2,8 +2,16 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header :style="num === 2?'height:55px':'height:120px'">
-          <div class="home-header">
+        <el-header
+          :style="
+            num === 2
+              ? 'height:55px'
+              : device === 'pc'
+              ? 'height:70px'
+              : 'height:120px'
+          "
+        >
+          <div class="home-header" v-if="device === 'moblie'">
             <div
               class="home-user"
               :class="{ 'QRcode-img': num === 0 || num === 2 }"
@@ -11,7 +19,9 @@
                 num === 0 || num === 2 ? (centerDialogVisible = true) : ''
               "
             ></div>
-            <span class="home-header-title">{{num === 0 ? '通讯录':num === 1 ?'HiChat':'设定'}}</span>
+            <span class="home-header-title">{{
+              num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
+            }}</span>
             <template v-if="num === 0">
               <router-link :to="'/AddUser'">
                 <div class="home-add-user address-img"></div>
@@ -35,12 +45,12 @@
               v-model="searchKey"
             >
             </el-input>
+            <router-link :to="'/AddUser'">
+              <img src="./../../../static/images/pc/user-plus.png" alt="" v-if="device !== 'moblie'">
+            </router-link>
           </div>
         </el-header>
-        <keep-alive>
-          <router-view v-if="$route.meta.keepAlive"></router-view>
-        </keep-alive>
-        <router-view v-if="!$route.meta.keepAlive"></router-view>
+        <router-view></router-view>
         <el-footer class="home-footer-nav">
           <div
             class="footer-nav-btn"
@@ -50,9 +60,9 @@
           >
             <router-link :to="item.path">
               <span
-                ><img :src="index !== num ? item.icon : item.active" 
+                ><img :src="index !== num ? item.icon : item.active"
               /></span>
-              <span>{{ item.name }}</span>
+              <span v-if="device === 'moblie'">{{ item.name }}</span>
             </router-link>
           </div>
         </el-footer>
@@ -86,7 +96,11 @@
         <router-link :to="'/QRcode'"
           ><img src="./../../../static/images/scan.png" alt=""
         /></router-link>
-        <img src="./../../../static/images/share.png" alt="" @click="copyUrl" />
+        <img
+          src="./../../../static/images/share.png"
+          alt=""
+          @click="copyUrl"
+        />
         <img
           src="./../../../static/images/download.png"
           alt=""
@@ -109,7 +123,7 @@ export default {
         {
           icon: require("./../../../static/images/address.png"),
           active: require("./../../../static/images/address_hover.png"),
-          path: "/Address",
+          path: '/Address',
           name: "通讯录",
         },
         {
@@ -137,6 +151,7 @@ export default {
       searchKey: "",
       downloadFilename: "",
       centerDialogVisible: false,
+      device: localStorage.getItem("device"),
     };
   },
   created() {
@@ -146,7 +161,7 @@ export default {
         : this.$route.fullPath === "/HiChat"
         ? 1
         : 2;
-    // Socket.$on("message", this.handleGetMessage);   
+    // Socket.$on("message", this.handleGetMessage);
   },
   methods: {
     changeImg(index) {
@@ -171,45 +186,48 @@ export default {
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
         case "SRV_GROUP_SEND":
-          this.notifyMe()
+          this.notifyMe();
           break;
       }
     },
     notifyMe() {
-      console.log(Notification)
+      console.log(Notification);
       // 先检查浏览器是否支持
-      if(!("Notification" in window)) {
-        this.$message({ message: "This browser does not support desktop notification", type: "error" });
+      if (!("Notification" in window)) {
+        this.$message({
+          message: "This browser does not support desktop notification",
+          type: "error",
+        });
       }
       // 检查用户是否同意接受通知
-      else if(Notification.permission === "granted") {
+      else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        var notification = new Notification("你好snowball:", {  
-          dir: "auto",  //auto（自动）, ltr（从左到右）, or rtl（从右到左）
-          lang: "zh",  //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
-          tag: "testTag",  //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-          icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg",  //提示时候的图标
-          body: "今天是个好天气"  // 一个图片的URL，将被用于显示通知的图标。
-        }); 
+        var notification = new Notification("你好snowball:", {
+          dir: "auto", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
+          lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
+          tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
+          icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg", //提示时候的图标
+          body: "今天是个好天气", // 一个图片的URL，将被用于显示通知的图标。
+        });
       }
       // 否则我们需要向用户获取权限
-      else if(Notification.permission !== 'denied') {
-        Notification.requestPermission(function(permission) {
+      else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
           // 如果用户同意，就可以向他们发送通知
-          if(permission === "granted") {
-            var notification = new Notification("你好snowball:", {  
-              dir: "auto",  //auto（自动）, ltr（从左到右）, or rtl（从右到左）
-              lang: "zh",  //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
-              tag: "testTag",  //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-              icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg",  //提示时候的图标
-              body: "今天是个好天气"  // 一个图片的URL，将被用于显示通知的图标。
-            }); 
+          if (permission === "granted") {
+            var notification = new Notification("你好snowball:", {
+              dir: "auto", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
+              lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
+              tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
+              icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg", //提示时候的图标
+              body: "今天是个好天气", // 一个图片的URL，将被用于显示通知的图标。
+            });
           }
         });
       }
       // 最后，如果执行到这里，说明用户已经拒绝对相关通知进行授权
       // 出于尊重，我们不应该再打扰他们了
-    }
+    },
   },
   components: {
     VueQr,
