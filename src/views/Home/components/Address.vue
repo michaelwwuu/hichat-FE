@@ -1,67 +1,35 @@
 <template>
   <div class="home-content">
-    <template v-if="device === 'moblie'">
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="联络人" name="address">
-          <div
-            class="address-box"
-            v-for="(item, index) in contactList"
-            :key="index"
-            @click="goContactPage(item, 'ContactPage')"
-          >
-            <el-image :src="item.icon" />
-            <div class="contont-box">
-              <span>{{ item.name }}</span>
-              <div class="contont-border-bottom"></div>
-            </div>
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="联络人" name="address">
+        <div
+          class="address-box"
+          v-for="(item, index) in contactList"
+          :key="index"
+          @click="device === 'moblie' ? goContactPage(item, 'ContactPage') : false"
+        >
+          <el-image :src="item.icon" />
+          <div class="contont-box">
+            <span>{{ item.name }}</span>
+            <div class="contont-border-bottom"></div>
           </div>
-        </el-tab-pane>
-        <el-tab-pane label="群组" name="group">
-          <div
-            class="address-box"
-            v-for="(item, index) in groupList"
-            :key="index"
-            @click="goContactPage(item, 'GroupPage')"
-          >
-            <el-image :src="item.icon" />
-            <div class="contont-box">
-              <span>{{ item.groupName }}</span>
-              <div class="contont-border-bottom"></div>
-            </div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="群组" name="group">
+        <div
+          class="address-box"
+          v-for="(item, index) in groupList"
+          :key="index"
+          @click="device === 'moblie' ? goContactPage(item, 'GroupPage') : false"
+        >
+          <el-image :src="item.icon" />
+          <div class="contont-box">
+            <span>{{ item.groupName }}</span>
+            <div class="contont-border-bottom"></div>
           </div>
-        </el-tab-pane>
-      </el-tabs>
-    </template>
-    <template v-else>
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="联络人" name="address">
-          <div
-            class="address-box"
-            v-for="(item, index) in contactList"
-            :key="index"
-          >
-            <el-image :src="item.icon" />
-            <div class="contont-box">
-              <span>{{ item.name }}</span>
-              <div class="contont-border-bottom"></div>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="群组" name="group">
-          <div
-            class="address-box"
-            v-for="(item, index) in groupList"
-            :key="index"
-          >
-            <el-image :src="item.icon" />
-            <div class="contont-box">
-              <span>{{ item.groupName }}</span>
-              <div class="contont-border-bottom"></div>
-            </div>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-    </template>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -97,7 +65,6 @@ export default {
       });
       getGroupList().then((res) => {
         this.groupList = res.data.list;
-        console.log(this.groupList)
         this.groupList.forEach((el) => {
           if (el.icon === "")
             el.icon = require("./../../../../static/images/image_group_defult.png");
