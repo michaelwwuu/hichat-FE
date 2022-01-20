@@ -29,6 +29,7 @@ export default {
       this.device = "pc";
     }
     localStorage.setItem("device", this.device)
+    
     document.body.addEventListener('touchmove', (e) => {
       if (e._isScroller) return;
       e.preventDefault()
@@ -60,7 +61,7 @@ html,body {
   height: 100vh;
   min-height: -webkit-fill-available; 
   overflow: hidden;
-  // background-color: #eaf5fa;
+  background-color: #eaf5fa;
 }
 #app {
   max-width: 100vw;

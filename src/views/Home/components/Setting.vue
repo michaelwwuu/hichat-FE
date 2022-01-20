@@ -16,34 +16,60 @@
         >
       </div>
     </div>
-    <div
-      class="setting-button"
-      v-for="(item, index) in settingData"
-      :key="index"
-      :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
-      @click="developmentMessage(item.name)"
-    >
-      <router-link :to="item.path">
-        <div class="setting-button-left">
-          <img :src="item.icon" alt="" />
-          <span>{{ item.name }}</span>
-        </div>
-        <div class="setting-button-right">
-          <span v-if="item.name === '提醒'">开启</span>
-          <span v-if="item.name === '语言'">简体中文</span>
-          <img src="./../../../../static/images/next.png" alt="" />
-        </div>
-      </router-link>
-    </div>
+    <template v-if="device === 'moblie'">
+      <div
+        class="setting-button"
+        v-for="(item, index) in settingData"
+        :key="index"
+        :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
+        @click="developmentMessage(item.name)"
+      >
+        <router-link :to="item.path">
+          <div class="setting-button-left">
+            <img :src="item.icon" alt="" />
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="setting-button-right">
+            <span v-if="item.name === '提醒'">开启</span>
+            <span v-if="item.name === '语言'">简体中文</span>
+            <img src="./../../../../static/images/next.png" alt="" />
+          </div>
+        </router-link>
+      </div>
 
-    <div class="setting-button" @click="logoutDialogShow = true">
-      <a>
-        <div class="setting-button-left">
-          <img src="./../../../../static/images/logout.png" alt="" />
-          <span class="red-text">登出</span>
-        </div>
-      </a>
-    </div>
+      <div class="setting-button" @click="logoutDialogShow = true">
+        <a>
+          <div class="setting-button-left">
+            <img src="./../../../../static/images/logout.png" alt="" />
+            <span class="red-text">登出</span>
+          </div>
+        </a>
+      </div>
+    </template>
+    <template>
+      <div
+        class="setting-button"
+        v-for="(item, index) in settingData"
+        :key="index"
+        :class="[
+          { no_bor_mb10: item.name === '封锁名单'},
+          { bor_mt10: item.name === '提醒'},
+          { hidden: item.name === '关于HiChat'}
+          ]
+        "
+        @click="developmentMessage(item.name)"
+      >
+        <router-link :to="item.path">
+          <div class="setting-button-left">
+            <img :src="item.pcIcon" alt="" />
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="setting-button-right">
+            <img src="./../../../../static/images/next.png" alt="" />
+          </div>
+        </router-link>
+      </div>
+    </template>
     <el-dialog
       :visible.sync="logoutDialogShow"
       class="el-dialog-loginOut"
@@ -79,26 +105,31 @@ export default {
         {
           name: "密码管理",
           icon: require("./../../../../static/images/safe.png"),
+          pcIcon: require("./../../../../static/images/pc/shield.png"),
           path: "/PasswordMange",
         },
         {
           name: "封锁名单",
           icon: require("./../../../../static/images/blockade_green.png"),
+          pcIcon: require("./../../../../static/images/pc/slash.png"),
           path: "/BlockMange",
         },
         {
           name: "提醒",
           icon: require("./../../../../static/images/notification.png"),
+          pcIcon: require("./../../../../static/images/pc/bell.png"),
           path: "",
         },
         {
           name: "相片和影片",
           icon: require("./../../../../static/images/image_icon.png"),
+          pcIcon: require("./../../../../static/images/pc/image.png"),
           path: "",
         },
         {
           name: "语言",
           icon: require("./../../../../static/images/lang_icon.png"),
+          pcIcon: require("./../../../../static/images/pc/globe.png"),
           path: "",
         },
         {
@@ -107,13 +138,24 @@ export default {
           path: "/About",
         },
       ],
+
       notification: true,
       logoutDialogShow: false,
       developmentMessage: developmentMessage,
+      device: localStorage.getItem("device"),
     };
   },
   created() {
     this.getUserData();
+    if(this.device === 'pc'){
+      this.editMyList = {
+        icon:"",
+        name: "編輯個人資料",
+        path: "/EditUser",
+        pcIcon: require("./../../../../static/images/pc/edit.png"),
+      }
+      this.settingData.unshift(this.editMyList)
+    }
   },
   methods: {
     copyPaste(data) {
@@ -237,6 +279,19 @@ export default {
   }
   .mt10 {
     margin-top: 1em;
+  }
+  .hidden{
+    display: none;  
+  }
+  .bor_mt10{
+    padding: 1em 0 0.5em 0.5em;
+    border-top:3px solid #b3b3b377;
+  }
+  .no_bor_mb10{
+    padding: 0.5em 0 1em 0.5em;
+    &::after{
+      border-bottom: 0;
+    }  
   }
 }
 .el-dialog-loginOut {

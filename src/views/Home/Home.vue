@@ -2,54 +2,80 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header
-          :style="
-            num === 2
-              ? 'height:55px'
-              : device === 'pc'
-              ? 'height:70px'
-              : 'height:120px'
-          "
-        >
-          <div class="home-header" v-if="device === 'moblie'">
-            <div
-              class="home-user"
-              :class="{ 'QRcode-img': num === 0 || num === 2 }"
-              @click="
-                num === 0 || num === 2 ? (centerDialogVisible = true) : ''
-              "
-            ></div>
-            <span class="home-header-title">{{
-              num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
-            }}</span>
-            <template v-if="num === 0">
-              <router-link :to="'/AddUser'">
-                <div class="home-add-user address-img"></div>
-              </router-link>
-            </template>
-            <template v-else-if="num === 1">
-              <router-link :to="'/AddGroup'">
-                <div class="home-add-user hichat-img"></div>
-              </router-link>
-            </template>
-            <template v-else>
-              <router-link :to="'/EditUser'"
-                ><div class="home-add-user setting-img"></div
-              ></router-link>
-            </template>
-          </div>
-          <div class="home-search" v-if="num !== 2">
-            <el-input
-              placeholder="搜索"
-              prefix-icon="el-icon-search"
-              v-model="searchKey"
-            >
-            </el-input>
-            <router-link :to="'/AddUser'">
-              <img src="./../../../static/images/pc/user-plus.png" alt="" v-if="device !== 'moblie'">
-            </router-link>
-          </div>
-        </el-header>
+        <template v-if="device === 'moblie'">
+          <el-header
+            :style="
+              num === 2 ? 'height:55px' : 'height:120px'
+            "
+          >    
+            <div class="home-header" >
+              <div
+                class="home-user"
+                :class="{ 'QRcode-img': num === 0 || num === 2 }"
+                @click="
+                  num === 0 || num === 2 ? (centerDialogVisible = true) : ''
+                "
+              ></div>
+              <span class="home-header-title">{{
+                num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
+              }}</span>
+              <template v-if="num === 0">
+                <router-link :to="'/AddUser'">
+                  <div class="home-add-user address-img"></div>
+                </router-link>
+              </template>
+              <template v-else-if="num === 1">
+                <router-link :to="'/AddGroup'">
+                  <div class="home-add-user hichat-img"></div>
+                </router-link>
+              </template>
+              <template v-else>
+                <router-link :to="'/EditUser'"
+                  ><div class="home-add-user setting-img"></div
+                ></router-link>
+              </template>
+            </div>     
+          </el-header>    
+        </template>
+        <template v-else>
+          <el-header  style="height: 70px;" >
+            <div class="home-header" v-if="num === 2">
+              <span class="home-header-title">设定</span>
+              <el-dropdown trigger="click">
+                <span class="el-dropdown-link">
+                  <img src="./../../../static/images/pc/more.png" alt="">
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <div class="logout-btn" @click="logoutDialogShow = true">
+                      <img src="./../../../static/images/pc/logout.png" alt="" />
+                      <span>登出</span>
+                    </div>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <div class="home-search" v-else>
+              <el-input
+                placeholder="搜索"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+              >
+              </el-input>
+              <template v-if="num === 0">
+                <router-link :to="'/AddUser'">
+                  <img src="./../../../static/images/pc/user-plus.png" alt="">
+                </router-link>
+              </template>
+              <template v-else-if="num === 1">
+                <router-link :to="'/AddGroup'">
+                  <img src="./../../../static/images/pc/message-plus.png" alt="">
+                </router-link>
+              </template>
+            </div>
+          </el-header>
+        </template>
+
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
@@ -111,6 +137,25 @@
         />
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="logoutDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+      append-to-body
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <span>确认要登出嗎？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="logoutDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="loginOut">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -154,6 +199,7 @@ export default {
       searchKey: "",
       downloadFilename: "",
       centerDialogVisible: false,
+      logoutDialogShow:false,
       device: localStorage.getItem("device"),
     };
   },
@@ -231,6 +277,11 @@ export default {
       // 最后，如果执行到这里，说明用户已经拒绝对相关通知进行授权
       // 出于尊重，我们不应该再打扰他们了
     },
+    loginOut() {
+      this.$router.push({ path: "/login" });
+      localStorage.removeItem("token");
+      window.location.reload();
+    },
   },
   components: {
     VueQr,
@@ -264,5 +315,24 @@ export default {
       }
     }
   }
+}
+.el-dropdown-menu{
+  .el-dropdown-menu__item{
+    .logout-btn{
+      display:flex;
+      align-items:center;
+      width: 12em;
+      img{
+        height: 1.9em;
+      }
+      span{
+        margin-left: 0.3em;
+        font-size: 19px;
+        color: #333333;
+        font-weight: 600;
+        margin-top: 4px;
+      }
+    }
+  } 
 }
 </style>
