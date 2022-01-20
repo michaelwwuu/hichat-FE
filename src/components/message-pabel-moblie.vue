@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { gotoBottom } from "@/assets/tools";
+// import { gotoBottom } from "@/assets/tools";
 export default {
   name: "MessagePabel",
   props: {
@@ -71,7 +71,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      gotoBottom: gotoBottom,
+      // gotoBottom: gotoBottom,
     };
   },
   watch: {
@@ -81,7 +81,7 @@ export default {
       this.message = val.filter((item) =>
         !set.has(item.historyId) ? set.add(item.historyId) : false
       );
-      this.gotoBottom();
+      this.$root.gotoBottom();
     },
     message(val) {
       this.newMessageData = {};

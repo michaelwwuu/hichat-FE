@@ -1,5 +1,5 @@
 <template>
-  <div class="home-content">
+  <div class="home-content" @touchmove="$root.handleTouch">
     <el-tabs v-model="activeName">
       <el-tab-pane label="联络人" name="address">
         <div

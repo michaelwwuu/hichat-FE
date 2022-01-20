@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { gotoBottom } from "@/assets/tools";
+// import { gotoBottom } from "@/assets/tools";
 import { groupListMember } from "@/api";
 
 export default {
@@ -81,7 +81,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      gotoBottom: gotoBottom,
+      // gotoBottom: gotoBottom,
       contactList:[],
     };
   },
@@ -94,7 +94,7 @@ export default {
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>!set.has(item.historyId) ? set.add(item.historyId) : false);
-      this.gotoBottom();
+      this.$root.gotoBottom();
     },
     message(val) {
       this.newMessageData = {};

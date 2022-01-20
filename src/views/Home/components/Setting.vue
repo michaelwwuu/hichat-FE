@@ -1,5 +1,5 @@
 <template>
-  <div class="home-content">
+  <div class="home-content" @touchmove="$root.handleTouch">
     <div class="user-data">
       <el-image
         v-if="userData.icon !== undefined"
@@ -46,7 +46,7 @@
         </a>
       </div>
     </template>
-    <template>
+    <template v-else>
       <div
         class="setting-button"
         v-for="(item, index) in settingData"

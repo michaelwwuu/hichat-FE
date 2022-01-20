@@ -35,6 +35,14 @@
                 ></router-link>
               </template>
             </div>     
+            <div class="home-search" v-if="num !==2">
+              <el-input
+                placeholder="搜索"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+              >
+              </el-input>  
+            </div>  
           </el-header>    
         </template>
         <template v-else>
