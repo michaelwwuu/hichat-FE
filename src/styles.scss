@@ -508,20 +508,34 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         top:3.4em;
       }
     }
+    .home-content{
+      .setting-button{
+        img{
+          height: 1.5em;
+        }
+      }
+      .setting-button-left{
+        span{
+          font-size: 16px;
+        }
+      }
+      .user-data{
+        margin: 1.5em auto 2em auto;
+        .el-image{
+          width: 7.5em;
+          height: 7.5em;
+        }
+        .user-data-id{
+          margin: 1em 0 !important;
+        }
+        span{
+          height: auto !important;
+          margin: 1em 0 !important;
+        }
+      }
+    }
   }
-  .user-data{
-    .el-image{
-      width: 7.5em;
-      height: 7.5em;
-    }
-    .user-data-id{
-      margin: 1em 0 !important;
-    }
-    span{
-      height: auto !important;
-      margin: 1em 0 !important;
-    }
-  }
+
   .address-box{
     .el-image{
       width: 3.5em;
