@@ -149,6 +149,9 @@ export default {
       successDialogShow: false,
     };
   },
+  watch:{
+
+  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     Socket.$on("message", this.handleGetMessage);

@@ -219,9 +219,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .el-main {
         border-radius: 0px 6px 6px 6px;
       }
-      .el-aside {
-        background: rgba(235, 233, 232, 0.8);
-      }
+      // .el-aside {
+      //   background: rgba(235, 233, 232, 0.8);
+      // }
       .el-main {
         padding: 0;
       }
@@ -440,7 +440,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
 }
 .hichat-pc{
-  max-width:20vw !important;
+  // max-width:20vw !important;
   .home-wrapper{
     .home-header{
       margin: 1.3em 1em;
@@ -470,7 +470,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-container{
       position: relative;
       height:100vh;
-      background-color: #FFFFFF;
       .el-header{
         border-bottom: 1px solid #e1e1e1b0;
         img{
@@ -478,13 +477,20 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           height: 2em;
         }
       }
+      .el-aside{
+        background-color: #FFFFFF;
+        box-shadow:none;
+      }
+      .el-main{
+        box-shadow:none;
+      }
     }
     .el-tabs{
       width: 100%;
       .el-tabs__header{
-        width:100%;
+        width:25%;
         position: absolute;
-        background-color: #FFFFFF;
+        background-color:#FFFFFF;
         border-bottom: 0.01em solid #e3e3e3;
         .el-tabs__nav-wrap{
           .el-tabs__nav{
@@ -522,8 +528,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .user-data{
         margin: 1.5em auto 2em auto;
         .el-image{
-          width: 7.5em;
-          height: 7.5em;
+          width: 6em;
+          height: 6em;
         }
         .user-data-id{
           margin: 1em 0 !important;
@@ -532,6 +538,13 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           height: auto !important;
           margin: 1em 0 !important;
         }
+      }
+    }
+    .wrapper{
+      .el-container{
+        position: relative;
+        height: 100vh;
+        width: 100%;
       }
     }
   }

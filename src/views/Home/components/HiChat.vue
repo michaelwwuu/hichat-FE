@@ -242,7 +242,7 @@ export default {
         })
         localStorage.setItem("groupData", JSON.stringify(data))
       }
-      this.$router.push({ name: path });
+      if(localStorage.getItem('device') ==='moblie') this.$router.push({ name: path });
     },
   },
 };
