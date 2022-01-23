@@ -129,15 +129,15 @@ const routes = [
     meta: { keepAlive: false },
   },
   {
-    path: "/PasswordEdit",
-    name: "PasswordEdit",
-    component: () => import(/* webpackChunkName: "PasswordMange" */ '@/views/PasswordMange/PasswordEdit.vue'),
+    path: "/passwordEdit",
+    name: "passwordEdit",
+    component: () => import(/* webpackChunkName: "passwordMange" */ '@/views/passwordMange/passwordEdit.vue'),
     meta: { keepAlive: false },
   },
   {
-    path: "/PasswordMange",
-    name: "PasswordMange",
-    component: () => import(/* webpackChunkName: "PasswordMange" */ '@/views/PasswordMange/PasswordMange.vue'),
+    path: "/passwordMange",
+    name: "passwordMange",
+    component: () => import(/* webpackChunkName: "passwordMange" */ '@/views/passwordMange/passwordMange.vue'),
     meta: { keepAlive: false },
   },
   {

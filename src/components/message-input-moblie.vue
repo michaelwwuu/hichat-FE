@@ -1,72 +1,126 @@
 <template>
-  <div class="message-input-box">
-    <div class="input-tools-right">
-      <div>
-        <!-- <img src="./../../static/images/plus.png" alt=""> -->
-        <img
-          src="./../../static/images/image.png"
-          alt=""
-          @click="uploadImgShow = true"
-        />
-        <!-- <img src="./../../static/images/camera.png" alt=""> -->
+  <div class="message-input-box" :style="device !== 'moblie' ? 'height:59px':''">
+    <template v-if="device === 'moblie'">
+      <div class="input-tools-right">
+        <div>
+          <!-- <img src="./../../static/images/plus.png" alt=""> -->
+          <img
+            src="./../../static/images/image.png"
+            alt=""
+            @click="uploadImgShow = true"
+          />
+          <!-- <img src="./../../static/images/camera.png" alt=""> -->
+        </div>
       </div>
-    </div>
-    <div class="text-send-box">
-      <el-input
-        type="textarea"
-        resize="none"
-        :autosize="{ minRows: 1, maxRows: 1 }"
-        placeholder="Aa"
-        v-model="textArea"
-      >
-      </el-input>
-      <div class="footer-tools">
-        <emoji-picker @emoji="insert" :search="search">
-          <div
-            slot="emoji-invoker"
-            slot-scope="{ events: { click: clickEvent } }"
-            @click.stop="clickEvent"
-          >
-            <div class="face-other-btn">
-              <img src="./../../static/images/emoji.png" alt="" />
+      <div class="text-send-box">
+        <el-input
+          type="textarea"
+          resize="none"
+          :autosize="{ minRows: 1, maxRows: 1 }"
+          placeholder="Aa"
+          v-model="textArea"
+
+        >
+        </el-input>
+        <div class="footer-tools">
+          <emoji-picker @emoji="insert" :search="search">
+            <div
+              slot="emoji-invoker"
+              slot-scope="{ events: { click: clickEvent } }"
+              @click.stop="clickEvent"
+            >
+              <div class="face-other-btn">
+                <img src="./../../static/images/emoji.png" alt="" />
+              </div>
             </div>
-          </div>
-          <div
-            slot="emoji-picker"
-            slot-scope="{ emojis, insert }"
-            class="face-icon"
-          >
-            <div class="face-icon-box">
-              <div>
-                <div
-                  v-for="(emojiGroup, category) in emojis"
-                  :key="category"
-                  class="face-box"
-                >
-                  <h5>{{ emojiChine(category) }}</h5>
-                  <div>
-                    <span
-                      v-for="(emoji, emojiName) in emojiGroup"
-                      :key="emojiName"
-                      @click="insert(emoji)"
-                      >{{ emoji }}</span
-                    >
+            <div
+              slot="emoji-picker"
+              slot-scope="{ emojis, insert }"
+              class="face-icon"
+            >
+              <div class="face-icon-box">
+                <div>
+                  <div
+                    v-for="(emojiGroup, category) in emojis"
+                    :key="category"
+                    class="face-box"
+                  >
+                    <h5>{{ emojiChine(category) }}</h5>
+                    <div>
+                      <span
+                        v-for="(emoji, emojiName) in emojiGroup"
+                        :key="emojiName"
+                        @click="insert(emoji)"
+                        >{{ emoji }}</span
+                      >
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </emoji-picker>
+          </emoji-picker>
+        </div>
       </div>
-    </div>
-    <div class="input-tools-left">
-      <div v-if="textArea === ''" @click="sendAduio">
-        <img src="./../../static/images/audio.png" alt="" />
+      <div class="input-tools-left">
+        <div v-if="textArea === ''" @click="sendAduio">
+          <img src="./../../static/images/audio.png" alt="" />
+        </div>
+        <div v-else @click="sendMessage">
+          <img src="./../../static/images/send.png" alt="" />
+        </div>
       </div>
-      <div v-else @click="sendMessage">
-        <img src="./../../static/images/send.png" alt="" />
+    </template>
+    <template v-else>
+      <div class="text-send-box">
+        <el-input
+          type="textarea"
+          resize="none"
+          :autosize="{ minRows: 1, maxRows: 1 }"
+          placeholder="Aa"
+          v-model="textArea"
+          @keyup.native="keyUp" 
+        >
+        </el-input>
+        <div class="footer-tools">
+          <emoji-picker @emoji="insert" :search="search">
+            <div
+              slot="emoji-invoker"
+              slot-scope="{ events: { click: clickEvent } }"
+              @click.stop="clickEvent"
+            >
+              <div class="face-other-btn">
+                <img src="./../../static/images/emoji.png" alt="" />
+              </div>
+            </div>
+            <div
+              slot="emoji-picker"
+              slot-scope="{ emojis, insert }"
+              class="face-icon"
+            >
+              <div class="face-icon-box">
+                <div>
+                  <div
+                    v-for="(emojiGroup, category) in emojis"
+                    :key="category"
+                    class="face-box"
+                  >
+                    <h5>{{ emojiChine(category) }}</h5>
+                    <div>
+                      <span
+                        v-for="(emoji, emojiName) in emojiGroup"
+                        :key="emojiName"
+                        @click="insert(emoji)"
+                        >{{ emoji }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </emoji-picker>
+        </div>
       </div>
-    </div>
+    </template>
 
     <el-dialog
       title="上传图片"
@@ -136,12 +190,12 @@ export default {
   name: "MessageInput",
   data() {
     return {
-      textArea: "",
       search: "",
+      textArea: "",
       sendAduioShow: false,
       uploadImgShow: false,
       fileList: [],
-
+      device: localStorage.getItem("device"),
       //錄音
       isVoice: false,
       isFinished: false,
@@ -370,7 +424,11 @@ export default {
       }
       return true;
     },
-
+    keyUp (event) {
+      if (event.key === 'Enter') {
+        this.sendMessage()
+      }
+    },
     // 发送消息
     sendMessage() {
       let message = { 

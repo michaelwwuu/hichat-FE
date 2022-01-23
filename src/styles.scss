@@ -480,6 +480,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .el-aside{
         background-color: #FFFFFF;
         box-shadow:none;
+        border-right: 1px solid #e1e1e1b0;
       }
       .el-main{
         box-shadow:none;
@@ -488,10 +489,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-tabs{
       width: 100%;
       .el-tabs__header{
-        width:25%;
+        width:24%;
         position: absolute;
         background-color:#FFFFFF;
-        border-bottom: 0.01em solid #e3e3e3;
         .el-tabs__nav-wrap{
           .el-tabs__nav{
             width:100%;
@@ -510,6 +510,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         }
       }
       .el-tabs__content{
+        border-top: 0.01em solid #e3e3e3;
         overflow:hidden;
         top:3.4em;
       }
@@ -528,7 +529,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .user-data{
         margin: 1.5em auto 2em auto;
         .el-image{
-          width: 6em;
+          width: auto;
           height: 6em;
         }
         .user-data-id{
@@ -545,6 +546,24 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         position: relative;
         height: 100vh;
         width: 100%;
+      }
+    }
+    .message-input-box{
+      .text-send-box{
+        .footer-tools{
+          .face-other-btn{
+            cursor: pointer;
+          }
+          .face-icon{
+            bottom:60px;
+            .face-box{
+              font-size: 1em;
+              span{
+                font-size: 1em;
+              }
+            }
+          }
+        }
       }
     }
   }

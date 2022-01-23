@@ -124,7 +124,9 @@
 
       </el-aside>
       <el-main>
-        <chat-msg/>
+        <template v-if="num === 1">
+          <chat/>
+        </template>
       </el-main>
     </el-container>
     <el-dialog
@@ -193,8 +195,7 @@
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
-import ChatMsg from "./../Chat/ChatMsg.vue";
-import ChatGroupMsg from "./../Chat/ChatGroupMsg.vue";
+import Chat from "./../Chat/Chat.vue";
 
 
 export default {
@@ -319,8 +320,7 @@ export default {
   },
   components: {
     VueQr,
-    ChatMsg,
-    ChatGroupMsg,
+    Chat,
   },
 };
 </script>

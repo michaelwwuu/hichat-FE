@@ -1,6 +1,6 @@
 <template>
   <div class="home-content" @touchmove="$root.handleTouch">
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="联络人" name="address">
         <div
           v-for="(item, index) in hiChatDataList"
@@ -185,7 +185,11 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setChatUser: "ws/setChatUser",
     }),
+    handleClick(tab, event) {
+      console.log(tab.name);
+    },
     getHiChatDataList() {
       let chatMsgKey = {
         chatType: "CLI_RECENT_CHAT",
@@ -230,6 +234,7 @@ export default {
     goChatRoom(data,path) {
       if(path === 'ChatMsg'){
         localStorage.setItem("userData", JSON.stringify(data));
+        this.setChatUser(data);
       } else {
         data.icon = data.icon
         data.groupName = data.name
@@ -242,7 +247,21 @@ export default {
         })
         localStorage.setItem("groupData", JSON.stringify(data))
       }
-      if(localStorage.getItem('device') ==='moblie') this.$router.push({ name: path });
+      if(localStorage.getItem('device') ==='moblie') {
+        this.$router.push({ name: path });
+      }else{
+        let getHistoryMessage = {
+          chatType: "CLI_HISTORY_REQ",
+          toChatId: data.toChatId,
+          id: Math.random(),
+          tokenType: 0,
+          targetId: "",
+          pageSize: 1000,
+          deviceId: localStorage.getItem("UUID"),
+          token: localStorage.getItem("token"),
+        }
+        Socket.send(getHistoryMessage);
+      }
     },
   },
 };
@@ -250,6 +269,10 @@ export default {
 
 <style lang="scss" scoped>
 .address-box {
+  cursor: pointer;
+  &:hover{
+    background-color: #ebeaea81;
+  }
   .contont-box{
     padding-left: 1em;
     height:48px;
