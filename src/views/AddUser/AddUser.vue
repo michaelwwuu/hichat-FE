@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <el-container>
+    <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header height="125px">
           <div class="home-header">
@@ -44,6 +44,47 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="25%">
+        <el-header height="70px">
+          <div class="home-header flex-start" >
+            <router-link :to="'/Home'">
+              <div class="home-user-pc"></div>
+            </router-link>
+            <span class="home-header-title">新增联络人</span>
+          </div>
+        </el-header>
+        <div class="home-search">
+          <el-input
+            placeholder="输入欲搜寻的邮箱或帐号ID"
+            prefix-icon="el-icon-search"
+            v-model="searchKey"
+            @keyup.native.enter="searchUserData(searchKey)"
+          >
+          </el-input>
+        </div>
+        <div class="no-data" v-show="noData">
+          <span>此用户不存在</span>
+          <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
+        </div>
+
+        <div v-if="addUser.username !== undefined" class="home-content">
+          <div class="group-data">
+            <span>
+              <el-image
+                :src="addUser.icon === undefined ? avatarImg : addUser.icon"
+                :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
+              />
+            </span>            
+            <span>{{ addUser.username }}</span>
+          </div>
+          
+        </div>
+        <div v-if="addUser.username !== undefined" class="home-footer-btn">
+          <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
+        </div>
+      </el-aside>
+    </el-container>    
     <el-dialog
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
@@ -74,6 +115,7 @@ export default {
       avatarImg: require("./../../../static/images/image_user_defult.png"),
       noData: false,
       successDialogShow:false,
+      device: localStorage.getItem("device"),
     };
   },
   created() {
@@ -144,6 +186,10 @@ export default {
     .home-add-user {
       background-color: #fff;
       background-image: url("./../../../static/images/scan.png");
+    }
+    .home-user-pc {
+      background-color: #fff;
+      background-image: url("./../../../static/images/pc/arrow-left.png");
     }
   }
   .home-search {

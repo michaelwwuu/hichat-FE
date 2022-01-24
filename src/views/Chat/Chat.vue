@@ -14,7 +14,7 @@
             <div class="home-user-more"></div>
           </div>
         </el-header>
-        <div class="contact-box" v-if="!userData.isContact">
+        <!-- <div class="contact-box" v-if="!userData.isContact">
           <ul>
             <li @click="isBlockDialogShow = true">
               {{ userData.isBlock ? "解除封锁" : "封锁" }}
@@ -22,7 +22,7 @@
             <li @click="deleteRecent(userData)">删除</li>
             <li @click="addUser(userData)">加入联络人</li>
           </ul>
-        </div>
+        </div> -->
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -128,14 +128,12 @@ export default {
       deleteDialogShow:false,
       isBlockDialogShow: false,
       successDialogShow: false,
+      device: localStorage.getItem("device"),
     };
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     Socket.$on("message", this.handleGetMessage);
-  },
-  beforeDestroy() {
-    Socket.$off("message", this.handleGetMessage);
   },
   mounted() {
     this.getChatHistoryMessage();
@@ -147,6 +145,9 @@ export default {
     }),
   },
   methods: {
+    ...mapMutations({
+      setWsRes: "ws/setWsRes",
+    }),
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -158,9 +159,6 @@ export default {
         return iconData.icon;
       }
     },
-    ...mapMutations({
-      setWsRes: "ws/setWsRes",
-    }),
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -221,11 +219,11 @@ export default {
             if (
               el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
               !el.isRead
-            )
-            this.readMsgData.push(el.chat.historyId);
+            ){
+              this.readMsgData.push(el.chat.historyId);
+            }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
-            // console.log(this.messageData)
           });
           this.readMsgShow();
           break;

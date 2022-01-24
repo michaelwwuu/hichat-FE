@@ -2,37 +2,44 @@
   <div class="wrapper">
     <el-container>
       <el-main>
-        <el-header height="55px">
-          <div class="home-header">
-            <span
-              class="home-user-link"
-              :style="!userData.isContact ? 'position:none;' : ''"
-            >
-              <router-link :to="'/HiChat'">
-                <div class="home-user"></div>
-              </router-link>
-            </span>
-            <span class="home-header-title">{{ userData.name }}</span>
-            <div v-if="userData.isContact" class="home-user-search"></div>
-            <span class="home-photo-link">
-              <router-link :to="'/ContactPage'" v-if="userData.isContact">
-                <div class="home-user-photo">
-                  <img
-                    :src="
-                      userData.icon === undefined ||
-                      userData.icon === null ||
-                      userData.icon === ''
-                        ? require('./../../../static/images/image_user_defult.png')
-                        : userData.icon
-                    "
-                  />
+        <el-header :height="device === 'moblie' ?'55px':'70px'" :class="{'PC-header':device === 'pc'}">
+          <template v-if="device === 'moblie'">
+            <div class="home-header">
+              <span
+                class="home-user-link"
+                :style="!userData.isContact ? 'position:none;' : ''"
+              >
+                <router-link :to="'/HiChat'">
+                  <div class="home-user"></div>
+                </router-link>
+              </span>
+              <span class="home-header-title">{{ userData.name }}</span>
+              <div v-if="userData.isContact" class="home-user-search"></div>
+              <span class="home-photo-link">
+                <router-link :to="'/ContactPage'" v-if="userData.isContact">
+                  <div class="home-user-photo">
+                    <img :src="noIconShow(userData)" />
+                  </div>
+                </router-link>
+                <div class="home-user-photo" v-else>
+                  <img :src="noIconShow(userData)" />
                 </div>
-              </router-link>
-              <div class="home-user-photo" v-else>
-                <img :src="noIconShow(userData)" />
-              </div>
-            </span>
-          </div>
+              </span>
+            </div>
+          </template>
+    
+          <template v-else>
+            <div class="home-header-pc">
+              <span class="home-photo-link">
+                <div class="home-user-photo">
+                  <img :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)" />  
+                </div>
+                <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
+              </span>
+              <div v-if="userData.isContact" class="home-user-search"></div>
+              <div class="home-user-more"></div>
+            </div>
+          </template>
         </el-header>
         <div class="contact-box" v-if="!userData.isContact">
           <ul>
@@ -147,10 +154,8 @@ export default {
       deleteDialogShow:false,
       isBlockDialogShow: false,
       successDialogShow: false,
+      device: localStorage.getItem("device"),
     };
-  },
-  watch:{
-
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -165,6 +170,7 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
+      chatUser: (state) => state.ws.chatUser,
     }),
   },
   methods: {
@@ -235,13 +241,15 @@ export default {
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
+          this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (
               el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
               !el.isRead
-            )
-            this.readMsgData.push(el.chat.historyId);
+            ){
+              this.readMsgData.push(el.chat.historyId);
+            }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
@@ -447,6 +455,101 @@ export default {
               height: 2em;
               border-radius: 6px;
             }
+          }
+        }
+      }
+      img {
+        position: relative;
+        top: 7px;
+      }
+      .online-img {
+        position: relative;
+        top: 9px;
+      }
+      .title,
+      .icon-message {
+        color: #ffffff;
+      }
+      .icon-message {
+        font-size: 20px;
+        vertical-align: middle;
+      }
+      .title {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+    }
+    .PC-header {
+      position: relative;
+      padding: 0;
+      background-color: #FFFFFF;
+      display: flex;
+      .home-header-pc {
+        margin: 1em;
+        display: flex;
+        align-items: center;
+        .home-user-link {
+          position: absolute;
+          .home-user {
+            width: 2em;
+            height: 2em;
+            border-radius: 10px;
+            background-color: #fff;
+            background-image: url("./../../../static/images/back.png");
+            background-size: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+        }
+        .home-header-title {
+          margin: 0 auto;
+          color: #10686e;
+          font-weight: 600;
+        }
+        .home-user-photo,
+        .home-user-search,
+        .home-user-more {
+          width: 2em;
+          height: 2em;
+          border-radius: 10px;
+          background-size:70%;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        .home-user-search {
+          margin-right: 10px;
+          position: absolute;
+          right: 85px;
+          background-image: url("./../../../static/images/pc/search.png");
+          cursor: pointer;
+        }
+        .home-user-more {
+          margin-right: 10px;
+          position: absolute;
+          right: 30px;
+          background-image: url("./../../../static/images/pc/more.png");
+          cursor: pointer;
+        }
+        .home-photo-link {
+          position: absolute;
+          left: 14px;
+          display: flex;
+          align-items: center;
+          .home-user-photo {
+            text-align: center;
+            overflow: hidden;
+            img {
+              top: 0;
+              height: 2em;
+              border-radius: 6px;
+            }
+          }
+          span{
+            font-size: 15px;
+            padding-left: 10px;
+            font-weight: 600;
           }
         }
       }

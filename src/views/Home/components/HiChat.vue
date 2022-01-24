@@ -158,17 +158,28 @@ export default {
   data() {
     return {
       searchKey: "",
-      activeName: "address",
+      activeName:localStorage.getItem('hichatNav'),
       groupList:{},
       groupDataList: [],
       hiChatDataList: [],
       newMsgDataList: [],
       contactDataList: [],
       messageNum:false,
+      getHistoryMessage:{
+        chatType: '',
+        toChatId: '',
+        id: Math.random(),
+        tokenType: 0,
+        targetId: "",
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
     };
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
+    localStorage.setItem('hichatNav',this.activeName)
     this.getGroupDataList()
   },
   beforeDestroy() {
@@ -177,6 +188,7 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
+      hichatNav: (state) => state.ws.hichatNav,
     }),
   },
   mounted() {
@@ -186,9 +198,11 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setChatUser: "ws/setChatUser",
+      setHichatNav: "ws/setHichatNav",
     }),
     handleClick(tab, event) {
-      console.log(tab.name);
+      localStorage.setItem('hichatNav',tab.name)
+      this.setHichatNav(tab.name);
     },
     getHiChatDataList() {
       let chatMsgKey = {
@@ -209,7 +223,7 @@ export default {
         case "SRV_RECENT_CHAT":
           this.hiChatDataList = userInfo.recentChat.filter(
             (item) => item.isContact
-          );
+          );         
           this.groupDataList = userInfo.recentChat.filter(
             (item) => item.isGroup
           );
@@ -217,7 +231,7 @@ export default {
             (item) => !item.isContact && item.isContact !==null
           );
           this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
-           break;
+            break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
@@ -250,17 +264,10 @@ export default {
       if(localStorage.getItem('device') ==='moblie') {
         this.$router.push({ name: path });
       }else{
-        let getHistoryMessage = {
-          chatType: "CLI_HISTORY_REQ",
-          toChatId: data.toChatId,
-          id: Math.random(),
-          tokenType: 0,
-          targetId: "",
-          pageSize: 1000,
-          deviceId: localStorage.getItem("UUID"),
-          token: localStorage.getItem("token"),
-        }
-        Socket.send(getHistoryMessage);
+        this.getHistoryMessage.chatType = path === 'ChatMsg' ? 'CLI_HISTORY_REQ':'CLI_GROUP_HISTORY_REQ'
+        this.getHistoryMessage.toChatId = data.toChatId
+        this.getHistoryMessage.id = Math.random()
+        Socket.send(this.getHistoryMessage);
       }
     },
   },

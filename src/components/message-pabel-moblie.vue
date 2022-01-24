@@ -80,7 +80,6 @@ export default {
         !set.has(item.historyId) ? set.add(item.historyId) : false
       );
       this.$root.gotoBottom();
-      console.log(val)
     },
     message(val) {
       this.newMessageData = {};

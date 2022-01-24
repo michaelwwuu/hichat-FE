@@ -121,11 +121,11 @@
             </router-link>
           </div>
         </el-footer>
-
       </el-aside>
       <el-main>
         <template v-if="num === 1">
-          <chat/>
+          <chat-msg v-if="hichatNav === 'address'"/>
+          <chat-group-msg v-else/>
         </template>
       </el-main>
     </el-container>
@@ -195,8 +195,9 @@
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
-import Chat from "./../Chat/Chat.vue";
-
+import { mapState,mapMutations } from "vuex";
+import ChatMsg from './../Chat/ChatMsg.vue';
+import ChatGroupMsg from './../Chat/ChatGroupMsg.vue';
 
 export default {
   name: "Home",
@@ -245,9 +246,21 @@ export default {
         : this.$route.fullPath === "/HiChat"
         ? 1
         : 2;
-    // Socket.$on("message", this.handleGetMessage);
+    if(this.device === 'pc') Socket.$on("message", this.handleGetMessage);
+  },
+  beforeDestroy() {
+    Socket.$off("message", this.handleGetMessage);
+  },
+  computed: {
+    ...mapState({
+      hichatNav: (state) => state.ws.hichatNav,
+    }),
   },
   methods: {
+    ...mapMutations({
+      setWsRes: "ws/setWsRes",
+      setChatUser: "ws/setChatUser",
+    }),
     changeImg(index) {
       this.num = index;
     },
@@ -266,6 +279,23 @@ export default {
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
       switch (msgInfo.chatType) {
+         //成功收到
+        case "SRV_RECENT_CHAT":
+          this.hiChatDataList = msgInfo.recentChat.filter(
+            (item) => item.isContact
+          );
+          if(JSON.parse(localStorage.getItem('userData')) !== undefined){
+            localStorage.setItem("userData", JSON.stringify(this.hiChatDataList[0]));
+            this.setChatUser(this.hiChatDataList[0]);
+          }
+          this.groupDataList = msgInfo.recentChat.filter(
+            (item) => item.isGroup
+          );
+          this.contactDataList = msgInfo.recentChat.filter(
+            (item) => !item.isContact && item.isContact !==null
+          );
+          this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
+            break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
@@ -320,7 +350,8 @@ export default {
   },
   components: {
     VueQr,
-    Chat,
+    ChatMsg,
+    ChatGroupMsg,
   },
 };
 </script>

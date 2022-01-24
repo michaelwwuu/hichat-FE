@@ -1,6 +1,7 @@
 export const state = {
   wsRes: {},
   chatUser:{},
+  hichatNav:'address',
 };
 export const actions = {};
 
@@ -9,8 +10,10 @@ export const mutations = {
     state.wsRes = payload;
   },
   setChatUser(state, payload) {
-    console.log(payload)
     state.chatUser = payload;
+  },
+  setHichatNav(state, payload) {
+    state.hichatNav = payload;
   },
 };
 export const getters = {};
