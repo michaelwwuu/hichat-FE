@@ -58,7 +58,7 @@ const routes = [
         name: "Setting",
         component: () => import("@/views/Home/components/Setting.vue"),
         meta: { keepAlive: false },
-      }
+      },
     ]
   },
   {

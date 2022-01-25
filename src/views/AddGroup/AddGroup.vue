@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <el-container>
+    <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header :height="groupEditShow?'125px':'60px'">
           <div class="home-header">
@@ -88,8 +88,98 @@
             >
           </div>
         </template>
-
       </el-main>
+    </el-container>
+    <el-container v-else>
+      <el-aside width="25%">
+        <el-header height="70px">
+          <div class="home-header flex-start" >
+            <router-link :to="'/Home'" v-if="groupEditShow">
+              <div class="home-user-pc"></div>
+            </router-link>
+            <div class="home-user-pc" v-else @click="groupEditShow = true"></div>
+            <span class="home-header-title">创建群组</span>
+          </div>
+        </el-header>
+        <div v-if="groupEditShow" style="border-bottom: 1px solid #e1e1e1b0;">
+          <div class="home-search" >
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+              @keyup.native.enter="developmentMessage(searchKey)"
+            >
+            </el-input>
+          </div>
+        </div>
+        <template v-if="groupEditShow">
+          <div class="home-content">
+            <el-checkbox-group v-model="checkList">
+              <el-checkbox
+                :label="item"
+                v-for="(item, index) in contactList"
+                :key="index"
+              >
+                <div class="address-box">
+                  <el-image :src="item.icon"/>
+                  <div class="msg-box">
+                    <span>{{ item.name }}</span>
+                  </div>
+                </div>
+              </el-checkbox>
+            </el-checkbox-group>
+          </div>
+          <div class="home-footer-btn">
+            <el-button
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="createGroup"
+              >邀请联络人</el-button
+            >
+          </div>
+        </template>
+        <template v-else>
+          <div class="add-content">
+            <div class="user-data">
+              <span><el-image :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
+              <span class="photo-edit" @click="uploadImgShow = true"
+                >变更群组照片</span
+              >
+            </div>
+            <div class="user-edit-form">
+              <el-form ref="form" :model="groupForm" label-width="100px">
+                <el-form-item label="群组名称">
+                  <el-input
+                    v-model="groupForm.name"
+                    placeholder="群组名称"
+                  ></el-input>
+                </el-form-item>
+              </el-form>
+            </div>
+          </div>
+          
+          <div class="home-content">
+            <label class="el-checkbox">
+              <span class="el-checkbox__label">
+                <div class="address-box" v-for="(item, index) in checkList" :key="index">
+                  <el-image :src="item.icon" />
+                  <div class="msg-box">
+                    <span>{{ item.name }}</span>
+                  </div>
+                </div>
+              </span>
+            </label>
+          </div>
+          <div class="home-footer-btn">
+            <el-button
+              :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
+              :disabled="disableEditSubmit"
+              @click="editSubmit"
+              >创建群组</el-button
+            >
+          </div>
+        </template>
+      </el-aside>
     </el-container>
     <el-dialog
       title="上傳群组照片"
@@ -139,6 +229,7 @@ export default {
       uploadImgShow: false,
       disableEditSubmit:true,
       developmentMessage: developmentMessage,
+      device: localStorage.getItem("device"),
     };
   },
   created() {
@@ -218,6 +309,11 @@ export default {
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
+    }
+    .home-user-pc {
+      background-color: #fff;
+      background-image: url("./../../../static/images/pc/arrow-left.png");
+      cursor: pointer;
     }
   }
   .home-content {
@@ -308,6 +404,64 @@ export default {
         .el-upload-list {
           .el-upload-list__item {
             margin-top: -72px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.hichat-pc{
+  .home-wrapper{
+    .home-search{
+      .el-input{
+        width: 95%;
+      }
+    }
+    .home-content{
+      .el-checkbox{
+        width: 100%;
+      }
+      .el-checkbox__label{
+        .address-box{
+          .msg-box {
+            span {
+              &::after {
+                content: "";
+                margin-top: 1em;
+              }
+            }
+          }
+        }
+      }
+    }
+    .el-container{
+      .el-aside{
+        .add-content{
+          .user-data{
+            .el-image{
+              width: 5em;
+              height: 5em;
+            }
+            span{
+              height: 5.5em;
+            }
+          }
+        }
+      }
+    }
+    .user-edit-form{
+      /deep/.el-form{
+        border-radius: 8px;
+        background-color: #eaeaea;
+        .el-form-item{
+          .el-form-item__label {
+            font-size: 17px;
+          }
+          .el-input{
+            .el-input__inner{
+              background-color: #eaeaea;
+            }
           }
         }
       }

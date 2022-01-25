@@ -128,6 +128,9 @@
           <chat-group-msg v-else/>
         </template>
       </el-main>
+      <el-aside width="25%">
+        <msg-info-page/>
+      </el-aside>
     </el-container>
     <el-dialog
       title="我的帐号"
@@ -198,6 +201,7 @@ import Socket from "@/utils/socket";
 import { mapState,mapMutations } from "vuex";
 import ChatMsg from './../Chat/ChatMsg.vue';
 import ChatGroupMsg from './../Chat/ChatGroupMsg.vue';
+import MsgInfoPage from './../ContactPage/MsgInfoPage.vue';
 
 export default {
   name: "Home",
@@ -352,6 +356,7 @@ export default {
     VueQr,
     ChatMsg,
     ChatGroupMsg,
+    MsgInfoPage,
   },
 };
 </script>

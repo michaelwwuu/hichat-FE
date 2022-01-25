@@ -220,12 +220,14 @@ export default {
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
       sendReadMessageData.targetArray = this.readMsgData;
+      // sendReadMessageData.targetId = this.readMsgData;
       Socket.send(sendReadMessageData);
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
+     
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         // 发送讯息成功
@@ -236,11 +238,13 @@ export default {
           this.messageData.push(this.chatRoomMsg);
           if(userInfo.isRead){
             this.readMsgData.push(userInfo.historyId)
+            // this.readMsgData = userInfo.historyId
             this.readMsgShow();
           }
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
+           console.log(userInfo)
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {

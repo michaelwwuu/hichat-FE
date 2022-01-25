@@ -80,7 +80,7 @@ export default {
   },
   created() {
     // this.getUserData();
-    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.userData = JSON.parse(localStorage.getItem("myUserList"));
     this.userEditForm.nickname = this.userData.nickname;
   },
   methods: {

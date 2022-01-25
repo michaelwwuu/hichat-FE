@@ -146,7 +146,11 @@ export default {
     };
   },
   created() {
-    this.getUserData();
+    if(localStorage.getItem("myUserList") === undefined) {
+      this.getUserData();
+    }else{
+      this.userData = JSON.parse(localStorage.getItem("myUserList"))
+    }
     if(this.device === 'pc'){
       this.editMyList = {
         icon:"",
@@ -177,12 +181,13 @@ export default {
           res.data.icon = require("./../../../../static/images/image_user_defult.png");
         }
         this.userData = res.data;
-        localStorage.setItem("userData", JSON.stringify(this.userData));
+        localStorage.setItem("myUserList", JSON.stringify(this.userData));
       });
     },
     loginOut() {
       this.$router.push({ path: "/login" });
       localStorage.removeItem("token");
+      localStorage.removeItem("myUserList");
       window.location.reload();
     },
   },
