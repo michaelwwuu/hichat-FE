@@ -1,5 +1,8 @@
 <template>
-  <div :class="[{ 'register-container-moblie': device === 'moblie' }]">
+  <div :class="[
+    { 'register-container-pc': device === 'pc' },
+    { 'register-container-moblie': device === 'moblie' }
+  ]">
     <div class="register-header">
       <router-link :to="'/Login'"
         ><div class="register-back"></div
@@ -176,6 +179,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.register-container-pc,
 .register-container-moblie {
   min-height: 100%;
   width: 100%;
@@ -331,6 +335,10 @@ export default {
       }
     }
   }
+}
+.register-container-pc{
+  width: 25%;
+  margin: 0 auto;
 }
 </style>
 
