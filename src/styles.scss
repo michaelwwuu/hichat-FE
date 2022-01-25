@@ -492,8 +492,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         }
       }
       .el-aside{
-        background-color: #FFFFFF;
+        border-radius:0;
         box-shadow:none;
+        background-color: #FFFFFF;
         border-right: 1px solid #e1e1e1b0;
       }
       .el-main{
@@ -578,6 +579,16 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
             }
           }
         }
+      }
+    }
+    .home-footer-btn{
+      margin: 0;
+      background-color: #FFFFFF;
+      .el-button{
+        width: 100%;
+        border: 0;
+        border-radius: 0;
+        line-height:3;
       }
     }
   }

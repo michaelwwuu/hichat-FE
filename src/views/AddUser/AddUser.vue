@@ -270,4 +270,37 @@ export default {
     }
   }
 }
+.hichat-pc{
+  .home-wrapper{
+    .home-search{
+      .el-input{
+        width: 95%;
+      }
+    }
+  }
+  .home-content{
+    .group-data{
+      .el-image{
+        width: 5em;
+        height: 5em;
+        border-radius: 10px;
+      }
+      span{
+        height: 5.5em;
+      }
+    }
+  }
+  .no-data {
+    margin: 7em 0 0 0;
+    span {
+      display: block;
+      text-align: center;
+      height: 2.5em;
+      &:nth-child(2) {
+        color: #b3b3b3;
+        font-size: 13px;
+      }
+    }
+  }
+}
 </style>
