@@ -5,94 +5,181 @@
       { 'login-container-moblie': device === 'moblie' },
     ]"
   >
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      class="login-form"
-      label-position="top"
-    >
-      <div class="title-container">
-        <img src="./../../../static/images/material_ic_logo.png" alt="" />
-      </div>
-      <el-form-item prop="email">
-        <span class="svg-container">
-          <img src="./../../../static/images/mail.png" alt="" />
-        </span>
-        <el-input
-          ref="email"
-          placeholder="电子邮箱"
-          v-model.trim="loginForm.email"
-          name="email"
-          type="text"
-          tabindex="1"
-          maxLength="30"
-          @input="
-            (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-          "
-        >
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <img src="./../../../static/images/lock.png" alt="" />
-        </span>
-        <el-input
-          ref="password"
-          placeholder="登录密碼"
-          v-model.trim="loginForm.password"
-          name="password"
-          :type="passwordType === 'password' ? 'password' : 'text'"
-          tabindex="2"
-          maxLength="12"
-          @input="
-            (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-          "
-        >
-        </el-input>
-        <span class="show-pwd" @click="showPwd">
-          <img
-            :src="
-              passwordType === 'password'
-                ? require('../../../static/images/eye_closed.png')
-                : require('./../../../static/images/eye-solid.svg')
+    <template v-if="device === 'moblie'">
+      <el-form
+        ref="loginForm"
+        :model="loginForm"
+        class="login-form"
+        label-position="top"
+      >
+        <div class="title-container">
+          <img src="./../../../static/images/material_ic_logo.png" alt="" />
+        </div>
+        <el-form-item prop="email">
+          <span class="svg-container">
+            <img src="./../../../static/images/mail.png" alt="" />
+          </span>
+          <el-input
+            ref="email"
+            placeholder="电子邮箱"
+            v-model.trim="loginForm.email"
+            name="email"
+            type="text"
+            tabindex="1"
+            maxLength="30"
+            @input="
+              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
-            alt=""
-          />
-        </span>
-      </el-form-item>
-      <div class="remember-style">
-        <el-switch
-          v-model="remember"
-          active-color="#fd5f3f"
-          inactive-color="#666666"
-          active-text="记住帐号"
-        >
-        </el-switch>
-        <router-link :to="'/ForgetPassword'" style="text-decoration: none">
-          <span>忘记密码</span>
-        </router-link>
-      </div>
-      <div>
-        <el-button
-          style="width: 100%; margin-bottom: 30px"
-          @click="submitForm('loginForm')"
-          >登录</el-button
-        >
-      </div>
-      <div>
-        <router-link :to="'/Register'">
-          <el-button
-            style="
-              width: 100%;
-              background-color: #67c23a00;
-              border: 1px solid #fd5f3f;
-              color: #fd5f3f;
-            "
-            >注册</el-button
           >
-        </router-link>
-      </div>
-    </el-form>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <img src="./../../../static/images/lock.png" alt="" />
+          </span>
+          <el-input
+            ref="password"
+            placeholder="登录密碼"
+            v-model.trim="loginForm.password"
+            name="password"
+            :type="passwordType === 'password' ? 'password' : 'text'"
+            tabindex="2"
+            maxLength="12"
+            @input="
+              (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
+          <span class="show-pwd" @click="showPwd">
+            <img
+              :src="
+                passwordType === 'password'
+                  ? require('../../../static/images/eye_closed.png')
+                  : require('./../../../static/images/eye-solid.svg')
+              "
+              alt=""
+            />
+          </span>
+        </el-form-item>
+        <div class="remember-style">
+          <el-switch
+            v-model="remember"
+            active-color="#fd5f3f"
+            inactive-color="#666666"
+            active-text="记住帐号"
+          >
+          </el-switch>
+          <router-link :to="'/ForgetPassword'" style="text-decoration: none">
+            <span>忘记密码</span>
+          </router-link>
+        </div>
+        <div>
+          <el-button
+            style="width: 100%; margin-bottom: 30px"
+            @click="submitForm('loginForm')"
+            >登录</el-button
+          >
+        </div>
+        <div>
+          <router-link :to="'/Register'">
+            <el-button
+              style="
+                width: 100%;
+                background-color: #67c23a00;
+                border: 1px solid #fd5f3f;
+                color: #fd5f3f;
+              "
+              >注册</el-button
+            >
+          </router-link>
+        </div>
+      </el-form>
+    </template>
+    <template v-else>
+      <el-form
+        ref="loginForm"
+        :model="loginForm"
+        class="login-form"
+        label-position="top"
+      >
+        <div class="title-container">
+          <img src="./../../../static/images/material_ic_logo.png" alt="" />
+          <span class="header-title">登录 Hichat</span>
+        </div>
+        <el-form-item prop="email">
+          <span class="svg-container">电子邮箱</span>
+          <el-input
+            ref="email"
+            v-model.trim="loginForm.email"
+            name="email"
+            type="text"
+            tabindex="1"
+            maxLength="30"
+            @input="
+              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">登录密碼</span>
+          <el-input
+            ref="password"
+            v-model.trim="loginForm.password"
+            name="password"
+            :type="passwordType === 'password' ? 'password' : 'text'"
+            tabindex="2"
+            maxLength="12"
+            @input="
+              (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
+          <span class="show-pwd" :class="{'eye-off':passwordType === 'password'}" @click="showPwd">
+            <img
+              :src="
+                passwordType === 'password'
+                  ? require('../../../static/images/pc/eye-off.png')
+                  : require('./../../../static/images/eye-solid.svg')
+              "
+              alt=""
+            />
+          </span>
+        </el-form-item>
+        <div class="remember-style">
+          <router-link :to="'/ForgetPassword'" style="text-decoration: none">
+            <span>忘记密码</span>
+          </router-link>
+          <el-switch
+            v-model="remember"
+            active-color="#fd5f3f"
+            inactive-color="#666666"
+            active-text="记住帐号"
+          >
+          </el-switch>
+        </div>
+        <div>
+          <el-button
+            style="width: 100%; margin-bottom: 30px"
+            @click="submitForm('loginForm')"
+            >登录</el-button
+          >
+        </div>
+        <div>
+          <router-link :to="'/Register'">
+            <el-button
+              style="
+                width: 100%;
+                background-color: #67c23a00;
+                border: none;
+                color: #fd5f3f;
+              "
+              >注册</el-button
+            >
+          </router-link>
+        </div>
+      </el-form>
+    </template>
     <el-dialog
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
@@ -250,7 +337,6 @@ $cursor: #fff;
     display: inline-block;
     height: 47px;
     width: 85%;
-
     input {
       background: transparent;
       border: 0px;
@@ -259,7 +345,6 @@ $cursor: #fff;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
       height: 47px;
-
       &:-webkit-autofill {
         box-shadow: 0 0 0px 1000px $cursor inset !important;
       }
@@ -322,6 +407,11 @@ $light_gray: #eee;
       right: 1em;
       img {
         height: 1.2em;
+      }
+    }
+    .eye-off{
+      img {
+        height: 1.5em;
       }
     }
     .remember-style {
@@ -412,7 +502,53 @@ $light_gray: #eee;
   display: flex;
   align-items: center;
   .login-form{
-    width: 20vw;
+    width: 450px;
+    .show-pwd{
+      cursor: pointer;
+    }
+    .remember-style {
+      margin: 1em 0 5em 0;
+      display: flex;
+      justify-content: space-between;
+      /deep/.el-switch__label{
+        span{
+          font-weight: 600;
+        }
+      }
+      /deep/.is-checked {
+        .is-active {
+          color: #10686e;
+        }
+      }
+      span {
+        font-size: 14px;
+        color: #10686e;
+        font-weight: 600;
+      }
+    }
+  }
+  .title-container{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto 40px auto;
+    img{
+      margin: 0px auto;
+    }
+    .header-title{
+      margin: 1em auto 0 auto;
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #474747;
+    }
+  }
+  .svg-container{
+    font-size: 14px;
+    width: 15%;
+    vertical-align: inherit;
+    color: #454545;
+  }
+  .el-input{
+    width: 70%;
   }
 }
 </style>

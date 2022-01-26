@@ -3,170 +3,337 @@
     { 'register-container-pc': device === 'pc' },
     { 'register-container-moblie': device === 'moblie' }
   ]">
-    <div class="register-header">
-      <router-link :to="'/Login'"
-        ><div class="register-back"></div
-      ></router-link>
-      <span class="register-header-title">注册</span>
-    </div>
-    <div class="register-content">
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        label-position="top"
-      >
-        <el-form-item prop="email">
-          <span class="svg-container">
-            <img src="./../../../static/images/mail.png" alt="" />
-          </span>
-          <el-input
-            ref="email"
-            placeholder="电子邮箱"
-            v-model.trim="loginForm.email"
-            name="email"
-            type="text"
-            tabindex="1"
-            maxLength="30"
-            @input="
-              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <span class="svg-container">
-            <img src="./../../../static/images/lock.png" alt="" />
-          </span>
-          <el-input
-            ref="password"
-            placeholder="登录密码"
-            v-model.trim="loginForm.password"
-            name="password"
-            :type="passwordType === 'password' ? 'password' : 'text'"
-            tabindex="2"
-            maxLength="12"
-            @input="
-              (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-          <span class="show-pwd" @click="showPwd('password')">
-            <img
-              :src="
-                passwordType === 'password'
-                  ? require('../../../static/images/eye_closed.png')
-                  : require('./../../../static/images/eye-solid.svg')
-              "
-              alt=""
-            />
-          </span>
-        </el-form-item>
-        <span class="tip-text"
-          >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
+    <template v-if="device === 'moblie'">
+      <div class="register-header">
+        <router-link :to="'/Login'"
+          ><div class="register-back"></div
+        ></router-link>
+        <span class="register-header-title">注册</span>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
         >
-        <el-form-item prop="passwordAganin">
-          <span class="svg-container">
-            <img src="./../../../static/images/lock.png" alt="" />
-          </span>
-          <el-input
-            ref="passwordAganin"
-            placeholder="再次确认登录密码"
-            v-model.trim="loginForm.passwordAganin"
-            name="passwordAganin"
-            :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
-            tabindex="2"
-            maxLength="12"
-            @input="
-              (v) =>
-                (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-          <span class="show-pwd" @click="showPwd('passwordAgain')">
-            <img
-              :src="
-                passwordTypeAgain === 'password'
-                  ? require('../../../static/images/eye_closed.png')
-                  : require('./../../../static/images/eye-solid.svg')
+          <el-form-item prop="email">
+            <span class="svg-container">
+              <img src="./../../../static/images/mail.png" alt="" />
+            </span>
+            <el-input
+              ref="email"
+              placeholder="电子邮箱"
+              v-model.trim="loginForm.email"
+              name="email"
+              type="text"
+              tabindex="1"
+              maxLength="30"
+              @input="
+                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
-              alt=""
-            />
-          </span>
-        </el-form-item>
-        <el-form-item prop="username">
-          <span class="svg-container">
-            <img src="./../../../static/images/at.png" alt="" />
-          </span>
-          <el-input
-            ref="username"
-            placeholder="用户ID"
-            v-model.trim="loginForm.username"
-            name="username"
-            type="text"
-            tabindex="1"
-            maxLength="18"
-            @input="
-              (v) => (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="password"
+              placeholder="登录密码"
+              v-model.trim="loginForm.password"
+              name="password"
+              :type="passwordType === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('password')">
+              <img
+                :src="
+                  passwordType === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <span class="tip-text"
+            >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
           >
-          </el-input>
-        </el-form-item>
-        <span class="tip-text"
-          >ID 长度为5至18个字元，允许混用英文字母、数字和底线。</span
-        >
-        <el-form-item prop="nickname">
-          <span class="svg-container">
-            <img src="./../../../static/images/user.png" alt="" />
-          </span>
-          <el-input
-            ref="nickname"
-            placeholder="名称"
-            v-model.trim="loginForm.nickname"
-            name="nickname"
-            type="text"
-            tabindex="1"
-            maxLength="18"
+          <el-form-item prop="passwordAganin">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="passwordAganin"
+              placeholder="再次确认登录密码"
+              v-model.trim="loginForm.passwordAganin"
+              name="passwordAganin"
+              :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('passwordAgain')">
+              <img
+                :src="
+                  passwordTypeAgain === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <el-form-item prop="username">
+            <span class="svg-container">
+              <img src="./../../../static/images/at.png" alt="" />
+            </span>
+            <el-input
+              ref="username"
+              placeholder="用户ID"
+              v-model.trim="loginForm.username"
+              name="username"
+              type="text"
+              tabindex="1"
+              maxLength="18"
+              @input="
+                (v) => (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+          </el-form-item>
+          <span class="tip-text"
+            >ID 长度为5至18个字元，允许混用英文字母、数字和底线。</span
           >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="authCode">
-          <span class="svg-container">
-            <img src="./../../../static/images/code.png" alt="" />
-          </span>
-          <el-input
-            ref="authCode"
-            placeholder="验证码"
-            v-model.trim="loginForm.authCode"
-            name="authCode"
-            type="authCode"
-            tabindex="2"
-            maxLength="6"
-            @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
-          >
-          </el-input>
-          <el-button
-            class="verification-style"
-            :style="
-              disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
-            "
-            plain
-            :disabled="disabledTime"
-            @click="getAuthCodeData(loginForm.email, true)"
-            >获取驗證碼 <span v-if="timer">({{ count }})</span>
-          </el-button>
-        </el-form-item>
-        <div class="register-footer">
-          <el-button
-            style="width: 100%; margin-bottom: 30px"
-            :class="disabled ? 'gray-btn' : 'orange-btn'"
-            :disabled="disabled"
-            @click="submitForm('loginForm')"
-            >提交</el-button
-          >
+          <el-form-item prop="nickname">
+            <span class="svg-container">
+              <img src="./../../../static/images/user.png" alt="" />
+            </span>
+            <el-input
+              ref="nickname"
+              placeholder="名称"
+              v-model.trim="loginForm.nickname"
+              name="nickname"
+              type="text"
+              tabindex="1"
+              maxLength="18"
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="authCode">
+            <span class="svg-container">
+              <img src="./../../../static/images/code.png" alt="" />
+            </span>
+            <el-input
+              ref="authCode"
+              placeholder="验证码"
+              v-model.trim="loginForm.authCode"
+              name="authCode"
+              type="authCode"
+              tabindex="2"
+              maxLength="6"
+              @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+            >
+            </el-input>
+            <el-button
+              class="verification-style"
+              :style="
+                disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
+              "
+              plain
+              :disabled="disabledTime"
+              @click="getAuthCodeData(loginForm.email, true)"
+              >获取驗證碼 <span v-if="timer">({{ count }})</span>
+            </el-button>
+          </el-form-item>
+          <div class="register-footer">
+            <el-button
+              style="width: 100%; margin-bottom: 30px"
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="submitForm('loginForm')"
+              >提交</el-button
+            >
+          </div>
+        </el-form>
+      </div>
+    </template>
+    <template v-else>
+      <div class="register-header">
+        <div class="title-container">
+          <img src="./../../../static/images/material_ic_logo.png" alt="" />
+          <span class="register-header-title">注册 Hichat</span>
         </div>
-      </el-form>
-    </div>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
+        >
+          <el-form-item prop="email">
+            <span class="svg-container">电子邮箱</span>
+            <el-input
+              ref="email"
+              v-model.trim="loginForm.email"
+              name="email"
+              type="text"
+              tabindex="1"
+              maxLength="30"
+              @input="
+                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <span class="svg-container">登录密码</span>
+            <el-input
+              ref="password"
+              v-model.trim="loginForm.password"
+              name="password"
+              :type="passwordType === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+            <span class="show-pwd" :class="{'eye-off':passwordType === 'password'}" @click="showPwd('password')">
+              <img
+                :src="
+                  passwordType === 'password'
+                    ? require('../../../static/images/pc/eye-off.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <span class="tip-text"
+            >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
+          >
+          <el-form-item prop="passwordAganin">
+            <span class="svg-container">确认密码</span>
+            <el-input
+              ref="passwordAganin"
+              v-model.trim="loginForm.passwordAganin"
+              name="passwordAganin"
+              :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+            <span class="show-pwd" :class="{'eye-off':passwordTypeAgain === 'password'}" @click="showPwd('passwordAgain')">
+              <img
+                :src="
+                  passwordTypeAgain === 'password'
+                    ? require('../../../static/images/pc/eye-off.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <el-form-item prop="username">
+            <span class="svg-container">帐号 ID</span>
+            <el-input
+              ref="username"
+              v-model.trim="loginForm.username"
+              name="username"
+              type="text"
+              tabindex="1"
+              maxLength="18"
+              @input="
+                (v) => (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+          </el-form-item>
+          <span class="tip-text"
+            >ID 长度为5至18个字元，允许混用英文字母、数字和底线。</span
+          >
+          <el-form-item prop="nickname">
+            <span class="svg-container">昵称</span>
+            <el-input
+              ref="nickname"
+              v-model.trim="loginForm.nickname"
+              name="nickname"
+              type="text"
+              tabindex="1"
+              maxLength="18"
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="authCode">
+            <span class="svg-container">
+              验证码
+            </span>
+            <el-input
+              ref="authCode"
+              v-model.trim="loginForm.authCode"
+              name="authCode"
+              type="authCode"
+              tabindex="2"
+              maxLength="6"
+              @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+            >
+            </el-input>
+            <el-button
+              class="verification-style"
+              :style="
+                disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
+              "
+              plain
+              :disabled="disabledTime"
+              @click="getAuthCodeData(loginForm.email, true)"
+              >获取驗證碼 <span v-if="timer">({{ count }})</span>
+            </el-button>
+          </el-form-item>
+          <div class="register-footer">
+            <div>
+              <el-button
+                style="width: 100%; margin-bottom: 30px"
+                :class="disabled ? 'gray-btn' : 'orange-btn'"
+                :disabled="disabled"
+                @click="submitForm('loginForm')"
+                >注册</el-button
+              >
+            </div>
+            <div>
+              <router-link :to="'/Login'">
+                <el-button
+                  style="
+                    width: 100%;
+                    background-color: #67c23a00;
+                    border: 1px solid #fd5f3f;
+                    color: #fd5f3f;
+                  "
+                  >回到登录</el-button
+                >
+              </router-link>
+            </div>
+          </div>
+        </el-form>
+      </div>
+    </template>
     <el-dialog
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
@@ -329,8 +496,8 @@ export default {
 <style lang="scss" scoped>
 .register-container-pc,
 .register-container-moblie {
-  min-height: 100%;
   width: 100%;
+  height: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
   .register-header {
@@ -484,8 +651,58 @@ export default {
   }
 }
 .register-container-pc{
-  width: 25%;
-  margin: 0 auto;
+  width: 450px;
+  margin: 3em auto;
+  overflow: initial;
+  .register-header{
+    justify-content: center;
+    .register-header-title{
+      left: 0;
+      color: #474747;
+      margin: 20px 0;
+      font-size: 20px;
+    }
+    .title-container{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      img{
+        height: 5em;
+      }
+    }
+  }
+  .register-content{
+    .svg-container{
+      font-size: 14px;
+      width: 15%;
+    }
+    .login-form{
+      .el-form-item{
+        .el-input{
+          width: 70%;
+          /deep/.el-input__inner{
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+    .register-footer{
+      top:0;
+    }
+    .show-pwd{
+      cursor: pointer;
+    }
+    .eye-off{
+      img {
+        height: 1.5em;
+      }
+    }
+  }
+  .verification-style{
+    font-size: 14px !important;
+    border: 0 !important;
+    right: 0.5em;
+  }
 }
 </style>
 

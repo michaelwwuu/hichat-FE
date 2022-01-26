@@ -3,57 +3,109 @@
     { 'register-container-pc': device === 'pc' },
     { 'register-container-moblie': device === 'moblie' }
   ]">
-    <div class="register-header">
-      <router-link :to="'/Login'"
-        ><div class="register-back"></div
-      ></router-link>
-      <span class="register-header-title">帐号解除锁定</span>
-    </div>
-    <div class="register-content">
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        label-position="top"
-      >
-        <el-form-item prop="authCode">
-          <span class="svg-container">
-            <img src="./../../../static/images/code.png" alt="" />
-          </span>
-          <el-input
-            ref="authCode"
-            placeholder="驗證碼"
-            v-model="loginForm.authCode"
-            name="authCode"
-            type="authCode"
-            tabindex="2"
-            maxLength="6"
-            @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
-          >
-          </el-input>
-          <el-button
-            class="verification-style"
-            :style="
-              disabledTime ? 'border: 1px solid #b3b3b3; color: #b3b3b3;' : ''
-            "
-            plain
-            :disabled="disabledTime"
-            @click="getAuthCodeData(loginForm.email, false)"
-            >获取驗證碼 <span v-if="timer">({{ count }})</span>
-          </el-button>
-        </el-form-item>
-        <span class="tip-text">请至注册邮箱确认验证码</span>
-        <div class="register-footer">
-          <el-button
-            style="width: 100%; margin-bottom: 30px"
-            :class="disabled ? 'gray-btn' : 'orange-btn'"
-            :disabled="disabled"
-            @click="submitForm('loginForm')"
-            >提交</el-button
-          >
+    <template v-if="device === 'moblie'">
+      <div class="register-header">
+        <router-link :to="'/Login'"
+          ><div class="register-back"></div
+        ></router-link>
+        <span class="register-header-title">帐号解除锁定</span>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
+        >
+          <el-form-item prop="authCode">
+            <span class="svg-container">
+              <img src="./../../../static/images/code.png" alt="" />
+            </span>
+            <el-input
+              ref="authCode"
+              placeholder="驗證碼"
+              v-model="loginForm.authCode"
+              name="authCode"
+              type="authCode"
+              tabindex="2"
+              maxLength="6"
+              @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+            >
+            </el-input>
+            <el-button
+              class="verification-style"
+              :style="
+                disabledTime ? 'border: 1px solid #b3b3b3; color: #b3b3b3;' : ''
+              "
+              plain
+              :disabled="disabledTime"
+              @click="getAuthCodeData(loginForm.email, false)"
+              >获取驗證碼 <span v-if="timer">({{ count }})</span>
+            </el-button>
+          </el-form-item>
+          <span class="tip-text">请至注册邮箱确认验证码</span>
+          <div class="register-footer">
+            <el-button
+              style="width: 100%; margin-bottom: 30px"
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="submitForm('loginForm')"
+              >提交</el-button
+            >
+          </div>
+        </el-form>
+      </div>
+    </template>
+    <template v-else>
+      <div class="register-header">
+        <div class="title-container">
+          <img src="./../../../static/images/material_ic_logo.png" alt="" />
+          <span class="register-header-title">帐号解除锁定</span>
         </div>
-      </el-form>
-    </div>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
+        >
+          <el-form-item prop="authCode">
+            <span class="svg-container">驗證碼</span>
+            <el-input
+              ref="authCode"
+              v-model="loginForm.authCode"
+              name="authCode"
+              type="authCode"
+              tabindex="2"
+              maxLength="6"
+              @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+            >
+            </el-input>
+            <el-button
+              class="verification-style"
+              :style="
+                disabledTime ? 'border: 1px solid #b3b3b3; color: #b3b3b3;' : ''
+              "
+              plain
+              :disabled="disabledTime"
+              @click="getAuthCodeData(loginForm.email, false)"
+              >获取驗證碼 <span v-if="timer">({{ count }})</span>
+            </el-button>
+          </el-form-item>
+          <span class="tip-text">请至注册邮箱确认验证码</span>
+          <div class="register-footer">
+            <el-button
+              style="width: 100%; margin-bottom: 30px"
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="submitForm('loginForm')"
+              >提交</el-button
+            >
+          </div>
+        </el-form>
+      </div>
+    </template>
     <el-dialog
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
@@ -337,8 +389,59 @@ export default {
   }
 }
 .register-container-pc{
-  width: 25%;
+  width: 481px;
   margin: 0 auto;
+  overflow: hidden;
+  .register-header{
+    justify-content: center;
+    margin-top: 6.59em;
+    .register-header-title{
+      left: 0;
+      color: #474747;
+      margin: 19px 0 16px 0;
+      font-size: 20px;
+    }
+    .title-container{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      img{
+        height: 5em;
+      }
+    }
+  }
+  .register-content{
+    .svg-container{
+      font-size: 14px;
+      width: 15%;
+    }
+    .login-form{
+      height: 15em;
+      padding: 0.45em 0;
+      .el-form-item{
+        .el-input{
+          width: 70%;
+          /deep/.el-input__inner{
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+    .show-pwd{
+      cursor: pointer;
+    }
+    .eye-off{
+      img {
+        height: 1.5em;
+      }
+    }
+  }
+
+  .verification-style{
+    font-size: 14px !important;
+    border: 0 !important;
+    right: 0.5em;
+  }
 }
 </style>
 

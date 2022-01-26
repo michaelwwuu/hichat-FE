@@ -3,74 +3,155 @@
     { 'register-container-pc': device === 'pc' },
     { 'register-container-moblie': device === 'moblie' }
   ]">
-    <div class="register-header">
-      <router-link :to="'/Login'"
-        ><div class="register-back"></div
-      ></router-link>
-      <span class="register-header-title">忘记密码</span>
-    </div>
-    <div class="register-content">
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        label-position="top"
-      >
-        <el-form-item prop="email">
-          <span class="svg-container">
-            <img src="./../../../static/images/mail.png" alt="" />
-          </span>
-          <el-input
-            ref="email"
-            placeholder="电子邮箱"
-            v-model="loginForm.email"
-            name="email"
-            type="text"
-            tabindex="1"
-            maxLength="30"
-            @input="
-              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="authCode">
-          <span class="svg-container">
-            <img src="./../../../static/images/code.png" alt="" />
-          </span>
-          <el-input
-            ref="authCode"
-            placeholder="验证码"
-            v-model="loginForm.authCode"
-            name="authCode"
-            type="authCode"
-            tabindex="2"
-            maxLength="6"
-            @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
-          >
-          </el-input>
-          <el-button
-            class="verification-style"
-            :style="
-              disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
-            "
-            plain
-            :disabled="disabledTime"
-            @click="getAuthCodeData(loginForm.email, false)"
-            >获取驗證碼 <span v-if="timer">({{ count }})</span>
-          </el-button>
-        </el-form-item>
-        <div class="register-footer">
-          <el-button
-            style="width: 100%; margin-bottom: 30px"
-            :class="disabled ? 'gray-btn' : 'orange-btn'"
-            :disabled="disabled"
-            @click="submitForm('loginForm')"
-            >提交</el-button
-          >
+    <template v-if="device === 'moblie'">
+      <div class="register-header">
+        <router-link :to="'/Login'"
+          ><div class="register-back"></div
+        ></router-link>
+        <span class="register-header-title">忘记密码</span>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
+        >
+          <el-form-item prop="email">
+            <span class="svg-container">
+              <img src="./../../../static/images/mail.png" alt="" />
+            </span>
+            <el-input
+              ref="email"
+              placeholder="电子邮箱"
+              v-model="loginForm.email"
+              name="email"
+              type="text"
+              tabindex="1"
+              maxLength="30"
+              @input="
+                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="authCode">
+            <span class="svg-container">
+              <img src="./../../../static/images/code.png" alt="" />
+            </span>
+            <el-input
+              ref="authCode"
+              placeholder="验证码"
+              v-model="loginForm.authCode"
+              name="authCode"
+              type="authCode"
+              tabindex="2"
+              maxLength="6"
+              @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+            >
+            </el-input>
+            <el-button
+              class="verification-style"
+              :style="
+                disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
+              "
+              plain
+              :disabled="disabledTime"
+              @click="getAuthCodeData(loginForm.email, false)"
+              >获取驗證碼 <span v-if="timer">({{ count }})</span>
+            </el-button>
+          </el-form-item>
+          <div class="register-footer">
+            <el-button
+              style="width: 100%; margin-bottom: 30px"
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="submitForm('loginForm')"
+              >提交</el-button
+            >
+          </div>
+        </el-form>
+      </div>
+    </template>
+    <template v-else>
+      <div class="register-header">
+        <div class="title-container">
+          <img src="./../../../static/images/material_ic_logo.png" alt="" />
+          <span class="register-header-title">忘記密碼</span>
         </div>
-      </el-form>
-    </div>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
+        >
+          <el-form-item prop="email">
+            <span class="svg-container">电子邮箱</span>
+            <el-input
+              ref="email"
+              v-model="loginForm.email"
+              name="email"
+              type="text"
+              tabindex="1"
+              maxLength="30"
+              @input="
+                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="authCode">
+            <span class="svg-container">验证码</span>
+            <el-input
+              ref="authCode"
+              v-model="loginForm.authCode"
+              name="authCode"
+              type="authCode"
+              tabindex="2"
+              maxLength="6"
+              @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+            >
+            </el-input>
+            <el-button
+              class="verification-style"
+              :style="
+                disabledTime ? 'border: 1px solid #b3b3b3;color: #b3b3b3;' : ''
+              "
+              plain
+              :disabled="disabledTime"
+              @click="getAuthCodeData(loginForm.email, false)"
+              >获取驗證碼 <span v-if="timer">({{ count }})</span>
+            </el-button>
+          </el-form-item>
+          <div class="register-footer">
+            <div>
+              <el-button
+                style="width: 100%; margin-bottom: 30px"
+                :class="disabled ? 'gray-btn' : 'orange-btn'"
+                :disabled="disabled"
+                @click="submitForm('loginForm')"
+                >提交</el-button
+              >
+            </div>
+            <div>
+              <router-link :to="'/Login'">
+                <el-button
+                  style="
+                    width: 100%;
+                    background-color: #67c23a00;
+                    border: 1px solid #fd5f3f;
+                    color: #fd5f3f;
+                  "
+                  >回到登录</el-button
+                >
+              </router-link>
+            </div>
+          </div>
+        </el-form>
+      </div>
+    </template>
     <el-dialog
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
@@ -354,9 +435,61 @@ export default {
     }
   }
 }
+
 .register-container-pc{
-  width: 25%;
+  width: 480px;
   margin: 0 auto;
+  overflow: hidden;
+  .register-header{
+    justify-content: center;
+    margin-top: 6.59em;
+    .register-header-title{
+      left: 0;
+      color: #474747;
+      margin: 19px 0 16px 0;
+      font-size: 20px;
+    }
+    .title-container{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      img{
+        height: 5em;
+      }
+    }
+  }
+  .register-content{
+    .svg-container{
+      font-size: 14px;
+      width: 15%;
+    }
+    .login-form{
+      height: 18em;
+      padding: 0.45em 0;
+      .el-form-item{
+        .el-input{
+          width: 70%;
+          /deep/.el-input__inner{
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+    .show-pwd{
+      cursor: pointer;
+    }
+    .eye-off{
+      img {
+        height: 1.5em;
+      }
+    }
+  }
+
+  .verification-style{
+    font-size: 14px !important;
+    border: 0 !important;
+    right: 0.5em;
+  }
 }
 </style>
 

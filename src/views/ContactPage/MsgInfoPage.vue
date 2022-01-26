@@ -5,9 +5,7 @@
         <el-header height="70px">
           <div class="home-header">
             <span class="home-header-title">資訊</span>
-            <router-link :to="'/EditContact'">
-              <div class="home-add-user"></div>
-            </router-link>
+             <div class="home-add-user"></div>
           </div>
         </el-header>
         <div class="home-content">
@@ -143,7 +141,7 @@ export default {
   .home-header {
     .home-add-user {
       background-color: #fff;
-      background-image: url("./../../../static/images/edit.png");
+      background-image: url("./../../../static/images/pc/edit_info.png");
     }
   }
   .home-content {

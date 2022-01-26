@@ -440,6 +440,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
 }
 .hichat-pc{
+  overflow: auto !important;
   .home-wrapper{
     .home-header{
       margin: 1.3em 1em;
@@ -675,4 +676,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
   }
+  .el-button{
+    font-weight: 600;
+  }
 }
+
