@@ -31,15 +31,9 @@
             <div class="home-header-pc">
               <span class="home-photo-link">
                 <div class="home-user-photo">
-                  <img
-                    :src="
-                      groupData.icon === undefined || groupData.icon === ''
-                        ? require('./../../../static/images/image_group_defult.png')
-                        : groupData.icon
-                    "
-                  />
+                  <img :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)" />  
                 </div>
-                <span>{{ groupData.groupName}}</span>
+                <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
               </span>
               <div class="home-user-more"></div>
             </div>
@@ -74,11 +68,11 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
+      noIcon: require("./../../../static/images/image_user_defult.png"),
       groupData: {},
       readMsgData: [],
       contactList: [],
       device: localStorage.getItem("device"),
-
     };
   },
   created() {
@@ -95,12 +89,24 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
+      groupUser: (state) => state.ws.groupUser,
     }),
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
     }),
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
+      }
+    },
     getGroupListMember() {
       let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
@@ -165,6 +171,7 @@ export default {
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
+          this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (

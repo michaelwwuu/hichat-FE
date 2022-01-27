@@ -128,7 +128,7 @@
           <chat-group-msg v-else/>
         </template>
       </el-main>
-      <el-aside width="25%">
+      <el-aside width="25%" style="overflow:hidden;">
         <msg-info-page/>
       </el-aside>
     </el-container>
@@ -264,6 +264,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setChatUser: "ws/setChatUser",
+      setChatGroup:"ws/setChatGroup",
     }),
     changeImg(index) {
       this.num = index;
@@ -289,12 +290,13 @@ export default {
             (item) => item.isContact
           );
           if(JSON.parse(localStorage.getItem('userData')) !== undefined){
-            localStorage.setItem("userData", JSON.stringify(this.hiChatDataList[0]));
+            // localStorage.setItem("userData", JSON.stringify(this.hiChatDataList[0]));
             this.setChatUser(this.hiChatDataList[0]);
           }
           this.groupDataList = msgInfo.recentChat.filter(
             (item) => item.isGroup
           );
+          this.setChatGroup(this.groupDataList[0])
           this.contactDataList = msgInfo.recentChat.filter(
             (item) => !item.isContact && item.isContact !==null
           );

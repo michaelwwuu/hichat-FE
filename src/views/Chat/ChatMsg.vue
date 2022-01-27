@@ -244,7 +244,6 @@ export default {
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
-           console.log(userInfo)
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {

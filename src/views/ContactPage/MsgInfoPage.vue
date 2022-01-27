@@ -18,6 +18,21 @@
             <span>{{ userData.name }}</span>
           </div>
           <div
+            class="setting-notification"
+            @click="developmentMessage('提醒通知')"
+          >
+            <div class="setting-button-left">
+              <span>提醒通知</span>
+            </div>
+            <el-switch
+              v-model="notification"
+              active-color="#fd5f3f"
+              inactive-color="#666666"
+              disabled
+            >
+            </el-switch>
+          </div>          
+          <div
             class="setting-button"
             v-for="(item, index) in settingData"
             :key="index"
@@ -30,23 +45,6 @@
               </div>
               <img src="./../../../static/images/next.png" alt="" />
             </a>
-          </div>
-
-          <div
-            class="setting-notification"
-            @click="developmentMessage('提醒通知')"
-          >
-            <div class="setting-button-left">
-              <img src="./../../../static/images/notification.png" alt="" />
-              <span>提醒通知</span>
-            </div>
-            <el-switch
-              v-model="notification"
-              active-color="#fd5f3f"
-              inactive-color="#666666"
-              disabled
-            >
-            </el-switch>
           </div>
         </div>
       </el-main>
@@ -88,12 +86,12 @@ export default {
       settingData: [
         {
           name: "传送讯息",
-          icon: require("./../../../static/images/chat_icon.png"),
+          icon: require("./../../../static/images/pc/message.png"),
           path: "ChatMsg",
         },
         {
           name: "查看相片和影片",
-          icon: require("./../../../static/images/image_icon.png"),
+          icon: require("./../../../static/images/pc/globe.png"),
           path: "",
         },
       ],
@@ -165,6 +163,7 @@ export default {
     .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
+      cursor: pointer;
       &::after {
         content: "";
         display: block;
@@ -197,12 +196,13 @@ export default {
       }
     }
     .setting-notification {
-      padding: 1em 0.5em;
+      padding: 1em;
       background-color: #fff;
       margin: 1em 0;
       display: flex;
       justify-content: space-between;
       align-content: center;
+      border-bottom: 2px solid #e3e3e3;
       img {
         height: 1.2em;
       }
@@ -212,7 +212,7 @@ export default {
         margin-left: 10px;
         width: 20em;
         span {
-          margin-left: 1em;
+          margin-left: 0;
           font-size: 15px;
           color: #333333;
         }

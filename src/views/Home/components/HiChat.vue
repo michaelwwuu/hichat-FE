@@ -158,7 +158,7 @@ export default {
   data() {
     return {
       searchKey: "",
-      activeName:localStorage.getItem('hichatNav'),
+      activeName:"address",
       groupList:{},
       groupDataList: [],
       hiChatDataList: [],
@@ -179,7 +179,6 @@ export default {
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    localStorage.setItem('hichatNav',this.activeName)
     this.getGroupDataList()
   },
   beforeDestroy() {
@@ -198,10 +197,11 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setChatUser: "ws/setChatUser",
+      setChatGroup:"ws/setChatGroup",
+      setGroupList:"ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
     }),
     handleClick(tab, event) {
-      localStorage.setItem('hichatNav',tab.name)
       this.setHichatNav(tab.name);
     },
     getHiChatDataList() {
@@ -243,11 +243,12 @@ export default {
     getGroupDataList(){
       getGroupList().then((res) => {
         this.groupList = res.data.list
+        this.setGroupList(this.groupList)
       })
     },
     goChatRoom(data,path) {
       if(path === 'ChatMsg'){
-        localStorage.setItem("userData", JSON.stringify(data));
+        // localStorage.setItem("userData", JSON.stringify(data));
         this.setChatUser(data);
       } else {
         data.icon = data.icon
@@ -259,7 +260,8 @@ export default {
             return data.isAdmin = item.isAdmin
           }
         })
-        localStorage.setItem("groupData", JSON.stringify(data))
+        // localStorage.setItem("groupData", JSON.stringify(data))
+        this.setChatGroup(data);
       }
       if(localStorage.getItem('device') ==='moblie') {
         this.$router.push({ name: path });
