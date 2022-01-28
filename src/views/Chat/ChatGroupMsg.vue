@@ -43,7 +43,7 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <message-input :userInfoData="userInfoData" :groupData="groupData" />
+        <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
   </div>
@@ -108,14 +108,14 @@ export default {
       }
     },
     getGroupListMember() {
-      let groupId = this.groupData.groupId;
+      let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
-        localStorage.setItem("groupDataList", JSON.stringify(this.contactList));
+        this.setContactListData(this.contactList)
       });
     },
     // 訊息統一格式
@@ -138,7 +138,7 @@ export default {
       let historyMessageData = this.userInfoData;
       historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId = "g" + this.groupData.groupId;
+      historyMessageData.toChatId = this.groupData.toChatId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
@@ -183,7 +183,6 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-
           this.readMsgShow();
           break;
         // 已讀

@@ -146,7 +146,7 @@ export default {
     };
   },
   created() {
-    if(localStorage.getItem("myUserList") === undefined) {
+    if(localStorage.getItem("myUserList") === null) {
       this.getUserData();
     }else{
       this.userData = JSON.parse(localStorage.getItem("myUserList"))

@@ -156,7 +156,7 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
-        localStorage.setItem('groupDataList',JSON.stringify(this.contactList))
+        localStorage.setItem('groupListMember',JSON.stringify(this.contactList))
         this.checkDataList = this.contactList.filter(el=> el.memberId !== this.groupData.memberId)
       });
     },

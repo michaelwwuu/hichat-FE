@@ -6,7 +6,7 @@
           class="address-box"
           v-for="(item, index) in contactList"
           :key="index"
-          @click="device === 'moblie' ? goContactPage(item, 'ContactPage') : false"
+          @click="goContactPage(item, 'contactPage')"
         >
           <el-image :src="item.icon" />
           <div class="contont-box">
@@ -20,7 +20,7 @@
           class="address-box"
           v-for="(item, index) in groupList"
           :key="index"
-          @click="device === 'moblie' ? goContactPage(item, 'GroupPage') : false"
+          @click="goContactPage(item, 'groupPage')"
         >
           <el-image :src="item.icon" />
           <div class="contont-box">
@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import { getContactList, getGroupList } from "@/api";
+import { mapState,mapMutations } from "vuex";
+import { getContactList, getGroupList, getSearchById } from "@/api";
 export default {
   name: "Address",
   data() {
@@ -49,8 +50,20 @@ export default {
   created() {
     this.getDataList();
     this.userData = JSON.parse(localStorage.getItem("userData"));
+  },  
+  computed: {
+    ...mapState({
+      wsRes: (state) => state.ws.wsRes,
+      groupUser: (state) => state.ws.groupUser,
+    }),
   },
   methods: {
+    ...mapMutations({
+      setChatUser: "ws/setChatUser",
+      setChatGroup:"ws/setChatGroup",
+      setGroupList:"ws/setGroupList",
+      setInfoMsg:"ws/setInfoMsg"
+    }),
     getDataList() {
       getContactList().then((res) => {
         this.contactList = res.data.list;
@@ -69,22 +82,54 @@ export default {
           if (el.icon === "")
             el.icon = require("./../../../../static/images/image_group_defult.png");
         });
+        this.setGroupList(this.groupList)
+      });
+    },
+    getUserId(data) {
+      let id = data.contactId;
+      getSearchById({ id }).then((res) => {
+        data.username = res.data.username;
+        data.name = res.data.name;
+        data.isBlock = res.data.isBlock;
+        data.isContact = res.data.isContact;
+        this.setChatUser(data);
       });
     },
     goContactPage(data, path) {
-      if (path === "ContactPage") {
-        data.toChatId = "u" + data.contactId;
-        localStorage.setItem("userData", JSON.stringify(data));
-      } else {
-        localStorage.setItem("groupData", JSON.stringify(data));
+      if(this.device ==='moblie') {
+        if (path === "contactPage") {
+          data.toChatId = "u" + data.contactId;
+          this.setChatUser(data);
+        } else{
+          data.toChatId = "u" + data.groupId;
+          this.setChatGroup(data);
+        }
+        this.$router.push({ name: path });
+      }else{
+        let infoStore ={
+          infoMsgShow:true,
+          infoMsgNav:path,
+        }
+        if (path === "contactPage") {
+          data.toChatId = "u" + data.contactId;
+          this.getUserId(data)
+          this.setInfoMsg(infoStore)
+        } else{
+          data.toChatId = "g" + data.groupId;
+          this.setChatGroup(data);
+          this.setInfoMsg(infoStore)
+        }
       }
-      this.$router.push({ name: path });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 .address-box {
+  cursor: pointer;
+  &:hover{
+    background-color: #ebeaea81;
+  }
   .contont-box {
     padding-left: 1em;
     height: 48px;

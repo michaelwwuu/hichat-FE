@@ -59,7 +59,7 @@
         </div>
         <message-input
           :userInfoData="userInfoData"
-          :userData="userData"
+          :userData="chatUser"
           v-else
         />
       </el-main>

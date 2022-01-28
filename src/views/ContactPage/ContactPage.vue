@@ -180,7 +180,6 @@ export default {
           path: "",
         },
       ],
-      groupDataList: [],
       blockContent: "",
       dialogContent: "",
       noIcon:require("./../../../static/images/image_user_defult.png"),

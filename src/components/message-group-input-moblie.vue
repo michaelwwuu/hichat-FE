@@ -436,7 +436,7 @@ export default {
       let message = { 
         chatType: "CLI_GROUP_SEND",
         id: Math.random(),
-        toChatId:'g' + this.groupData.groupId,
+        toChatId:this.groupData.toChatId,
         text:this.textAreaTran(),
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),

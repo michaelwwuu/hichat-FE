@@ -3,7 +3,15 @@ export const state = {
   chatUser:{},
   groupUser:{},
   groupList:[],
-  hichatNav:'address',
+  contactListData:[],
+  infoMsg:{
+    infoMsgShow:false,
+    infoMsgNav:"contactPage"
+  },
+  hichatNav:{
+    type:"address",
+    num:1,
+  },
 };
 export const actions = {};
 
@@ -17,21 +25,21 @@ export const mutations = {
   },
   setChatGroup(state, payload) {
     state.groupUser = payload;
-    state.groupUser.groupName = payload.name
-    state.groupUser.groupId = payload.toChatId.replace("g", "");
-    state.groupUser.memberId = JSON.parse(payload.forChatId.replace("u", ""));
-    state.groupList.forEach((item)=>{ 
-      if(item.groupName === state.groupUser.groupName){
-        return state.groupUser.isAdmin = item.isAdmin
-      }
-    });
     localStorage.setItem("groupData", JSON.stringify(payload));
   },
   setHichatNav(state, payload) {
     state.hichatNav = payload;
+    console.log(payload)
   },  
   setGroupList(state, payload) {
     state.groupList = payload;
+  },
+  setContactListData(state, payload) {
+    state.contactListData = payload;
+    localStorage.setItem("groupListMember", JSON.stringify(payload));
+  },
+  setInfoMsg(state, payload) {
+    state.infoMsg = payload;
   },
 };
 export const getters = {};

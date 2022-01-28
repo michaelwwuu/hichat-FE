@@ -2,146 +2,69 @@
   <div class="wrapper">
     <el-container>
       <el-main>
-        <el-header height="70px">
-          <div class="home-header">
+        <el-header class="PC-header" height="70px">
+          <div class="home-header-pc">
             <span class="home-photo-link">
               <div class="home-user-photo">
-                <img :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)" />  
+                <img :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)" />  
               </div>
-              <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
+              <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
             </span>
-            <div v-if="userData.isContact" class="home-user-search"></div>
             <div class="home-user-more"></div>
           </div>
         </el-header>
-        <!-- <div class="contact-box" v-if="!userData.isContact">
-          <ul>
-            <li @click="isBlockDialogShow = true">
-              {{ userData.isBlock ? "解除封锁" : "封锁" }}
-            </li>
-            <li @click="deleteRecent(userData)">删除</li>
-            <li @click="addUser(userData)">加入联络人</li>
-          </ul>
-        </div> -->
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
+          :contactListData="contactListData"
         />
-        <div class="disabled-user" v-if="userData.isBlock">
-          <span>該用戶已被封鎖</span>
-        </div>
-        <message-input
-          :userInfoData="userInfoData"
-          :userData="userData"
-          v-else
-        />
+        <message-input :userInfoData="userInfoData" :groupData="groupData" />
       </el-main>
     </el-container>
-    <el-dialog
-      :visible.sync="isBlockDialogShow"
-      class="el-dialog-loginOut"
-      width="70%"
-      :show-close="false"
-      center
-    >
-      <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span
-          >确认是否{{ userData.isBlock ? "解除封锁" : "封锁"
-          }}{{ userData.name }}？</span
-        >
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="isBlockDialogShow = false"
-          >取消</el-button
-        >
-        <el-button class="background-red" @click="blockSubmitBtn(userData)"
-          >确认</el-button
-        >
-      </span>
-    </el-dialog>
-    <el-dialog
-      :visible.sync="successDialogShow"
-      class="el-dialog-loginOut"
-      width="70%"
-      :show-close="false"
-      center
-    >
-      <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>加入成功</span>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="successDialogShow = false"
-          >確認</el-button
-        >
-      </span>
-    </el-dialog>
-    <el-dialog
-      :visible.sync="deleteDialogShow"
-      class="el-dialog-loginOut"
-      width="70%"
-      :show-close="false"
-      center
-    >
-      <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>刪除成功</span>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="$router.push({ path: '/Address' })"
-          >確認</el-button
-        >
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
-import {
-  addContactUser,
-  addBlockContactUser,
-  unBlockContactUser,
-  deleteRecentChat,
-} from "@/api";
+import { groupListMember } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
-import MessagePabel from "@/components/message-pabel-moblie";
-import MessageInput from "@/components/message-input-moblie";
+import MessagePabel from "@/components/message-group-moblie-pc";
+import MessageInput from "@/components/message-group-input-moblie";
 
 export default {
-  name: "ChatMsg",
+  name: "ChatGroupMsg",
   data() {
     return {
       concats: [],
       messageData: [],
-      historyMsgList:[],
       userInfoData: {
         token: getToken("token"),
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      userData: {},
-      readMsgData: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
-      deleteDialogShow:false,
-      isBlockDialogShow: false,
-      successDialogShow: false,
-      device: localStorage.getItem("device"),
+      groupData: {},
+      readMsgData: [],
+      contactList: [],
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.groupData = JSON.parse(localStorage.getItem("groupData"));
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
+    this.getGroupListMember();
     this.getChatHistoryMessage();
+  },
+  beforeDestroy() {
+    Socket.$off("message", this.handleGetMessage);
   },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
-      chatUser: (state) => state.ws.chatUser,
+      groupUser: (state) => state.ws.groupUser,
+      contactListData: (state) => state.ws.contactListData,
     }),
   },
   methods: {
@@ -159,29 +82,37 @@ export default {
         return iconData.icon;
       }
     },
+    getGroupListMember() {
+      let groupId = this.groupData.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined)
+            res.icon = require("./../../../static/images/image_user_defult.png");
+        });
+      });
+    },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
+        icon: data.chat.icon,
+        name: data.chat.name,
         message: {
           time: data.chat.sendTime,
           content: data.chat.text,
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
-        toChatId: data.toChatId
       };
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {
       let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_HISTORY_REQ";
+      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId =
-        this.userData.toChatId === undefined
-          ? "u" + this.userData.contactId
-          : this.userData.toChatId;
+      historyMessageData.toChatId = this.groupData.toChatId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
@@ -200,21 +131,22 @@ export default {
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
-        // 发送讯息成功
-        case "SRV_USER_IMAGE":
-        case "SRV_USER_AUDIO":
-        case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
+        case "SRV_GROUP_SEND":
+          // this.contactList.forEach((item) => {
+          //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
+          //     userInfo.chat.icon = item.icon;
+          //     userInfo.chat.name = item.name;
+          //   }
+          // });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          if(userInfo.isRead){
-            this.readMsgData.push(userInfo.historyId)
-            this.readMsgShow();
-          }
           break;
         // 历史讯息
-        case "SRV_HISTORY_RSP":
-          let historyMsgList = userInfo.historyMessage.list
+        case "SRV_GROUP_HISTORY_RSP":
           this.messageData = []
+          let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (
               el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
@@ -225,6 +157,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
+
           this.readMsgShow();
           break;
         // 已讀
@@ -239,79 +172,6 @@ export default {
           break;
       }
     },
-    addUser(data) {
-      let parmas = {
-        contactId: data.toChatId.replace("u", ""),
-        name: data.name,
-      };
-      addContactUser(parmas)
-        .then((res) => {
-          if (res.code === 200) {
-            this.successDialogShow = true;
-            this.userData.isContact = true;
-            localStorage.setItem("userData", JSON.stringify(this.userData));
-          } else {
-            this.$message({ message: res.message, type: "error" });
-          }
-        })
-        .catch((err) => {
-          this.$message({ message: err, type: "error" });
-          return false;
-        });
-    },
-    deleteRecent(data) {
-      let parmas = {
-        fullDelete: false,
-        historyId: "",
-        toChatId: data.toChatId,
-      };
-      deleteRecentChat(parmas)
-        .then((res) => {
-          if (res.code === 200) {
-            this.deleteDialogShow = true;
-            localStorage.removeItem("userData");
-          }
-        })
-        .catch((err) => {
-          this.$message({ message: err, type: "error" });
-        });
-    },
-    blockSubmitBtn(data) {
-      if (this.userData.isBlock) {
-        let blockIdList = [this.userData.toChatId.replace("u", "")];
-        unBlockContactUser({ blockIdList })
-          .then((res) => {
-            if (res.code === 200) {
-              this.userData.isBlock = false;
-              this.isBlockDialogShow = false;
-              localStorage.setItem("userData", JSON.stringify(this.userData));
-            }
-          })
-          .catch((err) => {
-            this.$message({ message: err, type: "error" });
-            return false;
-          });
-      } else {
-        let blockId = data.toChatId.replace("u", "");
-        addBlockContactUser({ blockId })
-          .then((res) => {
-            if (res.code === 200) {
-              this.userData.isBlock = true;
-              this.isBlockDialogShow = false;
-              localStorage.setItem("userData", JSON.stringify(this.userData));
-            } else {
-              this.$message({ message: res.message, type: "error" });
-            }
-          })
-          .catch((err) => {
-            this.$message({ message: err, type: "error" });
-            return false;
-          });
-      }
-    },
-    back() {
-      this.$router.back(-1);
-    },
   },
   components: {
     MessagePabel,
@@ -322,7 +182,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  overflow: hidden;
+  min-height: 100%;
   width: 100%;
   background-color: #eaf5fa;
   overflow: hidden;
@@ -332,7 +192,6 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    
     .el-aside,
     .el-main {
       display: flex;
@@ -365,7 +224,7 @@ export default {
       border-radius: 6px 0px 6px 6px;
     }
     .el-main {
-      border-radius: 0;
+      border-radius: 0px 6px 6px 6px;
     }
     .el-aside {
       background: rgba(235, 233, 232, 0.8);
@@ -374,11 +233,91 @@ export default {
       padding: 0;
     }
     .el-header {
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      .home-header {
+        margin: 1.5em 1em 1em 1em;
+        display: flex;
+        align-items: center;
+        .home-user-link {
+          position: absolute;
+          .home-user {
+            width: 2em;
+            height: 2em;
+            border-radius: 10px;
+            background-color: #fff;
+            background-image: url("./../../../static/images/back.png");
+            background-size: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+        }
+        .home-header-title {
+          margin: 0 auto;
+          color: #10686e;
+          font-weight: 600;
+        }
+        .home-user-photo,
+        .home-user-search {
+          width: 2em;
+          height: 2em;
+          border-radius: 10px;
+          // background-color: #fff;
+          background-size: 50%;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        .home-user-search {
+          margin-right: 10px;
+          position: absolute;
+          right: 50px;
+          background-image: url("./../../../static/images/search_icon.png");
+        }
+        .home-photo-link {
+          position: absolute;
+          right: 14px;
+          .home-user-photo {
+            text-align: center;
+            overflow: hidden;
+            img {
+              top: 0;
+              height: 2em;
+              border-radius: 6px;
+            }
+          }
+        }
+      }
+
+      img {
+        position: relative;
+        top: 7px;
+      }
+      .online-img {
+        position: relative;
+        top: 9px;
+      }
+      .title,
+      .icon-message {
+        color: #ffffff;
+      }
+      .icon-message {
+        font-size: 20px;
+        vertical-align: middle;
+      }
+      .title {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+    }
+    .PC-header {
       position: relative;
       padding: 0;
       background-color: #FFFFFF;
       display: flex;
-      .home-header {
+      .home-header-pc {
         margin: 1em;
         display: flex;
         align-items: center;
@@ -478,7 +417,7 @@ export default {
         align-items: center;
         background-color: #fff;
         height: 3em;
-        width: 85%;
+        width: 55vw;
         margin: 0 auto;
         font-weight: 550;
         li {
@@ -486,9 +425,6 @@ export default {
             color: #ee5253;
           }
           &:nth-child(2) {
-            color: #ee5253;
-          }
-          &:nth-child(3) {
             color: #363636;
           }
         }
@@ -526,55 +462,5 @@ export default {
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
-}
-/deep/.el-dialog-loginOut {
-  overflow: auto;
-  .el-dialog {
-    position: relative;
-    margin: 0 auto 50px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-sizing: border-box;
-    width: 50%;
-    .el-dialog__header {
-      padding: 10px;
-    }
-    .el-dialog__body {
-      text-align: center;
-      padding: 25px 25px 15px;
-      .loginOut-box {
-        img {
-          height: 5em;
-          margin-bottom: 1.2em;
-        }
-      }
-    }
-    .el-dialog__footer {
-      padding: 20px;
-      padding-top: 10px;
-      text-align: right;
-      box-sizing: border-box;
-      .dialog-footer {
-        display: flex;
-        justify-content: space-between;
-        .el-button {
-          width: 100%;
-          border-radius: 8px;
-        }
-        .background-red {
-          background-color: #ee5253;
-          color: #fff;
-        }
-        .background-orange {
-          background-color: #fe5f3f;
-          color: #fff;
-        }
-        .border-red {
-          border: 1px solid #fe5f3f;
-          color: #fe5f3f;
-        }
-      }
-    }
-  }
 }
 </style>

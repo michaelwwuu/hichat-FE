@@ -124,11 +124,11 @@
       </el-aside>
       <el-main>
         <template v-if="num === 1">
-          <chat-msg v-if="hichatNav === 'address'"/>
+          <chat-msg v-if="hichatNav.tpye === 'address'"/>
           <chat-group-msg v-else/>
         </template>
       </el-main>
-      <el-aside width="25%" style="overflow:hidden;">
+      <el-aside width="25%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>
       </el-aside>
     </el-container>
@@ -200,8 +200,9 @@ import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import { mapState,mapMutations } from "vuex";
 import ChatMsg from './../Chat/ChatMsg.vue';
-import ChatGroupMsg from './../Chat/ChatGroupMsg.vue';
+import ChatGroupMsg from './../Chat/Chat.vue';
 import MsgInfoPage from './../ContactPage/MsgInfoPage.vue';
+import { getGroupList } from "@/api";
 
 export default {
   name: "Home",
@@ -238,8 +239,9 @@ export default {
       num: 0,
       searchKey: "",
       downloadFilename: "",
-      centerDialogVisible: false,
       logoutDialogShow:false,
+      infoMsgAsideShow:false,
+      centerDialogVisible: false,
       device: localStorage.getItem("device"),
     };
   },
@@ -250,7 +252,12 @@ export default {
         : this.$route.fullPath === "/HiChat"
         ? 1
         : 2;
-    if(this.device === 'pc') Socket.$on("message", this.handleGetMessage);
+    if(this.device === 'pc') Socket.$on("message", this.handleGetMessage)
+  },
+  watch:{
+    hichatNav(val){
+      this.num = val.num
+    }
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -258,13 +265,13 @@ export default {
   computed: {
     ...mapState({
       hichatNav: (state) => state.ws.hichatNav,
+      infoMsg:(state) => state.ws.infoMsg,
     }),
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setChatUser: "ws/setChatUser",
-      setChatGroup:"ws/setChatGroup",
+      setGroupList:"ws/setGroupList",
     }),
     changeImg(index) {
       this.num = index;
@@ -281,6 +288,13 @@ export default {
       a.href = iconUrl;
       a.dispatchEvent(event);
     },
+    // getGroupDataList(){
+    //   getGroupList().then((res) => {
+    //     this.groupList = res.data.list
+    //     this.setGroupList(this.groupList)
+    //   })
+    // },
+  
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
       switch (msgInfo.chatType) {
@@ -289,14 +303,9 @@ export default {
           this.hiChatDataList = msgInfo.recentChat.filter(
             (item) => item.isContact
           );
-          if(JSON.parse(localStorage.getItem('userData')) !== undefined){
-            // localStorage.setItem("userData", JSON.stringify(this.hiChatDataList[0]));
-            this.setChatUser(this.hiChatDataList[0]);
-          }
           this.groupDataList = msgInfo.recentChat.filter(
             (item) => item.isGroup
           );
-          this.setChatGroup(this.groupDataList[0])
           this.contactDataList = msgInfo.recentChat.filter(
             (item) => !item.isContact && item.isContact !==null
           );
@@ -306,7 +315,7 @@ export default {
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
         case "SRV_GROUP_SEND":
-          this.notifyMe();
+          // this.notifyMe();
           break;
       }
     },

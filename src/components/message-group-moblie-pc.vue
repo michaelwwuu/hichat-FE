@@ -75,6 +75,9 @@ export default {
     messageData: {
       type: Array,
     },
+    contactListData:{
+      type: Array,
+    },
   },
   data() {
     return {
@@ -90,6 +93,16 @@ export default {
     this.getGroupListMember()
   },
   watch: {
+    contactListData(val){
+      val.forEach((res)=>{
+        this.message.forEach((el) => {
+          if(el.userChatId === 'u' + res.memberId){
+            el.icon = res.icon
+            el.name = res.name
+          }
+        })
+      })
+    },
     messageData(val) {
       //去除重复
       const set = new Set();

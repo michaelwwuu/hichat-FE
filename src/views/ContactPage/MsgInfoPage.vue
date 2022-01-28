@@ -9,43 +9,85 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div class="user-data">
-            <el-image
-              v-if="userData.icon !== undefined"
-              :src="noIconShow(userData)"
-              :preview-src-list="[noIconShow(userData)]"
-            />
-            <span>{{ userData.name }}</span>
-          </div>
-          <div
-            class="setting-notification"
-            @click="developmentMessage('提醒通知')"
-          >
-            <div class="setting-button-left">
-              <span>提醒通知</span>
+ 
+          <template v-if="infoMsg.infoMsgNav === 'contactPage'">
+            <div class="user-data">
+              <el-image
+                v-if="userData.icon !== undefined"
+                :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)"
+                :preview-src-list="[noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)]"
+              />
+              <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
             </div>
-            <el-switch
-              v-model="notification"
-              active-color="#fd5f3f"
-              inactive-color="#666666"
-              disabled
+            <div
+              class="setting-notification"
+              @click="developmentMessage('提醒通知')"
             >
-            </el-switch>
-          </div>          
-          <div
-            class="setting-button"
-            v-for="(item, index) in settingData"
-            :key="index"
-            @click="developmentMessage(item.name)"
-          >
-            <a>
               <div class="setting-button-left">
-                <img :src="item.icon" alt="" />
-                <span>{{ item.name }}</span>
+                <span>提醒通知</span>
               </div>
-              <img src="./../../../static/images/next.png" alt="" />
-            </a>
-          </div>
+              <el-switch
+                v-model="notification"
+                active-color="#fd5f3f"
+                inactive-color="#666666"
+                disabled
+              >
+              </el-switch>
+            </div>     
+            <div
+              class="setting-button"
+              v-for="(item, index) in settingContactData"
+              :key="index"
+              @click="developmentMessage(item.name)"
+            >
+              <a @click="goChatRoom(userData, item.path,'address')" >
+                <div class="setting-button-left">
+                  <img :src="item.icon" alt="" />
+                  <span>{{ item.name }}</span>
+                </div>
+                <img src="./../../../static/images/next.png" alt="" />
+              </a>
+            </div>
+          </template>    
+          <template v-else>
+            <div class="user-data">
+              <el-image
+                v-if="groupUser.icon !== undefined"
+                :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)"
+                :preview-src-list="[noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)]"
+              />
+              <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
+            </div>
+            <div
+              class="setting-notification"
+              @click="developmentMessage('提醒通知')"
+            >
+              <div class="setting-button-left">
+                <span>提醒通知</span>
+              </div>
+              <el-switch
+                v-model="notification"
+                active-color="#fd5f3f"
+                inactive-color="#666666"
+                disabled
+              >
+              </el-switch>
+            </div>   
+            <div
+              class="setting-button"
+              v-for="(item, index) in settingGroupData"
+              :key="index"
+              @click="developmentMessage(item.name)"
+            >
+              <a @click="goChatRoom(userData, item.path,'group')" >
+                <div class="setting-button-left">
+                  <img :src="item.icon" alt="" />
+                  <span>{{ item.name }}</span>
+                </div>
+                <img src="./../../../static/images/next.png" alt="" />
+              </a>
+            </div>
+          </template>  
         </div>
       </el-main>
     </el-container>
@@ -69,6 +111,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import {
   getSearchById,
@@ -83,15 +126,32 @@ export default {
   data() {
     return {
       userData: {},
-      settingData: [
+      settingContactData: [
         {
           name: "传送讯息",
           icon: require("./../../../static/images/pc/message.png"),
-          path: "ChatMsg",
+          path: "HiChat",
+        },
+        {
+          name: "相片和影片",
+          icon: require("./../../../static/images/pc/globe.png"),
+          path: "",
+        },
+      ],
+      settingGroupData: [
+        {
+          name: "传送讯息",
+          icon: require("./../../../static/images/pc/message.png"),
+          path: "HiChat",
         },
         {
           name: "查看相片和影片",
-          icon: require("./../../../static/images/pc/globe.png"),
+          icon: require("./../../../static/images/pc/image.png"),
+          path: "",
+        },
+        {
+          name: "成員",
+          icon: require("./../../../static/images/pc/users.png"),
           path: "",
         },
       ],
@@ -103,17 +163,38 @@ export default {
       developmentMessage: developmentMessage,
     };
   },
+   computed: {
+    ...mapState({
+      chatUser: (state) => state.ws.chatUser,
+      groupUser: (state) => state.ws.groupUser,
+      infoMsg: (state) => state.ws.infoMsg,
+    }),
+  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.getUserId();
   },
+  
   methods: {
+    ...mapMutations({
+      setHichatNav: "ws/setHichatNav",
+    }),
     noIconShow(iconData){
       if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
         return this.noIcon
       }else{
         return iconData.icon
       }
+    },
+    goChatRoom(data, path, type) {
+      console.log(data, path, type)
+      let navType={
+        type:type,
+        num:1,
+      }
+      this.setHichatNav(navType)
+      this.$router.push({ name: path, params: data });
     },
     getUserId() {
       let id = this.userData.toChatId.replace("u", "");

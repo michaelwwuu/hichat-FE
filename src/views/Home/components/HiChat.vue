@@ -151,7 +151,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { getGroupList } from "@/api";
+import { getGroupList,groupListMember } from "@/api";
 
 export default {
   name: "HiChat",
@@ -174,11 +174,13 @@ export default {
         pageSize: 1000,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-      }
+      },
+      device: localStorage.getItem("device"),
     };
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
+    this.activeName = this.hichatNav.type
     this.getGroupDataList()
   },
   beforeDestroy() {
@@ -188,6 +190,7 @@ export default {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
       hichatNav: (state) => state.ws.hichatNav,
+      groupUser: (state) => state.ws.groupUser,
     }),
   },
   mounted() {
@@ -200,9 +203,14 @@ export default {
       setChatGroup:"ws/setChatGroup",
       setGroupList:"ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
+      setContactListData:"ws/setContactListData",
     }),
     handleClick(tab, event) {
-      this.setHichatNav(tab.name);
+      let navType={
+        type:tab.name,
+        num:1,
+      }
+      this.setHichatNav(navType);
     },
     getHiChatDataList() {
       let chatMsgKey = {
@@ -246,9 +254,19 @@ export default {
         this.setGroupList(this.groupList)
       })
     },
+    getGroupListMember() {
+      let groupId = this.groupUser.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined)
+            res.icon = require("./../../../../static/images/image_user_defult.png");
+        });
+        this.setContactListData(this.contactList)
+      });
+    },
     goChatRoom(data,path) {
       if(path === 'ChatMsg'){
-        // localStorage.setItem("userData", JSON.stringify(data));
         this.setChatUser(data);
       } else {
         data.icon = data.icon
@@ -260,10 +278,10 @@ export default {
             return data.isAdmin = item.isAdmin
           }
         })
-        // localStorage.setItem("groupData", JSON.stringify(data))
         this.setChatGroup(data);
+        this.getGroupListMember()
       }
-      if(localStorage.getItem('device') ==='moblie') {
+      if(this.device ==='moblie') {
         this.$router.push({ name: path });
       }else{
         this.getHistoryMessage.chatType = path === 'ChatMsg' ? 'CLI_HISTORY_REQ':'CLI_GROUP_HISTORY_REQ'
