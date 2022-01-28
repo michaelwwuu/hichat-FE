@@ -508,7 +508,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-tabs{
       width: 100%;
       .el-tabs__header{
-        width: 24.5%;
+        width:24.5%;
         position: absolute;
         background-color:#FFFFFF;
         .el-tabs__nav-wrap{
@@ -599,13 +599,19 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
   .address-box{
     .el-image{
-      width: 3.5em;
-      height: 3.5em;
+      width: 3em;
+      height: 3em;
     }
     .contont-box{
-      span{
-        font-size: 17px !important;
-      }
+      .msg-box{
+        span{
+          &:nth-child(1) {
+            margin-bottom: 0 !important;
+            height: 22px;
+            line-height: 22px;
+          }
+        }
+      }      
     }
   }
   .home-footer-nav{
