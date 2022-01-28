@@ -179,6 +179,7 @@ export default {
   methods: {
     ...mapMutations({
       setHichatNav: "ws/setHichatNav",
+      setInfoMsg:"ws/setInfoMsg"
     }),
     noIconShow(iconData){
       if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
@@ -194,6 +195,12 @@ export default {
         num:1,
       }
       this.setHichatNav(navType)
+      console.log(type)
+      let infoMsg = {
+        infoMsgShow:false,
+        infoMsgNav: path === 'address'?'contactPage':'groupPage'
+      }
+      this.setInfoMsg(infoMsg)
       this.$router.push({ name: path, params: data });
     },
     getUserId() {

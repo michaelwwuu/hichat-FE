@@ -123,9 +123,9 @@
         </el-footer>
       </el-aside>
       <el-main>
-        <template v-if="num === 1">
-          <chat-msg v-if="hichatNav.tpye === 'address'"/>
-          <chat-group-msg v-else/>
+        <template v-if="num === 1 ">
+          <chat-msg v-if="hichatNav.type === 'address' && JSON.stringify(chatUser) !== '{}'"/>
+          <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
         </template>
       </el-main>
       <el-aside width="25%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
@@ -202,7 +202,6 @@ import { mapState,mapMutations } from "vuex";
 import ChatMsg from './../Chat/ChatMsg.vue';
 import ChatGroupMsg from './../Chat/Chat.vue';
 import MsgInfoPage from './../ContactPage/MsgInfoPage.vue';
-import { getGroupList } from "@/api";
 
 export default {
   name: "Home",
@@ -266,6 +265,8 @@ export default {
     ...mapState({
       hichatNav: (state) => state.ws.hichatNav,
       infoMsg:(state) => state.ws.infoMsg,
+      chatUser:(state) => state.ws.chatUser,
+      groupUser:(state) => state.ws.groupUser,
     }),
   },
   methods: {
@@ -320,7 +321,6 @@ export default {
       }
     },
     notifyMe() {
-      console.log(Notification);
       // 先检查浏览器是否支持
       if (!("Notification" in window)) {
         this.$message({

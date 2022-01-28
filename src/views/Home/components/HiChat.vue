@@ -199,6 +199,7 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setInfoMsg:"ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
       setChatGroup:"ws/setChatGroup",
       setGroupList:"ws/setGroupList",
@@ -284,6 +285,11 @@ export default {
       if(this.device ==='moblie') {
         this.$router.push({ name: path });
       }else{
+        let infoMsg = {
+          infoMsgShow:false,
+          infoMsgNav: path === 'ChatMsg'?'contactPage':'groupPage'
+        }
+        this.setInfoMsg(infoMsg)
         this.getHistoryMessage.chatType = path === 'ChatMsg' ? 'CLI_HISTORY_REQ':'CLI_GROUP_HISTORY_REQ'
         this.getHistoryMessage.toChatId = data.toChatId
         this.getHistoryMessage.id = Math.random()
