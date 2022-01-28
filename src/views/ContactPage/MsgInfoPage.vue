@@ -189,13 +189,11 @@ export default {
       }
     },
     goChatRoom(data, path, type) {
-      console.log(data, path, type)
       let navType={
         type:type,
         num:1,
       }
       this.setHichatNav(navType)
-      console.log(type)
       let infoMsg = {
         infoMsgShow:false,
         infoMsgNav: path === 'address'?'contactPage':'groupPage'

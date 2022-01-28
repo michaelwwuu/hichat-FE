@@ -29,7 +29,6 @@ export const mutations = {
   },
   setHichatNav(state, payload) {
     state.hichatNav = payload;
-    console.log(payload)
   },  
   setGroupList(state, payload) {
     state.groupList = payload;

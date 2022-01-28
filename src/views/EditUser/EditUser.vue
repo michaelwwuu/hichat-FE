@@ -85,7 +85,6 @@ export default {
   },
   methods: {
     noIconShow(iconData) {
-      console.log(iconData.icon)
       if (
         iconData.icon === undefined ||
         iconData.icon === null ||
@@ -113,7 +112,6 @@ export default {
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;
-      console.log(this.fileList)
     },
     submitAvatarUpload() {
       let formData = new FormData();

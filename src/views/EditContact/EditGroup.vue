@@ -115,7 +115,6 @@ export default {
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;
-      console.log(this.fileList)
     },
     submitAvatarUpload() {
       let formData = new FormData();
