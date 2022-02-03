@@ -168,6 +168,23 @@
           </div>
         </el-form>
       </div>
+      <el-dialog
+        :visible.sync="dialogShow"
+        class="el-dialog-loginOut"
+        width="70%"
+        :show-close="false"
+        center
+      >
+        <div class="loginOut-box">
+          <div><img src="./../../../static/images/success.png" alt="" /></div>
+          <span>注册完成，系统将自动登录</span>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <router-link to="/Home">
+            <el-button class="background-orange" @click="dialogShow = false">确认</el-button>
+          </router-link>
+        </span>
+      </el-dialog>
     </template>
     <template v-else>
       <div class="register-header">
@@ -333,24 +350,25 @@
           </div>
         </el-form>
       </div>
+      <el-dialog
+        title="会员注册"
+        :visible.sync="dialogShow"
+        class="el-dialog-loginOut"
+        :show-close="false"
+    
+        center 
+      >
+        <div class="loginOut-box">
+          <span>您已成功注册嗨聊会员！</span>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <router-link to="/Home">
+            <el-button class="background-red" @click="dialogShow = false">确认</el-button>
+          </router-link>
+        </span>
+      </el-dialog>
     </template>
-    <el-dialog
-      :visible.sync="dialogShow"
-      class="el-dialog-loginOut"
-      width="70%"
-      :show-close="false"
-      center
-    >
-      <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>注册完成，系统将自动登录</span>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <router-link to="/Home">
-          <el-button class="background-orange" @click="dialogShow = false">确认</el-button>
-        </router-link>
-      </span>
-    </el-dialog>
+    
   </div>
 </template>
 
@@ -376,7 +394,7 @@ export default {
       timer: false,
       disabledTime: false,
       disabled: true,
-      dialogShow: false,
+      dialogShow: true,
     };
   },
   watch: {
@@ -703,6 +721,34 @@ export default {
     border: 0 !important;
     right: 0.5em;
   }
+  /deep/.el-dialog-loginOut {
+    .el-dialog {
+      .el-dialog__body {
+        padding: 45px 25px;
+        border-bottom: 1px solid #efefef;
+      }
+      .el-dialog__footer {
+        .dialog-footer {
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color:inherit;
+            color: #ee5253;
+          }
+          .background-orange {
+            background-color:inherit;
+            color: #fe5f3f;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
+        }
+      }
+    }    
+  }  
 }
 </style>
 

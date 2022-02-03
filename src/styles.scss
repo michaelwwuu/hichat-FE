@@ -625,13 +625,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   .el-dialog__wrapper {
     overflow: hidden;
     .el-dialog {
-      width: 28% !important;
+      width: 18% !important;
       margin-top: 8em !important;
       position: relative;
       border-radius: 10px;
       .el-dialog__header {
+        border-bottom: 1px solid #efefef;
         .el-dialog__title {
-          color: #10686e;
+          color: #000000d5;
           font-weight: 600;
         }
         .el-dialog__headerbtn {
@@ -678,10 +679,16 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           justify-content: space-between;
           .el-button{
             width: 90%;
+            border: 0;
+            background-color: inherit;
           }
           img {
             height: 1em;
           }
+        }
+        .el-button{
+          font-weight: 600;
+          padding: 5px 20px;
         }
       }
     }
