@@ -500,6 +500,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+//H5 PC 共同樣式
 .register-container-pc,
 .register-container-moblie {
   width: 100%;
@@ -656,6 +657,8 @@ export default {
     }
   }
 }
+
+//PC版本樣式
 .register-container-pc{
   width: 450px;
   margin: 3em auto;
@@ -739,5 +742,3 @@ export default {
   }  
 }
 </style>
-
-
