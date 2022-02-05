@@ -168,23 +168,6 @@
           </div>
         </el-form>
       </div>
-      <el-dialog
-        :visible.sync="dialogShow"
-        class="el-dialog-loginOut"
-        width="70%"
-        :show-close="false"
-        center
-      >
-        <div class="loginOut-box">
-          <div><img src="./../../../static/images/success.png" alt="" /></div>
-          <span>注册完成，系统将自动登录</span>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <router-link to="/Home">
-            <el-button class="background-orange" @click="dialogShow = false">确认</el-button>
-          </router-link>
-        </span>
-      </el-dialog>
     </template>
     <template v-else>
       <div class="register-header">
@@ -350,25 +333,30 @@
           </div>
         </el-form>
       </div>
-      <el-dialog
-        title="会员注册"
-        :visible.sync="dialogShow"
-        class="el-dialog-loginOut"
-        :show-close="false"
-    
-        center 
-      >
-        <div class="loginOut-box">
-          <span>您已成功注册嗨聊会员！</span>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <router-link to="/Home">
-            <el-button class="background-red" @click="dialogShow = false">确认</el-button>
-          </router-link>
-        </span>
-      </el-dialog>
     </template>
-    
+    <el-dialog
+      :title="device === 'pc'?'会员注册':''"
+      :visible.sync="dialogShow"
+      class="el-dialog-loginOut"
+      :show-close="false"
+      width="70%"
+      center 
+    >
+      <div class="loginOut-box">
+        <template v-if="device === 'moblie'">
+          <div><img src="./../../../static/images/success.png" alt="" /></div>
+          <span>注册完成，系统将自动登录</span>
+        </template>
+        <template v-else>
+          <span>您已成功注册嗨聊会员！</span>
+        </template>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <router-link to="/Home">
+          <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="dialogShow = false">确认</el-button>
+        </router-link>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
