@@ -107,6 +107,7 @@
       </div>
     </template>
     <el-dialog
+      :title="device === 'pc'?'解除帳號鎖定':''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -114,13 +115,13 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <div style="margin-bottom:10px;"><span >帐号已解除锁定，请重新登录。</span></div>
         <div><span>若忘記密码，可使用「忘记密码」功能。</span></div>
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Login">
-          <el-button class="background-orange" @click="dialogShow = false">确认</el-button>
+          <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
     </el-dialog>
@@ -394,7 +395,7 @@ export default {
   overflow: hidden;
   .register-header{
     justify-content: center;
-    margin-top: 6.59em;
+    margin-top: 13.3em;
     .register-header-title{
       left: 0;
       color: #474747;

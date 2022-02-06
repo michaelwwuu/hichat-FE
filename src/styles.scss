@@ -622,6 +622,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
   }
+  //彈出視窗樣式
   .el-dialog__wrapper {
     overflow: hidden;
     .el-dialog {
@@ -645,6 +646,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
       .el-dialog__body {
         text-align: center;
+        padding: 45px 25px !important;
+        border-bottom: 1px solid #efefef;
         .qrcode-box {
           width: 15em;
           height: 15em;
@@ -677,10 +680,22 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         .dialog-footer {
           display: flex;
           justify-content: space-between;
-          .el-button{
-            width: 90%;
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
             border: 0;
-            background-color: inherit;
+          }
+          .background-red {
+            background-color:inherit !important;
+            color: #ee5253 !important;
+          }
+          .background-orange {
+            background-color:inherit !important;
+            color: #fe5f3f !important;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f !important;;
+            color: #fe5f3f !important;;
           }
           img {
             height: 1em;

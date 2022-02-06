@@ -181,6 +181,7 @@
       </el-form>
     </template>
     <el-dialog
+      :title="device === 'pc'?'帳號已鎖定':''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -188,13 +189,13 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <div style="margin-bottom:10px;"><span >帐号已锁定。</span></div>
         <div><span>请至邮箱取得验证码以解锁帐号。</span></div>
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link :to="'/ResetPassword'">
-          <el-button class="background-orange" @click="dialogShow = false">确认</el-button>
+          <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="dialogShow = false">确认</el-button>
         </router-link>
       </span>
     </el-dialog>

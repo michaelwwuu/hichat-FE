@@ -1,8 +1,10 @@
 <template>
-  <div :class="[
-    { 'register-container-pc': device === 'pc' },
-    { 'register-container-moblie': device === 'moblie' }
-  ]">
+  <div 
+    :class="[
+      { 'register-container-pc': device === 'pc' },
+      { 'register-container-moblie': device === 'moblie' }
+    ]"
+    >
     <template v-if="device === 'moblie'">
       <div class="register-header">
         <router-link :to="'/Login'"
@@ -153,6 +155,7 @@
       </div>
     </template>
     <el-dialog
+      :title="device === 'pc'?'忘記密碼':''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -160,11 +163,11 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>密码已变更，请重新登录。</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="back">确认</el-button>
+        <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="back">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -442,7 +445,7 @@ export default {
   overflow: hidden;
   .register-header{
     justify-content: center;
-    margin-top: 6.59em;
+    margin-top: 13.3em;
     .register-header-title{
       left: 0;
       color: #474747;

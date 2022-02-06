@@ -382,7 +382,7 @@ export default {
       timer: false,
       disabledTime: false,
       disabled: true,
-      dialogShow: true,
+      dialogShow: false,
     };
   },
   watch: {
@@ -712,33 +712,5 @@ export default {
     border: 0 !important;
     right: 0.5em;
   }
-  /deep/.el-dialog-loginOut {
-    .el-dialog {
-      .el-dialog__body {
-        padding: 45px 25px;
-        border-bottom: 1px solid #efefef;
-      }
-      .el-dialog__footer {
-        .dialog-footer {
-          .el-button {
-            width: 100%;
-            border-radius: 8px;
-          }
-          .background-red {
-            background-color:inherit;
-            color: #ee5253;
-          }
-          .background-orange {
-            background-color:inherit;
-            color: #fe5f3f;
-          }
-          .border-red {
-            border: 1px solid #fe5f3f;
-            color: #fe5f3f;
-          }
-        }
-      }
-    }    
-  }  
 }
 </style>
