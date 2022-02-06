@@ -689,6 +689,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
             background-color:inherit !important;
             color: #ee5253 !important;
           }
+          .background-gray {
+            background-color:inherit !important;
+            color: #b3b3b3 !important;
+          }
           .background-orange {
             background-color:inherit !important;
             color: #fe5f3f !important;
@@ -712,4 +716,5 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     font-weight: 600;
   }
 }
+
 

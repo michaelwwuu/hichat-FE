@@ -137,7 +137,7 @@
       :visible.sync="centerDialogVisible"
       width="100%"
       center
-    >
+      >
       <div class="qrcode-box">
         <vue-qr
           ref="Qrcode"
@@ -173,22 +173,22 @@
       </span>
     </el-dialog>
     <el-dialog
+      title="登出"
       :visible.sync="logoutDialogShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
       center
-      append-to-body
+
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
         <span>确认要登出嗎？</span>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="logoutDialogShow = false"
+      <span slot="footer" class="dialog-footer" style="padding:0">
+        <el-button class="background-gray" style="border-right:1px solid #efefef; border-raduis:0;" @click="logoutDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="loginOut">确认</el-button>
+        <el-button class="background-red" @click="loginOut">登出</el-button>
       </span>
     </el-dialog>
   </div>
