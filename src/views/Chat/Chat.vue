@@ -10,7 +10,19 @@
               </div>
               <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
             </span>
-            <div class="home-user-more"></div>
+              <el-dropdown trigger="click" >
+                <span class="el-dropdown-link">
+                  <div class="home-user-more"></div>
+                </span>
+                <el-dropdown-menu slot="dropdown" class="chat-more">
+                  <el-dropdown-item>
+                    <div class="logout-btn">
+                      <img src="./../../../static/images/pc/trash.png" alt="" />
+                      <span style="color:#ee5253">退出群组</span>
+                    </div>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
           </div>
         </el-header>
         <message-pabel
@@ -359,8 +371,6 @@ export default {
           cursor: pointer;
         }
         .home-user-more {
-          position: absolute;
-          right: 30px;
           background-image: url("./../../../static/images/pc/more.png");
           cursor: pointer;
         }
