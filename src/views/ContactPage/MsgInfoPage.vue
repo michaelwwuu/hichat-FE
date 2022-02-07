@@ -4,8 +4,15 @@
       <el-main>
         <el-header height="70px">
           <div class="home-header">
-            <span class="home-header-title">資訊</span>
-             <div class="home-add-user"></div>
+            <span class="home-header-title">
+              <div style="display: flex; align-items: center; cursor: pointer;" @click="closeInfoMsgShow">
+                <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat"
+                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                /></span>
+                <span>資訊</span>
+              </div>
+            </span>
+            <div class="home-add-user"></div>
           </div>
         </el-header>
         <div class="home-content">
@@ -13,10 +20,22 @@
             <div class="user-data">
               <el-image
                 v-if="chatUser.icon !== undefined"
-                :src="noIconShow(JSON.stringify(chatUser) === '{}'? userData : chatUser,'user')"
-                :preview-src-list="[noIconShow(JSON.stringify(chatUser) === '{}'? userData : chatUser,'user')]"
+                :src="
+                  noIconShow(
+                    JSON.stringify(chatUser) === '{}' ? userData : chatUser,
+                    'user'
+                  )
+                "
+                :preview-src-list="[
+                  noIconShow(
+                    JSON.stringify(chatUser) === '{}' ? userData : chatUser,
+                    'user'
+                  ),
+                ]"
               />
-              <span>{{ chatUser.name === null ? userData.name: chatUser.name}}</span>
+              <span>{{
+                chatUser.name === null ? userData.name : chatUser.name
+              }}</span>
             </div>
             <div
               class="setting-notification"
@@ -32,14 +51,14 @@
                 disabled
               >
               </el-switch>
-            </div>     
+            </div>
             <div
               class="setting-button"
               v-for="(item, index) in settingContactData"
               :key="index"
               @click="developmentMessage(item.name)"
             >
-              <a @click="goChatRoom(userData, item.path,'address')" >
+              <a @click="goChatRoom(userData, item.path, 'address')">
                 <div class="setting-button-left">
                   <img :src="item.icon" alt="" />
                   <span>{{ item.name }}</span>
@@ -47,15 +66,29 @@
                 <img src="./../../../static/images/next.png" alt="" />
               </a>
             </div>
-          </template>    
+          </template>
           <template v-else>
             <div class="user-data">
               <el-image
                 v-if="groupUser.icon !== undefined"
-                :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser,'group')"
-                :preview-src-list="[noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser,'group')]"
+                :src="
+                  noIconShow(
+                    JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
+                    'group'
+                  )
+                "
+                :preview-src-list="[
+                  noIconShow(
+                    JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
+                    'group'
+                  ),
+                ]"
               />
-              <span>{{ groupUser.groupName === null ? groupData.groupName: groupUser.groupName}}</span>
+              <span>{{
+                groupUser.groupName === null
+                  ? groupData.groupName
+                  : groupUser.groupName
+              }}</span>
             </div>
             <div
               class="setting-notification"
@@ -71,14 +104,14 @@
                 disabled
               >
               </el-switch>
-            </div>   
+            </div>
             <div
               class="setting-button"
               v-for="(item, index) in settingGroupData"
               :key="index"
               @click="developmentMessage(item.name)"
             >
-              <a @click="goChatRoom(userData, item.path,'group')" >
+              <a @click="goChatRoom(userData, item.path, 'group')">
                 <div class="setting-button-left">
                   <img :src="item.icon" alt="" />
                   <span>{{ item.name }}</span>
@@ -86,7 +119,7 @@
                 <img src="./../../../static/images/next.png" alt="" />
               </a>
             </div>
-          </template>  
+          </template>
         </div>
       </el-main>
     </el-container>
@@ -143,7 +176,7 @@ export default {
       developmentMessage: developmentMessage,
     };
   },
-   computed: {
+  computed: {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
@@ -155,25 +188,36 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     // this.getUserId();
   },
-  
+
   methods: {
     ...mapMutations({
       setHichatNav: "ws/setHichatNav",
-      setInfoMsg:"ws/setInfoMsg",
-      setChatUser:"ws/setChatUser"
+      setInfoMsg: "ws/setInfoMsg",
+      setChatUser: "ws/setChatUser",
     }),
-    noIconShow(iconData,key){
-      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
-        return require(`./../../../static/images/image_${key}_defult.png`)
-      }else{
-        return iconData.icon
+    closeInfoMsgShow(){
+      let infoMsg = { infoMsgShow:false,infoMsgChat:false }
+      this.setInfoMsg(infoMsg)
+    },
+    noIconShow(iconData, key) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return require(`./../../../static/images/image_${key}_defult.png`);
+      } else {
+        return iconData.icon;
       }
     },
     goChatRoom(data, path, type) {
-      let navType = { type:type, num:1 }
-      this.setHichatNav(navType)
-      let infoMsg = { infoMsgShow:false, infoMsgNav: path === 'address'?'ContactPage':'groupPage' }
-      this.setInfoMsg(infoMsg)
+      let navType = { type: type, num: 1 };
+      this.setHichatNav(navType);
+      let infoMsg = {
+        infoMsgShow: false,
+        infoMsgNav: path === "address" ? "ContactPage" : "GroupPage",
+      };
+      this.setInfoMsg(infoMsg);
       this.$router.push({ name: path, params: data });
     },
     // getUserId() {
@@ -189,14 +233,13 @@ export default {
     back() {
       this.$router.back(-1);
     },
-
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .home-wrapper {
-  border-left:1px solid #e1e1e1b0;
+  border-left: 1px solid #e1e1e1b0;
   .home-header {
     .home-add-user {
       background-color: #fff;

@@ -64,6 +64,7 @@
 
 <script>
 // import { gotoBottom } from "@/assets/tools";
+import { mapMutations } from "vuex";
 import { groupListMember } from "@/api";
 
 export default {
@@ -131,6 +132,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setContactListData:"ws/setContactListData",
+    }),
     handleTouch (e) {
       e._isScroller = true
     },
@@ -150,7 +154,7 @@ export default {
           if (res.icon === undefined){
             res.icon = require("./../../static/images/image_user_defult.png");
           }
-          localStorage.setItem("groupListMember",JSON.stringify(this.contactList))
+          this.setContactListData(this.contactList)
           this.message.forEach((el) => {
             if(el.userChatId === 'u' + res.memberId){
               el.icon = res.icon

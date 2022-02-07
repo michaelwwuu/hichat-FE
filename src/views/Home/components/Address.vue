@@ -20,7 +20,7 @@
           class="address-box"
           v-for="(item, index) in groupList"
           :key="index"
-          @click="goContactPage(item, 'groupPage')"
+          @click="goContactPage(item, 'GroupPage')"
         >
           <el-image :src="item.icon" />
           <div class="contont-box">
@@ -101,7 +101,7 @@ export default {
           data.toChatId = "u" + data.contactId;
           this.setChatUser(data);
         } else{
-          data.toChatId = "u" + data.groupId;
+          data.toChatId = "g" + data.groupId;
           this.setChatGroup(data);
         }
         this.$router.push({ name: path });

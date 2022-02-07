@@ -42,6 +42,7 @@
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
+          :contactListData="contactListData"
         />
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
@@ -90,11 +91,13 @@ export default {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
       groupUser: (state) => state.ws.groupUser,
+      contactListData: (state) => state.ws.contactListData,
     }),
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setContactListData:"ws/setContactListData",
     }),
     noIconShow(iconData) {
       if (
@@ -109,6 +112,7 @@ export default {
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
+      console.log(this.groupData)
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {

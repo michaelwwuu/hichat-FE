@@ -64,6 +64,7 @@
 
 <script>
 // import { gotoBottom } from "@/assets/tools";
+import { mapMutations } from "vuex";
 import { groupListMember } from "@/api";
 
 export default {
@@ -73,6 +74,9 @@ export default {
       type: Object,
     },
     messageData: {
+      type: Array,
+    },
+    contactListData:{
       type: Array,
     },
   },
@@ -90,6 +94,16 @@ export default {
     this.getGroupListMember()
   },
   watch: {
+    contactListData(val){
+      val.forEach((res)=>{
+        this.message.forEach((el) => {
+          if(el.userChatId === 'u' + res.memberId){
+            el.icon = res.icon
+            el.name = res.name
+          }
+        })
+      })
+    },
     messageData(val) {
       //去除重复
       const set = new Set();
@@ -118,6 +132,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setContactListData:"ws/setContactListData",
+    }),
     handleTouch (e) {
       e._isScroller = true
     },
@@ -137,7 +154,7 @@ export default {
           if (res.icon === undefined){
             res.icon = require("./../../static/images/image_user_defult.png");
           }
-          localStorage.setItem("groupListMember",JSON.stringify(this.contactList))
+          this.setContactListData(this.contactList)
           this.message.forEach((el) => {
             if(el.userChatId === 'u' + res.memberId){
               el.icon = res.icon

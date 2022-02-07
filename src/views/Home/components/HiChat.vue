@@ -287,7 +287,7 @@ export default {
       }else{
         let infoMsg = {
           infoMsgShow:false,
-          infoMsgNav: path === 'ChatMsg'?'ContactPage':'groupPage'
+          infoMsgNav: path === 'ChatMsg'?'ContactPage':'GroupPage'
         }
         this.setInfoMsg(infoMsg)
         this.getHistoryMessage.chatType = path === 'ChatMsg' ? 'CLI_HISTORY_REQ':'CLI_GROUP_HISTORY_REQ'

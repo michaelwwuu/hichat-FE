@@ -41,7 +41,7 @@ import Socket from "@/utils/socket";
 import { groupListMember } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
-import MessagePabel from "@/components/message-group-moblie-pc";
+import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
 
 export default {
@@ -96,7 +96,7 @@ export default {
       }
     },
     infoMsgShow(){
-      let infoMsg = { infoMsgShow:true,infoMsgNav:'groupPage', }
+      let infoMsg = { infoMsgShow:true,infoMsgNav:'GroupPage',infoMsgChat:true }
       this.setInfoMsg(infoMsg)
     },
     getGroupListMember() {

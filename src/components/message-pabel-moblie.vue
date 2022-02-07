@@ -55,6 +55,7 @@
 </template>
 
 <script>
+// import { gotoBottom } from "@/assets/tools";
 export default {
   name: "MessagePabel",
   props: {
@@ -70,6 +71,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
+      // gotoBottom: gotoBottom,
     };
   },
   watch: {

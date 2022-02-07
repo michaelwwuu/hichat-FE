@@ -38,9 +38,9 @@
               </span>
               <div v-if="userData.isContact" class="home-user-search"></div>
               <el-dropdown trigger="click" >
-                <span class="el-dropdown-link">
+                <div class="el-dropdown-link">
                   <div class="home-user-more"></div>
-                </span>
+                </div>
                 <el-dropdown-menu slot="dropdown" class="chat-more">
                   <el-dropdown-item>
                     <div class="logout-btn">
@@ -236,7 +236,7 @@ export default {
       Socket.send(historyMessageData);
     },
     infoMsgShow(){
-      let infoMsg = { infoMsgShow:true,infoMsgNav:'ContactPage', }
+      let infoMsg = { infoMsgShow:true,infoMsgNav:'ContactPage',infoMsgChat:true }
       this.setInfoMsg(infoMsg)
     },
     // 已讀
