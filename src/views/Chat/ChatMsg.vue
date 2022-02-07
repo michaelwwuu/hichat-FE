@@ -30,14 +30,32 @@
     
           <template v-else>
             <div class="home-header-pc">
-              <span class="home-photo-link">
+              <span class="home-photo-link" @click="infoMsgShow">
                 <div class="home-user-photo">
                   <img :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)" />  
                 </div>
                 <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
               </span>
               <div v-if="userData.isContact" class="home-user-search"></div>
-              <div class="home-user-more"></div>
+              <el-dropdown trigger="click" >
+                <span class="el-dropdown-link">
+                  <div class="home-user-more"></div>
+                </span>
+                <el-dropdown-menu slot="dropdown" class="chat-more">
+                  <el-dropdown-item>
+                    <div class="logout-btn">
+                      <img src="./../../../static/images/pc/slash.png" alt="" />
+                      <span>封锁联络人</span>
+                    </div>
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <div class="logout-btn">
+                      <img src="./../../../static/images/pc/trash.png" alt="" />
+                      <span style="color:#ee5253">删除联络人</span>
+                    </div>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
           </template>
         </el-header>
@@ -88,6 +106,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :title="device === 'pc'?'加入联络人':''"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -95,7 +114,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>加入成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -105,6 +124,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :title="device === 'pc'?'刪除联络人':''"
       :visible.sync="deleteDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -112,7 +132,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>刪除成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -165,7 +185,7 @@ export default {
     Socket.$off("message", this.handleGetMessage);
   },
   mounted() {
-    this.getChatHistoryMessage();
+    if(this.device=== 'moblie') this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
@@ -187,6 +207,7 @@ export default {
     },
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setInfoMsg:"ws/setInfoMsg"
     }),
     // 訊息統一格式
     messageList(data) {
@@ -214,13 +235,17 @@ export default {
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
+    infoMsgShow(){
+      let infoMsg = { infoMsgShow:true,infoMsgNav:'ContactPage', }
+      this.setInfoMsg(infoMsg)
+    },
     // 已讀
-    readMsgShow() {
+    readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
-      sendReadMessageData.targetArray = this.readMsgData;
-      // sendReadMessageData.targetId = this.readMsgData;
+      sendReadMessageData.targetId = data.historyId;
+      sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
     // 收取 socket 回来讯息 (全局讯息)
@@ -237,9 +262,8 @@ export default {
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
           if(userInfo.isRead){
-            this.readMsgData.push(userInfo.historyId)
-            // this.readMsgData = userInfo.historyId
-            this.readMsgShow();
+            // this.readMsgData.push(userInfo.historyId)
+            this.readMsgShow(userInfo);
           }
           break;
         // 历史讯息
@@ -247,16 +271,16 @@ export default {
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (
-              el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
-              !el.isRead
-            ){
-              this.readMsgData.push(el.chat.historyId);
-            }
+            // if (
+            //   el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
+            //   !el.isRead
+            // ){
+            //   this.readMsgData.push(el.chat.historyId);
+            // }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsgShow();
+          this.readMsgShow(historyMsgList[0].chat);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -522,16 +546,12 @@ export default {
           background-repeat: no-repeat;
         }
         .home-user-search {
-          margin-right: 10px;
           position: absolute;
-          right: 85px;
+          right: 70px;
           background-image: url("./../../../static/images/pc/search.png");
           cursor: pointer;
         }
         .home-user-more {
-          margin-right: 10px;
-          position: absolute;
-          right: 30px;
           background-image: url("./../../../static/images/pc/more.png");
           cursor: pointer;
         }
@@ -540,6 +560,7 @@ export default {
           left: 14px;
           display: flex;
           align-items: center;
+          cursor: pointer;
           .home-user-photo {
             text-align: center;
             overflow: hidden;

@@ -45,7 +45,7 @@
       </el-main>
     </el-container>
     <el-container v-else>
-      <el-aside width="25%">
+      <el-aside width="20%">
         <el-header height="70px">
           <div class="home-header flex-start" >
             <router-link :to="'/Home'">
@@ -86,6 +86,7 @@
       </el-aside>
     </el-container>    
     <el-dialog
+      :title="device === 'pc'?'加入联络人':''"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -93,7 +94,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>操作成功</span>
       </div>
       <span slot="footer" class="dialog-footer">

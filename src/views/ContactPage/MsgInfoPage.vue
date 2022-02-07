@@ -9,15 +9,14 @@
           </div>
         </el-header>
         <div class="home-content">
- 
-          <template v-if="infoMsg.infoMsgNav === 'contactPage'">
+          <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
             <div class="user-data">
               <el-image
-                v-if="userData.icon !== undefined"
-                :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)"
-                :preview-src-list="[noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)]"
+                v-if="chatUser.icon !== undefined"
+                :src="noIconShow(JSON.stringify(chatUser) === '{}'? userData : chatUser,'user')"
+                :preview-src-list="[noIconShow(JSON.stringify(chatUser) === '{}'? userData : chatUser,'user')]"
               />
-              <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
+              <span>{{ chatUser.name === null ? userData.name: chatUser.name}}</span>
             </div>
             <div
               class="setting-notification"
@@ -53,10 +52,10 @@
             <div class="user-data">
               <el-image
                 v-if="groupUser.icon !== undefined"
-                :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)"
-                :preview-src-list="[noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)]"
+                :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser,'group')"
+                :preview-src-list="[noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser,'group')]"
               />
-              <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
+              <span>{{ groupUser.groupName === null ? groupData.groupName: groupUser.groupName}}</span>
             </div>
             <div
               class="setting-notification"
@@ -91,22 +90,6 @@
         </div>
       </el-main>
     </el-container>
-
-    <el-dialog
-      :visible.sync="successDialogShow"
-      class="el-dialog-loginOut"
-      width="70%"
-      :show-close="false"
-      center
-    >
-      <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>操作成功</span>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="back">確認</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -156,10 +139,7 @@ export default {
         },
       ],
       groupDataList: [],
-      noIcon:require("./../../../static/images/image_user_defult.png"),
       notification: true,
-      successDialogShow: false,
-
       developmentMessage: developmentMessage,
     };
   },
@@ -173,44 +153,39 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.getUserId();
+    // this.getUserId();
   },
   
   methods: {
     ...mapMutations({
       setHichatNav: "ws/setHichatNav",
-      setInfoMsg:"ws/setInfoMsg"
+      setInfoMsg:"ws/setInfoMsg",
+      setChatUser:"ws/setChatUser"
     }),
-    noIconShow(iconData){
+    noIconShow(iconData,key){
       if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
-        return this.noIcon
+        return require(`./../../../static/images/image_${key}_defult.png`)
       }else{
         return iconData.icon
       }
     },
     goChatRoom(data, path, type) {
-      let navType={
-        type:type,
-        num:1,
-      }
+      let navType = { type:type, num:1 }
       this.setHichatNav(navType)
-      let infoMsg = {
-        infoMsgShow:false,
-        infoMsgNav: path === 'address'?'contactPage':'groupPage'
-      }
+      let infoMsg = { infoMsgShow:false, infoMsgNav: path === 'address'?'ContactPage':'groupPage' }
       this.setInfoMsg(infoMsg)
       this.$router.push({ name: path, params: data });
     },
-    getUserId() {
-      let id = this.userData.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        this.userData.username = res.data.username;
-        this.userData.name = res.data.name;
-        this.userData.isBlock = res.data.isBlock;
-        this.userData.isContact = res.data.isContact;
-        localStorage.setItem("userData", JSON.stringify(this.userData));
-      });
-    },
+    // getUserId() {
+    //   let id = this.chatUser.contactId;
+    //   getSearchById({ id }).then((res) => {
+    //     this.userData.username = res.data.username;
+    //     this.userData.name = res.data.name;
+    //     this.userData.isBlock = res.data.isBlock;
+    //     this.userData.isContact = res.data.isContact;
+    //     this.setChatUser(this.userData);
+    //   });
+    // },
     back() {
       this.$router.back(-1);
     },

@@ -6,7 +6,7 @@ export const state = {
   contactListData:[],
   infoMsg:{
     infoMsgShow:false,
-    infoMsgNav:"contactPage"
+    infoMsgNav:"ContactPage"
   },
   hichatNav:{
     type:"address",

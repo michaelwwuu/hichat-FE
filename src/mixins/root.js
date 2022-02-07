@@ -7,6 +7,17 @@ const rootMixins = {
   created() {
   },
   methods: {
+    //鎖定滾動
+    handleTouch (e) {
+      e._isScroller = true
+    },
+    // 置底
+    gotoBottom() {
+      const box = document.getElementsByClassName('message-pabel-box')[0]
+      this.$nextTick(() => {
+        box.scrollTop = box.scrollHeight
+      })
+    },
     // // 为了做验证的时分秒默认时间
     newDefaultEnd() {
       return this.$moment().endOf('day').format('YYYY-MM-DD 23:59:59')

@@ -4,7 +4,7 @@
       <el-main>
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
-            <span class="home-photo-link">
+            <span class="home-photo-link"  @click="infoMsgShow">
               <div class="home-user-photo">
                 <img :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)" />  
               </div>
@@ -43,7 +43,7 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      noIcon: require("./../../../static/images/image_user_defult.png"),
+      noIcon: require("./../../../static/images/image_group_defult.png"),
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -55,7 +55,7 @@ export default {
   },
   mounted() {
     this.getGroupListMember();
-    this.getChatHistoryMessage();
+    // this.getChatHistoryMessage();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -70,6 +70,7 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setInfoMsg:"ws/setInfoMsg"
     }),
     noIconShow(iconData) {
       if (
@@ -81,6 +82,10 @@ export default {
       } else {
         return iconData.icon;
       }
+    },
+    infoMsgShow(){
+      let infoMsg = { infoMsgShow:true,infoMsgNav:'groupPage', }
+      this.setInfoMsg(infoMsg)
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -118,11 +123,12 @@ export default {
       Socket.send(historyMessageData);
     },
     // 已讀
-    readMsgShow() {
+    readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
-      sendReadMessageData.targetArray = this.readMsgData;
+      sendReadMessageData.targetId = data.historyId;
+      sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
     // 收取 socket 回来讯息 (全局讯息)
@@ -134,31 +140,28 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          // this.contactList.forEach((item) => {
-          //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
-          //     userInfo.chat.icon = item.icon;
-          //     userInfo.chat.name = item.name;
-          //   }
-          // });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
+          if(userInfo.isRead){
+            // this.readMsgData.push(userInfo.historyId)
+            this.readMsgShow(userInfo);
+          }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (
-              el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
-              !el.isRead
-            ){
-              this.readMsgData.push(el.chat.historyId);
-            }
+            // if (
+            //   el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
+            //   !el.isRead
+            // ){
+            //   this.readMsgData.push(el.chat.historyId);
+            // }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-
-          this.readMsgShow();
+          this.readMsgShow(historyMsgList[0].chat);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -350,14 +353,12 @@ export default {
           background-repeat: no-repeat;
         }
         .home-user-search {
-          margin-right: 10px;
           position: absolute;
-          right: 85px;
+          right: 70px;
           background-image: url("./../../../static/images/pc/search.png");
           cursor: pointer;
         }
         .home-user-more {
-          margin-right: 10px;
           position: absolute;
           right: 30px;
           background-image: url("./../../../static/images/pc/more.png");
@@ -368,6 +369,7 @@ export default {
           left: 14px;
           display: flex;
           align-items: center;
+          cursor: pointer;
           .home-user-photo {
             text-align: center;
             overflow: hidden;

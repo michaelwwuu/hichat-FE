@@ -144,11 +144,12 @@ export default {
       Socket.send(historyMessageData);
     },
     // 已讀
-    readMsgShow() {
+    readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
-      sendReadMessageData.targetArray = this.readMsgData;
+      sendReadMessageData.targetId = data.historyId;
+      sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
     // 收取 socket 回来讯息 (全局讯息)
@@ -168,22 +169,26 @@ export default {
           });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
+          if(userInfo.isRead){
+            // this.readMsgData.push(userInfo.historyId)
+            this.readMsgShow(userInfo);
+          }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (
-              el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
-              !el.isRead
-            ){
-              this.readMsgData.push(el.chat.historyId);
-            }
+            // if (
+            //   el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
+            //   !el.isRead
+            // ){
+            //   this.readMsgData.push(el.chat.historyId);
+            // }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsgShow();
+          this.readMsgShow(historyMsgList[0].chat);
           break;
         // 已讀
         case "SRV_MSG_READ":

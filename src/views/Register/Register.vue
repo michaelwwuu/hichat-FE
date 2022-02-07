@@ -664,7 +664,7 @@ export default {
   margin: 3em auto;
   overflow: initial;
   .register-header{
-    justify-content: center;
+    justify-content: center;  
     .register-header-title{
       left: 0;
       color: #474747;

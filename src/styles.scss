@@ -508,16 +508,16 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-tabs{
       width: 100%;
       .el-tabs__header{
-        width:24.5%;
+        width:20%;
         position: absolute;
-        background-color:#FFFFFF;
+        background-color:inherit;
         .el-tabs__nav-wrap{
           .el-tabs__nav{
             width:100%;
             .el-tabs__item{
               height:55px;
               line-height:55px;
-              padding: 0 4em;
+              padding: 0 3em;
               font-size: 17px;
               font-weight: 600;
               color: #b3b3b3;
@@ -617,7 +617,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   .home-footer-nav{
     .footer-nav-btn{
       img{
-        height: 3em !important;
+        height: 2.5em !important;
         margin-bottom:0 !important;
       }
     }
@@ -714,6 +714,25 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
   .el-button{
     font-weight: 600;
+  }
+  .PC-header{
+    .el-dropdown{
+      position:absolute;
+      right: 30px;
+    }
+  }
+}
+.chat-more{
+  .el-dropdown-menu__item{
+    .logout-btn{
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      img{
+        height: 1.4em;
+        padding-right: 5px;
+      }
+    }
   }
 }
 

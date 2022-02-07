@@ -395,7 +395,7 @@ export default {
   overflow: hidden;
   .register-header{
     justify-content: center;
-    margin-top: 13.3em;
+    margin-top: 105px;
     .register-header-title{
       left: 0;
       color: #474747;

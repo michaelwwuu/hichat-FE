@@ -27,7 +27,6 @@ import './styles.scss'
 
 // 引入根组件mixins 日期格式 共用事件
 import mixins from './mixins/root.js'
-import system from './mixins/system.js'
 
 Vue.use(ElementUI);
 
@@ -37,7 +36,7 @@ Vue.config.productionTip = false
 
 
 new Vue({
-  mixins: [mixins,system],
+  mixins: [mixins],
   router,
   store,
   render: h => h(App)

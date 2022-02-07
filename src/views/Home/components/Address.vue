@@ -6,7 +6,7 @@
           class="address-box"
           v-for="(item, index) in contactList"
           :key="index"
-          @click="goContactPage(item, 'contactPage')"
+          @click="goContactPage(item, 'ContactPage')"
         >
           <el-image :src="item.icon" />
           <div class="contont-box">
@@ -97,7 +97,7 @@ export default {
     },
     goContactPage(data, path) {
       if(this.device ==='moblie') {
-        if (path === "contactPage") {
+        if (path === "ContactPage") {
           data.toChatId = "u" + data.contactId;
           this.setChatUser(data);
         } else{
@@ -110,7 +110,7 @@ export default {
           infoMsgShow:true,
           infoMsgNav:path,
         }
-        if (path === "contactPage") {
+        if (path === "ContactPage") {
           data.toChatId = "u" + data.contactId;
           this.getUserId(data)
           this.setInfoMsg(infoStore)

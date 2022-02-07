@@ -66,7 +66,7 @@
       </el-main>
     </el-container>
     <el-container v-else>
-      <el-aside width="25%">
+      <el-aside width="20%">
         <el-header style="height: 70px;" >
           <div class="home-header" v-if="num === 2">
             <span class="home-header-title">设定</span>
@@ -128,7 +128,7 @@
           <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
         </template>
       </el-main>
-      <el-aside width="25%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
+      <el-aside width="20%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>
       </el-aside>
     </el-container>
@@ -184,7 +184,7 @@
       <div class="loginOut-box">
         <span>确认要登出嗎？</span>
       </div>
-      <span slot="footer" class="dialog-footer" style="padding:0">
+      <span slot="footer" class="dialog-footer">
         <el-button class="background-gray" style="border-right:1px solid #efefef; border-raduis:0;" @click="logoutDialogShow = false"
           >取消</el-button
         >
@@ -273,9 +273,13 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setGroupList:"ws/setGroupList",
+      setInfoMsg:"ws/setInfoMsg",
     }),
     changeImg(index) {
       this.num = index;
+      console.log(this.num)
+      let infoMsg = { infoMsgShow:false}
+      if( this.num === 2) this.setInfoMsg(infoMsg)
     },
     copyUrl() {
       let url = this.qrCodeConfig.text;
@@ -417,5 +421,14 @@ export default {
       }
     }
   } 
+}
+.el-dialog-loginOut{
+  /deep/.el-dialog__footer{
+    padding: 0 !important;
+    .el-button{
+      padding: 20px !important;
+      border-radius:0 !important;
+    }
+  }
 }
 </style>
