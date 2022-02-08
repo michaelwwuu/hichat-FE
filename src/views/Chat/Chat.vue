@@ -11,9 +11,9 @@
               <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
             </span>
               <el-dropdown trigger="click" >
-                <span class="el-dropdown-link">
+                <div class="el-dropdown-link">
                   <div class="home-user-more"></div>
-                </span>
+                </div>
                 <el-dropdown-menu slot="dropdown" class="chat-more">
                   <el-dropdown-item>
                     <div class="logout-btn">
@@ -178,7 +178,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          if(historyMsgList.length < 0) this.readMsgShow(historyMsgList[0]);
+          if(historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":

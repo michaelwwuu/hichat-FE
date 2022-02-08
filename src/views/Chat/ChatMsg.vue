@@ -50,7 +50,7 @@
                       </div>
                     </el-dropdown-item>
                     <el-dropdown-item>
-                      <div class="logout-btn">
+                      <div class="logout-btn" @click="deleteRecent(chatUser)">
                         <img src="./../../../static/images/pc/trash.png" alt="" />
                         <span style="color:#ee5253">删除联络人</span>
                       </div>
@@ -61,7 +61,7 @@
               <template v-else>
                 <div class="contact-box">
                   <ul>
-                    <li @click="deleteRecent(userData)"><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
+                    <li><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
                     <li @click="isBlockDialogShow = true">
                       <img src="./.../../../../../static/images/pc/slash-red.png" alt="">
                       {{ userData.isBlock ? "解除封锁" : "封锁" }}
@@ -98,6 +98,8 @@
       </el-main>
     </el-container>
     <el-dialog
+      :title="device === 'pc'?`${ chatUser.isBlock ? '解除封锁' : '封锁'
+          }聯絡人`:''"
       :visible.sync="isBlockDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -105,14 +107,14 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'pc'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span
-          >确认是否{{ chatUser.isBlock ? '解除封锁' : '封锁'
-          }}{{ chatUser.name }}？</span
+          >确认是否{{ chatUser.isBlock ? `解除封锁${device === 'pc'?'好友':''}` : `封锁${device === 'pc'?'好友':''}`
+          }} {{ chatUser.name }}？</span
         >
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="isBlockDialogShow = false"
+        <el-button :class="device === 'moblie'? 'border-red':'background-gray'" @click="isBlockDialogShow = false"
           >取消</el-button
         >
         <el-button class="background-red" @click="blockSubmitBtn(chatUser)"
@@ -121,7 +123,6 @@
       </span>
     </el-dialog>
     <el-dialog
-      :title="device === 'pc'?'加入联络人':''"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -139,7 +140,6 @@
       </span>
     </el-dialog>
     <el-dialog
-      :title="device === 'pc'?'刪除联络人':''"
       :visible.sync="deleteDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -147,12 +147,12 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
         <span>刪除成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-orange" @click="$router.push({ path: '/Address' })"
-          >確認</el-button
+           >確認</el-button
         >
       </span>
     </el-dialog>
@@ -299,7 +299,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsgShow(historyMsgList[0]);
+          if(historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -340,6 +340,7 @@ export default {
         historyId: "",
         toChatId: data.toChatId,
       };
+      console.log(parmas)
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
