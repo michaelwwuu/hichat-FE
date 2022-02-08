@@ -124,7 +124,7 @@
       </el-aside>
       <el-main>
         <template v-if="num === 1 ">
-          <chat-msg v-if="hichatNav.type === 'address' && JSON.stringify(chatUser) !== '{}'"/>
+          <chat-msg v-if="hichatNav.type === 'address' || hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}'"/>
           <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
         </template>
       </el-main>
@@ -277,7 +277,6 @@ export default {
     }),
     changeImg(index) {
       this.num = index;
-      console.log(this.num)
       let infoMsg = { infoMsgShow:false}
       if( this.num === 2) this.setInfoMsg(infoMsg)
     },
@@ -410,11 +409,11 @@ export default {
       align-items:center;
       width: 12em;
       img{
-        height: 1.9em;
+        height: 1.5em;
       }
       span{
         margin-left: 0.3em;
-        font-size: 19px;
+        font-size: 17px;
         color: #333333;
         font-weight: 600;
         margin-top: 4px;

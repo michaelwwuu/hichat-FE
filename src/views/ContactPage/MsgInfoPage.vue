@@ -53,9 +53,9 @@
               </el-switch>
             </div>
             <div
-              class="setting-button"
               v-for="(item, index) in settingContactData"
               :key="index"
+              class="setting-button"
               @click="developmentMessage(item.name)"
             >
               <a @click="goChatRoom(userData, item.path, 'address')">

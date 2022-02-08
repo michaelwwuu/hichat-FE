@@ -36,30 +36,45 @@
                 </div>
                 <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
               </span>
-              <div v-if="userData.isContact" class="home-user-search"></div>
-              <el-dropdown trigger="click" >
-                <div class="el-dropdown-link">
-                  <div class="home-user-more"></div>
+              <template v-if="chatUser.isContact">
+                <div class="home-user-search"></div>
+                <el-dropdown trigger="click" >
+                  <div class="el-dropdown-link">
+                    <div class="home-user-more"></div>
+                  </div>
+                  <el-dropdown-menu slot="dropdown" class="chat-more">
+                    <el-dropdown-item >
+                      <div class="logout-btn" @click="isBlockDialogShow = true">
+                        <img src="./../../../static/images/pc/slash.png" alt="" />
+                        <span>{{ chatUser.isBlock ? "解除封锁" : "封锁联络人" }}</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div class="logout-btn">
+                        <img src="./../../../static/images/pc/trash.png" alt="" />
+                        <span style="color:#ee5253">删除联络人</span>
+                      </div>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <template v-else>
+                <div class="contact-box">
+                  <ul>
+                    <li @click="deleteRecent(userData)"><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
+                    <li @click="isBlockDialogShow = true">
+                      <img src="./.../../../../../static/images/pc/slash-red.png" alt="">
+                      {{ userData.isBlock ? "解除封锁" : "封锁" }}
+                    </li>
+                    <li @click="addUser(userData)"><img src="./.../../../../../static/images/pc/user-plus-block.png" alt="">加入联络人</li>
+                  </ul>
                 </div>
-                <el-dropdown-menu slot="dropdown" class="chat-more">
-                  <el-dropdown-item>
-                    <div class="logout-btn">
-                      <img src="./../../../static/images/pc/slash.png" alt="" />
-                      <span>封锁联络人</span>
-                    </div>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <div class="logout-btn">
-                      <img src="./../../../static/images/pc/trash.png" alt="" />
-                      <span style="color:#ee5253">删除联络人</span>
-                    </div>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              </template>
+
             </div>
           </template>
         </el-header>
-        <div class="contact-box" v-if="!userData.isContact">
+        <div class="contact-box" v-if="!userData.isContact && device === 'moblie'">
           <ul>
             <li @click="isBlockDialogShow = true">
               {{ userData.isBlock ? "解除封锁" : "封锁" }}
@@ -92,15 +107,15 @@
       <div class="loginOut-box">
         <div><img src="./../../../static/images/warn.png" alt="" /></div>
         <span
-          >确认是否{{ userData.isBlock ? "解除封锁" : "封锁"
-          }}{{ userData.name }}？</span
+          >确认是否{{ chatUser.isBlock ? '解除封锁' : '封锁'
+          }}{{ chatUser.name }}？</span
         >
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="border-red" @click="isBlockDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="blockSubmitBtn(userData)"
+        <el-button class="background-red" @click="blockSubmitBtn(chatUser)"
           >确认</el-button
         >
       </span>
@@ -179,6 +194,7 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.setChatUser(this.userData)
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
@@ -207,7 +223,8 @@ export default {
     },
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setInfoMsg:"ws/setInfoMsg"
+      setInfoMsg:"ws/setInfoMsg",
+      setChatUser:"ws/setChatUser",
     }),
     // 訊息統一格式
     messageList(data) {
@@ -241,6 +258,7 @@ export default {
     },
     // 已讀
     readMsgShow(data) {
+      console.log(data)
       let sendReadMessageData = this.userInfoData;
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
@@ -261,10 +279,11 @@ export default {
         case "SRV_USER_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          if(userInfo.isRead){
-            // this.readMsgData.push(userInfo.historyId)
-            this.readMsgShow(userInfo);
-          }
+          // if(userInfo.isRead){
+          //   // this.readMsgData.push(userInfo.historyId)
+          //   this.readMsgShow(userInfo);
+          // }
+          this.readMsgShow(userInfo);
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
@@ -280,7 +299,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsgShow(historyMsgList[0].chat);
+          this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -290,7 +309,7 @@ export default {
           break;
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
-          this.getChatHistoryMessage();
+          if(this.device === "moblie") this.getChatHistoryMessage();
           break;
       }
     },
@@ -304,7 +323,8 @@ export default {
           if (res.code === 200) {
             this.successDialogShow = true;
             this.userData.isContact = true;
-            localStorage.setItem("userData", JSON.stringify(this.userData));
+            // localStorage.setItem("userData", JSON.stringify(this.userData));
+            this.setChatUser(this.userData)
           } else {
             this.$message({ message: res.message, type: "error" });
           }
@@ -339,7 +359,8 @@ export default {
             if (res.code === 200) {
               this.userData.isBlock = false;
               this.isBlockDialogShow = false;
-              localStorage.setItem("userData", JSON.stringify(this.userData));
+              // localStorage.setItem("userData", JSON.stringify(this.userData));
+              this.setChatUser(this.userData)
             }
           })
           .catch((err) => {
@@ -353,7 +374,8 @@ export default {
             if (res.code === 200) {
               this.userData.isBlock = true;
               this.isBlockDialogShow = false;
-              localStorage.setItem("userData", JSON.stringify(this.userData));
+              // localStorage.setItem("userData", JSON.stringify(this.userData));
+              this.setChatUser(this.userData)
             } else {
               this.$message({ message: res.message, type: "error" });
             }
@@ -574,6 +596,23 @@ export default {
             font-size: 15px;
             padding-left: 10px;
             font-weight: 600;
+          }
+        }
+        .contact-box{
+          position: absolute;
+          right: 0;
+          width: 600px;
+          ul{
+            justify-content: flex-end;
+            li{
+              margin-left: 5em;
+              cursor: pointer;
+              img{
+                height: 1.2em;
+                right: 5px;
+                top: 2px !important;
+              }
+            }
           }
         }
       }

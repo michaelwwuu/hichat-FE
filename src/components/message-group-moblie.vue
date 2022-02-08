@@ -103,12 +103,12 @@ export default {
           }
         })
       })
+      this.$root.gotoBottom();
     },
     messageData(val) {
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>!set.has(item.historyId) ? set.add(item.historyId) : false);
-      this.$root.gotoBottom();
     },
     message(val) {
       this.newMessageData = {};

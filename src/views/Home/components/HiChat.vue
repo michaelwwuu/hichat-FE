@@ -6,7 +6,7 @@
           v-for="(item, index) in hiChatDataList"
           :key="index"
           class="address-box"
-          @click="goChatRoom(item,'ChatMsg')"
+          @click="goChatRoom(item, 'ChatMsg')"
         >
           <el-image
             :src="
@@ -19,15 +19,24 @@
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
-                <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'" class="content-text">
-                  <span>{{item.lastChat.text}}</span>
+                <span
+                  v-if="item.lastChat.chatType === 'SRV_USER_SEND'"
+                  class="content-text"
+                >
+                  <span>{{ item.lastChat.text }}</span>
                   <span v-if="item.lastChat.text.length > 55">...</span>
                 </span>
-                
-                <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'" class="content-text">
+
+                <span
+                  v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+                  class="content-text"
+                >
                   传送了语音</span
                 >
-                <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'" class="content-text">
+                <span
+                  v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+                  class="content-text"
+                >
                   传送了图片</span
                 >
               </div>
@@ -51,7 +60,7 @@
           v-for="(item, index) in groupDataList"
           :key="index"
           class="address-box"
-          @click="goChatRoom(item,'ChatGroupMsg')"
+          @click="goChatRoom(item, 'ChatGroupMsg')"
         >
           <el-image
             :src="
@@ -60,19 +69,26 @@
                 : item.icon
             "
           />
-          
+
           <div class="contont-box">
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
-                <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'"  class="content-text">                 
-                  <span>{{item.lastChat.text}}</span>
+                <span
+                  v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'"
+                  class="content-text"
+                >
+                  <span>{{ item.lastChat.text }}</span>
                   <span v-if="item.lastChat.text.length > 55">...</span>
                 </span>
-                <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'" class="content-text"
+                <span
+                  v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
+                  class="content-text"
                   >传送了语音</span
                 >
-                <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'" class="content-text"
+                <span
+                  v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
+                  class="content-text"
                   >传送了图片</span
                 >
               </div>
@@ -104,7 +120,7 @@
           v-for="(item, index) in contactDataList"
           :key="index"
           class="address-box"
-          @click="goChatRoom(item,'ChatMsg')"
+          @click="goChatRoom(item, 'ChatMsg')"
         >
           <el-image
             :src="
@@ -117,15 +133,24 @@
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
-                <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'" class="content-text">
-                  <span>{{item.lastChat.text}}</span>
+                <span
+                  v-if="item.lastChat.chatType === 'SRV_USER_SEND'"
+                  class="content-text"
+                >
+                  <span>{{ item.lastChat.text }}</span>
                   <span v-if="item.lastChat.text.length > 55">...</span>
                 </span>
-                
-                <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'" class="content-text">
+
+                <span
+                  v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+                  class="content-text"
+                >
                   传送了语音</span
                 >
-                <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'" class="content-text">
+                <span
+                  v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+                  class="content-text"
+                >
                   传送了图片</span
                 >
               </div>
@@ -151,23 +176,23 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { getGroupList,groupListMember } from "@/api";
+import { getGroupList, groupListMember } from "@/api";
 
 export default {
   name: "HiChat",
   data() {
     return {
       searchKey: "",
-      activeName:"address",
-      groupList:{},
+      activeName: "address",
+      groupList: {},
       groupDataList: [],
       hiChatDataList: [],
       newMsgDataList: [],
       contactDataList: [],
-      messageNum:false,
-      getHistoryMessage:{
-        chatType: '',
-        toChatId: '',
+      messageNum: false,
+      getHistoryMessage: {
+        chatType: "",
+        toChatId: "",
         id: Math.random(),
         tokenType: 0,
         targetId: "",
@@ -180,8 +205,8 @@ export default {
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    this.activeName = this.hichatNav.type
-    this.getGroupDataList()
+    this.activeName = this.hichatNav.type;
+    this.getGroupDataList();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -190,6 +215,7 @@ export default {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
       hichatNav: (state) => state.ws.hichatNav,
+      chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
     }),
   },
@@ -199,19 +225,27 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setInfoMsg:"ws/setInfoMsg",
+      setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
-      setChatGroup:"ws/setChatGroup",
-      setGroupList:"ws/setGroupList",
+      setChatGroup: "ws/setChatGroup",
+      setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
-      setContactListData:"ws/setContactListData",
+      setContactListData: "ws/setContactListData",
     }),
     handleClick(tab, event) {
-      let navType={
-        type:tab.name,
-        num:1,
-      }
+      console.log(tab.name)
+      let navType = { type: tab.name, num: 1 };
       this.setHichatNav(navType);
+      if(tab.name === "address" || tab.name === "contact"){
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      } else{
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      }
+      Socket.send(this.getHistoryMessage);
     },
     getHiChatDataList() {
       let chatMsgKey = {
@@ -232,28 +266,31 @@ export default {
         case "SRV_RECENT_CHAT":
           this.hiChatDataList = userInfo.recentChat.filter(
             (item) => item.isContact
-          );         
+          );
           this.groupDataList = userInfo.recentChat.filter(
             (item) => item.isGroup
           );
           this.contactDataList = userInfo.recentChat.filter(
-            (item) => !item.isContact && item.isContact !==null
+            (item) => !item.isContact && item.isContact !== null
           );
-          this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
-            break;
+          this.messageNum = this.contactDataList.some(item => item.unreadCount > 0);
+          break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+        case "SRV_MSG_READ":
           this.getHiChatDataList();
           break;
       }
     },
-    getGroupDataList(){
+    getGroupDataList() {
       getGroupList().then((res) => {
-        this.groupList = res.data.list
-        this.setGroupList(this.groupList)
-      })
+        this.groupList = res.data.list;
+        this.setGroupList(this.groupList);
+      });
     },
     getGroupListMember() {
       let groupId = this.groupUser.toChatId.replace("g", "");
@@ -263,36 +300,38 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../../static/images/image_user_defult.png");
         });
-        this.setContactListData(this.contactList)
+        this.setContactListData(this.contactList);
       });
     },
-    goChatRoom(data,path) {
-      if(path === 'ChatMsg'){
+    goChatRoom(data, path) {
+
+      if (path === "ChatMsg") {
         this.setChatUser(data);
       } else {
-        data.icon = data.icon
-        data.groupName = data.name
+        data.icon = data.icon;
+        data.groupName = data.name;
         data.groupId = data.toChatId.replace("g", "");
         data.memberId = JSON.parse(data.forChatId.replace("u", ""));
-        this.groupList.forEach((item)=>{
-          if(item.groupName === data.groupName){
-            return data.isAdmin = item.isAdmin
+        this.groupList.forEach((item) => {
+          if (item.groupName === data.groupName) {
+            return (data.isAdmin = item.isAdmin);
           }
-        })
+        });
         this.setChatGroup(data);
-        this.getGroupListMember()
+        this.getGroupListMember();
       }
-      if(this.device ==='moblie') {
+      if (this.device === "moblie") {
         this.$router.push({ name: path });
-      }else{
+      } else {
         let infoMsg = {
-          infoMsgShow:false,
-          infoMsgNav: path === 'ChatMsg'?'ContactPage':'GroupPage'
-        }
-        this.setInfoMsg(infoMsg)
-        this.getHistoryMessage.chatType = path === 'ChatMsg' ? 'CLI_HISTORY_REQ':'CLI_GROUP_HISTORY_REQ'
-        this.getHistoryMessage.toChatId = data.toChatId
-        this.getHistoryMessage.id = Math.random()
+          infoMsgShow: false,
+          infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
+        };
+        this.setInfoMsg(infoMsg);
+        this.getHistoryMessage.chatType =
+          path === "ChatMsg" ? "CLI_HISTORY_REQ" : "CLI_GROUP_HISTORY_REQ";
+        this.getHistoryMessage.toChatId = data.toChatId;
+        this.getHistoryMessage.id = Math.random();
         Socket.send(this.getHistoryMessage);
       }
     },
@@ -303,12 +342,12 @@ export default {
 <style lang="scss" scoped>
 .address-box {
   cursor: pointer;
-  &:hover{
+  &:hover {
     background-color: #ebeaea81;
   }
-  .contont-box{
+  .contont-box {
     padding-left: 1em;
-    height:48px;
+    height: 48px;
     .msg-box {
       height: 48px;
       display: flex;
@@ -319,15 +358,15 @@ export default {
           margin-bottom: 7px;
         }
       }
-      .content-text{
+      .content-text {
         display: flex;
         font-size: 14px;
         opacity: 0.5;
-        span{
+        span {
           &:nth-child(1) {
             width: 10em;
             overflow: hidden;
-            margin-bottom:0;
+            margin-bottom: 0;
             font-size: 14px;
           }
           &:nth-child(2) {
@@ -349,14 +388,14 @@ export default {
         }
       }
     }
-    .contont-border-bottom{
+    .contont-border-bottom {
       width: 100vw;
       border-bottom: 0.02em solid #b3b3b3;
-      position: absolute
+      position: absolute;
     }
   }
 }
-.contact-badge{
+.contact-badge {
   vertical-align: initial;
   padding-left: 5px;
 }

@@ -78,6 +78,7 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.setChatGroup(this.groupData)
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
@@ -97,6 +98,7 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setChatGroup:"ws/setChatGroup",
       setContactListData:"ws/setContactListData",
     }),
     noIconShow(iconData) {
@@ -173,10 +175,11 @@ export default {
           });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          if(userInfo.isRead){
-            // this.readMsgData.push(userInfo.historyId)
-            this.readMsgShow(userInfo);
-          }
+          // if(userInfo.isRead){
+          //   // this.readMsgData.push(userInfo.historyId)
+          //   this.readMsgShow(userInfo);
+          // }
+          this.readMsgShow(userInfo);
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
@@ -192,7 +195,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsgShow(historyMsgList[0].chat);
+          this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
