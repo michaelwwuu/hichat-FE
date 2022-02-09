@@ -106,6 +106,7 @@ export default {
             if(item.icon === undefined) item.icon = require("./../../../static/images/image_user_defult.png")
           })
         })
+
       });
     },
     addMemberSubmitBtn(){

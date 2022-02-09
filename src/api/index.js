@@ -195,7 +195,7 @@ export const updateGroup = data => {
   }
   return axios.request(postData)
 }
-// 封鎖聯絡人
+// 封鎖联络人
 export const addBlockContactUser = data => {
   let postData = {
     url: '/api/member/block/add',
@@ -214,7 +214,7 @@ export const deleteRecentChat = data => {
   return axios.request(postData)
 }
 
-// 解除封鎖聯絡人
+// 解除封鎖联络人
 export const unBlockContactUser = data => {
   let postData = {
     url: '/api/member/block/delete',
@@ -224,7 +224,7 @@ export const unBlockContactUser = data => {
   return axios.request(postData)
 }
 
-// 刪除聯絡人
+// 刪除联络人
 export const deleteContactUser = data => {
   let postData = {
     url: `/api/member/contact/delete/${data}`,

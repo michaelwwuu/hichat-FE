@@ -1,6 +1,6 @@
 <template>
   <div class="home-content" @touchmove="$root.handleTouch">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="hichatNav.type" @tab-click="handleClick">
       <el-tab-pane label="联络人" name="address">
         <div
           v-for="(item, index) in hiChatDataList"
@@ -183,7 +183,6 @@ export default {
   data() {
     return {
       searchKey: "",
-      activeName: "address",
       groupList: {},
       groupDataList: [],
       hiChatDataList: [],
@@ -205,7 +204,6 @@ export default {
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    this.activeName = this.hichatNav.type;
     this.getGroupDataList();
   },
   beforeDestroy() {
@@ -232,10 +230,7 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setContactListData: "ws/setContactListData",
     }),
-    handleClick(tab, event) {
-      console.log(tab.name)
-      let navType = { type: tab.name, num: 1 };
-      this.setHichatNav(navType);
+    handleClick(tab) {
       if(tab.name === "address" || tab.name === "contact"){
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
@@ -304,7 +299,6 @@ export default {
       });
     },
     goChatRoom(data, path) {
-
       if (path === "ChatMsg") {
         this.setChatUser(data);
       } else {
@@ -320,9 +314,20 @@ export default {
         this.setChatGroup(data);
         this.getGroupListMember();
       }
+
       if (this.device === "moblie") {
         this.$router.push({ name: path });
       } else {
+        if(data.isContact){
+          this.type = 'address'
+        }else if(data.isGroup){
+          this.type = 'group'
+        }else if(!data.isBlock && !data.isContact && !data.isGroup){
+          this.type = 'contact'
+        }
+        let navType = { type: this.type, num: 1 };
+        this.setHichatNav(navType);
+
         let infoMsg = {
           infoMsgShow: false,
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",

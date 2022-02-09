@@ -57,7 +57,7 @@ class HttpRequest {
         if (res.code === 10013) this.message = "验证码已失效";
         if (res.code === 10014) this.message = "用户未被禁用";
         if (res.code === 10015) this.message = "邮件发送失败"
-        // 2-聯絡人相關
+        // 2-联络人相關
         if (res.code === 20004) this.message = "该用户已被封锁";
         // 3-群組, 聊天室相關
         if (res.code === 30005) this.message = "用户已被封禁";
@@ -75,7 +75,7 @@ class HttpRequest {
         if (res.code === 10010) this.message = "平台不存在"
         if (res.code === 10011) this.message = "平台不存在"
         if (res.code === 10012) this.message = "用户不存在"
-        // 2-聯絡人相關
+        // 2-联络人相關
         if (res.code === 20001) this.message = "无法增加自己到联络人";
         if (res.code === 20002) this.message = "联络人已新增过";
         if (res.code === 20003) this.message = "无法封锁自己";

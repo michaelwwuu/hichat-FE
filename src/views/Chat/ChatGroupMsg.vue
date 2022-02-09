@@ -114,7 +114,6 @@ export default {
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
-      console.log(this.groupData)
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {

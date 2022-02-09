@@ -89,7 +89,7 @@
               @click.stop="clickEvent"
             >
               <div class="face-other-btn">
-                <img src="./../../static/images/emoji.png" alt="" />
+                <img src="./../../static/images/pc/smile.png" alt="" />
               </div>
             </div>
             <div
@@ -120,6 +120,16 @@
           </emoji-picker>
         </div>
       </div>
+      <div class="input-tools-left">
+        <div>
+          <img
+            src="./../../static/images/image.png"
+            alt=""
+            @click="uploadImgShow = true"
+          />
+          <img src="./../../static/images/camera.png" alt="">
+        </div>
+      </div>      
     </template>
     <el-dialog
       title="上传图片"
@@ -142,8 +152,14 @@
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-        <el-button @click="uploadImgShow = false">取消</el-button>
+        <template v-if="device ==='moblie'">
+          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+          <el-button @click="uploadImgShow = false">取消</el-button>
+        </template>
+        <template v-else>
+          <el-button @click="uploadImgShow = false">取消</el-button>
+          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+        </template>
       </span>
     </el-dialog>    
     <el-dialog

@@ -517,8 +517,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
             .el-tabs__item{
               height:55px;
               line-height:55px;
-              padding: 0 2.5em;
-              font-size: 17px;
+              padding: 0 2em;
+              font-size: 15px;
               font-weight: 600;
               color: #b3b3b3;
             }
@@ -581,7 +581,11 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
     .message-input-box{
+      padding: 0 15px;
       .text-send-box{
+        width: 70vw;
+        border-radius: 5px;
+        margin: 0 auto;
         .footer-tools{
           .face-other-btn{
             cursor: pointer;
@@ -594,6 +598,16 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
                 font-size: 1em;
               }
             }
+          }
+        }
+      }
+      .input-tools-left{
+        margin: 0 auto;
+        margin-left: -10px;
+        img{
+          cursor: pointer;
+          &:nth-child(1){
+            margin-right:2em;
           }
         }
       }
@@ -694,9 +708,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
           display: flex;
           justify-content: space-between;
           .el-button {
-            width: 100%;
-            border-radius: 8px;
+            width: 100% !important;
             border: 0;
+            padding: 20px 0 !important;
+            &:nth-child(2){
+              border-radius: 0px 0px 8px 0px !important;
+              margin-left: 0 !important;
+            }
+
           }
           .background-red {
             background-color:inherit !important;

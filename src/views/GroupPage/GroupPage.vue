@@ -151,7 +151,6 @@ export default {
       }
     },
     goChatRoom(data, path) {
-      console.log(data, path)
       this.$router.push({ name: path, params: data });
     },
     submitBtn(){

@@ -7,22 +7,22 @@
             <div class="home-header">
               <span
                 class="home-user-link"
-                :style="!userData.isContact ? 'position:none;' : ''"
+                :style="!chatUser.isContact ? 'position:none;' : ''"
               >
                 <router-link :to="'/HiChat'">
                   <div class="home-user"></div>
                 </router-link>
               </span>
-              <span class="home-header-title">{{ userData.name }}</span>
-              <div v-if="userData.isContact" class="home-user-search"></div>
+              <span class="home-header-title">{{ chatUser.name }}</span>
+              <div v-if="chatUser.isContact" class="home-user-search"></div>
               <span class="home-photo-link">
-                <router-link :to="'/ContactPage'" v-if="userData.isContact">
+                <router-link :to="'/ContactPage'" v-if="chatUser.isContact">
                   <div class="home-user-photo">
-                    <img :src="noIconShow(userData)" />
+                    <img :src="noIconShow(chatUser)" />
                   </div>
                 </router-link>
                 <div class="home-user-photo" v-else>
-                  <img :src="noIconShow(userData)" />
+                  <img :src="noIconShow(chatUser)" />
                 </div>
               </span>
             </div>
@@ -50,7 +50,7 @@
                       </div>
                     </el-dropdown-item>
                     <el-dropdown-item>
-                      <div class="logout-btn" @click="deleteRecent(chatUser)">
+                      <div class="logout-btn" @click="isDeleteContactDialogShow = true">
                         <img src="./../../../static/images/pc/trash.png" alt="" />
                         <span style="color:#ee5253">删除联络人</span>
                       </div>
@@ -61,12 +61,12 @@
               <template v-else>
                 <div class="contact-box">
                   <ul>
-                    <li><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
+                    <li @click="deleteRecent(chatUser)"><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
                     <li @click="isBlockDialogShow = true">
                       <img src="./.../../../../../static/images/pc/slash-red.png" alt="">
-                      {{ userData.isBlock ? "解除封锁" : "封锁" }}
+                      {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
                     </li>
-                    <li @click="addUser(userData)"><img src="./.../../../../../static/images/pc/user-plus-block.png" alt="">加入联络人</li>
+                    <li @click="addUser(chatUser)"><img src="./.../../../../../static/images/pc/user-plus-block.png" alt="">加入联络人</li>
                   </ul>
                 </div>
               </template>
@@ -74,20 +74,20 @@
             </div>
           </template>
         </el-header>
-        <div class="contact-box" v-if="!userData.isContact && device === 'moblie'">
+        <div class="contact-box" v-if="!chatUser.isContact && device === 'moblie'">
           <ul>
             <li @click="isBlockDialogShow = true">
-              {{ userData.isBlock ? "解除封锁" : "封锁" }}
+              {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
             </li>
-            <li @click="deleteRecent(userData)">删除</li>
-            <li @click="addUser(userData)">加入联络人</li>
+            <li @click="deleteRecent(chatUser)">删除</li>
+            <li @click="addUser(chatUser)">加入联络人</li>
           </ul>
         </div>
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="disabled-user" v-if="userData.isBlock">
+        <div class="disabled-user" v-if="chatUser.isBlock">
           <span>該用戶已被封鎖</span>
         </div>
         <message-input
@@ -99,7 +99,7 @@
     </el-container>
     <el-dialog
       :title="device === 'pc'?`${ chatUser.isBlock ? '解除封锁' : '封锁'
-          }聯絡人`:''"
+          }联络人`:''"
       :visible.sync="isBlockDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -123,6 +123,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :title="device === 'pc'?'加入联络人':''"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -156,6 +157,28 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      title="刪除联络人"
+      :visible.sync="isDeleteContactDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span
+          >确认是否删除好友 {{ chatUser.name }}？</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="isDeleteContactDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="deleteSubmitBtn(chatUser)"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -166,6 +189,7 @@ import {
   addBlockContactUser,
   unBlockContactUser,
   deleteRecentChat,
+  deleteContactUser,
 } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
@@ -188,6 +212,7 @@ export default {
       noIcon: require("./../../../static/images/image_user_defult.png"),
       deleteDialogShow:false,
       isBlockDialogShow: false,
+      isDeleteContactDialogShow: false,
       successDialogShow: false,
       device: localStorage.getItem("device"),
     };
@@ -225,6 +250,7 @@ export default {
       setWsRes: "ws/setWsRes",
       setInfoMsg:"ws/setInfoMsg",
       setChatUser:"ws/setChatUser",
+      setHichatNav:"ws/setHichatNav",
     }),
     // 訊息統一格式
     messageList(data) {
@@ -245,20 +271,20 @@ export default {
       historyMessageData.chatType = "CLI_HISTORY_REQ";
       historyMessageData.id = Math.random();
       historyMessageData.toChatId =
-        this.userData.toChatId === undefined
-          ? "u" + this.userData.contactId
-          : this.userData.toChatId;
+        this.chatUser.toChatId === undefined
+          ? "u" + this.chatUser.contactId
+          : this.chatUser.toChatId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
     infoMsgShow(){
       let infoMsg = { infoMsgShow:true,infoMsgNav:'ContactPage',infoMsgChat:true }
+      console.log(infoMsg)
       this.setInfoMsg(infoMsg)
     },
     // 已讀
     readMsgShow(data) {
-      console.log(data)
       let sendReadMessageData = this.userInfoData;
       sendReadMessageData.chatType = "CLI_MSG_READ";
       sendReadMessageData.id = Math.random();
@@ -322,9 +348,13 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.successDialogShow = true;
-            this.userData.isContact = true;
-            // localStorage.setItem("userData", JSON.stringify(this.userData));
-            this.setChatUser(this.userData)
+            data.isContact = true;
+            this.setChatUser(data)
+            if(this.device === "pc") {
+              let navType = { type:"address", num: 1 };
+              this.getHiChatDataList()
+              this.setHichatNav(navType);
+            }
           } else {
             this.$message({ message: res.message, type: "error" });
           }
@@ -340,7 +370,6 @@ export default {
         historyId: "",
         toChatId: data.toChatId,
       };
-      console.log(parmas)
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
@@ -353,15 +382,14 @@ export default {
         });
     },
     blockSubmitBtn(data) {
-      if (this.userData.isBlock) {
-        let blockIdList = [this.userData.toChatId.replace("u", "")];
+      if (data.isBlock) {
+        let blockIdList = [data.toChatId.replace("u", "")];
         unBlockContactUser({ blockIdList })
           .then((res) => {
             if (res.code === 200) {
-              this.userData.isBlock = false;
+              data.isBlock = false;
               this.isBlockDialogShow = false;
-              // localStorage.setItem("userData", JSON.stringify(this.userData));
-              this.setChatUser(this.userData)
+              this.setChatUser(data)
             }
           })
           .catch((err) => {
@@ -373,10 +401,9 @@ export default {
         addBlockContactUser({ blockId })
           .then((res) => {
             if (res.code === 200) {
-              this.userData.isBlock = true;
+              data.isBlock = true;
               this.isBlockDialogShow = false;
-              // localStorage.setItem("userData", JSON.stringify(this.userData));
-              this.setChatUser(this.userData)
+              this.setChatUser(data)
             } else {
               this.$message({ message: res.message, type: "error" });
             }
@@ -386,6 +413,32 @@ export default {
             return false;
           });
       }
+    },
+    deleteSubmitBtn(data){
+      let contactId = data.toChatId.replace("u", "");
+      deleteContactUser(contactId)
+        .then((res) => {
+          if (res.code === 200) {
+            this.isDeleteContactDialogShow = false;
+            data.isContact = false;
+            this.getHiChatDataList()
+            this.setChatUser(data)
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+          return false;
+        });
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
     },
     back() {
       this.$router.back(-1);
@@ -611,7 +664,7 @@ export default {
               img{
                 height: 1.2em;
                 right: 5px;
-                top: 2px !important;
+                top: 4px !important;
               }
             }
           }

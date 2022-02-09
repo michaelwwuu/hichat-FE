@@ -129,16 +129,8 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import {
-  getSearchById,
-  addContactUser,
-  addBlockContactUser,
-  unBlockContactUser,
-  deleteContactUser,
-} from "@/api";
-
 export default {
-  name: "ContactPage",
+  name: "MsgInfoPage",
   data() {
     return {
       userData: {},
@@ -187,6 +179,7 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     // this.getUserId();
+    this.infoMsgSettingData()
   },
 
   methods: {
@@ -195,6 +188,12 @@ export default {
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
     }),
+    infoMsgSettingData(){
+      if(this.infoMsg.infoMsgChat){
+        this.settingContactData.splice(0, 1)
+        this.settingGroupData.splice(0, 1)
+      } 
+    },
     closeInfoMsgShow(){
       let infoMsg = { infoMsgShow:false,infoMsgChat:false }
       this.setInfoMsg(infoMsg)

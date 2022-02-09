@@ -279,7 +279,7 @@ export default {
     changeImg(index) {
       this.num = index;
       let infoMsg = { infoMsgShow:false}
-      if( this.num === 2) this.setInfoMsg(infoMsg)
+      if( this.num !== 1) this.setInfoMsg(infoMsg)
     },
     copyUrl() {
       let url = this.qrCodeConfig.text;
@@ -305,16 +305,18 @@ export default {
       switch (msgInfo.chatType) {
          //成功收到
         case "SRV_RECENT_CHAT":
-          this.hiChatDataList = msgInfo.recentChat.filter(
-            (item) => item.isContact
-          );
-          this.groupDataList = msgInfo.recentChat.filter(
-            (item) => item.isGroup
-          );
-          this.contactDataList = msgInfo.recentChat.filter(
-            (item) => !item.isContact && item.isContact !==null
-          );
-          this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
+          // console.log(msgInfo)
+
+          // this.hiChatDataList = msgInfo.recentChat.filter(
+          //   (item) => item.isContact
+          // );
+          // this.groupDataList = msgInfo.recentChat.filter(
+          //   (item) => item.isGroup
+          // );
+          // this.contactDataList = msgInfo.recentChat.filter(
+          //   (item) => !item.isContact && item.isContact !==null
+          // );
+          // this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
             break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":

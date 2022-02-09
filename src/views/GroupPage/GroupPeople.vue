@@ -118,6 +118,7 @@
 <script>
 import { developmentMessage } from "@/assets/tools";
 import { groupListMember,removeMember } from "@/api";
+import { mapMutations } from "vuex";
 
 export default {
   name: "GroupPeople",
@@ -147,6 +148,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setContactListData:"ws/setContactListData",
+    }),
     getGroupListMember() {
       let groupId = this.groupData.groupId
       groupListMember({ groupId }).then((res) => {
@@ -156,7 +160,7 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
-        localStorage.setItem('groupListMember',JSON.stringify(this.contactList))
+        this.setContactListData(this.contactList);
         this.checkDataList = this.contactList.filter(el=> el.memberId !== this.groupData.memberId)
       });
     },
