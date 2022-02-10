@@ -16,7 +16,13 @@
                 </div>
                 <el-dropdown-menu slot="dropdown" class="chat-more">
                   <el-dropdown-item>
-                    <div class="logout-btn">
+                    <div class="logout-btn" v-if="groupUser.isAdmin">
+                      <img src="./../../../static/images/pc/key.png" alt="" />
+                      <span >转移管理者权限</span>
+                    </div>
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <div class="logout-btn" @click="leaveGroupDialogShow = true">
                       <img src="./../../../static/images/pc/trash.png" alt="" />
                       <span style="color:#ee5253">退出群组</span>
                     </div>
@@ -30,15 +36,37 @@
           :userInfoData="userInfoData"
           :contactListData="contactListData"
         />
-        <message-input :userInfoData="userInfoData" :groupData="groupData" />
+        <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
+    <el-dialog
+      title="退出群組"
+      :visible.sync="leaveGroupDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span v-if="groupUser.isAdmin">
+          <span>管理者退出將解散群組</span>
+          <span>确认是否退出？</span>
+        </span>
+        <span v-else>确认是否退出群組？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="leaveGroupDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="submitBtn">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
-import { groupListMember } from "@/api";
+import { groupListMember,leaveGroup } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
@@ -59,6 +87,7 @@ export default {
       groupData: {},
       readMsgData: [],
       contactList: [],
+      leaveGroupDialogShow:false,
     };
   },
   created() {
@@ -85,6 +114,7 @@ export default {
       setWsRes: "ws/setWsRes",
       setInfoMsg:"ws/setInfoMsg",
       setChatGroup:"ws/setChatGroup",
+      setHichatNav: "ws/setHichatNav",
       setContactListData:"ws/setContactListData",
     }),
     noIconShow(iconData) {
@@ -191,6 +221,19 @@ export default {
           this.getChatHistoryMessage();
           break;
       }
+    },
+    submitBtn(){
+      let groupId = this.groupUser.groupId
+      leaveGroup({groupId}).then((res)=>{
+        if(res.code === 200) {
+          this.leaveGroupDialogShow = false
+          let navType = { type:"address", num: 0 };
+          this.setHichatNav(navType)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     },
   },
   components: {

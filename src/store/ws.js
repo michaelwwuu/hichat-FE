@@ -4,6 +4,7 @@ export const state = {
   groupUser:{},
   groupList:[],
   contactListData:[],
+  myContactDataList:[],
   infoMsg:{
     infoMsgShow:false,
     infoMsgNav:"ContactPage",
@@ -13,16 +14,27 @@ export const state = {
     type:"address",
     num:1,
   },
+  msgInfoPage:{
+    pageShow:true,
+    type:"",
+  },
 };
 export const actions = {};
 
 export const mutations = {
+  setMsgInfoPage(state, payload){
+    state.msgInfoPage = payload;
+  },
   setWsRes(state, payload) {
     state.wsRes = payload;
   },
+  setMyContactDataList(state, payload) {
+    state.myContactDataList = payload;
+    localStorage.setItem("myContactDataList", JSON.stringify(payload));
+  },
   setChatUser(state, payload) {
-    localStorage.setItem("userData", JSON.stringify(payload));
     state.chatUser = payload;
+    localStorage.setItem("userData", JSON.stringify(payload));
   },
   setChatGroup(state, payload) {
     state.groupUser = payload;

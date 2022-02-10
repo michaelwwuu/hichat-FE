@@ -138,7 +138,6 @@ export default {
           path: "/About",
         },
       ],
-
       notification: true,
       logoutDialogShow: false,
       developmentMessage: developmentMessage,
@@ -146,11 +145,8 @@ export default {
     };
   },
   created() {
-    if(localStorage.getItem("myUserList") === null) {
-      this.getUserData();
-    }else{
-      this.userData = JSON.parse(localStorage.getItem("myUserList"))
-    }
+    this.userData = JSON.parse(localStorage.getItem("myUserList"))
+    this.getUserData();
     if(this.device === 'pc'){
       this.editMyList = {
         icon:"",

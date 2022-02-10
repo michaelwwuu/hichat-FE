@@ -48,9 +48,6 @@ export default {
           document.querySelector('.hichat-moblie').style.setProperty('--vh', windowsVH + 'px');
       });
     },
-    handleTouch (e) {
-    //   e._isScroller = true
-    }
   },
 };
 </script>

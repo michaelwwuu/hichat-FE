@@ -2,23 +2,40 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="55px">
-          <div class="home-header">
-            <div class="home-user" @click="back"></div>
-            <span class="home-header-title">编辑群组</span>
-            <div class="home-add-user"></div>
-          </div>
-        </el-header>
+        <template v-if="device === 'moblie'">
+          <el-header height="55px">
+            <div class="home-header">
+              <div class="home-user" @click="back"></div>
+              <span class="home-header-title">编辑群组</span>
+              <div class="home-add-user"></div>
+            </div>
+          </el-header>
+        </template>
+        <template v-else>
+          <el-header height="70px">
+            <div class="home-header">
+              <span class="home-header-title">
+                <div style="display: flex; align-items: center; cursor: pointer;" @click="back">
+                  <span style="padding-right: 10px"
+                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  /></span>
+                  <span>编辑群组</span>
+                </div>
+              </span>
+              <div class="home-add-user home-edit-img"  @click="editSubmit"></div>
+            </div>
+          </el-header>
+        </template>
         <div class="home-content">
           <div class="group-data">
             <span
               ><el-image
-                :src="noIconShow(groupData)"
-                :preview-src-list="[noIconShow(groupData)]"
+                :src="noIconShow(groupUser)"
+                :preview-src-list="[noIconShow(groupUser)]"
             /></span>
             <div>
               <span class="photo-edit" @click="uploadImgShow = true"
-                >变更群组照片</span
+                >{{device === 'moblie'?'变更群组照片':'變更頭像'}}</span
               >
             </div>
           </div>
@@ -34,7 +51,7 @@
           </div>
         </div>
 
-        <div class="home-footer-btn">
+        <div class="home-footer-btn" v-if ="device === 'moblie'">
           <el-button
             :class="disabled ? 'gray-btn' : 'orange-btn'"
             :disabled="disabled"
@@ -72,6 +89,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
 import { uploadGroupIcon, updateGroup } from "@/api";
 
 export default {
@@ -87,6 +105,7 @@ export default {
       fileList: [],
       disabled: true,
       noIcon: require("./../../../static/images/image_group_defult.png"),
+      device: localStorage.getItem("device"),
     };
   },
   watch: {
@@ -96,12 +115,24 @@ export default {
       },
       deep: true,
     },
+    groupUser(val){
+      this.groupForm.name = val.groupName
+    }
+  },
+  computed: {
+    ...mapState({
+      groupUser: (state) => state.ws.groupUser,
+    }),
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.groupForm.name = this.groupData.groupName;
   },
   methods: {
+    ...mapMutations({
+      setChatGroup:"ws/setChatUser",
+      setMsgInfoPage:"ws/setMsgInfoPage",
+    }),
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -124,7 +155,7 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.groupData.icon = res.data;
-          localStorage.setItem("groupData", JSON.stringify(this.groupData));
+          this.setChatGroup(this.groupData)
         }
       });
     },
@@ -138,7 +169,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.groupData.groupName = this.groupForm.name;
-            localStorage.setItem("groupData", JSON.stringify(this.groupData));
+            this.setChatGroup(this.groupData)
             this.back();
           }
         })
@@ -148,7 +179,15 @@ export default {
         });
     },
     back() {
-      this.$router.back(-1);
+      if(this.device === "moblie"){
+        this.$router.back(-1);
+      }else{
+        let msgInfoPage = {
+          pageShow:true,
+          type:'',
+        }
+        this.setMsgInfoPage(msgInfoPage)
+      }
     },
   },
 };
@@ -159,6 +198,10 @@ export default {
   .home-user {
     background-color: #fff;
     background-image: url("./../../../static/images/back.png");
+  }
+  .home-edit-img{
+    background-color: #fff;
+    background-image: url("./../../../static/images/pc/check.png");      
   }
 }
 .home-content {
@@ -195,6 +238,24 @@ export default {
         font-size: 19px;
         .el-input__inner {
           border: none;
+        }
+      }
+    }
+  }
+}
+.hichat-pc{
+  .user-edit-form{
+    /deep/.el-form{
+      border-radius: 8px;
+      background-color: #eaeaea;
+      .el-form-item{
+        .el-form-item__label {
+          font-size: 17px;
+        }
+        .el-input{
+          .el-input__inner{
+            background-color: #eaeaea;
+          }
         }
       }
     }

@@ -2,13 +2,30 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="55px">
-          <div class="home-header">
-            <div class="home-user" @click="back"></div>
-            <span class="home-header-title">编辑联络人</span>
-            <div class="home-add-user"></div>
-          </div>
-        </el-header>
+        <template v-if="device === 'moblie'">
+          <el-header height="55px">
+            <div class="home-header">
+              <div class="home-user" @click="back"></div>
+              <span class="home-header-title">编辑联络人</span>
+              <div class="home-add-user"></div>
+            </div>
+          </el-header>
+        </template>
+        <template v-else>
+          <el-header height="70px">
+            <div class="home-header">
+              <span class="home-header-title">
+                <div style="display: flex; align-items: center; cursor: pointer;" @click="back">
+                  <span style="padding-right: 10px"
+                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  /></span>
+                  <span>编辑联络人</span>
+                </div>
+              </span>
+              <div class="home-add-user home-edit-img"  @click="editSubmit(userEditForm.nickname)"></div>
+            </div>
+          </el-header>
+        </template>
         <div class="home-content">
           <div class="user-data">
             <el-image
@@ -18,7 +35,7 @@
             />
             <div>
               <span>{{ userData.name }}</span>
-              <span class="user-data-id">
+              <span class="user-data-id" v-if ="device === 'moblie'">
                 ID :
                 <span class="user-paste" @click="copyPaste(userData.username)">{{
                   userData.username
@@ -34,7 +51,7 @@
             </el-form>
           </div>
         </div>
-        <div class="home-footer-btn">
+        <div class="home-footer-btn" v-if ="device === 'moblie'">
           <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
         </div>
       </el-main>
@@ -43,6 +60,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
 import { updateContactNickName } from "@/api";
 
 export default {
@@ -54,22 +72,32 @@ export default {
         nickname: "",
       },
       noIcon:require("./../../../static/images/image_user_defult.png"),
+      device: localStorage.getItem("device"),
     };
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.userEditForm.nickname = this.userData.name;
   },
+  computed: {
+    ...mapState({
+      myContactDataList: (state) => state.ws.myContactDataList,
+    }),
+  },
   methods: {
-      noIconShow(iconData){
+    ...mapMutations({
+      setChatUser:"ws/setChatUser",
+      setMsgInfoPage: "ws/setMsgInfoPage",
+      setMyContactDataList:"ws/setMyContactDataList",
+    }),
+    noIconShow(iconData){
       if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
         return this.noIcon
       }else{
         return iconData.icon
       }
     },
-    editSubmit() {
-      let name = this.userEditForm.nickname;
+    editSubmit(name) {
       let contactId =
         this.userData.contactId === undefined
           ? this.userData.toChatId.replace("u", "")
@@ -79,12 +107,28 @@ export default {
           if (res.data.icon === undefined){
             res.data.icon = require("./../../../static/images/image_user_defult.png");
           }
+          this.userData.name = res.data.name
+          this.myContactDataList.forEach((el) => {
+            if(el.contactId === res.data.contactId){
+              el.name = res.data.name
+            }
+          });
+          this.setChatUser(this.userData)
+          this.setMyContactDataList(this.myContactDataList)
           this.back();
         }
       });
     },
     back() {
-      this.$router.back(-1);
+      if(this.device === "moblie"){
+        this.$router.back(-1);
+      }else{
+        let msgInfoPage = {
+          pageShow:true,
+          type:'',
+        }
+        this.setMsgInfoPage(msgInfoPage)
+      }
     },
   },
 };
@@ -96,6 +140,10 @@ export default {
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
+    }
+    .home-edit-img{
+      background-color: #fff;
+      background-image: url("./../../../static/images/pc/check.png");      
     }
   }
   .home-content {
@@ -134,6 +182,24 @@ export default {
         font-size: 19px;
         .el-input__inner {
           border: none;
+        }
+      }
+    }
+  }
+}
+.hichat-pc{
+  .user-edit-form{
+    /deep/.el-form{
+      border-radius: 8px;
+      background-color: #eaeaea;
+      .el-form-item{
+        .el-form-item__label {
+          font-size: 17px;
+        }
+        .el-input{
+          .el-input__inner{
+            background-color: #eaeaea;
+          }
         }
       }
     }

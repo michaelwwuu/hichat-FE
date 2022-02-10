@@ -1,134 +1,141 @@
 <template>
-  <div class="home-wrapper">
-    <el-container>
-      <el-main>
-        <el-header height="70px">
-          <div class="home-header">
-            <span class="home-header-title">
-              <div style="display: flex; align-items: center; cursor: pointer;" @click="closeInfoMsgShow">
-                <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat"
-                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
-                /></span>
-                <span>資訊</span>
+  <div>
+    <div class="home-wrapper" v-if="msgInfoPage.pageShow">
+      <el-container>
+        <el-main>
+          <el-header height="70px">
+            <div class="home-header">
+              <span class="home-header-title">
+                <div style="display: flex; align-items: center; cursor: pointer;" @click="closeInfoMsgShow">
+                  <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat"
+                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  /></span>
+                  <span>資訊</span>
+                </div>
+              </span>
+              <div class="home-add-user" @click="editShowBtn(infoMsg.infoMsgNav)"></div>
+            </div>
+          </el-header>
+          <div class="home-content">
+            <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
+              <div class="user-data">
+                <el-image
+                  v-if="chatUser.icon !== undefined"
+                  :src="
+                    noIconShow(
+                      JSON.stringify(chatUser) === '{}' ? userData : chatUser,
+                      'user'
+                    )
+                  "
+                  :preview-src-list="[
+                    noIconShow(
+                      JSON.stringify(chatUser) === '{}' ? userData : chatUser,
+                      'user'
+                    ),
+                  ]"
+                />
+                <span>{{
+                  chatUser.name === null ? userData.name : chatUser.name
+                }}</span>
               </div>
-            </span>
-            <div class="home-add-user"></div>
+              <div
+                class="setting-notification"
+                @click="developmentMessage('提醒通知')"
+              >
+                <div class="setting-button-left">
+                  <span>提醒通知</span>
+                </div>
+                <el-switch
+                  v-model="notification"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  disabled
+                >
+                </el-switch>
+              </div>
+              <div
+                v-for="(item, index) in settingContactData"
+                :key="index"
+                class="setting-button"
+                @click="developmentMessage(item.name)"
+              >
+                <a @click="goChatRoom(userData, item.path, 'address')">
+                  <div class="setting-button-left">
+                    <img :src="item.icon" alt="" />
+                    <span>{{ item.name }}</span>
+                  </div>
+                  <img src="./../../../static/images/next.png" alt="" />
+                </a>
+              </div>
+            </template>
+            <template v-else>
+              <div class="user-data">
+                <el-image
+                  v-if="groupUser.icon !== undefined"
+                  :src="
+                    noIconShow(
+                      JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
+                      'group'
+                    )
+                  "
+                  :preview-src-list="[
+                    noIconShow(
+                      JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
+                      'group'
+                    ),
+                  ]"
+                />
+                <span>{{
+                  groupUser.groupName === null
+                    ? groupData.groupName
+                    : groupUser.groupName
+                }}</span>
+              </div>
+              <div
+                class="setting-notification"
+                @click="developmentMessage('提醒通知')"
+              >
+                <div class="setting-button-left">
+                  <span>提醒通知</span>
+                </div>
+                <el-switch
+                  v-model="notification"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  disabled
+                >
+                </el-switch>
+              </div>
+              <div
+                class="setting-button"
+                v-for="(item, index) in settingGroupData"
+                :key="index"
+                @click="developmentMessage(item.name)"
+              >
+                <a @click="goChatRoom(userData, item.path, 'group')">
+                  <div class="setting-button-left">
+                    <img :src="item.icon" alt="" />
+                    <span>{{ item.name }}</span>
+                  </div>
+                  <img src="./../../../static/images/next.png" alt="" />
+                </a>
+              </div>
+            </template>
           </div>
-        </el-header>
-        <div class="home-content">
-          <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
-            <div class="user-data">
-              <el-image
-                v-if="chatUser.icon !== undefined"
-                :src="
-                  noIconShow(
-                    JSON.stringify(chatUser) === '{}' ? userData : chatUser,
-                    'user'
-                  )
-                "
-                :preview-src-list="[
-                  noIconShow(
-                    JSON.stringify(chatUser) === '{}' ? userData : chatUser,
-                    'user'
-                  ),
-                ]"
-              />
-              <span>{{
-                chatUser.name === null ? userData.name : chatUser.name
-              }}</span>
-            </div>
-            <div
-              class="setting-notification"
-              @click="developmentMessage('提醒通知')"
-            >
-              <div class="setting-button-left">
-                <span>提醒通知</span>
-              </div>
-              <el-switch
-                v-model="notification"
-                active-color="#fd5f3f"
-                inactive-color="#666666"
-                disabled
-              >
-              </el-switch>
-            </div>
-            <div
-              v-for="(item, index) in settingContactData"
-              :key="index"
-              class="setting-button"
-              @click="developmentMessage(item.name)"
-            >
-              <a @click="goChatRoom(userData, item.path, 'address')">
-                <div class="setting-button-left">
-                  <img :src="item.icon" alt="" />
-                  <span>{{ item.name }}</span>
-                </div>
-                <img src="./../../../static/images/next.png" alt="" />
-              </a>
-            </div>
-          </template>
-          <template v-else>
-            <div class="user-data">
-              <el-image
-                v-if="groupUser.icon !== undefined"
-                :src="
-                  noIconShow(
-                    JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
-                    'group'
-                  )
-                "
-                :preview-src-list="[
-                  noIconShow(
-                    JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
-                    'group'
-                  ),
-                ]"
-              />
-              <span>{{
-                groupUser.groupName === null
-                  ? groupData.groupName
-                  : groupUser.groupName
-              }}</span>
-            </div>
-            <div
-              class="setting-notification"
-              @click="developmentMessage('提醒通知')"
-            >
-              <div class="setting-button-left">
-                <span>提醒通知</span>
-              </div>
-              <el-switch
-                v-model="notification"
-                active-color="#fd5f3f"
-                inactive-color="#666666"
-                disabled
-              >
-              </el-switch>
-            </div>
-            <div
-              class="setting-button"
-              v-for="(item, index) in settingGroupData"
-              :key="index"
-              @click="developmentMessage(item.name)"
-            >
-              <a @click="goChatRoom(userData, item.path, 'group')">
-                <div class="setting-button-left">
-                  <img :src="item.icon" alt="" />
-                  <span>{{ item.name }}</span>
-                </div>
-                <img src="./../../../static/images/next.png" alt="" />
-              </a>
-            </div>
-          </template>
-        </div>
-      </el-main>
-    </el-container>
+        </el-main>
+      </el-container>
+    </div>
+    <edit-contact v-if="msgInfoPage.type === 'ContactPage'"/>
+    <edit-group v-else/>
   </div>
+  
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
+import EditContact from "./../EditContact/EditContact.vue";
+import EditGroup from './../EditContact/EditGroup.vue';
 export default {
   name: "MsgInfoPage",
   data() {
@@ -173,6 +180,7 @@ export default {
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
       infoMsg: (state) => state.ws.infoMsg,
+      msgInfoPage: (state) => state.ws.msgInfoPage,
     }),
   },
   created() {
@@ -184,10 +192,18 @@ export default {
 
   methods: {
     ...mapMutations({
-      setHichatNav: "ws/setHichatNav",
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
+      setHichatNav: "ws/setHichatNav",
+      setMsgInfoPage: "ws/setMsgInfoPage",
     }),
+    editShowBtn(data){
+      let msgInfoPage = {
+        pageShow:false,
+        type:data,
+      }
+      this.setMsgInfoPage(msgInfoPage)
+    },
     infoMsgSettingData(){
       if(this.infoMsg.infoMsgChat){
         this.settingContactData.splice(0, 1)
@@ -233,6 +249,10 @@ export default {
       this.$router.back(-1);
     },
   },
+  components: {
+    EditContact,
+    EditGroup
+  }
 };
 </script>
 

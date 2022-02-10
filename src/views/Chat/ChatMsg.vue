@@ -280,7 +280,6 @@ export default {
     },
     infoMsgShow(){
       let infoMsg = { infoMsgShow:true,infoMsgNav:'ContactPage',infoMsgChat:true }
-      console.log(infoMsg)
       this.setInfoMsg(infoMsg)
     },
     // 已讀

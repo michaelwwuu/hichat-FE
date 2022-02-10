@@ -19,7 +19,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       margin: 1em;
       display: flex;
       align-items: center;
-      .home-user {
+      .home-user,.home-add-user {
         width: 2em;
         height: 2em;
         border-radius: 10px;
@@ -31,14 +31,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         margin: 0 auto;
         color: #10686e;
         font-weight: 600;
-      }
-      .home-add-user {
-        width: 2em;
-        height: 2em;
-        border-radius: 10px;
-        background-size: 50%;
-        background-position: center;
-        background-repeat: no-repeat;
       }
     }
     .home-search {
@@ -548,8 +540,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .user-data{
         margin: 1.5em auto 2em auto;
         .el-image{
-          width: auto;
-          height: 6em;
+          width: auto !important;
+          height: 6em !important;
         }
         .user-data-id{
           margin: 1em 0 !important;
@@ -583,7 +575,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .message-input-box{
       padding: 0 15px;
       .text-send-box{
-        width: 70vw;
+        width: 80%;
         border-radius: 5px;
         margin: 0 auto;
         .footer-tools{
@@ -656,7 +648,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       width: 18% !important;
       margin-top: 8em !important;
       position: relative;
-      border-radius: 10px;
+      border-radius: 5px;
       .el-dialog__header {
         border-bottom: 1px solid #efefef;
         .el-dialog__title {
@@ -711,6 +703,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
             width: 100% !important;
             border: 0;
             padding: 20px 0 !important;
+            &:nth-child(1){
+              border-radius: 0px 0px 0px 8px !important;
+            }
             &:nth-child(2){
               border-radius: 0px 0px 8px 0px !important;
               margin-left: 0 !important;

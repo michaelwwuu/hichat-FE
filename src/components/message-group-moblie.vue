@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box" @touchmove="handleTouch">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -63,7 +63,6 @@
 </template>
 
 <script>
-// import { gotoBottom } from "@/assets/tools";
 import { mapMutations } from "vuex";
 import { groupListMember } from "@/api";
 
@@ -76,7 +75,7 @@ export default {
     messageData: {
       type: Array,
     },
-    contactListData:{
+    contactListData: {
       type: Array,
     },
   },
@@ -85,41 +84,42 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      // gotoBottom: gotoBottom,
-      contactList:[],
+      contactList: [],
     };
   },
   created() {
-    this.groupData = JSON.parse(localStorage.getItem('groupData'))
-    this.getGroupListMember()
+    this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.getGroupListMember();
   },
   watch: {
-    contactListData(val){
-      val.forEach((res)=>{
+    contactListData(val) {
+      val.forEach((res) => {
         this.message.forEach((el) => {
-          if(el.userChatId === 'u' + res.memberId){
-            el.icon = res.icon
-            el.name = res.name
+          if (el.userChatId === "u" + res.memberId) {
+            el.icon = res.icon;
+            el.name = res.name;
           }
-        })
-      })
+        });
+      });
       this.$root.gotoBottom();
     },
     messageData(val) {
       //去除重复
       const set = new Set();
-      this.message = val.filter((item) =>!set.has(item.historyId) ? set.add(item.historyId) : false);
+      this.message = val.filter((item) =>
+        !set.has(item.historyId) ? set.add(item.historyId) : false
+      );
       this.$root.gotoBottom();
     },
     message(val) {
       this.newMessageData = {};
-      val.forEach((el) => {   
-        this.contactList.forEach((res)=>{
-          if(el.userChatId === 'u' + res.memberId){
-            el.icon = res.icon
-            el.name = res.name
+      val.forEach((el) => {
+        this.contactList.forEach((res) => {
+          if (el.userChatId === "u" + res.memberId) {
+            el.icon = res.icon;
+            el.name = res.name;
           }
-        })
+        });
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
@@ -134,11 +134,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setContactListData:"ws/setContactListData",
+      setContactListData: "ws/setContactListData",
     }),
-    handleTouch (e) {
-      e._isScroller = true
-    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -148,20 +145,20 @@ export default {
       }
     },
     getGroupListMember() {
-      let groupId = this.groupData.toChatId.replace("g", "")
+      let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
-          if (res.icon === undefined){
+          if (res.icon === undefined) {
             res.icon = require("./../../static/images/image_user_defult.png");
           }
-          this.setContactListData(this.contactList)
-          this.message.forEach((el) => {
-            if(el.userChatId === 'u' + res.memberId){
-              el.icon = res.icon
-              el.name = res.name
-            }
-          })
+          this.setContactListData(this.contactList);
+          // this.message.forEach((el) => {
+          //   if (el.userChatId === "u" + res.memberId) {
+          //     el.icon = res.icon;
+          //     el.name = res.name;
+          //   }
+          // });
         });
       });
     },
@@ -201,11 +198,11 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f3f9ff; 
+          background-color: #f3f9ff;
           height: auto;
           padding: 9px 12px;
-          .message-box{
-            .message-name{
+          .message-box {
+            .message-name {
               font-size: 13px;
               color: #919191;
               padding-bottom: 5px;
@@ -213,7 +210,7 @@ export default {
             audio {
               width: 190px;
             }
-          } 
+          }
         }
       }
       .message-avatar {
@@ -257,9 +254,9 @@ export default {
             padding-bottom: 5px;
           }
           .el-image {
-            width:10em !important;
-            height:10em !important;
-            /deep/.el-image__inner{
+            width: 10em !important;
+            height: 10em !important;
+            /deep/.el-image__inner {
               height: 100%;
             }
           }
@@ -279,7 +276,6 @@ export default {
             width: 190px;
           }
         }
-        
       }
       .message-avatar,
       .message-name {
@@ -323,14 +319,13 @@ export default {
         color: #333333;
         background-color: #e5e4e4;
         border-radius: 10px;
-        .el-image{
-          width:10em !important;
-          height:10em !important;
-          /deep/.el-image__inner{
+        .el-image {
+          width: 10em !important;
+          height: 10em !important;
+          /deep/.el-image__inner {
             height: 100%;
           }
         }
-
       }
     }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box" @touchmove="handleTouch">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -28,7 +28,6 @@
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
             >
-              <!-- <img :src="el.message.content" alt=""> -->
               <el-image
                 :src="el.message.content"
                 :preview-src-list="[el.message.content]"
@@ -55,7 +54,6 @@
 </template>
 
 <script>
-// import { gotoBottom } from "@/assets/tools";
 export default {
   name: "MessagePabel",
   props: {
@@ -71,11 +69,12 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      // gotoBottom: gotoBottom,
     };
   },
   watch: {
     messageData(val) {
+      console.log('messageData',val)
+
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>
@@ -99,9 +98,6 @@ export default {
     },
   },
   methods: {
-    handleTouch (e) {
-      e._isScroller = true
-    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === 'u' + localStorage.getItem('id')) {

@@ -278,8 +278,8 @@ export default {
     }),
     changeImg(index) {
       this.num = index;
-      let infoMsg = { infoMsgShow:false}
-      if( this.num !== 1) this.setInfoMsg(infoMsg)
+      let infoMsg = { infoMsgShow:false }
+      this.setInfoMsg(infoMsg)
     },
     copyUrl() {
       let url = this.qrCodeConfig.text;
@@ -299,7 +299,6 @@ export default {
     //     this.setGroupList(this.groupList)
     //   })
     // },
-  
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
       switch (msgInfo.chatType) {

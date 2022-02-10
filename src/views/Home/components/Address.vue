@@ -4,7 +4,7 @@
       <el-tab-pane label="联络人" name="address">
         <div
           class="address-box"
-          v-for="(item, index) in contactList"
+          v-for="(item, index) in myContactDataList"
           :key="index"
           @click="goContactPage(item, 'ContactPage')"
         >
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       searchKey: "",
-      groupList: [],
+      groupData: [],
       contactList: [],
       activeName: "address",
       device: localStorage.getItem("device"),
@@ -54,7 +54,9 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
+      groupList: (state) => state.ws.groupList,
       groupUser: (state) => state.ws.groupUser,
+      myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
   methods: {
@@ -62,7 +64,8 @@ export default {
       setChatUser: "ws/setChatUser",
       setChatGroup:"ws/setChatGroup",
       setGroupList:"ws/setGroupList",
-      setInfoMsg:"ws/setInfoMsg"
+      setInfoMsg:"ws/setInfoMsg",
+      setMyContactDataList:"ws/setMyContactDataList"
     }),
     getDataList() {
       getContactList().then((res) => {
@@ -71,18 +74,19 @@ export default {
           if (el.icon === undefined)
             el.icon = require("./../../../../static/images/image_user_defult.png");
         });
-        localStorage.setItem(
-          "myContactDataList",
-          JSON.stringify(this.contactList)
-        );
+        // localStorage.setItem(
+        //   "myContactDataList",
+        //   JSON.stringify(this.contactList)
+        // );
+        this.setMyContactDataList(this.contactList)
       });
       getGroupList().then((res) => {
-        this.groupList = res.data.list;
-        this.groupList.forEach((el) => {
+        this.groupData = res.data.list;
+        this.groupData.forEach((el) => {
           if (el.icon === "")
             el.icon = require("./../../../../static/images/image_group_defult.png");
         });
-        this.setGroupList(this.groupList)
+        this.setGroupList(this.groupData)
       });
     },
     getUserId(data) {
@@ -113,12 +117,11 @@ export default {
         if (path === "ContactPage") {
           data.toChatId = "u" + data.contactId;
           this.getUserId(data)
-          this.setInfoMsg(infoStore)
         } else{
           data.toChatId = "g" + data.groupId;
           this.setChatGroup(data);
-          this.setInfoMsg(infoStore)
         }
+        this.setInfoMsg(infoStore)
       }
     },
   },
