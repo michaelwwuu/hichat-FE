@@ -1,118 +1,241 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title">修改登录密码</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="register-content">
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        label-position="top"
-      >
-        <el-form-item prop="oldPassword">
-          <span class="svg-container">
-            <img src="./../../../static/images/lock.png" alt="" />
-          </span>
-          <el-input
-            ref="oldPassword"
-            placeholder="目前的密码"
-            v-model="loginForm.oldPassword"
-            name="oldPassword"
-            :type="oldPasswordType === 'password' ? 'password' : 'text'"
-            tabindex="2"
-            maxLength="12"
-            @input="
-              (v) =>
-                (loginForm.oldPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-          <span class="show-pwd" @click="showPwd('oldPassword')">
-            <img
-              :src="
-                oldPasswordType === 'password'
-                  ? require('../../../static/images/eye_closed.png')
-                  : require('./../../../static/images/eye-solid.svg')
+    <template v-if="device === 'moblie'">
+      <div class="home-header">
+        <div class="home-user" @click="back"></div>
+        <span class="home-header-title">修改登录密码</span>
+        <div class="home-add-user"></div>
+      </div>
+      <div class="register-content">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          label-position="top"
+        >
+          <el-form-item prop="oldPassword">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="oldPassword"
+              placeholder="目前的密码"
+              v-model="loginForm.oldPassword"
+              name="oldPassword"
+              :type="oldPasswordType === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.oldPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
-              alt=""
-            />
-          </span>
-        </el-form-item>
-        <el-form-item prop="newPassword">
-          <span class="svg-container">
-            <img src="./../../../static/images/lock.png" alt="" />
-          </span>
-          <el-input
-            ref="newPassword"
-            placeholder="欲设定的密码"
-            v-model="loginForm.newPassword"
-            name="newPassword"
-            :type="newPasswordType === 'password' ? 'password' : 'text'"
-            tabindex="2"
-            maxLength="12"
-            @input="
-              (v) =>
-                (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
-            "
-          >
-          </el-input>
-          <span class="show-pwd" @click="showPwd('newPassword')">
-            <img
-              :src="
-                newPasswordType === 'password'
-                  ? require('../../../static/images/eye_closed.png')
-                  : require('./../../../static/images/eye-solid.svg')
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('oldPassword')">
+              <img
+                :src="
+                  oldPasswordType === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <el-form-item prop="newPassword">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="newPassword"
+              placeholder="欲设定的密码"
+              v-model="loginForm.newPassword"
+              name="newPassword"
+              :type="newPasswordType === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
-              alt=""
-            />
-          </span>
-        </el-form-item>
-        <el-form-item prop="newPasswordAganin">
-          <span class="svg-container">
-            <img src="./../../../static/images/lock.png" alt="" />
-          </span>
-          <el-input
-            ref="newPasswordAganin"
-            placeholder="确认欲设定的密码"
-            v-model="loginForm.newPasswordAganin"
-            name="newPasswordAganin"
-            :type="newPasswordTypeAgain === 'password' ? 'password' : 'text'"
-            tabindex="2"
-            maxLength="12"
-            @input="
-              (v) =>
-                (loginForm.newPasswordAganin = v.replace(
-                  /^[\u4E00-\u9FA5]+$/,
-                  ''
-                ))
-            "
-          >
-          </el-input>
-          <span class="show-pwd" @click="showPwd('newPasswordAgain')">
-            <img
-              :src="
-                newPasswordTypeAgain === 'password'
-                  ? require('../../../static/images/eye_closed.png')
-                  : require('./../../../static/images/eye-solid.svg')
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('newPassword')">
+              <img
+                :src="
+                  newPasswordType === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <el-form-item prop="newPasswordAganin">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="newPasswordAganin"
+              placeholder="确认欲设定的密码"
+              v-model="loginForm.newPasswordAganin"
+              name="newPasswordAganin"
+              :type="newPasswordTypeAgain === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.newPasswordAganin = v.replace(
+                    /^[\u4E00-\u9FA5]+$/,
+                    ''
+                  ))
               "
-              alt=""
-            />
-          </span>
-        </el-form-item>
-        <div class="register-footer">
-          <el-button
-            style="width: 100%; margin-bottom: 30px"
-            :class="disabled ? 'gray-btn' : 'orange-btn'"
-            :disabled="disabled"
-            @click="submitForm('loginForm')"
-            >提交</el-button
-          >
-        </div>
-      </el-form>
-    </div>
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('newPasswordAgain')">
+              <img
+                :src="
+                  newPasswordTypeAgain === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <div class="register-footer">
+            <el-button
+              style="width: 100%; margin-bottom: 30px"
+              :class="disabled ? 'gray-btn' : 'orange-btn'"
+              :disabled="disabled"
+              @click="submitForm('loginForm')"
+              >提交</el-button
+            >
+          </div>
+        </el-form>
+      </div>
+    </template>
+    <template v-else>
+      <el-container>
+        <el-aside width="20%">
+          <el-header height="70px">
+            <div class="home-header">
+              <span class="home-header-title">
+                <div style="display: flex; align-items: center; cursor: pointer;" @click="back">
+                  <span style="padding-right: 10px"
+                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  /></span>
+                  <span>编辑联络人</span>
+                </div>
+              </span>
+              <div class="home-add-user home-edit-img"  @click="submitForm('loginForm')"></div>
+            </div>
+          </el-header>
+          <div class="register-content">
+            <el-form
+              ref="loginForm"
+              :model="loginForm"
+              class="login-form"
+              label-position="top"
+            >
+              <el-form-item prop="oldPassword">
+                <span class="svg-container">
+                  <img src="./../../../static/images/lock.png" alt="" />
+                </span>
+                <el-input
+                  ref="oldPassword"
+                  placeholder="目前的密码"
+                  v-model="loginForm.oldPassword"
+                  name="oldPassword"
+                  :type="oldPasswordType === 'password' ? 'password' : 'text'"
+                  tabindex="2"
+                  maxLength="12"
+                  @input="
+                    (v) =>
+                      (loginForm.oldPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                  "
+                >
+                </el-input>
+                <span class="show-pwd" @click="showPwd('oldPassword')">
+                  <img
+                    :src="
+                      oldPasswordType === 'password'
+                        ? require('../../../static/images/eye_closed.png')
+                        : require('./../../../static/images/eye-solid.svg')
+                    "
+                    alt=""
+                  />
+                </span>
+              </el-form-item>
+              <el-form-item prop="newPassword">
+                <span class="svg-container">
+                  <img src="./../../../static/images/lock.png" alt="" />
+                </span>
+                <el-input
+                  ref="newPassword"
+                  placeholder="欲设定的密码"
+                  v-model="loginForm.newPassword"
+                  name="newPassword"
+                  :type="newPasswordType === 'password' ? 'password' : 'text'"
+                  tabindex="2"
+                  maxLength="12"
+                  @input="
+                    (v) =>
+                      (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                  "
+                >
+                </el-input>
+                <span class="show-pwd" @click="showPwd('newPassword')">
+                  <img
+                    :src="
+                      newPasswordType === 'password'
+                        ? require('../../../static/images/eye_closed.png')
+                        : require('./../../../static/images/eye-solid.svg')
+                    "
+                    alt=""
+                  />
+                </span>
+              </el-form-item>
+              <el-form-item prop="newPasswordAganin">
+                <span class="svg-container">
+                  <img src="./../../../static/images/lock.png" alt="" />
+                </span>
+                <el-input
+                  ref="newPasswordAganin"
+                  placeholder="确认欲设定的密码"
+                  v-model="loginForm.newPasswordAganin"
+                  name="newPasswordAganin"
+                  :type="newPasswordTypeAgain === 'password' ? 'password' : 'text'"
+                  tabindex="2"
+                  maxLength="12"
+                  @input="
+                    (v) =>
+                      (loginForm.newPasswordAganin = v.replace(
+                        /^[\u4E00-\u9FA5]+$/,
+                        ''
+                      ))
+                  "
+                >
+                </el-input>
+                <span class="show-pwd" @click="showPwd('newPasswordAgain')">
+                  <img
+                    :src="
+                      newPasswordTypeAgain === 'password'
+                        ? require('../../../static/images/eye_closed.png')
+                        : require('./../../../static/images/eye-solid.svg')
+                    "
+                    alt=""
+                  />
+                </span>
+              </el-form-item>
+              <span class="tip-text"
+                >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
+              >
+            </el-form>
+          </div>
+        </el-aside>
+      </el-container>
+    </template>
     <el-dialog
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
@@ -149,6 +272,7 @@ export default {
       notification: false,
       disabled: true,
       dialogShow: false,
+      device: localStorage.getItem("device"),
     };
   },
   watch: {
@@ -233,6 +357,7 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
     }
+    
   }
   .register-content {
     .tip-text {
@@ -354,6 +479,28 @@ export default {
           .border-red {
             border: 1px solid #fe5f3f;
             color: #fe5f3f;
+          }
+        }
+      }
+    }
+  }
+}
+.hichat-pc{
+  .home-edit-img{
+    background-color: #fff;
+    background-image: url("./../../../static/images/pc/check.png");      
+  }
+  .register-content{
+    /deep/.el-form{
+      .el-form-item{
+        border-radius: 8px;
+        background-color: #eaeaea;
+        .el-form-item__label {
+          font-size: 17px;
+        }
+        .el-input{
+          .el-input__inner{
+            background-color: #eaeaea;
           }
         }
       }

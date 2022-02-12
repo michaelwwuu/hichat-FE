@@ -226,7 +226,7 @@ export default {
     Socket.$off("message", this.handleGetMessage);
   },
   mounted() {
-    if(this.device=== 'moblie') this.getChatHistoryMessage();
+    if(this.device === "moblie") this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
@@ -334,7 +334,7 @@ export default {
           break;
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
-          if(this.device === "moblie") this.getChatHistoryMessage();
+          this.getChatHistoryMessage();
           break;
       }
     },

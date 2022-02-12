@@ -123,11 +123,9 @@
         </el-footer>
       </el-aside>
       <el-main>
-        <template v-if="num === 1 ">
-          <chat-msg v-if="hichatNav.type === 'address'  && JSON.stringify(chatUser) !== '{}'"/>
-          <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
-          <chat-msg v-else-if="hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}'"/>
-        </template>
+        <chat-msg v-if="hichatNav.type === 'address'  && JSON.stringify(chatUser) !== '{}'"/>
+        <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
+        <chat-msg v-else-if="hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}'"/>
       </el-main>
       <el-aside width="20%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>

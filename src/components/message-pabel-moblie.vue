@@ -73,8 +73,6 @@ export default {
   },
   watch: {
     messageData(val) {
-      console.log('messageData',val)
-
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>

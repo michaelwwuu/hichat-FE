@@ -13,7 +13,12 @@
                   <span>資訊</span>
                 </div>
               </span>
-              <div class="home-add-user" @click="editShowBtn(infoMsg.infoMsgNav)"></div>
+              <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
+                <div class="home-add-user"  @click="editShowBtn(infoMsg.infoMsgNav)"></div>
+              </template>
+              <template v-else>
+                <div class="home-add-user" :class="{'notAdmin':!groupUser.isAdmin}" @click="groupUser.isAdmin?editShowBtn(infoMsg.infoMsgNav):false"></div>
+              </template>
             </div>
           </el-header>
           <div class="home-content">
@@ -170,6 +175,16 @@ export default {
           path: "",
         },
       ],
+      getHistoryMessage: {
+        chatType: "",
+        toChatId: "",
+        id: Math.random(),
+        tokenType: 0,
+        targetId: "",
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      },
       groupDataList: [],
       notification: true,
       developmentMessage: developmentMessage,
@@ -226,11 +241,12 @@ export default {
       }
     },
     goChatRoom(data, path, type) {
+      console.log(data, path, type)
       let navType = { type: type, num: 1 };
       this.setHichatNav(navType);
       let infoMsg = {
         infoMsgShow: false,
-        infoMsgNav: path === "address" ? "ContactPage" : "GroupPage",
+        infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
       };
       this.setInfoMsg(infoMsg);
       this.$router.push({ name: path, params: data });
@@ -263,6 +279,10 @@ export default {
     .home-add-user {
       background-color: #fff;
       background-image: url("./../../../static/images/pc/edit_info.png");
+    }
+    .notAdmin{
+      background-image:none;
+      cursor:initial;
     }
   }
   .home-content {
@@ -396,4 +416,5 @@ export default {
     }
   }
 }
+
 </style>

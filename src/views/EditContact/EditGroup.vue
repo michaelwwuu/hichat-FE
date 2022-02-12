@@ -260,5 +260,8 @@ export default {
       }
     }
   }
+  .photo-edit{
+    cursor: pointer;
+  }
 }
 </style>

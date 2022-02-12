@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <el-container>
+    <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header height="55px">
           <div class="home-header">
@@ -35,10 +35,46 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="20%">
+        <el-header height="70px">
+          <div class="home-header flex-start" >
+            <div class="home-user-pc" @click="back"></div>
+            <span class="home-header-title">编辑个人资料</span>
+            <div class="home-add-user home-edit-img"></div>
+          </div>
+        </el-header>
+        <div class="home-content">
+          <div class="group-data">
+            <span
+              ><el-image
+                :src="noIconShow(userData)"
+                :preview-src-list="[noIconShow(userData)]"
+            /></span>
+             <div>
+              <span class="photo-edit" @click="uploadImgShow = true"
+                >变更头像</span
+              >
+            </div>
+          </div>
+          <div class="user-edit-form">
+            <el-form ref="form" :model="userEditForm" label-width="100px">
+              <el-form-item label="用户昵称">
+                <el-input v-model="userEditForm.nickname"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+        <div class="home-footer-btn" v-if ="device === 'moblie'">
+          <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
+        </div>
+      </el-aside>
+    </el-container>
     <el-dialog
       title="上傳大頭貼"
       :visible.sync="uploadImgShow"
       width="100%"
+      :class="{'el-dialog-loginOut':device ==='pc'}"
       center
     >
       <el-upload
@@ -55,8 +91,14 @@
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-        <el-button @click="uploadImgShow = false">取 消</el-button>
+        <template v-if="device ==='moblie'">
+          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+          <el-button @click="uploadImgShow = false">取 消</el-button>
+        </template>
+        <template v-else>
+          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
+          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+        </template>
       </span>
     </el-dialog>
   </div>
@@ -76,6 +118,7 @@ export default {
       uploadImgShow: false,
       fileList: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
+      device: localStorage.getItem("device"),
     };
   },
   created() {
@@ -148,6 +191,12 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
     }
+    .home-edit-img{
+      background-color: #fff;
+      background-image: url("./../../../static/images/pc/check.png");
+      position: absolute;
+      right: 7px;      
+    }
   }
   .home-content {
     .group-data {
@@ -185,5 +234,53 @@ export default {
       }
     }
   }
+}
+.hichat-pc{
+  .home-user-pc {
+    background-color: #fff;
+    background-image: url("./../../../static/images/pc/arrow-left.png");
+    cursor: pointer;
+  }
+  .home-content{
+    .group-data{
+      .el-image{
+        width: auto;
+        height: 6em;
+      }
+      span{
+        height: 6.5em !important;
+      }
+    }
+  }
+  .user-edit-form{
+    /deep/.el-form{
+      border-radius: 8px;
+      background-color: #eaeaea;
+      .el-form-item{
+        .el-form-item__label {
+          font-size: 17px;
+        }
+        .el-input{
+          .el-input__inner{
+            background-color: #eaeaea;
+          }
+        }
+      }
+    }
+  }
+  .photo-edit{
+    cursor: pointer;
+  }
+  .el-dialog-loginOut{
+    /deep/.el-dialog__footer {
+      padding:0;
+      .el-button{
+        &:nth-child(2){
+          border-left: 1px solid #efefef;
+        }
+      }
+    }
+  }
+  
 }
 </style>

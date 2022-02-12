@@ -150,11 +150,14 @@ export default {
     if(this.device === 'pc'){
       this.editMyList = {
         icon:"",
-        name: "編輯個人資料",
+        name: "编辑个人资料",
         path: "/EditUser",
         pcIcon: require("./../../../../static/images/pc/edit.png"),
       }
       this.settingData.unshift(this.editMyList)
+      this.settingData.forEach((el)=>{
+        if(el.name === '密码管理') el.path = "/PasswordEdit"
+      })
     }
   },
   methods: {

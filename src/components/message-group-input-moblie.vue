@@ -157,8 +157,8 @@
           <el-button @click="uploadImgShow = false">取消</el-button>
         </template>
         <template v-else>
-          <el-button @click="uploadImgShow = false">取消</el-button>
-          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
+          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
         </template>
       </span>
     </el-dialog>    
