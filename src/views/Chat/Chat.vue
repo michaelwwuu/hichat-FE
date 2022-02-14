@@ -16,9 +16,9 @@
                 </div>
                 <el-dropdown-menu slot="dropdown" class="chat-more">
                   <el-dropdown-item>
-                    <div class="logout-btn" v-if="groupUser.isAdmin">
+                    <div class="logout-btn" v-if="groupUser.isAdmin" @click="changeGroupAdminShow">
                       <img src="./../../../static/images/pc/key.png" alt="" />
-                      <span >转移管理者权限</span>
+                      <span>转移管理者权限</span>
                     </div>
                   </el-dropdown-item>
                   <el-dropdown-item>
@@ -115,6 +115,7 @@ export default {
       setInfoMsg:"ws/setInfoMsg",
       setChatGroup:"ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
+      setMsgInfoPage:"ws/setMsgInfoPage",
       setContactListData:"ws/setContactListData",
     }),
     noIconShow(iconData) {
@@ -127,6 +128,14 @@ export default {
       } else {
         return iconData.icon;
       }
+    },
+    changeGroupAdminShow(){
+      let msgInfoPage = {
+        pageShow:false,
+        type:'adminChange',
+      }
+      this.setMsgInfoPage(msgInfoPage)
+      this.infoMsgShow()
     },
     infoMsgShow(){
       let infoMsg = { infoMsgShow:true,infoMsgNav:'GroupPage',infoMsgChat:true }

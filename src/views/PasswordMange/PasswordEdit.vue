@@ -125,7 +125,7 @@
                   <span style="padding-right: 10px"
                     ><img src="./../../../static/images/pc/arrow-left.png" alt=""
                   /></span>
-                  <span>编辑联络人</span>
+                  <span>修改登录密码</span>
                 </div>
               </span>
               <div class="home-add-user home-edit-img"  @click="submitForm('loginForm')"></div>
@@ -237,6 +237,7 @@
       </el-container>
     </template>
     <el-dialog
+      :title="device === 'pc'?'登录密码':''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -244,7 +245,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>登录密码已修改。</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -269,9 +270,9 @@ export default {
       oldPasswordType: "password",
       newPasswordType: "password",
       newPasswordTypeAgain: "password",
-      notification: false,
       disabled: true,
       dialogShow: false,
+      notification: false,
       device: localStorage.getItem("device"),
     };
   },
@@ -504,6 +505,11 @@ export default {
           }
         }
       }
+    }
+  }
+  .el-dialog-loginOut{
+    /deep/.el-dialog__footer{
+      padding: 0 !important;
     }
   }
 }

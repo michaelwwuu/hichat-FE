@@ -123,9 +123,12 @@
         </el-footer>
       </el-aside>
       <el-main>
-        <chat-msg v-if="hichatNav.type === 'address'  && JSON.stringify(chatUser) !== '{}'"/>
-        <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
-        <chat-msg v-else-if="hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}'"/>
+        <template v-if="num === 1">
+          <chat-msg v-if="hichatNav.type === 'address'  && JSON.stringify(chatUser) !== '{}'"/>
+          <chat-group-msg v-else-if="hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'"/>
+          <chat-msg v-else-if="hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}'"/>
+        </template>
+        
       </el-main>
       <el-aside width="20%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>
@@ -301,7 +304,7 @@ export default {
       let msgInfo = JSON.parse(msg);
       switch (msgInfo.chatType) {
          //成功收到
-        case "SRV_RECENT_CHAT":
+        // case "SRV_RECENT_CHAT":
           // console.log(msgInfo)
 
           // this.hiChatDataList = msgInfo.recentChat.filter(
@@ -314,16 +317,17 @@ export default {
           //   (item) => !item.isContact && item.isContact !==null
           // );
           // this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
-            break;
+            // break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
         case "SRV_GROUP_SEND":
-          // this.notifyMe();
+          this.notifyMe(msgInfo);
           break;
       }
     },
-    notifyMe() {
+    notifyMe(msgInfo) {
+      console.log(msgInfo)
       // 先检查浏览器是否支持
       if (!("Notification" in window)) {
         this.$message({
@@ -339,8 +343,12 @@ export default {
           lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
           tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
           icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg", //提示时候的图标
-          body: "今天是个好天气", // 一个图片的URL，将被用于显示通知的图标。
+          body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
         });
+        notification.onclick = function(e) { // 綁定點擊事件
+          e.preventDefault(); // prevent the browser from focusing the Notification's tab
+          window.open('http://sample.com./'); // 打開特定網頁
+        }
       }
       // 否则我们需要向用户获取权限
       else if (Notification.permission !== "denied") {
@@ -352,7 +360,7 @@ export default {
               lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
               tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
               icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg", //提示时候的图标
-              body: "今天是个好天气", // 一个图片的URL，将被用于显示通知的图标。
+              body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
             });
           }
         });

@@ -131,16 +131,23 @@
       </el-container>
     </div>
     <edit-contact v-if="msgInfoPage.type === 'ContactPage'"/>
+    <group-admin-change v-else-if="msgInfoPage.type === 'adminChange'"/>
+    <group-people v-else-if="msgInfoPage.type === 'groupPeople'"/>
+    <group-add-people  v-else-if="msgInfoPage.type === 'addGroupPeople'"/>
     <edit-group v-else/>
   </div>
   
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import EditContact from "./../EditContact/EditContact.vue";
 import EditGroup from './../EditContact/EditGroup.vue';
+import GroupAdminChange from './../GroupPage/GroupAdminChange.vue'
+import GroupPeople from '../GroupPage/GroupPeople.vue';
+import GroupAddPeople from '../GroupPage/GroupAddPeople.vue';
 export default {
   name: "MsgInfoPage",
   data() {
@@ -172,7 +179,7 @@ export default {
         {
           name: "成員",
           icon: require("./../../../static/images/pc/users.png"),
-          path: "",
+          path: "groupPeople",
         },
       ],
       getHistoryMessage: {
@@ -198,13 +205,31 @@ export default {
       msgInfoPage: (state) => state.ws.msgInfoPage,
     }),
   },
+  watch:{
+    infoMsg(val){
+      if(val.infoMsgChat){
+        let newData = [
+           {
+            name: "传送讯息",
+            icon: require("./../../../static/images/pc/message.png"),
+            path: "HiChat",
+          },
+          {
+            name: "相片和影片",
+            icon: require("./../../../static/images/pc/globe.png"),
+            path: "",
+          },
+        ]
+        this.settingContactData = newData
+      }
+    }
+  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     // this.getUserId();
     this.infoMsgSettingData()
   },
-
   methods: {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
@@ -241,15 +266,32 @@ export default {
       }
     },
     goChatRoom(data, path, type) {
-      console.log(data, path, type)
-      let navType = { type: type, num: 1 };
-      this.setHichatNav(navType);
-      let infoMsg = {
-        infoMsgShow: false,
-        infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
-      };
-      this.setInfoMsg(infoMsg);
-      this.$router.push({ name: path, params: data });
+      if(path === "HiChat"){
+        let navType = { type: type, num: 1 };
+        this.setHichatNav(navType);
+        let infoMsg = {
+          infoMsgShow: false,
+          infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
+        };
+        this.setInfoMsg(infoMsg);
+        this.$router.push({ name: path, params: data });
+        if(type === "address"){
+          this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+          this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+          this.getHistoryMessage.id = Math.random();
+        } else{
+          this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+          this.getHistoryMessage.toChatId = this.groupUser.toChatId;
+          this.getHistoryMessage.id = Math.random();
+        }
+        Socket.send(this.getHistoryMessage);
+      } else if(path === "groupPeople"){
+        let msgInfoPage = {
+          pageShow:false,
+          type:path,
+        }
+        this.setMsgInfoPage(msgInfoPage)
+      }
     },
     // getUserId() {
     //   let id = this.chatUser.contactId;
@@ -267,7 +309,10 @@ export default {
   },
   components: {
     EditContact,
-    EditGroup
+    EditGroup,
+    GroupAdminChange,
+    GroupPeople,
+    GroupAddPeople
   }
 };
 </script>

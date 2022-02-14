@@ -61,10 +61,11 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setInfoMsg:"ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
       setChatGroup:"ws/setChatGroup",
       setGroupList:"ws/setGroupList",
-      setInfoMsg:"ws/setInfoMsg",
+      setMsgInfoPage:"ws/setMsgInfoPage",
       setMyContactDataList:"ws/setMyContactDataList"
     }),
     getDataList() {
@@ -74,10 +75,6 @@ export default {
           if (el.icon === undefined)
             el.icon = require("./../../../../static/images/image_user_defult.png");
         });
-        // localStorage.setItem(
-        //   "myContactDataList",
-        //   JSON.stringify(this.contactList)
-        // );
         this.setMyContactDataList(this.contactList)
       });
       getGroupList().then((res) => {
@@ -114,6 +111,10 @@ export default {
           infoMsgShow:true,
           infoMsgNav:path,
         }
+        let msgInfoPage = {
+          pageShow:true,
+          type:'',
+        }
         if (path === "ContactPage") {
           data.toChatId = "u" + data.contactId;
           this.getUserId(data)
@@ -122,6 +123,7 @@ export default {
           this.setChatGroup(data);
         }
         this.setInfoMsg(infoStore)
+        this.setMsgInfoPage(msgInfoPage)
       }
     },
   },

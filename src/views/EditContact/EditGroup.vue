@@ -126,7 +126,7 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.groupForm.name = this.groupData.groupName;
+    this.groupForm.name = this.groupUser.groupName;
   },
   methods: {
     ...mapMutations({

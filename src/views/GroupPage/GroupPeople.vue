@@ -2,35 +2,72 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="125px">
-          <div class="home-header">
-            <template v-if="!editBtnShow">
-              <div class="home-user" @click="back" style="position: absolute"></div>
-            </template>
-            <template v-else-if="groupData.isAdmin">
-              <div class="home-user" @click="editBtnShow = false" style="position: absolute"></div>
-            </template>
-            <span class="home-header-title"
-              >成员 ({{ !editBtnShow? contactList.length :checkDataList.length}})
-            </span>
+        <template v-if="device === 'moblie'">
+          <el-header height="125px">
+            <div class="home-header">
+              <template v-if="!editBtnShow">
+                <div class="home-user" @click="back" style="position: absolute"></div>
+              </template>
+              <template v-else-if="groupData.isAdmin">
+                <div class="home-user" @click="editBtnShow = false" style="position: absolute"></div>
+              </template>
+              <span class="home-header-title"
+                >成员 ({{ !editBtnShow? contactList.length :checkDataList.length}})
+              </span>
 
-            <template v-if="groupData.isAdmin && !editBtnShow">
-              <router-link :to="'GroupAddPeople'" style="position: absolute; right: 50px;">
-                <div class="home-add-user" ></div>
-              </router-link>  
-              <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
-            </template>
+              <template v-if="groupData.isAdmin && !editBtnShow">
+                <router-link :to="'GroupAddPeople'" style="position: absolute; right: 50px;">
+                  <div class="home-add-user" ></div>
+                </router-link>  
+                <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
+              </template>
+            </div>
+            <div class="home-search">
+              <el-input
+                placeholder="搜寻"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+                @keyup.native.enter="developmentMessage(searchKey)"
+              >
+              </el-input>
+            </div>
+          </el-header>
+        </template>
+
+        <template v-else-if="device === 'pc'">
+          <el-header height="70px">
+            <div class="home-header">
+              <template v-if="!editBtnShow">
+                <div class="home-user" @click="back" style="position: absolute"></div>
+              </template>
+              <template v-else-if="groupData.isAdmin">
+                <div class="home-user" @click="editBtnShow = false" style="position: absolute"></div>
+              </template>
+
+              <span class="home-header-title"
+                >成员 ({{ !editBtnShow? contactList.length :checkDataList.length}})
+              </span>
+
+              <template v-if="groupData.isAdmin && !editBtnShow">
+                <div class="home-add-user" @click="addGroupPeople" style="position: absolute; right: 50px;"></div>
+                <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
+              </template>
+            </div>
+            
+          </el-header>
+          <div style="border-bottom: 1px solid #e1e1e1b0;">
+            <div class="home-search-pc">
+              <el-input
+                  placeholder="搜寻"
+                  prefix-icon="el-icon-search"
+                  v-model="searchKey"
+                  @keyup.native.enter="developmentMessage(searchKey)"
+                >
+              </el-input>
+            </div>
           </div>
-          <div class="home-search">
-            <el-input
-              placeholder="搜寻"
-              prefix-icon="el-icon-search"
-              v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
-            >
-            </el-input>
-          </div>
-        </el-header>
+        </template>
+
         <template v-if="!editBtnShow">
           <div class="home-content" >
             <div class="el-checkbox-group">
@@ -80,6 +117,7 @@
       </el-main>
     </el-container>
     <el-dialog
+      :title="device==='pc'?'編輯成員':''"
       :visible.sync="leaveUserDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -87,11 +125,11 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span>确认是否将所选的联络人退出群组？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="leaveUserDialogShow = false"
+        <el-button :class="device === 'moblie' ?'border-red':'background-gray'" @click="leaveUserDialogShow = false"
           >取消</el-button
         >
         <el-button class="background-red" @click="successDialogShow = true">确认</el-button>
@@ -118,7 +156,7 @@
 <script>
 import { developmentMessage } from "@/assets/tools";
 import { groupListMember,removeMember } from "@/api";
-import { mapMutations } from "vuex";
+import { mapState,mapMutations } from "vuex";
 
 export default {
   name: "GroupPeople",
@@ -134,6 +172,8 @@ export default {
       successDialogShow:false,
       leaveUserDialogShow: false,
       developmentMessage: developmentMessage,
+      device: localStorage.getItem("device"),
+
     };
   },
   created() {
@@ -147,8 +187,16 @@ export default {
       this.disabled = !val.length > 0;
     },
   },
+  computed: {
+    ...mapState({
+      myContactDataList: (state) => state.ws.myContactDataList,
+    }),
+  },
   methods: {
     ...mapMutations({
+      setInfoMsg:"ws/setInfoMsg",
+      setChatUser: "ws/setChatUser",
+      setMsgInfoPage:"ws/setMsgInfoPage",
       setContactListData:"ws/setContactListData",
     }),
     getGroupListMember() {
@@ -163,6 +211,13 @@ export default {
         this.setContactListData(this.contactList);
         this.checkDataList = this.contactList.filter(el=> el.memberId !== this.groupData.memberId)
       });
+    },
+    addGroupPeople(){
+      let msgInfoPage = {
+        pageShow:false,
+        type:"addGroupPeople",
+      }
+      this.setMsgInfoPage(msgInfoPage)
     },
     removeGroupMember(){
       let param = {
@@ -180,15 +235,48 @@ export default {
       .catch((err) => {console.log(err)})
     },
     back() {
-      this.$router.back(-1);
+      if(this.device === "moblie"){
+        this.$router.back(-1);
+      } else{
+        let infoStore ={
+          infoMsgShow:false,
+        }
+        let msgInfoPage = {
+          pageShow:true,
+        }
+        this.setInfoMsg(infoStore)
+        this.setMsgInfoPage(msgInfoPage)
+      }
     },
     goContactPage(data){
+      console.log(data)
       if(data.memberId === JSON.parse(localStorage.getItem("id"))){
         this.$message({ message: "此即为您的帐号", type: "warning" });
       }else{
         data.toChatId = "u" + data.memberId;
-        localStorage.setItem("userData", JSON.stringify(data));
-        this.$router.push({ name: 'ContactPage' });
+        // localStorage.setItem("userData", JSON.stringify(data));
+        if(this.device === "moblie"){
+          this.$router.push({ name: 'ContactPage' });
+        }else{
+          this.contactDataList = JSON.parse(localStorage.getItem('myContactDataList'))
+          this.contactDataList.forEach((res)=>{
+            if(Number(res.contactId) === data.memberId){
+              data.isContact = true
+            } 
+          })
+          this.setChatUser(data)
+          let msgInfoPage = {
+            pageShow:true,
+            type:'ContactPage',
+          }
+          let infoStore ={
+            infoMsgShow:true,
+            infoMsgChat:true,
+            infoMsgNav:'ContactPage',
+          }
+          this.setInfoMsg(infoStore)
+          this.setMsgInfoPage(msgInfoPage)
+        }
       }
     }
   },
@@ -367,6 +455,89 @@ export default {
           .border-red {
             border: 1px solid #fe5f3f;
             color: #fe5f3f;
+          }
+        }
+      }
+    }
+  }
+}
+.hichat-pc{
+  .home-wrapper{
+    .el-container{
+      .el-main{
+        border-radius: 0;
+        .home-header{
+          margin: 1.8em 1em 1.8em 0.7em !important;
+          .home-user {
+            background-size: 70%;
+            background-color: #fff;
+            background-image: url("./../../../static/images/pc/arrow-left.png");
+            cursor: pointer;
+          }
+          .home-add-user{
+            background-size: 70%;
+            background-color: #fff;
+            background-image: url("./../../../static/images/pc/add.png");
+            cursor: pointer;
+          }
+          .home-header-title{
+            margin-left: 40px;
+          }
+          .home-user-edit{
+            background-size: 70%;
+            background-color: #fff;
+            background-image: url("./../../../static/images/pc/edit_info.png");
+            cursor: pointer;
+          } 
+        }
+        .home-search-pc {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 1em;
+          .el-input{
+            width: 95%;
+            /deep/.el-input__inner{
+              background-color: #e9e8e8;
+              color: #666666;
+            }
+          }
+        }
+        .home-content{
+          .el-checkbox-group{
+            .el-checkbox{
+              width: 100%;
+              /deep/.el-checkbox__label{
+                font-size: 17px;
+                .address-box{
+                  .msg-box {
+                    span {
+                      &::after {
+                        content: "";
+                        margin-top: 1em;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        .home-footer-btn{
+          .el-button{
+            padding: 9px 20px;
+          }
+        }
+      }
+    }
+    .el-dialog-loginOut{
+      /deep/.el-dialog{
+        .el-dialog__footer{
+          padding:0;
+          .el-button{
+            &:nth-child(2){
+              border-left: 1px solid rgb(239, 239, 239);
+            }
           }
         }
       }

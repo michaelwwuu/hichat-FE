@@ -107,7 +107,7 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'pc'"><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span
           >确认是否{{ chatUser.isBlock ? `解除封锁${device === 'pc'?'好友':''}` : `封锁${device === 'pc'?'好友':''}`
           }} {{ chatUser.name }}？</span

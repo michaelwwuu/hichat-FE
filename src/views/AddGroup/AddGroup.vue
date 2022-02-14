@@ -209,6 +209,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getContactList,uploadGroupIcon,addGroup } from "@/api";
 
@@ -247,6 +248,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({
+      setChatGroup:"ws/setChatGroup",
+    }),
     getAddressList() {
       getContactList().then((res) => {
         this.contactList = res.data.list;
@@ -291,7 +295,9 @@ export default {
             memberId: JSON.parse(localStorage.getItem("id")),
           }
           localStorage.setItem("groupData", JSON.stringify(groupData))
-          this.$router.push({ path: "/ChatGroupMsg" });
+          this.setChatGroup(this.groupData)
+
+          this.$router.push({ path: this.device === 'moblie' ? "/ChatGroupMsg" : "home" });
         }
       })
       .catch((err) => {
@@ -435,6 +441,7 @@ export default {
         }
       }
     }
+
     .el-container{
       .el-aside{
         .add-content{

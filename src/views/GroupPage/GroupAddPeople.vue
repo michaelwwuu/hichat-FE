@@ -2,22 +2,43 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="125px">
-          <div class="home-header">
-            <div class="home-user" @click="back"></div>
-            <span class="home-header-title">邀请联络人</span>
-            <div class="home-add-user"></div>
+        <template v-if="device === 'moblie'">
+          <el-header height="125px">
+            <div class="home-header">
+              <div class="home-user" @click="back"></div>
+              <span class="home-header-title">邀请联络人</span>
+              <div class="home-add-user"></div>
+            </div>
+            <div class="home-search">
+              <el-input
+                placeholder="搜寻"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+                @keyup.native.enter="developmentMessage(searchKey)"
+              >
+              </el-input>
+            </div>
+          </el-header>
+        </template>
+        <template v-else>
+          <el-header height="70px">
+            <div class="home-header flex-start" >
+              <div class="home-user-pc" @click="back"></div>
+              <span class="home-header-title">邀请联络人</span>
+            </div>
+          </el-header>
+          <div style="border-bottom: 1px solid #e1e1e1b0;">
+            <div class="home-search-pc">
+              <el-input
+                  placeholder="搜寻"
+                  prefix-icon="el-icon-search"
+                  v-model="searchKey"
+                  @keyup.native.enter="developmentMessage(searchKey)"
+                >
+              </el-input>
+            </div>
           </div>
-          <div class="home-search">
-            <el-input
-              placeholder="搜寻"
-              prefix-icon="el-icon-search"
-              v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
-            >
-            </el-input>
-          </div>
-        </el-header>
+        </template>
         <div class="home-content">
           <el-checkbox-group v-model="checkList"> 
             <el-checkbox
@@ -65,6 +86,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { groupListMember,addMember } from "@/api";
 
@@ -80,6 +102,7 @@ export default {
       disabled: true,
       addUserDialogShow: false,
       developmentMessage: developmentMessage,
+      device: localStorage.getItem("device"),
     };
   },
   created() {
@@ -95,6 +118,10 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setInfoMsg:"ws/setInfoMsg",
+      setMsgInfoPage:"ws/setMsgInfoPage"
+    }),
     getGroupListMember() {
       let groupId = this.groupData.groupId
       groupListMember({ groupId }).then((res) => {
@@ -121,7 +148,19 @@ export default {
       })
     },
     back() {
-      this.$router.back(-1);
+      if(this.device === "moblie"){
+        this.$router.back(-1);
+      } else{
+        let infoStore ={
+          infoMsgShow:true,
+        }
+        let msgInfoPage = {
+          pageShow:false,
+          type:"groupPeople"
+        }
+        this.setInfoMsg(infoStore)
+        this.setMsgInfoPage(msgInfoPage)
+      }
     },
   },
 };
@@ -246,6 +285,78 @@ export default {
           .border-red {
             border: 1px solid #fe5f3f;
             color: #fe5f3f;
+          }
+        }
+      }
+    }
+  }
+}
+.hichat-pc{
+  .home-wrapper{
+    .el-container{
+      .el-main{
+        border-radius: 0;
+        .home-header {
+          margin: 1.3em 1em 1em 0.7em;
+          .home-user-pc {
+            background-color: #fff;
+            background-image: url("./../../../static/images/pc/arrow-left.png");
+            cursor: pointer;
+          }      
+        }
+        .home-search-pc {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 1em;
+          .el-input{
+            width: 95%;
+            /deep/.el-input__inner{
+              background-color: #e9e8e8;
+              color: #666666;
+            }
+          }
+        }
+        .home-content{
+          .el-checkbox-group{
+            .el-checkbox{
+              width: 100%;
+              /deep/.el-checkbox__label{
+                font-size: 17px;
+                .address-box{
+                  .msg-box {
+                    span {
+                      &::after {
+                        content: "";
+                        margin-top: 1em;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        .home-footer-btn{
+          .el-button{
+            padding: 9px 20px;
+          }
+        }
+        .home-footer-btn{
+          .el-button{
+            padding: 9px 20px;
+          }
+        }
+      }
+    }
+    .el-dialog-loginOut{
+      /deep/.el-dialog{
+        .el-dialog__footer{
+          padding:0;
+          .el-button{
+            &:nth-child(2){
+              border-left: 1px solid rgb(239, 239, 239);
+            }
           }
         }
       }

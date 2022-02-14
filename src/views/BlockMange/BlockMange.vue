@@ -1,20 +1,35 @@
 <template>
   <div class="home-wrapper">
     <el-container>
-      <el-main>
-        <el-header height="55px">
-          <div class="home-header">
-            <router-link :to="'/Setting'">
-              <div class="home-user"></div>
-            </router-link>
-            <span class="home-header-title">封锁名单</span>
-            <template v-if="editBtnShow">
-              <div class="home-user-edit" :class="{'hidden':blockData.length <= 0}" @click="editBtnShow = false"></div>
-            </template>
-            <template v-else>
-              <div class="cancel"  @click="editBtnShow = true">取消</div>
-            </template>
-          </div>
+      <el-aside :width="device === 'moblie' ? '100%' : '20%'">
+        <el-header :height="device === 'moblie' ? '55px' : '70px'">
+          <template v-if="device === 'moblie'">
+            <div class="home-header">
+              <router-link :to="'/Setting'">
+                <div class="home-user"></div>
+              </router-link>
+              <span class="home-header-title">封锁名单</span>
+              <template v-if="editBtnShow">
+                <div class="home-user-edit" :class="{'hidden':blockData.length <= 0}" @click="editBtnShow = false"></div>
+              </template>
+              <template v-else>
+                <div class="cancel"  @click="editBtnShow = true">取消</div>
+              </template>
+            </div>
+          </template>
+          <template v-else>
+            <div class="home-header" >
+              <div style="display: flex; align-items: center; cursor: pointer;" >
+                <router-link :to="'/Setting'">
+                  <div class="home-user-pc"></div>
+                </router-link>
+                <span class="home-header-title">封锁名单</span>
+              </div>
+              <template v-if="editBtnShow">
+                <div class="home-add-user home-edit-img" :class="{'hidden':blockData.length <= 0}" @click="editBtnShow = false"></div>
+              </template>
+            </div>
+          </template>
         </el-header>
         <template v-if="blockData.length <= 0">
           <div class="no-data">
@@ -49,9 +64,10 @@
             >解除封鎖</el-button
           >
         </div>
-      </el-main>
+      </el-aside>
     </el-container>
     <el-dialog
+      :title="device === 'pc'?'封锁名单':''"
       :visible.sync="settingDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -59,19 +75,26 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span>确认是否将所选联络人解除封锁？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="settingDialogShow = false"
+        <template v-if="device ==='moblie'">
+          <el-button class="border-red" @click="settingDialogShow = false"
           >取消</el-button
-        >
-        <el-button class="background-red" @click="unblockDialogShow = true"
-          >确认</el-button
-        >
+          >
+          <el-button class="background-red" @click="unblockDialogShow = true"
+            >确认</el-button
+          >
+        </template>
+        <template v-else>
+          <el-button class="background-gray" @click="settingDialogShow = false">取消</el-button>
+          <el-button class="background-orange" @click="unblockDialogShow = true">确认</el-button>
+        </template>
       </span>
     </el-dialog>
     <el-dialog
+      :title="device === 'pc'?'封锁名单':''"
       :visible.sync="unblockDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -79,7 +102,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>封锁已解除</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -90,7 +113,7 @@
 </template>
 
 <script>
-
+import { mapState,mapMutations } from "vuex";
 import { blockListMember,unBlockContactUser } from "@/api";
 export default {
   name: "BlockMange",
@@ -103,6 +126,7 @@ export default {
       editBtnShow:true,
       settingDialogShow:false,
       unblockDialogShow:false,
+      device: localStorage.getItem("device"),
     };
   },
   mounted() {
@@ -113,7 +137,15 @@ export default {
       this.disabled = !val.length > 0;
     },
   },
+  computed: {
+    ...mapState({
+      chatUser:(state) => state.ws.chatUser,
+    }),
+  },
   methods: {
+    ...mapMutations({
+      setChatUser:"ws/setChatUser"
+    }),
     getBlockDataList(){
       blockListMember().then((res)=>{
         if(res.code === 200){
@@ -132,6 +164,12 @@ export default {
           this.settingDialogShow = false;
           this.unblockDialogShow = false;
           this.editBtnShow = true;
+          blockIdList.forEach(el => {
+            if(el === this.chatUser.contactId){
+              this.chatUser.isBlock = false
+              this.setChatUser(this.chatUser)
+            }
+          })
           this.getBlockDataList()
         }
       })
@@ -139,8 +177,7 @@ export default {
         this.$message({ message: err, type: "error"});
         return false;
       });
-    }
-    
+    },
   },
 };
 </script>
@@ -148,7 +185,6 @@ export default {
 <style lang="scss" scoped>
 .home-wrapper {
   .home-header {
-  
     .home-user {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
@@ -279,6 +315,42 @@ export default {
             border: 1px solid #fe5f3f;
             color: #fe5f3f;
           }
+        }
+      }
+    }
+  }
+}
+.hichat-pc{
+  .home-header {
+    .home-user-pc {
+      background-color: #fff;
+      background-image: url("./../../../static/images/pc/arrow-left.png");
+    }
+    .home-header-title{
+      margin-left: 5px;
+    }
+    .home-edit-img{
+      background-color: #fff;
+      background-image: url("./../../../static/images/pc/edit_info.png");     
+    }
+    .home-edit-img.hidden {
+      visibility: hidden;
+    } 
+  }
+  .home-content{
+    .el-checkbox{
+      width: 100%;
+    }
+  }
+  .no-data{
+    margin: 2em 0;
+  }
+  .el-dialog-loginOut{
+    /deep/.el-dialog__footer {
+      padding:0 !important;
+      .el-button{
+        &:nth-child(2){
+          border-left: 1px solid #efefef;
         }
       }
     }

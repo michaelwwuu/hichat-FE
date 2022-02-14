@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { leaveGroup } from "@/api";
 
@@ -141,8 +142,12 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.setChatGroup(this.groupData)
   },
   methods: {
+    ...mapMutations({
+      setChatGroup:"ws/setChatGroup",
+    }),
     noIconShow(iconData){
       if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
         return this.noIcon
