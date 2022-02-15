@@ -295,7 +295,6 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-     
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         // 发送讯息成功
@@ -304,10 +303,6 @@ export default {
         case "SRV_USER_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          // if(userInfo.isRead){
-          //   // this.readMsgData.push(userInfo.historyId)
-          //   this.readMsgShow(userInfo);
-          // }
           this.readMsgShow(userInfo);
           break;
         // 历史讯息
@@ -315,12 +310,6 @@ export default {
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            // if (
-            //   el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
-            //   !el.isRead
-            // ){
-            //   this.readMsgData.push(el.chat.historyId);
-            // }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
@@ -334,7 +323,7 @@ export default {
           break;
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
-          this.getChatHistoryMessage();
+          if(this.device === "moblie") this.getChatHistoryMessage();
           break;
       }
     },

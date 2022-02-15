@@ -97,7 +97,6 @@ export default {
   },
   mounted() {
     this.getGroupListMember();
-    // this.getChatHistoryMessage();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -167,16 +166,6 @@ export default {
         userChatId: data.chat.fromChatId,
       };
     },
-    // 獲取歷史訊息
-    getChatHistoryMessage() {
-      let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
-      historyMessageData.id = Math.random();
-      historyMessageData.toChatId = this.groupData.toChatId;
-      historyMessageData.targetId = "";
-      historyMessageData.pageSize = 1000;
-      Socket.send(historyMessageData);
-    },
     // 已讀
     readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
@@ -197,10 +186,6 @@ export default {
         case "SRV_GROUP_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          // if(userInfo.isRead){
-          //   // this.readMsgData.push(userInfo.historyId)
-          //   this.readMsgShow(userInfo);
-          // }
           this.readMsgShow(userInfo);
           break;
         // 历史讯息
@@ -208,12 +193,6 @@ export default {
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            // if (
-            //   el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
-            //   !el.isRead
-            // ){
-            //   this.readMsgData.push(el.chat.historyId);
-            // }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
@@ -224,10 +203,6 @@ export default {
           this.messageData.forEach((res) => {
             if (res.historyId === userInfo.historyId) res.isRead = true;
           });
-          break;
-        // 撈取歷史訊息
-        case "SRV_RECENT_CHAT":
-          this.getChatHistoryMessage();
           break;
       }
     },

@@ -166,18 +166,14 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          this.contactList.forEach((item) => {
-            if (userInfo.chat.fromChatId === "u" + item.memberId) {
-              userInfo.chat.icon = item.icon;
-              userInfo.chat.name = item.name;
-            }
-          });
+          // this.contactList.forEach((item) => {
+          //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
+          //     userInfo.chat.icon = item.icon;
+          //     userInfo.chat.name = item.name;
+          //   }
+          // });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          // if(userInfo.isRead){
-          //   // this.readMsgData.push(userInfo.historyId)
-          //   this.readMsgShow(userInfo);
-          // }
           this.readMsgShow(userInfo);
           break;
         // 历史讯息
@@ -185,12 +181,6 @@ export default {
           this.messageData = []
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            // if (
-            //   el.chat.fromChatId !== "u" + localStorage.getItem("id") &&
-            //   !el.isRead
-            // ){
-            //   this.readMsgData.push(el.chat.historyId);
-            // }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });

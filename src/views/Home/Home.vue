@@ -114,9 +114,18 @@
             :key="index"
             @click="changeImg(index)"
           >
+            
             <router-link :to="item.path">
               <span
-                ><img :src="index !== num ? item.icon : item.active"
+                >
+                <div class="el-badge-box" v-if="index === 1">
+                  <el-badge
+                    :value="badgeNum"
+                    class="item"
+                    v-if="badgeNum !== 0"
+                  ></el-badge>
+                </div>
+                <img :src="index !== num ? item.icon : item.active"
               /></span>
             </router-link>
           </div>
@@ -239,11 +248,14 @@ export default {
       },
       num: 0,
       searchKey: "",
+      badgeNum:0,
+      chatDataList:[],
       downloadFilename: "",
       logoutDialogShow:false,
       infoMsgAsideShow:false,
       centerDialogVisible: false,
       device: localStorage.getItem("device"),
+
     };
   },
   created() {
@@ -301,26 +313,21 @@ export default {
     //   })
     // },
     handleGetMessage(msg) {
+      this.badgeNum = 0
       let msgInfo = JSON.parse(msg);
       switch (msgInfo.chatType) {
-         //成功收到
-        // case "SRV_RECENT_CHAT":
-          // console.log(msgInfo)
-
-          // this.hiChatDataList = msgInfo.recentChat.filter(
-          //   (item) => item.isContact
-          // );
-          // this.groupDataList = msgInfo.recentChat.filter(
-          //   (item) => item.isGroup
-          // );
-          // this.contactDataList = msgInfo.recentChat.filter(
-          //   (item) => !item.isContact && item.isContact !==null
-          // );
-          // this.messageNum = this.contactDataList.some(item => item.unreadCount > 0)
-            // break;
+        //成功收到
+        case "SRV_RECENT_CHAT":
+          this.chatDataList = msgInfo.recentChat
+          this.chatDataList.forEach((item)=>{
+            this.badgeNum += item.unreadCount
+          })
+          break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           this.notifyMe(msgInfo);
           break;
@@ -328,6 +335,17 @@ export default {
     },
     notifyMe(msgInfo) {
       console.log(msgInfo)
+      console.log(this.chatDataList)
+      let notificationData = {
+        name:"",
+        icon:"",
+      }
+      this.chatDataList.forEach((el)=>{
+        if(el.toChatId === msgInfo.toChatId) {
+          notificationData.icon = el.icon
+          notificationData.name = el.name
+        }
+      })
       // 先检查浏览器是否支持
       if (!("Notification" in window)) {
         this.$message({
@@ -338,16 +356,16 @@ export default {
       // 检查用户是否同意接受通知
       else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        var notification = new Notification("你好snowball:", {
+        var notification = new Notification(`${notificationData.name}`, {
           dir: "auto", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
           lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
           tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-          icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg", //提示时候的图标
+          icon: notificationData.icon, //提示时候的图标
           body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
         });
         notification.onclick = function(e) { // 綁定點擊事件
           e.preventDefault(); // prevent the browser from focusing the Notification's tab
-          window.open('http://sample.com./'); // 打開特定網頁
+          window.open('http://localhost:8080/#/HiChat'); // 打開特定網頁
         }
       }
       // 否则我们需要向用户获取权限
@@ -355,11 +373,11 @@ export default {
         Notification.requestPermission(function (permission) {
           // 如果用户同意，就可以向他们发送通知
           if (permission === "granted") {
-            var notification = new Notification("你好snowball:", {
+            var notification = new Notification(`${notificationData.name}`, {
               dir: "auto", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
               lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
               tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-              icon: "https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg", //提示时候的图标
+              icon: notificationData.icon, //提示时候的图标
               body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
             });
           }
@@ -437,5 +455,9 @@ export default {
       border-radius:0 !important;
     }
   }
+}
+.el-badge-box{
+  position: absolute;
+  margin: -10px 0 0 20px;
 }
 </style>

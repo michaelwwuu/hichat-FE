@@ -239,7 +239,7 @@ export default {
         this.$router.back(-1);
       } else{
         let infoStore ={
-          infoMsgShow:false,
+          infoMsgShow:true,
         }
         let msgInfoPage = {
           pageShow:true,

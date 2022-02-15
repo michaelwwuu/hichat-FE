@@ -314,7 +314,6 @@ export default {
         this.setChatGroup(data);
         this.getGroupListMember();
       }
-
       if (this.device === "moblie") {
         this.$router.push({ name: path });
       } else {
@@ -338,6 +337,9 @@ export default {
         this.getHistoryMessage.toChatId = data.toChatId;
         this.getHistoryMessage.id = Math.random();
         Socket.send(this.getHistoryMessage);
+        setTimeout(() => {
+          this.getHiChatDataList()
+        }, 3000);
       }
     },
   },
