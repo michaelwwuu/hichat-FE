@@ -386,6 +386,10 @@ export default {
             notify.icon = el.icon === '' ? require("./../../../static/images/image_group_defult.png") : el.icon
             notify.title = '(群组)'
             notify.type = 'group'
+          } else if(!el.isBlock && !el.isContact && !el.isGroup){
+            notify.icon = el.icon === '' ? require("./../../../static/images/image_user_defult.png") : el.icon
+            notify.title = '(陌生人)'
+            notify.type = 'contact'
           }
           notify.name = el.name
         }
@@ -403,26 +407,22 @@ export default {
         onclick:(even) =>{
           this.$router.push({ path: "/HiChat" });
           this.setHichatNav({ type: notify.type, num: 1 });
-          this.notifyData = {}
-          this.chatDataList.forEach((el)=>{
-             if(el.toChatId === even.target.data.toChatId){
-               this.notifyData = el
-             }
+          this.notifyData = this.chatDataList.filter(el=> {
+            return el.toChatId === even.target.data.toChatId
           })
-          if(notify.type === 'address') {
-            this.setChatUser(this.notifyData);
+          if(notify.type === 'address' || type === "contact") {
+            this.setChatUser(this.notifyData[0]);
           }else if(notify.type === 'group'){
-            console.log(this.chatDataList)
-            this.notifyData.icon = this.notifyData.icon;
-            this.notifyData.groupName = this.notifyData.name;
-            this.notifyData.groupId = this.notifyData.toChatId.replace("g", "");
-            this.notifyData.memberId = JSON.parse(this.notifyData.forChatId.replace("u", ""));
+            this.notifyData[0].icon = this.notifyData[0].icon;
+            this.notifyData[0].groupName = this.notifyData[0].name;
+            this.notifyData[0].groupId = this.notifyData[0].toChatId.replace("g", "");
+            this.notifyData[0].memberId = JSON.parse(this.notifyData[0].forChatId.replace("u", ""));
             this.groupList.forEach((item) => {
-              if (item.groupName === this.notifyData.groupName) {
-                return (this.notifyData.isAdmin = item.isAdmin);
+              if (item.groupName === this.notifyData[0].groupName) {
+                return (this.notifyData[0].isAdmin = item.isAdmin);
               }
             });
-            this.setChatGroup(this.notifyData)
+            this.setChatGroup(this.notifyData[0])
             this.getGroupListMember()
           }
           this.getHistory(notify.type)
