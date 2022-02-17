@@ -182,11 +182,7 @@ export default {
       if(this.device === "moblie"){
         this.$router.back(-1);
       }else{
-        let msgInfoPage = {
-          pageShow:true,
-          type:'',
-        }
-        this.setMsgInfoPage(msgInfoPage)
+        this.setMsgInfoPage({ pageShow:true, type:'', })
       }
     },
   },

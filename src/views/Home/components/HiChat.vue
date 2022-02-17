@@ -324,13 +324,8 @@ export default {
         }else if(!data.isBlock && !data.isContact && !data.isGroup){
           this.type = 'contact'
         }
-        let navType = { type: this.type, num: 1 };
-        this.setHichatNav(navType);
-        let infoMsg = {
-          infoMsgShow: false,
-          infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
-        };
-        this.setInfoMsg(infoMsg);
+        this.setHichatNav({ type: this.type, num: 1 });
+        this.setInfoMsg({ infoMsgShow: false, infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage", });
         this.getHistory(data,path)
         setTimeout(() => {
           this.getHiChatDataList()

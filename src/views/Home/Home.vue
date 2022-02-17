@@ -303,22 +303,10 @@ export default {
     }),
     changeImg(index) {
       this.num = index;
-      let infoMsg = { infoMsgShow:false }
-      this.setInfoMsg(infoMsg)
-      this.getHistory()
+      this.setInfoMsg({ infoMsgShow:false })
+      this.getHistory("address")
     },
-    getHistory(type){
-      if(type === "address" || type === "contact"){
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
-        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-      } else{
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
-        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-      }
-      Socket.send(this.getHistoryMessage);
-    },
+
     copyUrl() {
       let url = this.qrCodeConfig.text;
       urlCopy(url);
@@ -413,10 +401,8 @@ export default {
         renotify:true,
       }, {
         onclick:(even) =>{
-          console.log(even.target.data)
           this.$router.push({ path: "/HiChat" });
-          let navType = { type: notify.type, num: 1 };
-          this.setHichatNav(navType);
+          this.setHichatNav({ type: notify.type, num: 1 });
           this.notifyData = {}
           this.chatDataList.forEach((el)=>{
              if(el.toChatId === even.target.data.toChatId){
@@ -445,6 +431,18 @@ export default {
           }, 3000);
         },
       })
+    },
+    getHistory(type){
+      if(type === "address" || type === "contact"){
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      } else{
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      }
+      Socket.send(this.getHistoryMessage);
     },
     loginOut() {
       this.$router.push({ path: "/login" });

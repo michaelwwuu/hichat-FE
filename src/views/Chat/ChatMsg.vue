@@ -279,8 +279,7 @@ export default {
       Socket.send(historyMessageData);
     },
     infoMsgShow(){
-      let infoMsg = { infoMsgShow:true,infoMsgNav:'ContactPage',infoMsgChat:true }
-      this.setInfoMsg(infoMsg)
+      this.setInfoMsg({ infoMsgShow:true,infoMsgNav:'ContactPage',infoMsgChat:true })
     },
     // 已讀
     readMsgShow(data) {
@@ -341,9 +340,8 @@ export default {
             data.isContact = true;
             this.setChatUser(data)
             if(this.device === "pc") {
-              let navType = { type:"address", num: 1 };
               this.getHiChatDataList()
-              this.setHichatNav(navType);
+              this.setHichatNav({ type:"address", num: 1 });
             }
           } else {
             this.$message({ message: res.message, type: "error" });

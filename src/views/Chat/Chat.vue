@@ -129,16 +129,11 @@ export default {
       }
     },
     changeGroupAdminShow(){
-      let msgInfoPage = {
-        pageShow:false,
-        type:'adminChange',
-      }
-      this.setMsgInfoPage(msgInfoPage)
+      this.setMsgInfoPage({ pageShow:false, type:'adminChange',})
       this.infoMsgShow()
     },
     infoMsgShow(){
-      let infoMsg = { infoMsgShow:true,infoMsgNav:'GroupPage',infoMsgChat:true }
-      this.setInfoMsg(infoMsg)
+      this.setInfoMsg({ infoMsgShow:true,infoMsgNav:'GroupPage',infoMsgChat:true })
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -213,8 +208,7 @@ export default {
       leaveGroup({groupId}).then((res)=>{
         if(res.code === 200) {
           this.leaveGroupDialogShow = false
-          let navType = { type:"address", num: 0 };
-          this.setHichatNav(navType)
+          this.setHichatNav({ type:"address", num: 0 })
         }
       })
       .catch((err) => {

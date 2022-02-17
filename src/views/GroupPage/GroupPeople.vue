@@ -213,11 +213,7 @@ export default {
       });
     },
     addGroupPeople(){
-      let msgInfoPage = {
-        pageShow:false,
-        type:"addGroupPeople",
-      }
-      this.setMsgInfoPage(msgInfoPage)
+      this.setMsgInfoPage({ pageShow:false, type:"addGroupPeople", })
     },
     removeGroupMember(){
       let param = {
@@ -238,14 +234,8 @@ export default {
       if(this.device === "moblie"){
         this.$router.back(-1);
       } else{
-        let infoStore ={
-          infoMsgShow:true,
-        }
-        let msgInfoPage = {
-          pageShow:true,
-        }
-        this.setInfoMsg(infoStore)
-        this.setMsgInfoPage(msgInfoPage)
+        this.setInfoMsg({ infoMsgShow:true })
+        this.setMsgInfoPage({ pageShow:true })
       }
     },
     goContactPage(data){
@@ -265,17 +255,8 @@ export default {
             } 
           })
           this.setChatUser(data)
-          let msgInfoPage = {
-            pageShow:true,
-            type:'ContactPage',
-          }
-          let infoStore ={
-            infoMsgShow:true,
-            infoMsgChat:true,
-            infoMsgNav:'ContactPage',
-          }
-          this.setInfoMsg(infoStore)
-          this.setMsgInfoPage(msgInfoPage)
+          this.setInfoMsg({ infoMsgShow:true, infoMsgChat:true, infoMsgNav:'ContactPage'})
+          this.setMsgInfoPage({ pageShow:true, type:'ContactPage'})
         }
       }
     }

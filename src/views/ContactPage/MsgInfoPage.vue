@@ -238,11 +238,7 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     editShowBtn(data){
-      let msgInfoPage = {
-        pageShow:false,
-        type:data,
-      }
-      this.setMsgInfoPage(msgInfoPage)
+      this.setMsgInfoPage({ pageShow:false, type:data,})
     },
     infoMsgSettingData(){
       if(this.infoMsg.infoMsgChat){
@@ -251,8 +247,7 @@ export default {
       } 
     },
     closeInfoMsgShow(){
-      let infoMsg = { infoMsgShow:false,infoMsgChat:false }
-      this.setInfoMsg(infoMsg)
+      this.setInfoMsg({ infoMsgShow:false,infoMsgChat:false })
     },
     noIconShow(iconData, key) {
       if (
@@ -279,18 +274,12 @@ export default {
     },
     goChatRoom(data, path, type) {
       if(path === "HiChat"){
-        let navType = { type: type, num: 1 };
-        let infoMsg = {
-          infoMsgShow: false,
-          infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
-        };
-        this.setInfoMsg(infoMsg);
-        this.setHichatNav(navType);
+        this.setInfoMsg({ infoMsgShow: false, infoMsgNav: type === "address" ? "ContactPage" : "GroupPage", });
+        this.setHichatNav({ type: type, num: 1 });
         this.getHistory(type)
         this.$router.push({ name: path, params: data });
       } else if(path === "groupPeople"){
-        let msgInfoPage = { pageShow:false, type:path,}
-        this.setMsgInfoPage(msgInfoPage)
+        this.setMsgInfoPage({ pageShow:false, type:path,})
       }
     },
     // getUserId() {

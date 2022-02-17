@@ -108,14 +108,6 @@ export default {
         }
         this.$router.push({ name: path });
       }else{
-        let infoStore ={
-          infoMsgShow:true,
-          infoMsgNav:path,
-        }
-        let msgInfoPage = {
-          pageShow:true,
-          type:'',
-        }
         if (path === "ContactPage") {
           data.toChatId = "u" + data.contactId;
           this.getUserId(data)
@@ -123,8 +115,8 @@ export default {
           data.toChatId = "g" + data.groupId;
           this.setChatGroup(data);
         }
-        this.setInfoMsg(infoStore)
-        this.setMsgInfoPage(msgInfoPage)
+        this.setInfoMsg({infoMsgShow:true, infoMsgNav:path, })
+        this.setMsgInfoPage({ pageShow:true, type:'', })
       }
     },
   },

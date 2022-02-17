@@ -152,15 +152,8 @@ export default {
       if(this.device === "moblie"){
         this.$router.back(-1);
       } else{
-        let infoStore ={
-          infoMsgShow:true,
-        }
-        let msgInfoPage = {
-          pageShow:false,
-          type:"groupPeople"
-        }
-        this.setInfoMsg(infoStore)
-        this.setMsgInfoPage(msgInfoPage)
+        this.setInfoMsg({infoMsgShow:true})
+        this.setMsgInfoPage({ pageShow:false, type:"groupPeople"})
       }
     },
   },
