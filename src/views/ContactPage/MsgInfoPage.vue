@@ -265,31 +265,31 @@ export default {
         return iconData.icon;
       }
     },
+    getHistory(type){
+      if(type === "address"){
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      } else{
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      }
+      Socket.send(this.getHistoryMessage);
+    },
     goChatRoom(data, path, type) {
       if(path === "HiChat"){
         let navType = { type: type, num: 1 };
-        this.setHichatNav(navType);
         let infoMsg = {
           infoMsgShow: false,
           infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
         };
         this.setInfoMsg(infoMsg);
+        this.setHichatNav(navType);
+        this.getHistory(type)
         this.$router.push({ name: path, params: data });
-        if(type === "address"){
-          this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
-          this.getHistoryMessage.toChatId = this.chatUser.toChatId;
-          this.getHistoryMessage.id = Math.random();
-        } else{
-          this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
-          this.getHistoryMessage.toChatId = this.groupUser.toChatId;
-          this.getHistoryMessage.id = Math.random();
-        }
-        Socket.send(this.getHistoryMessage);
       } else if(path === "groupPeople"){
-        let msgInfoPage = {
-          pageShow:false,
-          type:path,
-        }
+        let msgInfoPage = { pageShow:false, type:path,}
         this.setMsgInfoPage(msgInfoPage)
       }
     },

@@ -326,22 +326,24 @@ export default {
         }
         let navType = { type: this.type, num: 1 };
         this.setHichatNav(navType);
-
         let infoMsg = {
           infoMsgShow: false,
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
         };
         this.setInfoMsg(infoMsg);
-        this.getHistoryMessage.chatType =
-          path === "ChatMsg" ? "CLI_HISTORY_REQ" : "CLI_GROUP_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = data.toChatId;
-        this.getHistoryMessage.id = Math.random();
-        Socket.send(this.getHistoryMessage);
+        this.getHistory(data,path)
         setTimeout(() => {
           this.getHiChatDataList()
         }, 3000);
       }
     },
+    getHistory(data,path){
+      this.getHistoryMessage.chatType =
+        path === "ChatMsg" ? "CLI_HISTORY_REQ" : "CLI_GROUP_HISTORY_REQ";
+      this.getHistoryMessage.toChatId = data.toChatId;
+      this.getHistoryMessage.id = Math.random();
+      Socket.send(this.getHistoryMessage);
+    }
   },
 };
 </script>

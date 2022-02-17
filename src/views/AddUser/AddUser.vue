@@ -81,7 +81,7 @@
           
         </div>
         <div v-if="addUser.username !== undefined" class="home-footer-btn">
-          <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
+          <el-button  class="orange-btn" :disabled="disabled" @click="joinUserButtom(addUser)">加入联络人</el-button>
         </div>
       </el-aside>
     </el-container>    
@@ -115,6 +115,7 @@ export default {
       searchKey: "",
       avatarImg: require("./../../../static/images/image_user_defult.png"),
       noData: false,
+      disabled:false,
       successDialogShow:false,
       device: localStorage.getItem("device"),
     };
@@ -164,6 +165,7 @@ export default {
         contactId: data.id,
         name: data.username,
       };
+      this.disabled = true
       addContactUser(parmas).then((res) => {
         if (res.code === 200) {
           this.successDialogShow = true

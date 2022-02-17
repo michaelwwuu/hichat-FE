@@ -141,6 +141,7 @@ export default {
         groupId: this.groupData.groupId,
         memberList: this.checkList
       }
+      this.disabled = true
       addMember(params).then((res) => {
         if(res.code === 200){
           this.addUserDialogShow = true;

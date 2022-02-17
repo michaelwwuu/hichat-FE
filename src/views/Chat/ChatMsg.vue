@@ -222,9 +222,9 @@ export default {
     this.setChatUser(this.userData)
     Socket.$on("message", this.handleGetMessage);
   },
-  beforeDestroy() {
-    Socket.$off("message", this.handleGetMessage);
-  },
+  // beforeDestroy() {
+  //   Socket.$off("message", this.handleGetMessage);
+  // },
   mounted() {
     if(this.device === "moblie") this.getChatHistoryMessage();
   },
@@ -303,7 +303,9 @@ export default {
         case "SRV_USER_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          this.readMsgShow(userInfo);
+          if(userInfo.toChatId === JSON.parse(localStorage.getItem("userData")).toChatId){
+            this.readMsgShow(userInfo);
+          }
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":

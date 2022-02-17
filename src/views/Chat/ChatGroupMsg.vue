@@ -85,9 +85,9 @@ export default {
     this.getGroupListMember();
     this.getChatHistoryMessage();
   },
-  beforeDestroy() {
-    Socket.$off("message", this.handleGetMessage);
-  },
+  // beforeDestroy() {
+  //   Socket.$off("message", this.handleGetMessage);
+  // },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,

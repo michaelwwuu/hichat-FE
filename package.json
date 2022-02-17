@@ -29,6 +29,7 @@
     "vue-audio-recorder": "^3.0.1",
     "vue-emoji-picker": "^1.0.3",
     "vue-linkify": "^1.0.1",
+    "vue-native-notification": "^1.1.1",
     "vue-qr": "^3.2.2",
     "vue-router": "^3.2.0",
     "vue-socket.io": "^3.0.10",

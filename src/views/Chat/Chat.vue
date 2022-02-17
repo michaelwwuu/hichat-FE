@@ -98,9 +98,9 @@ export default {
   mounted() {
     this.getGroupListMember();
   },
-  beforeDestroy() {
-    Socket.$off("message", this.handleGetMessage);
-  },
+  // beforeDestroy() {
+  //   Socket.$off("message", this.handleGetMessage);
+  // },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
@@ -186,7 +186,9 @@ export default {
         case "SRV_GROUP_SEND":
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
-          this.readMsgShow(userInfo);
+          if(userInfo.toChatId === JSON.parse(localStorage.getItem("groupData")).toChatId){
+            this.readMsgShow(userInfo);
+          }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":

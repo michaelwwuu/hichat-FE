@@ -25,6 +25,15 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 //导入全局样式
 import './styles.scss'
 
+//提示
+import VueNativeNotification from 'vue-native-notification'
+
+Vue.use(VueNativeNotification, {
+  // Automatic permission request before
+  // showing notification (default: true)
+  requestOnNotify: true
+})
+
 // 引入根组件mixins 日期格式 共用事件
 import mixins from './mixins/root.js'
 

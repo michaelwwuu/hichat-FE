@@ -285,6 +285,7 @@ export default {
         icon:this.groupIcon,
         memberList:memberList,
       }
+      this.disableEditSubmit = true
       addGroup(params).then((res) => {
         if (res.code === 200) {
           let groupData = { 
@@ -296,7 +297,6 @@ export default {
           }
           localStorage.setItem("groupData", JSON.stringify(groupData))
           this.setChatGroup(this.groupData)
-
           this.$router.push({ path: this.device === 'moblie' ? "/ChatGroupMsg" : "home" });
         }
       })

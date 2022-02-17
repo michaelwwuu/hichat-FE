@@ -210,10 +210,10 @@ import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import { mapState,mapMutations } from "vuex";
+import { getGroupList, groupListMember } from "@/api";
 import ChatMsg from './../Chat/ChatMsg.vue';
 import ChatGroupMsg from './../Chat/Chat.vue';
 import MsgInfoPage from './../ContactPage/MsgInfoPage.vue';
-
 export default {
   name: "Home",
   data() {
@@ -255,7 +255,16 @@ export default {
       infoMsgAsideShow:false,
       centerDialogVisible: false,
       device: localStorage.getItem("device"),
-
+      getHistoryMessage: {
+        chatType: "",
+        toChatId: "",
+        id: Math.random(),
+        tokenType: 0,
+        targetId: "",
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      },
     };
   },
   created() {
@@ -265,15 +274,15 @@ export default {
         : this.$route.fullPath === "/HiChat"
         ? 1
         : 2;
-    if(this.device === 'pc') Socket.$on("message", this.handleGetMessage)
+    if(this.device === 'pc') {
+      Socket.$on("message", this.handleGetMessage)
+      this.getGroupDataList();
+    }
   },
   watch:{
     hichatNav(val){
       this.num = val.num
     }
-  },
-  beforeDestroy() {
-    Socket.$off("message", this.handleGetMessage);
   },
   computed: {
     ...mapState({
@@ -286,13 +295,29 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setGroupList:"ws/setGroupList",
       setInfoMsg:"ws/setInfoMsg",
+      setChatUser: "ws/setChatUser",
+      setChatGroup:"ws/setChatGroup",
+      setGroupList:"ws/setGroupList",
+      setHichatNav:"ws/setHichatNav",
     }),
     changeImg(index) {
       this.num = index;
       let infoMsg = { infoMsgShow:false }
       this.setInfoMsg(infoMsg)
+      this.getHistory()
+    },
+    getHistory(type){
+      if(type === "address" || type === "contact"){
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      } else{
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      }
+      Socket.send(this.getHistoryMessage);
     },
     copyUrl() {
       let url = this.qrCodeConfig.text;
@@ -306,12 +331,23 @@ export default {
       a.href = iconUrl;
       a.dispatchEvent(event);
     },
-    // getGroupDataList(){
-    //   getGroupList().then((res) => {
-    //     this.groupList = res.data.list
-    //     this.setGroupList(this.groupList)
-    //   })
-    // },
+    getGroupDataList() {
+      getGroupList().then((res) => {
+        this.groupList = res.data.list;
+        this.setGroupList(this.groupList);
+      });
+    },
+    getGroupListMember() {
+      let groupId = this.groupUser.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined)
+            res.icon = require("./../../../static/images/image_user_defult.png");
+        });
+        this.setContactListData(this.contactList);
+      });
+    },  
     handleGetMessage(msg) {
       this.badgeNum = 0
       let msgInfo = JSON.parse(msg);
@@ -329,62 +365,86 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          this.notifyMe(msgInfo);
+          if(msgInfo.chat.fromChatId !== 'u'+ localStorage.getItem("id")){
+            this.notifyMe(msgInfo)
+          }
           break;
       }
     },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
+    },
     notifyMe(msgInfo) {
-      console.log(msgInfo)
-      console.log(this.chatDataList)
-      let notificationData = {
+      let notify = {
         name:"",
         icon:"",
+        title:"",
+        type:"",
       }
       this.chatDataList.forEach((el)=>{
         if(el.toChatId === msgInfo.toChatId) {
-          notificationData.icon = el.icon
-          notificationData.name = el.name
+          if(el.isContact){
+            notify.icon = el.icon === '' ? require("./../../../static/images/image_user_defult.png") : el.icon
+            notify.title = '(联络人)'
+            notify.type = 'address'
+          }else if(el.isGroup){
+            notify.icon = el.icon === '' ? require("./../../../static/images/image_group_defult.png") : el.icon
+            notify.title = '(群组)'
+            notify.type = 'group'
+          }
+          notify.name = el.name
         }
       })
-      // 先检查浏览器是否支持
-      if (!("Notification" in window)) {
-        this.$message({
-          message: "This browser does not support desktop notification",
-          type: "error",
-        });
-      }
-      // 检查用户是否同意接受通知
-      else if (Notification.permission === "granted") {
-        // If it's okay let's create a notification
-        var notification = new Notification(`${notificationData.name}`, {
-          dir: "auto", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
-          lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
-          tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-          icon: notificationData.icon, //提示时候的图标
-          body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
-        });
-        notification.onclick = function(e) { // 綁定點擊事件
-          e.preventDefault(); // prevent the browser from focusing the Notification's tab
-          window.open('http://localhost:8080/#/HiChat'); // 打開特定網頁
-        }
-      }
-      // 否则我们需要向用户获取权限
-      else if (Notification.permission !== "denied") {
-        Notification.requestPermission(function (permission) {
-          // 如果用户同意，就可以向他们发送通知
-          if (permission === "granted") {
-            var notification = new Notification(`${notificationData.name}`, {
-              dir: "auto", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
-              lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
-              tag: "testTag", //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-              icon: notificationData.icon, //提示时候的图标
-              body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
+      // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification#Parameters
+      this.$notification.show(`${notify.name} ${notify.title}`, {
+        dir: "rtl", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
+        lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
+        tag: msgInfo.toChatId, //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
+        icon: notify.icon, //提示时候的图标
+        body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
+        data:msgInfo,
+        renotify:true,
+      }, {
+        onclick:(even) =>{
+          console.log(even.target.data)
+          this.$router.push({ path: "/HiChat" });
+          let navType = { type: notify.type, num: 1 };
+          this.setHichatNav(navType);
+          this.notifyData = {}
+          this.chatDataList.forEach((el)=>{
+             if(el.toChatId === even.target.data.toChatId){
+               this.notifyData = el
+             }
+          })
+          if(notify.type === 'address') {
+            this.setChatUser(this.notifyData);
+          }else if(notify.type === 'group'){
+            console.log(this.chatDataList)
+            this.notifyData.icon = this.notifyData.icon;
+            this.notifyData.groupName = this.notifyData.name;
+            this.notifyData.groupId = this.notifyData.toChatId.replace("g", "");
+            this.notifyData.memberId = JSON.parse(this.notifyData.forChatId.replace("u", ""));
+            this.groupList.forEach((item) => {
+              if (item.groupName === this.notifyData.groupName) {
+                return (this.notifyData.isAdmin = item.isAdmin);
+              }
             });
+            this.setChatGroup(this.notifyData)
+            this.getGroupListMember()
           }
-        });
-      }
-      // 最后，如果执行到这里，说明用户已经拒绝对相关通知进行授权
-      // 出于尊重，我们不应该再打扰他们了
+          this.getHistory(notify.type)
+          setTimeout(() => {
+            this.getHiChatDataList()
+          }, 3000);
+        },
+      })
     },
     loginOut() {
       this.$router.push({ path: "/login" });
