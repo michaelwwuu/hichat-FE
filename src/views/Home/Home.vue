@@ -354,7 +354,7 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if(msgInfo.chat.fromChatId !== 'u'+ localStorage.getItem("id")){
-            this.notifyMe(msgInfo)
+            this.openNotify(msgInfo)
           }
           break;
       }
@@ -368,6 +368,25 @@ export default {
         token: localStorage.getItem("token"),
       };
       Socket.send(chatMsgKey);
+    },
+    openNotify(msgInfo){
+      // 判断浏览器是否支持Notification
+      if (!window.Notification) {
+        console.log('浏览器不支持通知');
+      } else {
+        // 检查用户曾经是否同意接受通知
+        if (Notification.permission === 'granted') {
+          this.notifyMe(msgInfo); // 显示通知
+        } else if (Notification.permission === 'default') {
+          // 用户还未选择，可以询问用户是否同意发送通知
+          Notification.requestPermission(function (permission) {
+             this.notifyMe(msgInfo); // 显示通知
+          });
+        } else {
+          // denied 用户拒绝
+          console.log('用户曾经拒绝显示通知');
+        }
+      } 
     },
     notifyMe(msgInfo) {
       let notify = {

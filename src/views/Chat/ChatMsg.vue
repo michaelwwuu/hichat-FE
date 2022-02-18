@@ -300,8 +300,10 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          this.messageList(userInfo);
-          this.messageData.push(this.chatRoomMsg);
+          if(this.chatUser.toChatId === userInfo.toChatId){
+            this.messageList(userInfo);
+            this.messageData.push(this.chatRoomMsg);
+          }
           if(userInfo.toChatId === JSON.parse(localStorage.getItem("userData")).toChatId){
             this.readMsgShow(userInfo);
           }
@@ -735,6 +737,11 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 10px;
+}
+.hichat-pc{
+  .disabled-user {
+    height: 59px;
+  }
 }
 /* width */
 ::-webkit-scrollbar {

@@ -28,6 +28,9 @@
               <template v-if="editBtnShow">
                 <div class="home-add-user home-edit-img" :class="{'hidden':blockData.length <= 0}" @click="editBtnShow = false"></div>
               </template>
+              <template v-else>
+                <div class="clear-check"  @click="clearCheckList">取消</div>
+              </template>
             </div>
           </template>
         </el-header>
@@ -178,6 +181,9 @@ export default {
         return false;
       });
     },
+    clearCheckList(){
+      this.checkList = []
+    }
   },
 };
 </script>
@@ -354,6 +360,11 @@ export default {
         }
       }
     }
+  }
+  .clear-check{
+    color: #939393;
+    font-size:16px;
+    cursor: pointer;
   }
 }
 </style>

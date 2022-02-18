@@ -179,8 +179,10 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          this.messageList(userInfo);
-          this.messageData.push(this.chatRoomMsg);
+          if(this.groupUser.toChatId === userInfo.toChatId){
+            this.messageList(userInfo);
+            this.messageData.push(this.chatRoomMsg);
+          }
           if(userInfo.toChatId === JSON.parse(localStorage.getItem("groupData")).toChatId){
             this.readMsgShow(userInfo);
           }

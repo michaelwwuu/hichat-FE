@@ -115,7 +115,7 @@ export default {
           data.toChatId = "g" + data.groupId;
           this.setChatGroup(data);
         }
-        this.setInfoMsg({infoMsgShow:true, infoMsgNav:path, })
+        this.setInfoMsg({infoMsgShow:true, infoMsgNav:path,  })
         this.setMsgInfoPage({ pageShow:true, type:'', })
       }
     },
