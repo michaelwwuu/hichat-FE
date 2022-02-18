@@ -68,6 +68,7 @@
       </el-main>
     </el-container>
     <el-dialog
+      :title="device === 'pc'?'邀请联络人':''"
       :visible.sync="addUserDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -75,8 +76,8 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>操作成功</span>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>{{device === 'pc'?'邀请成功':'操作成功'}}</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-orange" @click="back">確認</el-button>

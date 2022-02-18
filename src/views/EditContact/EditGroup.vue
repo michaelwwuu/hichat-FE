@@ -64,6 +64,7 @@
     <el-dialog
       title="上傳群组照片"
       :visible.sync="uploadImgShow"
+      :class="{'el-dialog-loginOut':device ==='pc'}"
       width="100%"
       center
     >
@@ -81,14 +82,22 @@
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-        <el-button @click="uploadImgShow = false">取 消</el-button>
+
+        <template v-if="device ==='moblie'">
+          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+          <el-button @click="uploadImgShow = false">取 消</el-button>
+        </template>
+        <template v-else>
+          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
+          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+        </template>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { uploadGroupIcon, updateGroup } from "@/api";
 
@@ -130,7 +139,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setChatGroup:"ws/setChatUser",
+      setChatGroup:"ws/setChatGroup",
       setMsgInfoPage:"ws/setMsgInfoPage",
     }),
     noIconShow(iconData) {
@@ -170,6 +179,7 @@ export default {
           if (res.code === 200) {
             this.groupData.groupName = this.groupForm.name;
             this.setChatGroup(this.groupData)
+            if(this.device === "pc") this.getHiChatDataList()
             this.back();
           }
         })
@@ -177,6 +187,16 @@ export default {
           this.$message({ message: err, type: "error" });
           return false;
         });
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
     },
     back() {
       if(this.device === "moblie"){
@@ -240,6 +260,17 @@ export default {
   }
 }
 .hichat-pc{
+  .home-content{
+    .group-data{
+      .el-image{
+        width: auto;
+        height: 6em;
+      }
+      span{
+        height: 6.5em !important;
+      }
+    }
+  }
   .user-edit-form{
     /deep/.el-form{
       border-radius: 8px;
@@ -258,6 +289,16 @@ export default {
   }
   .photo-edit{
     cursor: pointer;
+  }
+  .el-dialog-loginOut{
+    /deep/.el-dialog__footer {
+      padding:0 !important;
+      .el-button{
+        &:nth-child(2){
+          border-left: 1px solid #efefef;
+        }
+      }
+    }
   }
 }
 </style>

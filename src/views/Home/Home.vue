@@ -66,7 +66,7 @@
       </el-main>
     </el-container>
     <el-container v-else>
-      <el-aside width="20%">
+      <el-aside width="300px">
         <el-header style="height: 70px;" >
           <div class="home-header" v-if="num === 2">
             <span class="home-header-title">设定</span>
@@ -139,7 +139,7 @@
         </template>
         
       </el-main>
-      <el-aside width="20%" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
+      <el-aside width="300px" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>
       </el-aside>
     </el-container>
@@ -300,6 +300,7 @@ export default {
       setChatGroup:"ws/setChatGroup",
       setGroupList:"ws/setGroupList",
       setHichatNav:"ws/setHichatNav",
+      setContactListData:"ws/setContactListData",
     }),
     changeImg(index) {
       this.num = index;
@@ -389,6 +390,7 @@ export default {
       } 
     },
     notifyMe(msgInfo) {
+      console.log(msgInfo)
       let notify = {
         name:"",
         icon:"",
@@ -424,12 +426,13 @@ export default {
         renotify:true,
       }, {
         onclick:(even) =>{
+          console.log(notify.type)
           this.$router.push({ path: "/HiChat" });
           this.setHichatNav({ type: notify.type, num: 1 });
           this.notifyData = this.chatDataList.filter(el=> {
             return el.toChatId === even.target.data.toChatId
           })
-          if(notify.type === 'address' || type === "contact") {
+          if(notify.type === 'address' || notify.type === "contact") {
             this.setChatUser(this.notifyData[0]);
           }else if(notify.type === 'group'){
             this.notifyData[0].icon = this.notifyData[0].icon;

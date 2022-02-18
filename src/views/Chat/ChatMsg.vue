@@ -251,6 +251,7 @@ export default {
       setInfoMsg:"ws/setInfoMsg",
       setChatUser:"ws/setChatUser",
       setHichatNav:"ws/setHichatNav",
+      setMsgInfoPage:"ws/setMsgInfoPage"
     }),
     // 訊息統一格式
     messageList(data) {
@@ -279,6 +280,7 @@ export default {
       Socket.send(historyMessageData);
     },
     infoMsgShow(){
+      this.setMsgInfoPage({ pageShow:true, type:'',})
       this.setInfoMsg({ infoMsgShow:true,infoMsgNav:'ContactPage',infoMsgChat:true })
     },
     // 已讀

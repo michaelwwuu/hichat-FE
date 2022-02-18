@@ -494,6 +494,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         border-right: 1px solid #e1e1e1b0;
       }
       .el-main{
+        min-width: 300px;
         box-shadow:none;
       }
     }

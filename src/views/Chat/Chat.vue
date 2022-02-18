@@ -133,6 +133,7 @@ export default {
       this.infoMsgShow()
     },
     infoMsgShow(){
+      this.setMsgInfoPage({ pageShow:true, type:'',})
       this.setInfoMsg({ infoMsgShow:true,infoMsgNav:'GroupPage',infoMsgChat:true })
     },
     getGroupListMember() {
@@ -210,12 +211,23 @@ export default {
       leaveGroup({groupId}).then((res)=>{
         if(res.code === 200) {
           this.leaveGroupDialogShow = false
-          this.setHichatNav({ type:"address", num: 0 })
+          this.setHichatNav({ type:"group", num: 1 })
+          this.getHiChatDataList()
         }
       })
       .catch((err) => {
         console.log(err)
       })
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
     },
   },
   components: {

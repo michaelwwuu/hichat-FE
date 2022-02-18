@@ -134,7 +134,8 @@
     <el-dialog
       title="上传图片"
       :visible.sync="uploadImgShow"
-      append-to-body
+      :append-to-body="device !=='pc'"
+      :class="{'el-dialog-loginOut':device ==='pc'}"
       width="100%"
       center
     >
