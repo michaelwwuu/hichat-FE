@@ -434,6 +434,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 .hichat-pc{
   overflow: auto !important;
   .home-wrapper{
+    border-left: 0 !important;
     .home-header{
       margin: 1.3em 1em;
       justify-content: space-between;

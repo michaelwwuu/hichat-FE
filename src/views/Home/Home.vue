@@ -139,7 +139,7 @@
         </template>
         
       </el-main>
-      <el-aside width="300px" style="overflow:hidden;" v-if="infoMsg.infoMsgShow">
+      <el-aside width="300px" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>
       </el-aside>
     </el-container>

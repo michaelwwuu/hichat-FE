@@ -134,7 +134,8 @@
     <group-admin-change v-else-if="msgInfoPage.type === 'adminChange'"/>
     <group-people v-else-if="msgInfoPage.type === 'groupPeople'"/>
     <group-add-people  v-else-if="msgInfoPage.type === 'addGroupPeople'"/>
-    <edit-group v-else/>
+    <edit-group v-else-if="msgInfoPage.type === 'GroupPage'"/>
+    
   </div>
   
 </template>
@@ -239,6 +240,7 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     editShowBtn(data){
+      console.log(data)
       this.setMsgInfoPage({ pageShow:false, type:data,})
     },
     infoMsgSettingData(){
