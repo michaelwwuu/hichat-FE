@@ -196,10 +196,10 @@
       title="照相"
       :visible.sync="takePictureShow"
       width="100%"
-      class="el-dialog-loginOut"
+      class="el-dialog-takePicture"
       center
     >
-     <Photo :userInfoData="userInfoData" :userData="userData"></Photo>
+      <Photo :userInfoData="userInfoData" :userData="userData"></Photo>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
         <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
@@ -656,5 +656,24 @@ export default {
 }
 .winClass{
   width: 90%;
+}
+.hichat-pc{
+  .el-dialog-takePicture{
+    .el-dialog{
+      width: 850px !important;
+      margin-top: 3em !important;
+      .el-dialog__footer{
+        padding: 0 !important;  
+        .el-button{
+          padding: 20px !important;
+          border-radius:0 !important;
+          
+          &:nth-child(2){
+            border-left:1px solid #efefef;
+          }
+        }
+      }
+    }
+  }
 }
 </style>
