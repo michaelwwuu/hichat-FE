@@ -117,7 +117,7 @@
     </template>
     <template v-else>
       <el-container>
-        <el-aside width="20%">
+        <el-aside width="300px">
           <el-header height="70px">
             <div class="home-header">
               <span class="home-header-title">

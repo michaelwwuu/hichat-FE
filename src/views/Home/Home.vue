@@ -367,13 +367,13 @@ export default {
           if(msgInfo.text === "30006"){
              this.$confirm('群組已解散, 是否继续?', '提示', {
               confirmButtonText: '确定',
+              showCancelButton:true,
               type: 'danger',
               center: true
             }).then(() => {
-              let groupData = {}
               this.getHiChatDataList()
               this.setHichatNav({ type: 'address', num: 1 });
-              this.setChatGroup(groupData)
+              this.setChatGroup({})
             })
           }
       }
@@ -407,6 +407,17 @@ export default {
         }
       } 
     },
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return require("./../../../static/images/image_user_defult.png");
+      } else {
+        return iconData.icon;
+      }
+    },    
     notifyMe(msgInfo,chatType) {
       let notify = {
         name:"",
@@ -417,7 +428,7 @@ export default {
       this.chatDataList.forEach((el)=>{
         if(el.toChatId === msgInfo.toChatId) {
           if(el.isContact){
-            notify.icon = el.icon === '' ? require("./../../../static/images/image_user_defult.png") : el.icon
+            notify.icon = this.noIconShow(el.icon)
             notify.title = '(联络人)'
             notify.type = 'address'
           }else if(el.isGroup){
@@ -425,7 +436,7 @@ export default {
             notify.title = '(群组)'
             notify.type = 'group'
           } else if(!el.isBlock && !el.isContact && !el.isGroup){
-            notify.icon = el.icon === '' ? require("./../../../static/images/image_user_defult.png") : el.icon
+            notify.icon = this.noIconShow(el.icon)
             notify.title = '(陌生人)'
             notify.type = 'contact'
           }

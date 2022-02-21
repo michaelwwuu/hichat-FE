@@ -36,7 +36,7 @@
       </el-main>
     </el-container>
     <el-container v-else>
-      <el-aside width="20%">
+      <el-aside width="300px">
         <el-header height="70px">
           <div class="home-header flex-start" >
             <div class="home-user-pc" @click="back"></div>

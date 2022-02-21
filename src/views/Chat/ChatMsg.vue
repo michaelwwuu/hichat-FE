@@ -141,6 +141,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :title="device === 'pc'?'刪除陌生人':''"
       :visible.sync="deleteDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -148,7 +149,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
         <span>刪除成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -365,8 +366,12 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.deleteDialogShow = true;
+            this.deleteDialogShow = false;
             localStorage.removeItem("userData");
+            if(this.device === "pc") {
+              this.setHichatNav({ type: 'address', num: 1 });
+              this.setChatUser({})
+            }
           }
         })
         .catch((err) => {

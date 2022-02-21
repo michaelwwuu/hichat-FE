@@ -212,6 +212,7 @@ export default {
         if(res.code === 200) {
           this.leaveGroupDialogShow = false
           this.setHichatNav({ type:"group", num: 1 })
+          this.setChatGroup({})
           this.getHiChatDataList()
         }
       })

@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrapper">
     <el-container>
-      <el-aside :width="device === 'moblie' ? '100%' : '20%'">
+      <el-aside :width="device === 'moblie' ? '100%' : '300px'">
         <el-header :height="device === 'moblie' ? '55px' : '70px'">
           <template v-if="device === 'moblie'">
             <div class="home-header">
