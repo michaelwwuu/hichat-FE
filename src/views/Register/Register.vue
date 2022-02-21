@@ -483,6 +483,7 @@ export default {
             //登录成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
+              localStorage.setItem("email",this.loginForm.email);
               this.dialogShow = true;
             }
           })

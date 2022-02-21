@@ -139,7 +139,7 @@
         </template>
         
       </el-main>
-      <el-aside width="300px" v-if="infoMsg.infoMsgShow">
+      <el-aside width="300px"  style="overflow:hidden" v-if="infoMsg.infoMsgShow">
         <msg-info-page/>
       </el-aside>
     </el-container>
@@ -355,9 +355,27 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if(msgInfo.chat.fromChatId !== 'u'+ localStorage.getItem("id")){
-            this.openNotify(msgInfo)
+            let filterList = this.chatDataList.some((list)=>{
+              return list.toChatId === msgInfo.toChatId
+            })
+            if(!filterList) this.getHiChatDataList()
+            setTimeout(() => this.openNotify(msgInfo,msgInfo.chatType),1000);
           }
           break;
+
+        case "SRV_ERROR_MSG":
+          if(msgInfo.text === "30006"){
+             this.$confirm('群組已解散, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              type: 'danger',
+              center: true
+            }).then(() => {
+              let groupData = {}
+              this.getHiChatDataList()
+              this.setHichatNav({ type: 'address', num: 1 });
+              this.setChatGroup(groupData)
+            })
+          }
       }
     },
     getHiChatDataList() {
@@ -370,7 +388,7 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
-    openNotify(msgInfo){
+    openNotify(msgInfo,chatType){
       // 判断浏览器是否支持Notification
       if (!window.Notification) {
         console.log('浏览器不支持通知');
@@ -381,7 +399,7 @@ export default {
         } else if (Notification.permission === 'default') {
           // 用户还未选择，可以询问用户是否同意发送通知
           Notification.requestPermission(function (permission) {
-             this.notifyMe(msgInfo); // 显示通知
+             this.notifyMe(msgInfo,chatType); // 显示通知
           });
         } else {
           // denied 用户拒绝
@@ -389,8 +407,7 @@ export default {
         }
       } 
     },
-    notifyMe(msgInfo) {
-      console.log(msgInfo)
+    notifyMe(msgInfo,chatType) {
       let notify = {
         name:"",
         icon:"",
@@ -415,18 +432,31 @@ export default {
           notify.name = el.name
         }
       })
+      switch (chatType) {
+        case "SRV_USER_SEND":
+        case "SRV_GROUP_SEND":
+          this.bodyMsg = msgInfo.chat.text
+          break;
+        case "SRV_USER_IMAGE":
+        case "SRV_GROUP_IMAGE":
+          this.bodyMsg = "传送了图片"
+          break;
+        case "SRV_USER_AUDIO":
+        case "SRV_GROUP_AUDIO":
+          this.bodyMsg = "传送了语音"
+          break;
+      }
       // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification#Parameters
       this.$notification.show(`${notify.name} ${notify.title}`, {
         dir: "rtl", //auto（自动）, ltr（从左到右）, or rtl（从右到左）
         lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
         tag: msgInfo.toChatId, //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
         icon: notify.icon, //提示时候的图标
-        body: msgInfo.chat.text, // 一个图片的URL，将被用于显示通知的图标。
+        body: this.bodyMsg, // 一个图片的URL，将被用于显示通知的图标。
         data:msgInfo,
         renotify:true,
       }, {
         onclick:(even) =>{
-          console.log(notify.type)
           this.$router.push({ path: "/HiChat" });
           this.setHichatNav({ type: notify.type, num: 1 });
           this.notifyData = this.chatDataList.filter(el=> {

@@ -192,7 +192,18 @@
         >
       </span>
     </el-dialog>
-
+    <el-dialog
+      title="拍照"
+      :visible.sync="takePictureShow"
+      :class="{'el-dialog-loginOut':device ==='pc'}"
+      center
+    >
+      <Picture/>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="takePictureShow = false">取消</el-button>
+        <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -201,6 +212,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
+import Picture from './../views/QRcode/Picture.vue'
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
 export default {
@@ -211,6 +223,7 @@ export default {
       search: "",
       sendAduioShow: false,
       uploadImgShow: false,
+      takePictureShow:false,
       fileList: [],
       device: localStorage.getItem("device"),
       //錄音
@@ -219,7 +232,6 @@ export default {
       disabledPlay: false,
       endDisabledPlay: true,
       uploadDisabledPlay: true,
-
       audio: "",
       recorder: new Record(),
       audioMessageData: {},
@@ -444,7 +456,9 @@ export default {
       return true;
     },
     keyUp (event) {
-      if (event.key === 'Enter') {
+      if (event.shiftKey && keyCode === 13){
+        return this.textArea
+      } else if (event.key === 'Enter') {
         this.sendMessage()
       }
     },
@@ -454,7 +468,7 @@ export default {
         chatType: "CLI_GROUP_SEND",
         id: Math.random(),
         toChatId:this.groupData.toChatId,
-        text:this.textAreaTran(),
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 0,
@@ -469,6 +483,7 @@ export default {
   },
   components: {
     EmojiPicker,
+    Picture,
   },
 };
 </script>
@@ -641,5 +656,12 @@ export default {
 }
 .winClass{
   width: 90%;
+}
+.hichat-pc {
+  .el-dialog__wrapper {
+    .el-dialog{
+      width: 25% !important;
+    }
+  }
 }
 </style>

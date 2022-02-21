@@ -240,7 +240,6 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     editShowBtn(data){
-      console.log(data)
       this.setMsgInfoPage({ pageShow:false, type:data,})
     },
     infoMsgSettingData(){

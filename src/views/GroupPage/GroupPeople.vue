@@ -239,7 +239,6 @@ export default {
       }
     },
     goContactPage(data){
-      console.log(data)
       if(data.memberId === JSON.parse(localStorage.getItem("id"))){
         this.$message({ message: "此即为您的帐号", type: "warning" });
       }else{
