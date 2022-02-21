@@ -127,7 +127,7 @@
             alt=""
             @click="uploadImgShow = true"
           />
-          <img src="./../../static/images/camera.png" alt="">
+          <img src="./../../static/images/camera.png" alt="" @click="takePictureShow = true">
         </div>
       </div>
     </template>
@@ -192,6 +192,19 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      title="照相"
+      :visible.sync="takePictureShow"
+      width="100%"
+      class="el-dialog-loginOut"
+      center
+    >
+     <Photo :userInfoData="userInfoData" :userData="userData"></Photo>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
+        <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+      </span>
+    </el-dialog>    
   </div>
 </template>
 
@@ -200,6 +213,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
+import Photo from "./Photo.vue"
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
 export default {
@@ -210,6 +224,7 @@ export default {
       textArea: "",
       sendAduioShow: false,
       uploadImgShow: false,
+      takePictureShow:false,
       fileList: [],
       device: localStorage.getItem("device"),
       //錄音
@@ -234,6 +249,7 @@ export default {
       scrollTop: 0,
     };
   },
+
   props: {
     // 当前用户
     userInfoData: {
@@ -252,6 +268,7 @@ export default {
 
     // 上傳圖片
     submitAvatarUpload() {
+      console.log(this.fileList[0].raw)
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
       uploadMessageImage(formData).then((res) => {
@@ -466,6 +483,7 @@ export default {
   },
   components: {
     EmojiPicker,
+    Photo,
   },
 };
 </script>
