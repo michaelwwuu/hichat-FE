@@ -193,17 +193,18 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="拍照"
+      title="照相"
       :visible.sync="takePictureShow"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
+      width="100%"
+      class="el-dialog-takePicture"
       center
     >
-      <Picture/>
+      <Photo></Photo>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="takePictureShow = false">取消</el-button>
+        <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
         <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>    
   </div>
 </template>
 
@@ -212,7 +213,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
-import Picture from './../views/QRcode/Picture.vue'
+import Photo from "./Photo.vue"
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
 export default {
@@ -248,6 +249,7 @@ export default {
       scrollTop: 0,
     };
   },
+
   props: {
     // 当前用户
     userInfoData: {
@@ -265,6 +267,7 @@ export default {
     },
     // 上傳圖片
     submitAvatarUpload() {
+      console.log(this.fileList[0].raw)
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
       uploadMessageImage(formData).then((res) => {
@@ -481,7 +484,7 @@ export default {
   },
   components: {
     EmojiPicker,
-    Picture,
+    Photo,
   },
 };
 </script>
@@ -654,5 +657,24 @@ export default {
 }
 .winClass{
   width: 90%;
+}
+.hichat-pc{
+  .el-dialog-takePicture{
+    .el-dialog{
+      width: 850px !important;
+      margin-top: 3em !important;
+      .el-dialog__footer{
+        padding: 0 !important;  
+        .el-button{
+          padding: 20px !important;
+          border-radius:0 !important;
+          
+          &:nth-child(2){
+            border-left:1px solid #efefef;
+          }
+        }
+      }
+    }
+  }
 }
 </style>
