@@ -228,7 +228,7 @@ export default {
           this.getGroupListMember();
         }
       })
-      .catch((err) => {console.log(err)})
+      .catch((err) => { console.log(err) })
     },
     back() {
       if(this.device === "moblie"){

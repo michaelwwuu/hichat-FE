@@ -216,9 +216,7 @@ export default {
           this.getHiChatDataList()
         }
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch((err) => { console.log(err) })
     },
     getHiChatDataList() {
       let chatMsgKey = {

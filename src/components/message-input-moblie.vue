@@ -127,7 +127,7 @@
             alt=""
             @click="uploadImgShow = true"
           />
-          <img src="./../../static/images/camera.png" alt="" @click="takePictureShow = true">
+          <img src="./../../static/images/camera.png" alt="" @click="takePicturePermission">
         </div>
       </div>
     </template>
@@ -199,11 +199,7 @@
       class="el-dialog-takePicture"
       center
     >
-      <Photo></Photo>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
-        <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
-      </span>
+      <Photo :chatType="'CLI_USER_IMAGE'" v-on:closePictureShow="pictureShow"></Photo>
     </el-dialog>    
   </div>
 </template>
@@ -247,6 +243,7 @@ export default {
       cde: 0, // 分的計數
       efg: 0, // 時的計數
       scrollTop: 0,
+      
     };
   },
 
@@ -261,13 +258,69 @@ export default {
     },
   },
   methods: {
+    pictureShow(val){
+      this.takePictureShow = val
+    },
+    // 開啟攝像頭權限
+    takePicturePermission(){
+      if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function (constraints) {
+          // 首先获取现存的getUserMedia(如果存在)
+          let getUserMedia =
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.getUserMedia;
+          // 有些浏览器不支持，会返回错误信息
+          // 保持接口一致
+          if (!getUserMedia) {
+            return Promise.reject(
+              new Error("getUserMedia is not implemented in this browser")
+            );
+          }
+          // 否则，使用Promise将调用包装到旧的navigator.getUserMedia
+          return new Promise(function (resolve, reject) {
+            getUserMedia.call(navigator, constraints, resolve, reject);
+          });
+        };
+      }
+      const constraints = {
+        audio: false,
+        video: {
+          width: this.videoWidth,
+          height: this.videoHeight,
+          transform: "scaleX(-1)",
+        },
+      };
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(function (stream) {
+          this.takePictureShow = true
+          // 旧的浏览器可能没有srcObject
+          if ("srcObject" in this.thisVideo) {
+            this.thisVideo.srcObject = stream;
+            
+          } else {
+            // 避免在新的浏览器中使用它，因为它正在被弃用。
+            this.thisVideo.src = window.URL.createObjectURL(stream);
+          }
+          this.thisVideo.onloadedmetadata = function (e) {
+            this.thisVideo.play();
+          };
+        })
+        .catch((err) => {
+          this.$notify({
+            title: "警告",
+            message: "没有开启摄像头权限或浏览器版本不兼容.",
+            type: "warning",
+          });
+        });
+    },
     // 取得圖片
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
     // 上傳圖片
     submitAvatarUpload() {
-      console.log(this.fileList[0].raw)
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
       uploadMessageImage(formData).then((res) => {
@@ -659,9 +712,9 @@ export default {
   width: 90%;
 }
 .hichat-pc{
-  .el-dialog-takePicture{
+  .el-dialog__wrapper.el-dialog-takePicture{
     .el-dialog{
-      width: 850px !important;
+      width: 880px !important;
       margin-top: 3em !important;
       .el-dialog__footer{
         padding: 0 !important;  

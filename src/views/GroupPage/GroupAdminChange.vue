@@ -156,9 +156,7 @@ export default {
           }  
         })
       })
-      .catch((err) => {
-        console.log(err)
-      })  
+      .catch((err) => { console.log(err) })
     },
     changeGroupAdmin(){
       let param = {
@@ -173,9 +171,7 @@ export default {
           this.back()
         }
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch((err) => { console.log(err) })
     },
     back() {
       if(this.device === "moblie"){

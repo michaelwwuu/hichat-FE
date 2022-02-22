@@ -1,8 +1,5 @@
 <template>
   <div>
-    <el-button @click="onTake" icon="el-icon-camera" size="small" v-if="onTakeBtn">
-      拍照上传
-    </el-button>
     <div v-if="visible">
       <div class="box">
         <video
@@ -20,96 +17,27 @@
         ></canvas>
       </div>
       <div slot="footer">
-        <el-button @click="drawImage" icon="el-icon-camera" size="small">
+        <el-button @click="drawImage" icon="el-icon-camera" size="medium">
           拍照
         </el-button>
-        <el-button
-          v-if="open"
-          @click="getCompetence"
-          icon="el-icon-video-camera"
-          size="small"
-        >
-          打开摄像头
-        </el-button>
-        <el-button
-          v-else
-          @click="stopNavigator"
-          icon="el-icon-switch-button"
-          size="small"
-        >
-          关闭摄像头
-        </el-button>
-        <el-button @click="resetCanvas" icon="el-icon-refresh" size="small">
+        <el-button @click="resetCanvas" icon="el-icon-refresh" size="medium">
           重置
-        </el-button>
-        <el-button @click="onCancel" icon="el-icon-circle-close" size="small">
-          取消
         </el-button>
         <el-button
           @click="onUpload"
           :loading="loading"
           type="primary"
           icon="el-icon-upload2"
-          size="small"
+          size="medium"
         >
-          上传
+          上传相片至聊天室
         </el-button>
+        <el-button @click="onCancel" icon="el-icon-circle-close" size="medium">
+          取消
+        </el-button>
+
       </div>
     </div>
-    <!-- <el-dialog
-      title="拍照上传"
-      :visible.sync="visible"
-      @close="onCancel"
-      append-to-body
-      center
-      width="1065px">
-      <div class="box">
-        <video id="videoCamera" class="canvas" :width="videoWidth" :height="videoHeight" autoPlay></video>
-        <canvas id="canvasCamera" class="canvas" :width="videoWidth" :height="videoHeight"></canvas>
-      </div>
-      <div slot="footer">
-        <el-button
-          @click="drawImage"
-          icon="el-icon-camera"
-          size="small">
-          拍照
-        </el-button>
-        <el-button
-          v-if="open"
-          @click="getCompetence"
-          icon="el-icon-video-camera"
-          size="small">
-          打开摄像头
-        </el-button>
-        <el-button
-          v-else
-          @click="stopNavigator"
-          icon="el-icon-switch-button"
-          size="small">
-          关闭摄像头
-        </el-button>
-        <el-button
-          @click="resetCanvas"
-          icon="el-icon-refresh"
-          size="small">
-          重置
-        </el-button>
-        <el-button
-          @click="onCancel"
-          icon="el-icon-circle-close"
-          size="small">
-          取消
-        </el-button>
-        <el-button
-          @click="onUpload"
-          :loading="loading"
-          type="primary"
-          icon="el-icon-upload2"
-          size="small">
-          上传
-        </el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
@@ -121,11 +49,16 @@ import Socket from "@/utils/socket";
 import { uploadMessageImage } from "@/api";
 export default {
   name: "TakePhotos",
+  props:{
+    // 群組或個人
+    chatType: {
+      type: String,
+    },
+  },
   data() {
     return {
       imgSrc: "",
-      onTakeBtn:true,
-      visible: false, //弹窗
+      visible: true, //弹窗
       loading: false, //上传按钮加载
       open: false, //控制摄像头开关
       thisVideo: null,
@@ -135,18 +68,13 @@ export default {
       videoHeight: 300,
     };
   },
-  watch:{
-    visible(val){
-      this.onTakeBtn = !val
-    }
+  mounted() {
+    this.getCompetence();
   },
   methods: {
-    onTake() {
-      this.visible = true;
-      this.getCompetence();
-    },
     onCancel() {
       this.visible = false;
+      this.$emit("closePictureShow",pictureShow = false);
       this.resetCanvas();
       this.stopNavigator();
     },
@@ -157,7 +85,6 @@ export default {
         const time = new Date().valueOf(); //生成时间戳
         const name = time + ".png"; // 定义文件名字（例如：abc.png ， cover.png）
         const conversions = this.dataURLtoFile(file, name); // 调用base64转图片方法
-        console.log(conversions);
         let formData = new FormData();
         this.loading = true;
         formData.append("file", conversions);
@@ -165,17 +92,21 @@ export default {
           .then((res) => {
             this.loading = false;
             if (res.code === 200) {
-              console.log(this.userInfoData);
               let message = {
-                chatType: "CLI_USER_IMAGE",
+                chatType: this.chatType,
                 token: localStorage.getItem("token"),
                 deviceId: localStorage.getItem("UUID"),
                 tokenType: 0,
                 id: Math.random(),
                 fromChatId: "u" + localStorage.getItem("id"),
-                toChatId: JSON.parse(localStorage.getItem("userData")).toChatId,
+                toChatId: "",
                 text: res.data,
               };
+              if(chatType === "CLI_USER_IMAGE"){
+                message.toChatId = JSON.parse(localStorage.getItem("userData")).toChatId;
+              }else{
+                message.toChatId = JSON.parse(localStorage.getItem("groupData")).toChatId;
+              }
               Socket.send(message);
               this.onCancel();
               this.$notify({
@@ -257,6 +188,7 @@ export default {
             };
           })
           .catch((err) => {
+            this.$emit('pictureShow', this.takePicture = false)
             this.$notify({
               title: "警告",
               message: "没有开启摄像头权限或浏览器版本不兼容.",

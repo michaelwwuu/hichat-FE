@@ -206,26 +206,6 @@ export default {
       msgInfoPage: (state) => state.ws.msgInfoPage,
     }),
   },
-  watch:{
-    // infoMsg(val){
-    //   console.log(val)
-    //   if(val.infoMsgChat){
-    //     // let newData = [
-    //     //    {
-    //     //     name: "传送讯息",
-    //     //     icon: require("./../../../static/images/pc/message.png"),
-    //     //     path: "HiChat",
-    //     //   },
-    //     //   {
-    //     //     name: "相片和影片",
-    //     //     icon: require("./../../../static/images/pc/globe.png"),
-    //     //     path: "",
-    //     //   },
-    //     // ]
-    //     // this.settingContactData = newData
-    //   }
-    // }
-  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));

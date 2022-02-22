@@ -241,6 +241,7 @@ export default {
         this.getHistoryMessage.id = Math.random();
       }
       Socket.send(this.getHistoryMessage);
+      this.setInfoMsg({ infoMsgShow:false,infoMsgChat:false })
     },
     getHiChatDataList() {
       let chatMsgKey = {

@@ -163,9 +163,7 @@ export default {
       leaveGroup({groupId}).then((res)=>{
         if(res.code === 200) this.$router.push({ path: "/Address" });
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch((err) => { console.log(err) })
     },
     back() {
       this.$router.back(-1);

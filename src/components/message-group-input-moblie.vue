@@ -127,7 +127,7 @@
             alt=""
             @click="uploadImgShow = true"
           />
-          <img src="./../../static/images/camera.png" alt="">
+          <img src="./../../static/images/camera.png" alt="" @click="takePicturePermission">
         </div>
       </div>      
     </template>
@@ -193,17 +193,14 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="拍照"
+      title="照相"
       :visible.sync="takePictureShow"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
+      width="100%"
+      class="el-dialog-takePicture"
       center
     >
-      <Picture/>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="takePictureShow = false">取消</el-button>
-        <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
-      </span>
-    </el-dialog>
+      <Photo :chatType="'CLI_GROUP_IMAGE'" v-on:closePictureShow="pictureShow"></Photo>
+    </el-dialog>   
   </div>
 </template>
 
@@ -212,7 +209,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
-import Picture from './../views/QRcode/Picture.vue'
+import Photo from "./Photo.vue"
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
 export default {
@@ -258,6 +255,63 @@ export default {
     
   },
   methods: {
+    pictureShow(val){
+      this.takePictureShow = val
+    },
+    // 開啟攝像頭權限
+    takePicturePermission(){
+      if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function (constraints) {
+          // 首先获取现存的getUserMedia(如果存在)
+          let getUserMedia =
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.getUserMedia;
+          // 有些浏览器不支持，会返回错误信息
+          // 保持接口一致
+          if (!getUserMedia) {
+            return Promise.reject(
+              new Error("getUserMedia is not implemented in this browser")
+            );
+          }
+          // 否则，使用Promise将调用包装到旧的navigator.getUserMedia
+          return new Promise(function (resolve, reject) {
+            getUserMedia.call(navigator, constraints, resolve, reject);
+          });
+        };
+      }
+      const constraints = {
+        audio: false,
+        video: {
+          width: this.videoWidth,
+          height: this.videoHeight,
+          transform: "scaleX(-1)",
+        },
+      };
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(function (stream) {
+          this.takePictureShow = true
+          // 旧的浏览器可能没有srcObject
+          if ("srcObject" in this.thisVideo) {
+            this.thisVideo.srcObject = stream;
+            
+          } else {
+            // 避免在新的浏览器中使用它，因为它正在被弃用。
+            this.thisVideo.src = window.URL.createObjectURL(stream);
+          }
+          this.thisVideo.onloadedmetadata = function (e) {
+            this.thisVideo.play();
+          };
+        })
+        .catch((err) => {
+          this.$notify({
+            title: "警告",
+            message: "没有开启摄像头权限或浏览器版本不兼容.",
+            type: "warning",
+          });
+        });
+    },
     // 取得圖片
     uploadImg(file, fileList) {
       this.fileList = fileList;
@@ -483,7 +537,7 @@ export default {
   },
   components: {
     EmojiPicker,
-    Picture,
+    Photo,
   },
 };
 </script>
@@ -657,10 +711,22 @@ export default {
 .winClass{
   width: 90%;
 }
-.hichat-pc {
-  .el-dialog__wrapper {
+.hichat-pc{
+  .el-dialog__wrapper.el-dialog-takePicture{
     .el-dialog{
-      width: 25% !important;
+      width: 880px !important;
+      margin-top: 3em !important;
+      .el-dialog__footer{
+        padding: 0 !important;  
+        .el-button{
+          padding: 20px !important;
+          border-radius:0 !important;
+          
+          &:nth-child(2){
+            border-left:1px solid #efefef;
+          }
+        }
+      }
     }
   }
 }
