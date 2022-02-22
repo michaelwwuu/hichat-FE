@@ -30,7 +30,7 @@
     
           <template v-else>
             <div class="home-header-pc">
-              <span class="home-photo-link" @click="infoMsgShow">
+              <span class="home-photo-link" @click="chatUser.isContact ? infoMsgShow : false">
                 <div class="home-user-photo">
                   <img :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)" />  
                 </div>

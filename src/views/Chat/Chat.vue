@@ -98,9 +98,6 @@ export default {
   mounted() {
     this.getGroupListMember();
   },
-  // beforeDestroy() {
-  //   Socket.$off("message", this.handleGetMessage);
-  // },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,

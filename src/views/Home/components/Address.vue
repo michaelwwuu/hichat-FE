@@ -98,24 +98,17 @@ export default {
       });
     },
     goContactPage(data, path) {
+      if (path === "ContactPage") {
+        data.toChatId = "u" + data.contactId;
+        this.getUserId(data)
+      } else{
+        data.toChatId = "g" + data.groupId;
+        this.setChatGroup(data);
+      }
       if(this.device ==='moblie') {
-        if (path === "ContactPage") {
-          data.toChatId = "u" + data.contactId;
-          this.setChatUser(data);
-        } else{
-          data.toChatId = "g" + data.groupId;
-          this.setChatGroup(data);
-        }
         this.$router.push({ name: path });
       }else{
-        if (path === "ContactPage") {
-          data.toChatId = "u" + data.contactId;
-          this.getUserId(data)
-        } else{
-          data.toChatId = "g" + data.groupId;
-          this.setChatGroup(data);
-        }
-        this.setInfoMsg({infoMsgShow:true, infoMsgNav:path,  })
+        this.setInfoMsg({infoMsgShow:true, infoMsgNav:path, })
         this.setMsgInfoPage({ pageShow:true, type:'', })
       }
     },

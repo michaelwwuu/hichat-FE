@@ -41,7 +41,7 @@ const emitter = new Vue({
             break;
           // 连线失敗
           case "SRV_ERROR_MSG":
-            console.log(`<--【连线失敗】------訊息發送失敗${messageData.text}-->`);
+            // console.log(`<--【连线失敗】------訊息發送失敗${messageData.text}-->`);
             if(messageData.text === "50002"){
               joinChatKey.chatType = "CLI_AUTH";
               joinChatKey.id = Math.random();
@@ -55,7 +55,7 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        console.log("<--【连线斷開】------自動重新連線-->",e);
+        // console.log("<--【连线斷開】------自動重新連線-->",e);
         joinChatKey.chatType = "CLI_AUTH";
         joinChatKey.id = Math.random();
         emitter.connect();

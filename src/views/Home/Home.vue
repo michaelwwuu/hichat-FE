@@ -315,6 +315,7 @@ export default {
     changeImg(index) {
       this.num = index;
       this.setInfoMsg({ infoMsgShow: false });
+      this.setHichatNav({ type: "address", num: this.num });
       this.getHistory("address");
     },
 
@@ -377,7 +378,7 @@ export default {
           if (msgInfo.text === "30006") {
             this.$confirm("群組已解散, 是否继续?", "提示", {
               confirmButtonText: "确定",
-              showCancelButton: true,
+              showCancelButton: false,
               type: "danger",
               center: true,
             }).then(() => {
@@ -401,7 +402,7 @@ export default {
     openNotify(msgInfo, chatType) {
       // 判断浏览器是否支持Notification
       if (!window.Notification) {
-        console.log("浏览器不支持通知");
+        // console.log("浏览器不支持通知");
       } else {
         // 检查用户曾经是否同意接受通知
         if (Notification.permission === "granted") {
@@ -413,7 +414,7 @@ export default {
           });
         } else {
           // denied 用户拒绝
-          console.log("用户曾经拒绝显示通知");
+          // console.log("用户曾经拒绝显示通知");
         }
       }
     },
@@ -514,6 +515,7 @@ export default {
       );
     },
     getHistory(type) {
+      console.log(type)
       if (type === "address" || type === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;

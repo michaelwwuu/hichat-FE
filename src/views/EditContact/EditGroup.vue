@@ -30,8 +30,8 @@
           <div class="group-data">
             <span
               ><el-image
-                :src="noIconShow(groupUser)"
-                :preview-src-list="[noIconShow(groupUser)]"
+                :src="noIconShow(groupData)"
+                :preview-src-list="[noIconShow(groupData)]"
             /></span>
             <div>
               <span class="photo-edit" @click="uploadImgShow = true"
@@ -124,22 +124,23 @@ export default {
       },
       deep: true,
     },
-    groupUser(val){
-      this.groupForm.name = val.groupName
-    }
+    // groupUser(val){
+    //   this.groupForm.name = val.groupName
+    // }
   },
   computed: {
     ...mapState({
-      groupUser: (state) => state.ws.groupUser,
+      groupList: (state) => state.ws.groupList,
     }),
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.groupForm.name = this.groupUser.groupName;
+    this.groupForm.name = this.groupData.groupName;
   },
   methods: {
     ...mapMutations({
       setChatGroup:"ws/setChatGroup",
+      setGroupList:"ws/setGroupList",
       setMsgInfoPage:"ws/setMsgInfoPage",
     }),
     noIconShow(iconData) {
@@ -164,7 +165,7 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.groupData.icon = res.data;
-          this.setChatGroup(this.groupData)
+          // this.setChatGroup(this.groupData)
         }
       });
     },
@@ -178,7 +179,13 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.groupData.groupName = this.groupForm.name;
+            this.groupList.forEach((el) => {
+              if(el.groupId === params.groupId){
+                el.groupName = params.groupName
+              }
+            });
             this.setChatGroup(this.groupData)
+            this.setGroupList(this.groupList)
             if(this.device === "pc") this.getHiChatDataList()
             this.back();
           }
