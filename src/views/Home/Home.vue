@@ -140,11 +140,14 @@
               hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'
             "
           />
-          <chat-msg
-            v-else-if="
-              hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}'
+          <chat-contact v-else-if="
+              hichatNav.type === 'contact' && JSON.stringify(contactUser) !== '{}'
             "
           />
+          <!-- <chat-msg v-else-if="
+              hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}' && hichatNav.contact
+            "
+          /> -->
         </template>
       </el-main>
       <el-aside
@@ -223,6 +226,7 @@ import { mapState, mapMutations } from "vuex";
 import { getGroupList, groupListMember } from "@/api";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
+import ChatContact from "./../Chat/ChatContact.vue";
 import MsgInfoPage from "./../ContactPage/MsgInfoPage.vue";
 export default {
   name: "Home",
@@ -300,6 +304,7 @@ export default {
       infoMsg: (state) => state.ws.infoMsg,
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
+      contactUser: (state) => state.ws.contactUser,
     }),
   },
   methods: {
@@ -515,7 +520,6 @@ export default {
       );
     },
     getHistory(type) {
-      console.log(type)
       if (type === "address" || type === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
@@ -537,6 +541,7 @@ export default {
     VueQr,
     ChatMsg,
     ChatGroupMsg,
+    ChatContact,
     MsgInfoPage,
   },
 };

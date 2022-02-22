@@ -6,18 +6,32 @@
           <el-header height="70px">
             <div class="home-header">
               <span class="home-header-title">
-                <div style="display: flex; align-items: center; cursor: pointer;" @click="closeInfoMsgShow">
+                <div
+                  style="display: flex; align-items: center; cursor: pointer"
+                  @click="closeInfoMsgShow"
+                >
                   <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat"
-                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                    ><img
+                      src="./../../../static/images/pc/arrow-left.png"
+                      alt=""
                   /></span>
                   <span>資訊</span>
                 </div>
               </span>
               <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
-                <div class="home-add-user"  @click="editShowBtn(infoMsg.infoMsgNav)"></div>
+                <div
+                  class="home-add-user"
+                  @click="editShowBtn(infoMsg.infoMsgNav)"
+                ></div>
               </template>
               <template v-else>
-                <div class="home-add-user" :class="{'notAdmin':!groupUser.isAdmin}" @click="groupUser.isAdmin?editShowBtn(infoMsg.infoMsgNav):false"></div>
+                <div
+                  class="home-add-user"
+                  :class="{ notAdmin: !groupUser.isAdmin }"
+                  @click="
+                    groupUser.isAdmin ? editShowBtn(infoMsg.infoMsgNav) : false
+                  "
+                ></div>
               </template>
             </div>
           </el-header>
@@ -79,13 +93,17 @@
                   v-if="groupUser.icon !== undefined"
                   :src="
                     noIconShow(
-                      JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
+                      JSON.stringify(groupUser) === '{}'
+                        ? groupData
+                        : groupUser,
                       'group'
                     )
                   "
                   :preview-src-list="[
                     noIconShow(
-                      JSON.stringify(groupUser) === '{}' ? groupData : groupUser,
+                      JSON.stringify(groupUser) === '{}'
+                        ? groupData
+                        : groupUser,
                       'group'
                     ),
                   ]"
@@ -130,14 +148,12 @@
         </el-main>
       </el-container>
     </div>
-    <edit-contact v-if="msgInfoPage.type === 'ContactPage'"/>
-    <group-admin-change v-else-if="msgInfoPage.type === 'adminChange'"/>
-    <group-people v-else-if="msgInfoPage.type === 'groupPeople'"/>
-    <group-add-people  v-else-if="msgInfoPage.type === 'addGroupPeople'"/>
-    <edit-group v-else-if="msgInfoPage.type === 'GroupPage'"/>
-    
+    <edit-contact v-if="msgInfoPage.type === 'ContactPage'" />
+    <group-admin-change v-else-if="msgInfoPage.type === 'adminChange'" />
+    <group-people v-else-if="msgInfoPage.type === 'groupPeople'" />
+    <group-add-people v-else-if="msgInfoPage.type === 'addGroupPeople'" />
+    <edit-group v-else-if="msgInfoPage.type === 'GroupPage'" />
   </div>
-  
 </template>
 
 <script>
@@ -145,10 +161,10 @@ import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import EditContact from "./../EditContact/EditContact.vue";
-import EditGroup from './../EditContact/EditGroup.vue';
-import GroupAdminChange from './../GroupPage/GroupAdminChange.vue'
-import GroupPeople from '../GroupPage/GroupPeople.vue';
-import GroupAddPeople from '../GroupPage/GroupAddPeople.vue';
+import EditGroup from "./../EditContact/EditGroup.vue";
+import GroupAdminChange from "./../GroupPage/GroupAdminChange.vue";
+import GroupPeople from "../GroupPage/GroupPeople.vue";
+import GroupAddPeople from "../GroupPage/GroupAddPeople.vue";
 export default {
   name: "MsgInfoPage",
   data() {
@@ -210,26 +226,27 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     // this.getUserId();
-    this.infoMsgSettingData()
+    this.infoMsgSettingData();
   },
   methods: {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
+      setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
-    editShowBtn(data){
-      this.setMsgInfoPage({ pageShow:false, type:data,})
+    editShowBtn(data) {
+      this.setMsgInfoPage({ pageShow: false, type: data });
     },
-    infoMsgSettingData(){
-      if(this.infoMsg.infoMsgChat){
-        this.settingContactData.splice(0, 1)
-        this.settingGroupData.splice(0, 1)
-      } 
+    infoMsgSettingData() {
+      if (this.infoMsg.infoMsgChat) {
+        this.settingContactData.splice(0, 1);
+        this.settingGroupData.splice(0, 1);
+      }
     },
-    closeInfoMsgShow(){
-      this.setInfoMsg({ infoMsgShow:false,infoMsgChat:false })
+    closeInfoMsgShow() {
+      this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
     },
     noIconShow(iconData, key) {
       if (
@@ -242,38 +259,40 @@ export default {
         return iconData.icon;
       }
     },
-    getHistory(type){
-      if(type === "address"){
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+    getHistory(type) {
+      if (type === "address") {
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
         this.getHistoryMessage.id = Math.random();
-      } else{
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+      } else {
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.groupUser.toChatId;
         this.getHistoryMessage.id = Math.random();
       }
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
-      if(path === "HiChat"){
-        this.setInfoMsg({ infoMsgShow: false, infoMsgNav: type === "address" ? "ContactPage" : "GroupPage", });
+      console.log(data, path, type)
+      if (path === "HiChat") {
+        this.setInfoMsg({
+          infoMsgShow: false,
+          infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
+        });
+        console.log(this.chatUser)
+        if(type === "address"){
+          delete this.chatUser.type
+          this.setChatUser(this.chatUser)
+        } else{
+           delete this.groupUser.type
+          this.setChatGroup(this.groupUser)
+        }
         this.setHichatNav({ type: type, num: 1 });
-        this.getHistory(type)
+        this.getHistory(type);
         this.$router.push({ name: path, params: data });
-      } else if(path === "groupPeople"){
-        this.setMsgInfoPage({ pageShow:false, type:path,})
+      } else if (path === "groupPeople") {
+        this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },
-    // getUserId() {
-    //   let id = this.chatUser.contactId;
-    //   getSearchById({ id }).then((res) => {
-    //     this.userData.username = res.data.username;
-    //     this.userData.name = res.data.name;
-    //     this.userData.isBlock = res.data.isBlock;
-    //     this.userData.isContact = res.data.isContact;
-    //     this.setChatUser(this.userData);
-    //   });
-    // },
     back() {
       this.$router.back(-1);
     },
@@ -283,8 +302,8 @@ export default {
     EditGroup,
     GroupAdminChange,
     GroupPeople,
-    GroupAddPeople
-  }
+    GroupAddPeople,
+  },
 };
 </script>
 
@@ -296,9 +315,9 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/pc/edit_info.png");
     }
-    .notAdmin{
-      background-image:none;
-      cursor:initial;
+    .notAdmin {
+      background-image: none;
+      cursor: initial;
     }
   }
   .home-content {
@@ -432,5 +451,4 @@ export default {
     }
   }
 }
-
 </style>

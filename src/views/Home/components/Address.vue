@@ -100,12 +100,14 @@ export default {
     goContactPage(data, path) {
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
+        data.type = "address";
         this.getUserId(data)
       } else{
         data.toChatId = "g" + data.groupId;
+        data.type = "address";
         this.setChatGroup(data);
       }
-      if(this.device ==='moblie') {
+      if(this.device ==='moblie') { 
         this.$router.push({ name: path });
       }else{
         this.setInfoMsg({infoMsgShow:true, infoMsgNav:path, })

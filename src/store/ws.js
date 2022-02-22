@@ -2,6 +2,7 @@ export const state = {
   wsRes: {},
   chatUser:{},
   groupUser:{},
+  contactUser:{},
   groupList:[],
   contactListData:[],
   myContactDataList:[],
@@ -13,6 +14,7 @@ export const state = {
   hichatNav:{
     type:"address",
     num:1,
+    contact:false,
   },
   msgInfoPage:{
     pageShow:true,
@@ -34,11 +36,21 @@ export const mutations = {
   },
   setChatUser(state, payload) {
     state.chatUser = payload;
-    localStorage.setItem("userData", JSON.stringify(payload));
+    if(payload.type !== "address"){
+      localStorage.setItem("userData", JSON.stringify(payload));
+    }
   },
   setChatGroup(state, payload) {
     state.groupUser = payload;
-    localStorage.setItem("groupData", JSON.stringify(payload));
+    if(payload.type !== "address"){
+      localStorage.setItem("groupData", JSON.stringify(payload));
+    }
+  },
+  setContactUser(state, payload) {
+    state.contactUser = payload;
+    if(payload.type !== "address"){
+      localStorage.setItem("contactUser", JSON.stringify(payload));
+    }
   },
   setHichatNav(state, payload) {
     state.hichatNav = payload;

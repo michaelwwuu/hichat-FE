@@ -2,103 +2,46 @@
   <div class="wrapper">
     <el-container>
       <el-main>
-        <el-header :height="device === 'moblie' ?'55px':'70px'" :class="{'PC-header':device === 'pc'}">
-          <template v-if="device === 'moblie'">
-            <div class="home-header">
-              <span
-                class="home-user-link"
-                :style="!chatUser.isContact ? 'position:none;' : ''"
-              >
-                <router-link :to="'/HiChat'">
-                  <div class="home-user"></div>
-                </router-link>
-              </span>
-              <span class="home-header-title">{{ chatUser.name }}</span>
-              <div v-if="chatUser.isContact" class="home-user-search"></div>
-              <span class="home-photo-link">
-                <router-link :to="'/ContactPage'" v-if="chatUser.isContact">
-                  <div class="home-user-photo">
-                    <img :src="noIconShow(chatUser)" />
-                  </div>
-                </router-link>
-                <div class="home-user-photo" v-else>
-                  <img :src="noIconShow(chatUser)" />
-                </div>
-              </span>
-            </div>
-          </template>
-    
-          <template v-else>
+        <el-header height="70px" class="PC-header">    
+          <template >
             <div class="home-header-pc">
-              <span class="home-photo-link" @click="chatUser.isContact ? infoMsgShow() : false">
+              <span class="home-photo-link" @click="contactUser.isContact ? infoMsgShow() : false">
                 <div class="home-user-photo">
-                  <img :src="noIconShow(JSON.stringify(chatUser) === '{}'?userData : chatUser)" />  
+                  <img :src="noIconShow(JSON.stringify(contactUser) === '{}'?userData : contactUser)" />  
                 </div>
-                <span>{{ chatUser.name === undefined ? userData.name: chatUser.name}}</span>
+                <span>{{ contactUser.name === undefined ? userData.name: contactUser.name}}</span>
               </span>
-              <template v-if="chatUser.isContact">
-                <div class="home-user-search"></div>
-                <el-dropdown trigger="click" >
-                  <div class="el-dropdown-link">
-                    <div class="home-user-more"></div>
-                  </div>
-                  <el-dropdown-menu slot="dropdown" class="chat-more">
-                    <el-dropdown-item >
-                      <div class="logout-btn" @click="isBlockDialogShow = true">
-                        <img src="./../../../static/images/pc/slash.png" alt="" />
-                        <span>{{ chatUser.isBlock ? "解除封锁" : "封锁联络人" }}</span>
-                      </div>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <div class="logout-btn" @click="isDeleteContactDialogShow = true">
-                        <img src="./../../../static/images/pc/trash.png" alt="" />
-                        <span style="color:#ee5253">删除联络人</span>
-                      </div>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-              <template v-else>
-                <div class="contact-box">
-                  <ul>
-                    <li @click="deleteRecent(chatUser)"><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
-                    <li @click="isBlockDialogShow = true">
-                      <img src="./.../../../../../static/images/pc/slash-red.png" alt="">
-                      {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
-                    </li>
-                    <li @click="addUser(chatUser)"><img src="./.../../../../../static/images/pc/user-plus-block.png" alt="">加入联络人</li>
-                  </ul>
-                </div>
-              </template>
+
+              <div class="contact-box">
+                <ul>
+                  <li @click="deleteRecent(contactUser)"><img src="./.../../../../../static/images/pc/trash.png" alt="">删除</li>
+                  <li @click="isBlockDialogShow = true">
+                    <img src="./.../../../../../static/images/pc/slash-red.png" alt="">
+                    {{ contactUser.isBlock ? "解除封锁" : "封锁" }}
+                  </li>
+                  <li @click="addUser(contactUser)"><img src="./.../../../../../static/images/pc/user-plus-block.png" alt="">加入联络人</li>
+                </ul>
+              </div>
             </div>
           </template>
         </el-header>
-        <div class="contact-box" v-if="!chatUser.isContact && device === 'moblie'">
-          <ul>
-            <li @click="isBlockDialogShow = true">
-              {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
-            </li>
-            <li @click="deleteRecent(chatUser)">删除</li>
-            <li @click="addUser(chatUser)">加入联络人</li>
-          </ul>
-        </div>
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="disabled-user" v-if="chatUser.isBlock">
+        <div class="disabled-user" v-if="contactUser.isBlock">
           <span>該用戶已被封鎖</span>
         </div>
         <message-input
           :userInfoData="userInfoData"
-          :userData="chatUser"
+          :userData="contactUser"
           v-else
         />
       </el-main>
     </el-container>
     <el-dialog
-      :title="device === 'pc'?`${ chatUser.isBlock ? '解除封锁' : '封锁'
-          }联络人`:''"
+      :title="`${ contactUser.isBlock ? '解除封锁' : '封锁'
+          }联络人`"
       :visible.sync="isBlockDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -108,15 +51,15 @@
       <div class="loginOut-box">
         <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span
-          >确认是否{{ chatUser.isBlock ? `解除封锁${device === 'pc'?'好友':''}` : `封锁${device === 'pc'?'好友':''}`
-          }} {{ chatUser.name }}？</span
+          >确认是否{{ contactUser.isBlock ? `解除封锁${device === 'pc'?'好友':''}` : `封锁${device === 'pc'?'好友':''}`
+          }} {{ contactUser.name }}？</span
         >
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button :class="device === 'moblie'? 'border-red':'background-gray'" @click="isBlockDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="blockSubmitBtn(chatUser)"
+        <el-button class="background-red" @click="blockSubmitBtn(contactUser)"
           >确认</el-button
         >
       </span>
@@ -167,14 +110,14 @@
     >
       <div class="loginOut-box">
         <span
-          >确认是否删除好友 {{ chatUser.name }}？</span
+          >确认是否删除好友 {{ contactUser.name }}？</span
         >
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-gray" @click="isDeleteContactDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="deleteSubmitBtn(chatUser)"
+        <el-button class="background-red" @click="deleteSubmitBtn(contactUser)"
           >确认</el-button
         >
       </span>
@@ -218,8 +161,8 @@ export default {
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.setChatUser(this.userData)
+    this.userData = JSON.parse(localStorage.getItem("contactUser"));
+    this.setContactUser(this.userData)
     Socket.$on("message", this.handleGetMessage);
   },
   // beforeDestroy() {
@@ -231,7 +174,7 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
-      chatUser: (state) => state.ws.chatUser,
+      contactUser: (state) => state.ws.contactUser,
     }),
   },
   methods: {
@@ -250,6 +193,7 @@ export default {
       setWsRes: "ws/setWsRes",
       setInfoMsg:"ws/setInfoMsg",
       setChatUser:"ws/setChatUser",
+      setContactUser:"ws/setContactUser",
       setHichatNav:"ws/setHichatNav",
       setMsgInfoPage:"ws/setMsgInfoPage"
     }),
@@ -302,7 +246,7 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          if(this.chatUser.toChatId === userInfo.toChatId){
+          if(this.contactUser.toChatId === userInfo.toChatId){
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
           }
@@ -369,7 +313,7 @@ export default {
             localStorage.removeItem("userData");
             if(this.device === "pc") {
               this.setHichatNav({ type: 'address', num: 1 });
-              this.setChatUser({})
+              this.setContactUser({})
             }
           }
         })
@@ -385,7 +329,7 @@ export default {
             if (res.code === 200) {
               data.isBlock = false;
               this.isBlockDialogShow = false;
-              this.setChatUser(data)
+              this.setContactUser(data)
             }
           })
           .catch((err) => {
@@ -399,7 +343,7 @@ export default {
             if (res.code === 200) {
               data.isBlock = true;
               this.isBlockDialogShow = false;
-              this.setChatUser(data)
+              this.setContactUser(data)
             } else {
               this.$message({ message: res.message, type: "error" });
             }
@@ -418,7 +362,7 @@ export default {
             this.isDeleteContactDialogShow = false;
             data.isContact = false;
             this.getHiChatDataList()
-            this.setChatUser(data)
+            this.setContactUser(data)
           }
         })
         .catch((err) => {
