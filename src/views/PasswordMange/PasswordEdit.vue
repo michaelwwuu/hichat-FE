@@ -121,14 +121,22 @@
           <el-header height="70px">
             <div class="home-header">
               <span class="home-header-title">
-                <div style="display: flex; align-items: center; cursor: pointer;" @click="back">
+                <div
+                  style="display: flex; align-items: center; cursor: pointer"
+                  @click="back"
+                >
                   <span style="padding-right: 10px"
-                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                    ><img
+                      src="./../../../static/images/pc/arrow-left.png"
+                      alt=""
                   /></span>
                   <span>修改登录密码</span>
                 </div>
               </span>
-              <div class="home-add-user home-edit-img"  @click="submitForm('loginForm')"></div>
+              <div
+                class="home-add-user home-edit-img"
+                @click="submitForm('loginForm')"
+              ></div>
             </div>
           </el-header>
           <div class="register-content">
@@ -152,7 +160,10 @@
                   maxLength="12"
                   @input="
                     (v) =>
-                      (loginForm.oldPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                      (loginForm.oldPassword = v.replace(
+                        /^[\u4E00-\u9FA5]+$/,
+                        ''
+                      ))
                   "
                 >
                 </el-input>
@@ -181,7 +192,10 @@
                   maxLength="12"
                   @input="
                     (v) =>
-                      (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                      (loginForm.newPassword = v.replace(
+                        /^[\u4E00-\u9FA5]+$/,
+                        ''
+                      ))
                   "
                 >
                 </el-input>
@@ -205,7 +219,9 @@
                   placeholder="确认欲设定的密码"
                   v-model="loginForm.newPasswordAganin"
                   name="newPasswordAganin"
-                  :type="newPasswordTypeAgain === 'password' ? 'password' : 'text'"
+                  :type="
+                    newPasswordTypeAgain === 'password' ? 'password' : 'text'
+                  "
                   tabindex="2"
                   maxLength="12"
                   @input="
@@ -237,7 +253,7 @@
       </el-container>
     </template>
     <el-dialog
-      :title="device === 'pc'?'登录密码':''"
+      :title="device === 'pc' ? '登录密码' : ''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -245,7 +261,9 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/success.png" alt="" />
+        </div>
         <span>登录密码已修改。</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -289,7 +307,7 @@ export default {
             )
           ) {
             this.disabled = false;
-          } else{
+          } else {
             this.disabled = true;
           }
         } else {
@@ -358,7 +376,6 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
     }
-    
   }
   .register-content {
     .tip-text {
@@ -486,29 +503,29 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .home-edit-img{
+.hichat-pc {
+  .home-edit-img {
     background-color: #fff;
-    background-image: url("./../../../static/images/pc/check.png");      
+    background-image: url("./../../../static/images/pc/check.png");
   }
-  .register-content{
-    /deep/.el-form{
-      .el-form-item{
+  .register-content {
+    /deep/.el-form {
+      .el-form-item {
         border-radius: 8px;
         background-color: #eaeaea;
         .el-form-item__label {
           font-size: 17px;
         }
-        .el-input{
-          .el-input__inner{
+        .el-input {
+          .el-input__inner {
             background-color: #eaeaea;
           }
         }
       }
     }
   }
-  .el-dialog-loginOut{
-    /deep/.el-dialog__footer{
+  .el-dialog-loginOut {
+    /deep/.el-dialog__footer {
       padding: 0 !important;
     }
   }

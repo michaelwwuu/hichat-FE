@@ -182,7 +182,7 @@ export default {
       ],
       blockContent: "",
       dialogContent: "",
-      noIcon:require("./../../../static/images/image_user_defult.png"),
+      noIcon: require("./../../../static/images/image_user_defult.png"),
       notification: true,
       successDialogShow: false,
       settingDialogShow: false,
@@ -195,11 +195,15 @@ export default {
     this.getUserId();
   },
   methods: {
-    noIconShow(iconData){
-      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
-        return this.noIcon
-      }else{
-        return iconData.icon
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
       }
     },
     copyPaste(data) {

@@ -52,11 +52,10 @@
         v-for="(item, index) in settingData"
         :key="index"
         :class="[
-          { no_bor_mb10: item.name === '封锁名单'},
-          { bor_mt10: item.name === '提醒'},
-          { hidden: item.name === '关于HiChat'}
-          ]
-        "
+          { no_bor_mb10: item.name === '封锁名单' },
+          { bor_mt10: item.name === '提醒' },
+          { hidden: item.name === '关于HiChat' },
+        ]"
         @click="developmentMessage(item.name)"
       >
         <router-link :to="item.path">
@@ -145,19 +144,19 @@ export default {
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("myUserList"))
+    this.userData = JSON.parse(localStorage.getItem("myUserList"));
     this.getUserData();
-    if(this.device === 'pc'){
+    if (this.device === "pc") {
       this.editMyList = {
-        icon:"",
+        icon: "",
         name: "编辑个人资料",
         path: "/EditUser",
         pcIcon: require("./../../../../static/images/pc/edit.png"),
-      }
-      this.settingData.unshift(this.editMyList)
-      this.settingData.forEach((el)=>{
-        if(el.name === '密码管理') el.path = "/PasswordEdit"
-      })
+      };
+      this.settingData.unshift(this.editMyList);
+      this.settingData.forEach((el) => {
+        if (el.name === "密码管理") el.path = "/PasswordEdit";
+      });
     }
   },
   methods: {
@@ -176,7 +175,7 @@ export default {
     },
     getUserData() {
       getUserInfo().then((res) => {
-        if (res.data.icon === undefined){
+        if (res.data.icon === undefined) {
           res.data.icon = require("./../../../../static/images/image_user_defult.png");
         }
         this.userData = res.data;
@@ -284,18 +283,18 @@ export default {
   .mt10 {
     margin-top: 1em;
   }
-  .hidden{
-    display: none;  
+  .hidden {
+    display: none;
   }
-  .bor_mt10{
+  .bor_mt10 {
     padding: 1em 0 0.5em 0.5em;
-    border-top:3px solid #b3b3b377;
+    border-top: 3px solid #b3b3b377;
   }
-  .no_bor_mb10{
+  .no_bor_mb10 {
     padding: 0.5em 0 1em 0.5em;
-    &::after{
+    &::after {
       border-bottom: 0;
-    }  
+    }
   }
 }
 .el-dialog-loginOut {

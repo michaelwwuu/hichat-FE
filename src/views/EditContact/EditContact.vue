@@ -15,14 +15,22 @@
           <el-header height="70px">
             <div class="home-header">
               <span class="home-header-title">
-                <div style="display: flex; align-items: center; cursor: pointer;" @click="back">
+                <div
+                  style="display: flex; align-items: center; cursor: pointer"
+                  @click="back"
+                >
                   <span style="padding-right: 10px"
-                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                    ><img
+                      src="./../../../static/images/pc/arrow-left.png"
+                      alt=""
                   /></span>
                   <span>编辑联络人</span>
                 </div>
               </span>
-              <div class="home-add-user home-edit-img"  @click="editSubmit(userEditForm.nickname)"></div>
+              <div
+                class="home-add-user home-edit-img"
+                @click="editSubmit(userEditForm.nickname)"
+              ></div>
             </div>
           </el-header>
         </template>
@@ -35,11 +43,13 @@
             />
             <div>
               <span>{{ userData.name }}</span>
-              <span class="user-data-id" v-if ="device === 'moblie'">
+              <span class="user-data-id" v-if="device === 'moblie'">
                 ID :
-                <span class="user-paste" @click="copyPaste(userData.username)">{{
-                  userData.username
-                }}</span></span
+                <span
+                  class="user-paste"
+                  @click="copyPaste(userData.username)"
+                  >{{ userData.username }}</span
+                ></span
               >
             </div>
           </div>
@@ -51,8 +61,12 @@
             </el-form>
           </div>
         </div>
-        <div class="home-footer-btn" v-if ="device === 'moblie'">
-          <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
+        <div class="home-footer-btn" v-if="device === 'moblie'">
+          <el-button
+            class="orange-btn"
+            @click="editSubmit(userEditForm.nickname)"
+            >保存</el-button
+          >
         </div>
       </el-main>
     </el-container>
@@ -71,7 +85,7 @@ export default {
       userEditForm: {
         nickname: "",
       },
-      noIcon:require("./../../../static/images/image_user_defult.png"),
+      noIcon: require("./../../../static/images/image_user_defult.png"),
       device: localStorage.getItem("device"),
     };
   },
@@ -86,15 +100,19 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setChatUser:"ws/setChatUser",
+      setChatUser: "ws/setChatUser",
       setMsgInfoPage: "ws/setMsgInfoPage",
-      setMyContactDataList:"ws/setMyContactDataList",
+      setMyContactDataList: "ws/setMyContactDataList",
     }),
-    noIconShow(iconData){
-      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
-        return this.noIcon
-      }else{
-        return iconData.icon
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
       }
     },
     editSubmit(name) {
@@ -104,26 +122,26 @@ export default {
           : this.userData.contactId;
       updateContactNickName({ name }, contactId).then((res) => {
         if (res.code === 200) {
-          if (res.data.icon === undefined){
+          if (res.data.icon === undefined) {
             res.data.icon = require("./../../../static/images/image_user_defult.png");
           }
-          this.userData.name = res.data.name
+          this.userData.name = res.data.name;
           this.myContactDataList.forEach((el) => {
-            if(el.contactId === res.data.contactId){
-              el.name = res.data.name
+            if (el.contactId === res.data.contactId) {
+              el.name = res.data.name;
             }
           });
-          this.setChatUser(this.userData)
-          this.setMyContactDataList(this.myContactDataList)
+          this.setChatUser(this.userData);
+          this.setMyContactDataList(this.myContactDataList);
           this.back();
         }
       });
     },
     back() {
-      if(this.device === "moblie"){
+      if (this.device === "moblie") {
         this.$router.back(-1);
-      }else{
-        this.setMsgInfoPage({ pageShow:true, type:'', })
+      } else {
+        this.setMsgInfoPage({ pageShow: true, type: "" });
       }
     },
   },
@@ -137,9 +155,9 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
     }
-    .home-edit-img{
+    .home-edit-img {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/check.png");      
+      background-image: url("./../../../static/images/pc/check.png");
     }
   }
   .home-content {
@@ -160,10 +178,10 @@ export default {
         font-weight: 600;
         margin-top: 0.3em;
       }
-      .el-image{
+      .el-image {
         width: 4em;
         height: 4em;
-      }  
+      }
     }
   }
   .user-edit-form {
@@ -183,17 +201,17 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .user-edit-form{
-    /deep/.el-form{
+.hichat-pc {
+  .user-edit-form {
+    /deep/.el-form {
       border-radius: 8px;
       background-color: #eaeaea;
-      .el-form-item{
+      .el-form-item {
         .el-form-item__label {
           font-size: 17px;
         }
-        .el-input{
-          .el-input__inner{
+        .el-input {
+          .el-input__inner {
             background-color: #eaeaea;
           }
         }

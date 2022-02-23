@@ -140,8 +140,10 @@
               hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'
             "
           />
-          <chat-contact v-else-if="
-              hichatNav.type === 'contact' && JSON.stringify(contactUser) !== '{}'
+          <chat-contact
+            v-else-if="
+              hichatNav.type === 'contact' &&
+              JSON.stringify(contactUser) !== '{}'
             "
           />
           <!-- <chat-msg v-else-if="

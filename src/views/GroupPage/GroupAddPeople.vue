@@ -22,31 +22,31 @@
         </template>
         <template v-else>
           <el-header height="70px">
-            <div class="home-header flex-start" >
+            <div class="home-header flex-start">
               <div class="home-user-pc" @click="back"></div>
               <span class="home-header-title">邀请联络人</span>
             </div>
           </el-header>
-          <div style="border-bottom: 1px solid #e1e1e1b0;">
+          <div style="border-bottom: 1px solid #e1e1e1b0">
             <div class="home-search-pc">
               <el-input
-                  placeholder="搜寻"
-                  prefix-icon="el-icon-search"
-                  v-model="searchKey"
-                  @keyup.native.enter="developmentMessage(searchKey)"
-                >
+                placeholder="搜寻"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+                @keyup.native.enter="developmentMessage(searchKey)"
+              >
               </el-input>
             </div>
           </div>
         </template>
         <div class="home-content">
-          <el-checkbox-group v-model="checkList"> 
+          <el-checkbox-group v-model="checkList">
             <el-checkbox
               v-for="(item, index) in newContactDataList"
               :label="item.contactId"
               :key="index"
               :disabled="item.disabled"
-              :class="{'hidden':item.disabled}"
+              :class="{ hidden: item.disabled }"
             >
               <div class="address-box">
                 <el-image :src="item.icon" />
@@ -68,7 +68,7 @@
       </el-main>
     </el-container>
     <el-dialog
-      :title="device === 'pc'?'邀请联络人':''"
+      :title="device === 'pc' ? '邀请联络人' : ''"
       :visible.sync="addUserDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -76,8 +76,10 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
-        <span>{{device === 'pc'?'邀请成功':'操作成功'}}</span>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/success.png" alt="" />
+        </div>
+        <span>{{ device === "pc" ? "邀请成功" : "操作成功" }}</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="background-orange" @click="back">確認</el-button>
@@ -89,7 +91,7 @@
 <script>
 import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember,addMember } from "@/api";
+import { groupListMember, addMember } from "@/api";
 
 export default {
   name: "GroupPeople",
@@ -98,7 +100,7 @@ export default {
       groupData: {},
       checkList: [],
       contactList: [],
-      newContactDataList:[],
+      newContactDataList: [],
       searchKey: "",
       disabled: true,
       addUserDialogShow: false,
@@ -108,7 +110,9 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.myContactDataList = JSON.parse(localStorage.getItem("myContactDataList"));
+    this.myContactDataList = JSON.parse(
+      localStorage.getItem("myContactDataList")
+    );
   },
   mounted() {
     this.getGroupListMember();
@@ -120,41 +124,41 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setInfoMsg:"ws/setInfoMsg",
-      setMsgInfoPage:"ws/setMsgInfoPage"
+      setInfoMsg: "ws/setInfoMsg",
+      setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     getGroupListMember() {
-      let groupId = this.groupData.groupId
+      let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list
-        this.newContactDataList = this.myContactDataList
-        this.newContactDataList.forEach(el =>{
-          this.contactList.forEach((item)=>{
-            if(el.username === item.username) el.disabled = true
-            if(item.icon === undefined) item.icon = require("./../../../static/images/image_user_defult.png")
-          })
-        })
-
+        this.contactList = res.data.list;
+        this.newContactDataList = this.myContactDataList;
+        this.newContactDataList.forEach((el) => {
+          this.contactList.forEach((item) => {
+            if (el.username === item.username) el.disabled = true;
+            if (item.icon === undefined)
+              item.icon = require("./../../../static/images/image_user_defult.png");
+          });
+        });
       });
     },
-    addMemberSubmitBtn(){
+    addMemberSubmitBtn() {
       let params = {
         groupId: this.groupData.groupId,
-        memberList: this.checkList
-      }
-      this.disabled = true
+        memberList: this.checkList,
+      };
+      this.disabled = true;
       addMember(params).then((res) => {
-        if(res.code === 200){
+        if (res.code === 200) {
           this.addUserDialogShow = true;
         }
-      })
+      });
     },
     back() {
-      if(this.device === "moblie"){
+      if (this.device === "moblie") {
         this.$router.back(-1);
-      } else{
-        this.setInfoMsg({infoMsgShow:true})
-        this.setMsgInfoPage({ pageShow:false, type:"groupPeople"})
+      } else {
+        this.setInfoMsg({ infoMsgShow: true });
+        this.setMsgInfoPage({ pageShow: false, type: "groupPeople" });
       }
     },
   },
@@ -207,7 +211,7 @@ export default {
           border-radius: 10px;
         }
       }
-      .is-disabled{
+      .is-disabled {
         visibility: hidden;
       }
       .el-checkbox__label {
@@ -286,10 +290,10 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .home-wrapper{
-    .el-container{
-      .el-main{
+.hichat-pc {
+  .home-wrapper {
+    .el-container {
+      .el-main {
         border-radius: 0;
         .home-header {
           margin: 1.3em 1em 1em 0.7em;
@@ -297,28 +301,28 @@ export default {
             background-color: #fff;
             background-image: url("./../../../static/images/pc/arrow-left.png");
             cursor: pointer;
-          }      
+          }
         }
         .home-search-pc {
           display: flex;
           align-items: center;
           justify-content: center;
           margin: 1em;
-          .el-input{
+          .el-input {
             width: 95%;
-            /deep/.el-input__inner{
+            /deep/.el-input__inner {
               background-color: #e9e8e8;
               color: #666666;
             }
           }
         }
-        .home-content{
-          .el-checkbox-group{
-            .el-checkbox{
+        .home-content {
+          .el-checkbox-group {
+            .el-checkbox {
               width: 100%;
-              /deep/.el-checkbox__label{
+              /deep/.el-checkbox__label {
                 font-size: 17px;
-                .address-box{
+                .address-box {
                   .msg-box {
                     span {
                       &::after {
@@ -332,24 +336,24 @@ export default {
             }
           }
         }
-        .home-footer-btn{
-          .el-button{
+        .home-footer-btn {
+          .el-button {
             padding: 9px 20px;
           }
         }
-        .home-footer-btn{
-          .el-button{
+        .home-footer-btn {
+          .el-button {
             padding: 9px 20px;
           }
         }
       }
     }
-    .el-dialog-loginOut{
-      /deep/.el-dialog{
-        .el-dialog__footer{
-          padding:0;
-          .el-button{
-            &:nth-child(2){
+    .el-dialog-loginOut {
+      /deep/.el-dialog {
+        .el-dialog__footer {
+          padding: 0;
+          .el-button {
+            &:nth-child(2) {
               border-left: 1px solid rgb(239, 239, 239);
             }
           }

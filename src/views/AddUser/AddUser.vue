@@ -26,22 +26,22 @@
           <span>此用户不存在</span>
           <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
         </div>
-
-        <div v-if="addUser.username !== undefined" class="home-content">
-          <div class="group-data">
-            <span>
-              <el-image
-                :src="addUser.icon === undefined ? avatarImg : addUser.icon"
-                :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
-              />
-            </span>            
-            <span>{{ addUser.username }}</span>
+        <template v-if="addUser.username !== undefined">
+          <div class="home-content">
+            <div class="group-data">
+              <span>
+                <el-image
+                  :src="addUser.icon === undefined ? avatarImg : addUser.icon"
+                  :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
+                />
+              </span>            
+              <span>{{ addUser.username }}</span>
+            </div>
           </div>
-          
-        </div>
-        <div v-if="addUser.username !== undefined" class="home-footer-btn">
-          <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
-        </div>
+          <div class="home-footer-btn">
+            <el-button  class="orange-btn" @click="joinUserButtom(addUser)">加入联络人</el-button>
+          </div>
+        </template>
       </el-main>
     </el-container>
     <el-container v-else>
@@ -67,22 +67,22 @@
           <span>此用户不存在</span>
           <span>无法找到此用户，请确认您填写的 ID 是否正确。</span>
         </div>
-
-        <div v-if="addUser.username !== undefined" class="home-content">
-          <div class="group-data">
-            <span>
-              <el-image
-                :src="addUser.icon === undefined ? avatarImg : addUser.icon"
-                :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
-              />
-            </span>            
-            <span>{{ addUser.username }}</span>
+        <template v-if="addUser.username !== undefined">
+          <div class="home-content">
+            <div class="group-data">
+              <span>
+                <el-image
+                  :src="addUser.icon === undefined ? avatarImg : addUser.icon"
+                  :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
+                />
+              </span>            
+              <span>{{ addUser.username }}</span>
+            </div>
           </div>
-          
-        </div>
-        <div v-if="addUser.username !== undefined" class="home-footer-btn">
-          <el-button  class="orange-btn" :disabled="disabled" @click="joinUserButtom(addUser)">加入联络人</el-button>
-        </div>
+          <div class="home-footer-btn">
+            <el-button  class="orange-btn" :disabled="disabled" @click="joinUserButtom(addUser)">加入联络人</el-button>
+          </div>
+        </template>
       </el-aside>
     </el-container>    
     <el-dialog

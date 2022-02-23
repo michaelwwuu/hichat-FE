@@ -69,7 +69,6 @@
                 : item.icon
             "
           />
-
           <div class="contont-box">
             <div class="msg-box">
               <div>
@@ -120,7 +119,11 @@
           v-for="(item, index) in contactDataList"
           :key="index"
           class="address-box"
-          @click="device === 'moblie' ? goChatRoom(item, 'ChatMsg'):goChatRoom(item, 'ChatContact')"
+          @click="
+            device === 'moblie'
+              ? goChatRoom(item, 'ChatMsg')
+              : goChatRoom(item, 'ChatContact')
+          "
         >
           <el-image
             :src="
@@ -227,19 +230,18 @@ export default {
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
-      setContactUser:"ws/setContactUser",
+      setContactUser: "ws/setContactUser",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
       setContactListData: "ws/setContactListData",
     }),
     handleClick(tab) {
-      console.log(tab.name)
-      if(tab.name === "address" || tab.name === "contact"){
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ"
+      if (tab.name === "address" || tab.name === "contact") {
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
         this.getHistoryMessage.id = Math.random();
-      } else{
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ"
+      } else {
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.groupUser.toChatId;
         this.getHistoryMessage.id = Math.random();
       }
@@ -271,7 +273,9 @@ export default {
           this.contactDataList = userInfo.recentChat.filter(
             (item) => !item.isContact && item.isContact !== null
           );
-          this.messageNum = this.contactDataList.some(item => item.unreadCount > 0);
+          this.messageNum = this.contactDataList.some(
+            (item) => item.unreadCount > 0
+          );
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -304,7 +308,7 @@ export default {
     goChatRoom(data, path) {
       if (path === "ChatMsg") {
         this.setChatUser(data);
-      }else if(path === "ChatContact") {
+      } else if (path === "ChatContact") {
         this.setContactUser(data);
       } else {
         data.icon = data.icon;
@@ -319,34 +323,41 @@ export default {
         this.setChatGroup(data);
         this.getGroupListMember();
       }
+
       if (this.device === "moblie") {
         this.$router.push({ name: path });
       } else {
-        if(data.isContact){
-          this.type = 'address'
+        if (data.isContact) {
+          this.type = "address";
           this.contact = false;
-        }else if(data.isGroup){
-          this.type = 'group'
+        } else if (data.isGroup) {
+          this.type = "group";
           this.contact = false;
-        }else if(!data.isBlock && !data.isContact && !data.isGroup){
-          this.type = 'contact'
+        } else if (!data.isBlock && !data.isContact && !data.isGroup) {
+          this.type = "contact";
           this.contact = true;
         }
-        this.setHichatNav({ type: this.type, num: 1,contact:this.contact});
-        this.setInfoMsg({ infoMsgShow: false, infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage", });
-        this.getHistory(data,path)
+        this.setHichatNav({ type: this.type, num: 1, contact: this.contact });
+        this.setInfoMsg({
+          infoMsgShow: false,
+          infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
+        });
+        this.getHistory(data, path);
         setTimeout(() => {
-          this.getHiChatDataList()
+          this.getHiChatDataList();
         }, 3000);
       }
     },
-    getHistory(data,path){
-      this.getHistoryMessage.chatType =
-        path === "ChatMsg" || path === "ChatContact" ? "CLI_HISTORY_REQ" : "CLI_GROUP_HISTORY_REQ";
+    getHistory(data, path) {
+      if (path === "ChatMsg" || path === "ChatContact") {
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
+      } else {
+        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
+      }
       this.getHistoryMessage.toChatId = data.toChatId;
       this.getHistoryMessage.id = Math.random();
       Socket.send(this.getHistoryMessage);
-    }
+    },
   },
 };
 </script>

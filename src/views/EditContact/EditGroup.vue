@@ -15,14 +15,22 @@
           <el-header height="70px">
             <div class="home-header">
               <span class="home-header-title">
-                <div style="display: flex; align-items: center; cursor: pointer;" @click="back">
+                <div
+                  style="display: flex; align-items: center; cursor: pointer"
+                  @click="back"
+                >
                   <span style="padding-right: 10px"
-                    ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                    ><img
+                      src="./../../../static/images/pc/arrow-left.png"
+                      alt=""
                   /></span>
                   <span>编辑群组</span>
                 </div>
               </span>
-              <div class="home-add-user home-edit-img"  @click="editSubmit"></div>
+              <div
+                class="home-add-user home-edit-img"
+                @click="editSubmit"
+              ></div>
             </div>
           </el-header>
         </template>
@@ -34,9 +42,9 @@
                 :preview-src-list="[noIconShow(groupData)]"
             /></span>
             <div>
-              <span class="photo-edit" @click="uploadImgShow = true"
-                >{{device === 'moblie'?'变更群组照片':'變更頭像'}}</span
-              >
+              <span class="photo-edit" @click="uploadImgShow = true">{{
+                device === "moblie" ? "变更群组照片" : "變更頭像"
+              }}</span>
             </div>
           </div>
           <div class="user-edit-form">
@@ -51,7 +59,7 @@
           </div>
         </div>
 
-        <div class="home-footer-btn" v-if ="device === 'moblie'">
+        <div class="home-footer-btn" v-if="device === 'moblie'">
           <el-button
             :class="disabled ? 'gray-btn' : 'orange-btn'"
             :disabled="disabled"
@@ -64,7 +72,7 @@
     <el-dialog
       title="上傳群组照片"
       :visible.sync="uploadImgShow"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
+      :class="{ 'el-dialog-loginOut': device === 'pc' }"
       width="100%"
       center
     >
@@ -82,14 +90,17 @@
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-
-        <template v-if="device ==='moblie'">
+        <template v-if="device === 'moblie'">
           <el-button type="success" @click="submitAvatarUpload">确认</el-button>
           <el-button @click="uploadImgShow = false">取 消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
-          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+          <el-button class="background-gray" @click="uploadImgShow = false"
+            >取消</el-button
+          >
+          <el-button class="background-orange" @click="submitAvatarUpload"
+            >确认</el-button
+          >
         </template>
       </span>
     </el-dialog>
@@ -139,9 +150,9 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setChatGroup:"ws/setChatGroup",
-      setGroupList:"ws/setGroupList",
-      setMsgInfoPage:"ws/setMsgInfoPage",
+      setChatGroup: "ws/setChatGroup",
+      setGroupList: "ws/setGroupList",
+      setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     noIconShow(iconData) {
       if (
@@ -180,13 +191,13 @@ export default {
           if (res.code === 200) {
             this.groupData.groupName = this.groupForm.name;
             this.groupList.forEach((el) => {
-              if(el.groupId === params.groupId){
-                el.groupName = params.groupName
+              if (el.groupId === params.groupId) {
+                el.groupName = params.groupName;
               }
             });
-            this.setChatGroup(this.groupData)
-            this.setGroupList(this.groupList)
-            if(this.device === "pc") this.getHiChatDataList()
+            this.setChatGroup(this.groupData);
+            this.setGroupList(this.groupList);
+            if (this.device === "pc") this.getHiChatDataList();
             this.back();
           }
         })
@@ -206,10 +217,10 @@ export default {
       Socket.send(chatMsgKey);
     },
     back() {
-      if(this.device === "moblie"){
+      if (this.device === "moblie") {
         this.$router.back(-1);
-      }else{
-        this.setMsgInfoPage({ pageShow:true, type:'', })
+      } else {
+        this.setMsgInfoPage({ pageShow: true, type: "" });
       }
     },
   },
@@ -222,9 +233,9 @@ export default {
     background-color: #fff;
     background-image: url("./../../../static/images/back.png");
   }
-  .home-edit-img{
+  .home-edit-img {
     background-color: #fff;
-    background-image: url("./../../../static/images/pc/check.png");      
+    background-image: url("./../../../static/images/pc/check.png");
   }
 }
 .home-content {
@@ -266,42 +277,42 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .home-content{
-    .group-data{
-      .el-image{
+.hichat-pc {
+  .home-content {
+    .group-data {
+      .el-image {
         width: auto;
         height: 6em;
       }
-      span{
+      span {
         height: 6.5em !important;
       }
     }
   }
-  .user-edit-form{
-    /deep/.el-form{
+  .user-edit-form {
+    /deep/.el-form {
       border-radius: 8px;
       background-color: #eaeaea;
-      .el-form-item{
+      .el-form-item {
         .el-form-item__label {
           font-size: 17px;
         }
-        .el-input{
-          .el-input__inner{
+        .el-input {
+          .el-input__inner {
             background-color: #eaeaea;
           }
         }
       }
     }
   }
-  .photo-edit{
+  .photo-edit {
     cursor: pointer;
   }
-  .el-dialog-loginOut{
+  .el-dialog-loginOut {
     /deep/.el-dialog__footer {
-      padding:0 !important;
-      .el-button{
-        &:nth-child(2){
+      padding: 0 !important;
+      .el-button {
+        &:nth-child(2) {
           border-left: 1px solid #efefef;
         }
       }

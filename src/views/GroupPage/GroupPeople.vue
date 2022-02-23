@@ -6,20 +6,36 @@
           <el-header height="125px">
             <div class="home-header">
               <template v-if="!editBtnShow">
-                <div class="home-user" @click="back" style="position: absolute"></div>
+                <div
+                  class="home-user"
+                  @click="back"
+                  style="position: absolute"
+                ></div>
               </template>
               <template v-else-if="groupData.isAdmin">
-                <div class="home-user" @click="editBtnShow = false" style="position: absolute"></div>
+                <div
+                  class="home-user"
+                  @click="editBtnShow = false"
+                  style="position: absolute"
+                ></div>
               </template>
               <span class="home-header-title"
-                >成员 ({{ !editBtnShow? contactList.length :checkDataList.length}})
+                >成员 ({{
+                  !editBtnShow ? contactList.length : checkDataList.length
+                }})
               </span>
 
               <template v-if="groupData.isAdmin && !editBtnShow">
-                <router-link :to="'GroupAddPeople'" style="position: absolute; right: 50px;">
-                  <div class="home-add-user" ></div>
-                </router-link>  
-                <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
+                <router-link
+                  :to="'GroupAddPeople'"
+                  style="position: absolute; right: 50px"
+                >
+                  <div class="home-add-user"></div>
+                </router-link>
+                <div
+                  class="home-user-edit"
+                  @click="(editBtnShow = true) && (checkList = [])"
+                ></div>
               </template>
             </div>
             <div class="home-search">
@@ -38,46 +54,68 @@
           <el-header height="70px">
             <div class="home-header">
               <template v-if="!editBtnShow">
-                <div class="home-user" @click="back" style="position: absolute"></div>
+                <div
+                  class="home-user"
+                  @click="back"
+                  style="position: absolute"
+                ></div>
               </template>
               <template v-else-if="groupData.isAdmin">
-                <div class="home-user" @click="editBtnShow = false" style="position: absolute"></div>
+                <div
+                  class="home-user"
+                  @click="editBtnShow = false"
+                  style="position: absolute"
+                ></div>
               </template>
 
               <span class="home-header-title"
-                >成员 ({{ !editBtnShow? contactList.length :checkDataList.length}})
+                >成员 ({{
+                  !editBtnShow ? contactList.length : checkDataList.length
+                }})
               </span>
 
               <template v-if="groupData.isAdmin && !editBtnShow">
-                <div class="home-add-user" @click="addGroupPeople" style="position: absolute; right: 50px;"></div>
-                <div class="home-user-edit" @click="(editBtnShow = true) && (checkList = [])"></div>
+                <div
+                  class="home-add-user"
+                  @click="addGroupPeople"
+                  style="position: absolute; right: 50px"
+                ></div>
+                <div
+                  class="home-user-edit"
+                  @click="(editBtnShow = true) && (checkList = [])"
+                ></div>
               </template>
             </div>
-            
           </el-header>
-          <div style="border-bottom: 1px solid #e1e1e1b0;">
+          <div style="border-bottom: 1px solid #e1e1e1b0">
             <div class="home-search-pc">
               <el-input
-                  placeholder="搜寻"
-                  prefix-icon="el-icon-search"
-                  v-model="searchKey"
-                  @keyup.native.enter="developmentMessage(searchKey)"
-                >
+                placeholder="搜寻"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+                @keyup.native.enter="developmentMessage(searchKey)"
+              >
               </el-input>
             </div>
           </div>
         </template>
 
         <template v-if="!editBtnShow">
-          <div class="home-content" >
+          <div class="home-content">
             <div class="el-checkbox-group">
               <label class="el-checkbox">
                 <span class="el-checkbox__label">
-                  <div class="address-box"
+                  <div
+                    class="address-box"
                     v-for="(item, index) in contactList"
                     :key="index"
-                    @click="goContactPage(item)">
-                    <el-image :src="item.icon" v-if="item.icon !== undefined" lazy/>
+                    @click="goContactPage(item)"
+                  >
+                    <el-image
+                      :src="item.icon"
+                      v-if="item.icon !== undefined"
+                      lazy
+                    />
                     <div class="msg-box">
                       <span>{{ item.name }}</span>
                     </div>
@@ -85,7 +123,6 @@
                 </span>
               </label>
             </div>
-
           </div>
         </template>
         <template v-else>
@@ -117,7 +154,7 @@
       </el-main>
     </el-container>
     <el-dialog
-      :title="device==='pc'?'編輯成員':''"
+      :title="device === 'pc' ? '編輯成員' : ''"
       :visible.sync="leaveUserDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -125,14 +162,20 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
         <span>确认是否将所选的联络人退出群组？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button :class="device === 'moblie' ?'border-red':'background-gray'" @click="leaveUserDialogShow = false"
+        <el-button
+          :class="device === 'moblie' ? 'border-red' : 'background-gray'"
+          @click="leaveUserDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="successDialogShow = true">确认</el-button>
+        <el-button class="background-red" @click="successDialogShow = true"
+          >确认</el-button
+        >
       </span>
     </el-dialog>
     <el-dialog
@@ -147,7 +190,9 @@
         <span>操作成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="removeGroupMember">確認</el-button>
+        <el-button class="background-orange" @click="removeGroupMember"
+          >確認</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -155,8 +200,8 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember,removeMember } from "@/api";
-import { mapState,mapMutations } from "vuex";
+import { groupListMember, removeMember } from "@/api";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "GroupPeople",
@@ -165,15 +210,14 @@ export default {
       groupData: {},
       checkList: [],
       contactList: [],
-      checkDataList:[],
+      checkDataList: [],
       searchKey: "",
       disabled: true,
       editBtnShow: false,
-      successDialogShow:false,
+      successDialogShow: false,
       leaveUserDialogShow: false,
       developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
-
     };
   },
   created() {
@@ -194,71 +238,82 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setInfoMsg:"ws/setInfoMsg",
+      setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
-      setMsgInfoPage:"ws/setMsgInfoPage",
-      setContactListData:"ws/setContactListData",
+      setMsgInfoPage: "ws/setMsgInfoPage",
+      setContactListData: "ws/setContactListData",
     }),
     getGroupListMember() {
-      let groupId = this.groupData.groupId
+      let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
-          if (res.icon === undefined){
+          if (res.icon === undefined) {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
         this.setContactListData(this.contactList);
-        this.checkDataList = this.contactList.filter(el=> el.memberId !== this.groupData.memberId)
+        this.checkDataList = this.contactList.filter(
+          (el) => el.memberId !== this.groupData.memberId
+        );
       });
     },
-    addGroupPeople(){
-      this.setMsgInfoPage({ pageShow:false, type:"addGroupPeople", })
+    addGroupPeople() {
+      this.setMsgInfoPage({ pageShow: false, type: "addGroupPeople" });
     },
-    removeGroupMember(){
+    removeGroupMember() {
       let param = {
         groupId: this.groupData.groupId,
-        memberList: this.checkList
-      }
-      removeMember(param).then((res)=>{
-        if(res.code === 200) {
-          this.editBtnShow = false
-          this.successDialogShow = false
-          this.leaveUserDialogShow = false
-          this.getGroupListMember();
-        }
-      })
-      .catch((err) => { console.log(err) })
+        memberList: this.checkList,
+      };
+      removeMember(param)
+        .then((res) => {
+          if (res.code === 200) {
+            this.editBtnShow = false;
+            this.successDialogShow = false;
+            this.leaveUserDialogShow = false;
+            this.getGroupListMember();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     back() {
-      if(this.device === "moblie"){
+      if (this.device === "moblie") {
         this.$router.back(-1);
-      } else{
-        this.setInfoMsg({ infoMsgShow:true })
-        this.setMsgInfoPage({ pageShow:true })
+      } else {
+        this.setInfoMsg({ infoMsgShow: true });
+        this.setMsgInfoPage({ pageShow: true });
       }
     },
-    goContactPage(data){
-      if(data.memberId === JSON.parse(localStorage.getItem("id"))){
+    goContactPage(data) {
+      if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
         this.$message({ message: "此即为您的帐号", type: "warning" });
-      }else{
+      } else {
         data.toChatId = "u" + data.memberId;
         // localStorage.setItem("userData", JSON.stringify(data));
-        if(this.device === "moblie"){
-          this.$router.push({ name: 'ContactPage' });
-        }else{
-          this.contactDataList = JSON.parse(localStorage.getItem('myContactDataList'))
-          this.contactDataList.forEach((res)=>{
-            if(Number(res.contactId) === data.memberId){
-              data.isContact = true
-            } 
-          })
-          this.setChatUser(data)
-          this.setInfoMsg({ infoMsgShow:true, infoMsgChat:true, infoMsgNav:'ContactPage'})
-          this.setMsgInfoPage({ pageShow:true, type:'ContactPage'})
+        if (this.device === "moblie") {
+          this.$router.push({ name: "ContactPage" });
+        } else {
+          this.contactDataList = JSON.parse(
+            localStorage.getItem("myContactDataList")
+          );
+          this.contactDataList.forEach((res) => {
+            if (Number(res.contactId) === data.memberId) {
+              data.isContact = true;
+            }
+          });
+          this.setChatUser(data);
+          this.setInfoMsg({
+            infoMsgShow: true,
+            infoMsgChat: true,
+            infoMsgNav: "ContactPage",
+          });
+          this.setMsgInfoPage({ pageShow: true, type: "ContactPage" });
         }
       }
-    }
+    },
   },
 };
 </script>
@@ -288,12 +343,12 @@ export default {
       position: absolute;
       right: 16px;
     }
-    .cancel{
+    .cancel {
       position: absolute;
       right: 14px;
-      color:#fe5f3f;
-      font-weight:550;
-      font-size:17px
+      color: #fe5f3f;
+      font-weight: 550;
+      font-size: 17px;
     }
   }
   .home-search {
@@ -337,7 +392,7 @@ export default {
         width: 100%;
         padding-left: 0;
         .address-box {
-          .el-image{
+          .el-image {
             width: 3em;
             height: 3em;
             border-radius: 10px;
@@ -441,12 +496,12 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .home-wrapper{
-    .el-container{
-      .el-main{
+.hichat-pc {
+  .home-wrapper {
+    .el-container {
+      .el-main {
         border-radius: 0;
-        .home-header{
+        .home-header {
           margin: 1.8em 1em 1.8em 0.7em !important;
           .home-user {
             background-size: 70%;
@@ -454,42 +509,42 @@ export default {
             background-image: url("./../../../static/images/pc/arrow-left.png");
             cursor: pointer;
           }
-          .home-add-user{
+          .home-add-user {
             background-size: 70%;
             background-color: #fff;
             background-image: url("./../../../static/images/pc/add.png");
             cursor: pointer;
           }
-          .home-header-title{
+          .home-header-title {
             margin-left: 40px;
           }
-          .home-user-edit{
+          .home-user-edit {
             background-size: 70%;
             background-color: #fff;
             background-image: url("./../../../static/images/pc/edit_info.png");
             cursor: pointer;
-          } 
+          }
         }
         .home-search-pc {
           display: flex;
           align-items: center;
           justify-content: center;
           margin: 1em;
-          .el-input{
+          .el-input {
             width: 95%;
-            /deep/.el-input__inner{
+            /deep/.el-input__inner {
               background-color: #e9e8e8;
               color: #666666;
             }
           }
         }
-        .home-content{
-          .el-checkbox-group{
-            .el-checkbox{
+        .home-content {
+          .el-checkbox-group {
+            .el-checkbox {
               width: 100%;
-              /deep/.el-checkbox__label{
+              /deep/.el-checkbox__label {
                 font-size: 17px;
-                .address-box{
+                .address-box {
                   .msg-box {
                     span {
                       &::after {
@@ -503,19 +558,19 @@ export default {
             }
           }
         }
-        .home-footer-btn{
-          .el-button{
+        .home-footer-btn {
+          .el-button {
             padding: 9px 20px;
           }
         }
       }
     }
-    .el-dialog-loginOut{
-      /deep/.el-dialog{
-        .el-dialog__footer{
-          padding:0;
-          .el-button{
-            &:nth-child(2){
+    .el-dialog-loginOut {
+      /deep/.el-dialog {
+        .el-dialog__footer {
+          padding: 0;
+          .el-button {
+            &:nth-child(2) {
               border-left: 1px solid rgb(239, 239, 239);
             }
           }
