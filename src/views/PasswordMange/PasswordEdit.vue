@@ -135,7 +135,8 @@
               </span>
               <div
                 class="home-add-user home-edit-img"
-                @click="submitForm('loginForm')"
+                :style="disabled ? 'cursor: no-drop':''"
+                @click="!disabled ? submitForm('loginForm') : false"
               ></div>
             </div>
           </el-header>
@@ -302,9 +303,7 @@ export default {
             Object.values(val).every((el) => el !== "") &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.oldPassword) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPassword) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
-              val.newPasswordAganin
-            )
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPasswordAganin)
           ) {
             this.disabled = false;
           } else {
@@ -345,7 +344,7 @@ export default {
           });
           return;
         }
-        delete this.loginForm.newPasswordAganin;
+        // delete this.loginForm.newPasswordAganin;
         updatePassword(this.loginForm)
           .then((res) => {
             //登录成功

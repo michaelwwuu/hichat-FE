@@ -1,6 +1,6 @@
 <template>
   <div class="home-content" @touchmove="$root.handleTouch">
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="联络人" name="address">
         <div
           class="address-box"
@@ -68,6 +68,9 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
+    handleClick(){
+      this.setInfoMsg({ infoMsgShow: false });
+    },
     getDataList() {
       getContactList().then((res) => {
         this.contactList = res.data.list;

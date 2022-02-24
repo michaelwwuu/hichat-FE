@@ -102,6 +102,7 @@ export default {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
       groupUser: (state) => state.ws.groupUser,
+      hichatNav: (state) => state.ws.hichatNav,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -182,7 +183,7 @@ export default {
             this.messageData.push(this.chatRoomMsg);
           }
           if(userInfo.toChatId === JSON.parse(localStorage.getItem("groupData")).toChatId){
-            this.readMsgShow(userInfo);
+            if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
           break;
         // 历史讯息

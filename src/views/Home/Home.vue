@@ -1,5 +1,6 @@
 <template>
   <div class="home-wrapper">
+    
     <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header :style="num === 2 ? 'height:55px' : 'height:120px'">
@@ -320,8 +321,8 @@ export default {
     changeImg(index) {
       this.num = index;
       this.setInfoMsg({ infoMsgShow: false });
-      this.setHichatNav({ type: "address", num: this.num });
-      this.getHistory("address");
+      this.setHichatNav({ type: this.hichatNav.type, num: this.num });
+      if(this.num === 1 ) this.getHistory("address");
       this.getHiChatDataList()
     },
 
@@ -380,7 +381,6 @@ export default {
             // if (!filterList) this.getHiChatDataList();
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
-          this.getHiChatDataList();
           break;
 
         case "SRV_ERROR_MSG":

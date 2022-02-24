@@ -94,7 +94,7 @@
       <el-aside width="300px">
         <el-header height="70px">
           <div class="home-header flex-start" >
-            <router-link :to="'/Home'" v-if="groupEditShow">
+            <router-link :to="'/HiChat'" v-if="groupEditShow">
               <div class="home-user-pc"></div>
             </router-link>
             <div class="home-user-pc" v-else @click="groupEditShow = true"></div>

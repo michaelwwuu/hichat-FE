@@ -288,6 +288,7 @@ export default {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
       chatUser: (state) => state.ws.chatUser,
+      hichatNav: (state) => state.ws.hichatNav,
     }),
   },
   methods: {
@@ -342,6 +343,7 @@ export default {
         infoMsgNav: "ContactPage",
         infoMsgChat: true,
       });
+      console.log(this.hichatNav.type)
     },
     // 已讀
     readMsgShow(data) {
@@ -370,7 +372,7 @@ export default {
             userInfo.toChatId ===
             JSON.parse(localStorage.getItem("userData")).toChatId
           ) {
-            this.readMsgShow(userInfo);
+            if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
           break;
         // 历史讯息
@@ -385,9 +387,7 @@ export default {
           break;
         // 已讀
         case "SRV_MSG_READ":
-          this.messageData.forEach((res) => {
-            if (res.historyId === userInfo.historyId) res.isRead = true;
-          });
+          this.messageData.forEach((res) => res.isRead = true);
           break;
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":

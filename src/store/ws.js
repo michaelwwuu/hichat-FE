@@ -15,7 +15,6 @@ export const state = {
   hichatNav:{
     type:"address",
     num:1,
-    contact:false,
   },
   msgInfoPage:{
     pageShow:true,

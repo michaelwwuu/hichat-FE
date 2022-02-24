@@ -174,6 +174,7 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
+      hichatNav: (state) => state.ws.hichatNav,
       contactUser: (state) => state.ws.contactUser,
     }),
   },
@@ -251,7 +252,7 @@ export default {
             this.messageData.push(this.chatRoomMsg);
           }
           if(userInfo.toChatId === JSON.parse(localStorage.getItem("userData")).toChatId){
-            this.readMsgShow(userInfo);
+            if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
           break;
         // 历史讯息

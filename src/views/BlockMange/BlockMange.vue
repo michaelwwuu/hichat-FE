@@ -168,7 +168,7 @@ export default {
           this.unblockDialogShow = false;
           this.editBtnShow = true;
           blockIdList.forEach(el => {
-            if(el === this.chatUser.contactId){
+            if(el === this.chatUser.contactId || this.chatUser.toChatId.replace("u", "")){
               this.chatUser.isBlock = false
               this.setChatUser(this.chatUser)
             }

@@ -148,14 +148,6 @@ export default {
     submitAvatarUpload() {
       this.userData.icon = this.fileList[0].url
       this.uploadImgShow = false;
-      // uploadIcon(formData).then((res) => {
-      //   if (res.code === 200) {
-      //     this.fileList = [];
-      //     this.uploadImgShow = false;
-      //     this.userData.icon = res.data;
-      //     localStorage.setItem("userData", JSON.stringify(this.userData));
-      //   }
-      // });
     },
     settingAvatar(){
       this.editSubmit()
@@ -167,9 +159,8 @@ export default {
       uploadIcon(formData).then((res) => {
         if (res.code === 200) {
           this.fileList = [];
-          // this.uploadImgShow = false;
           this.userData.icon = res.data;
-          localStorage.setItem("userData", JSON.stringify(this.userData));
+          localStorage.setItem("myUserList", JSON.stringify(this.userData));
         }
       });
     },
@@ -180,7 +171,6 @@ export default {
       }
       updateNickname(this.userEditForm.nickname).then((res) => {
         if (res.code === 200) {
-          // this.getUserData();
           this.back();
         }
       })

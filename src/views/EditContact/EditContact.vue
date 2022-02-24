@@ -90,11 +90,12 @@ export default {
     };
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.userData = this.chatUser;
     this.userEditForm.nickname = this.userData.name;
   },
   computed: {
     ...mapState({
+      chatUser: (state) => state.ws.chatUser,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
