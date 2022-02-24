@@ -34,8 +34,7 @@
 </template>
 
 <script>
-
-import { mapState,mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { getContactList, getGroupList, getSearchById } from "@/api";
 export default {
   name: "Address",
@@ -51,7 +50,7 @@ export default {
   created() {
     this.getDataList();
     this.userData = JSON.parse(localStorage.getItem("userData"));
-  },  
+  },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
@@ -62,12 +61,12 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setInfoMsg:"ws/setInfoMsg",
+      setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
-      setChatGroup:"ws/setChatGroup",
-      setGroupList:"ws/setGroupList",
-      setMsgInfoPage:"ws/setMsgInfoPage",
-      setMyContactDataList:"ws/setMyContactDataList"
+      setChatGroup: "ws/setChatGroup",
+      setGroupList: "ws/setGroupList",
+      setMsgInfoPage: "ws/setMsgInfoPage",
+      setMyContactDataList: "ws/setMyContactDataList",
     }),
     getDataList() {
       getContactList().then((res) => {
@@ -76,7 +75,7 @@ export default {
           if (el.icon === undefined)
             el.icon = require("./../../../../static/images/image_user_defult.png");
         });
-        this.setMyContactDataList(this.contactList)
+        this.setMyContactDataList(this.contactList);
       });
       getGroupList().then((res) => {
         this.groupData = res.data.list;
@@ -84,7 +83,7 @@ export default {
           if (el.icon === "")
             el.icon = require("./../../../../static/images/image_group_defult.png");
         });
-        this.setGroupList(this.groupData)
+        this.setGroupList(this.groupData);
       });
     },
     getUserId(data) {
@@ -101,17 +100,17 @@ export default {
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
         data.type = "address";
-        this.getUserId(data)
-      } else{
+        this.getUserId(data);
+      } else {
         data.toChatId = "g" + data.groupId;
         data.type = "address";
         this.setChatGroup(data);
       }
-      if(this.device ==='moblie') { 
+      if (this.device === "moblie") {
         this.$router.push({ name: path });
-      }else{
-        this.setInfoMsg({infoMsgShow:true, infoMsgNav:path, })
-        this.setMsgInfoPage({ pageShow:true, type:'', })
+      } else {
+        this.setInfoMsg({ infoMsgShow: true, infoMsgNav: path });
+        this.setMsgInfoPage({ pageShow: true, type: "" });
       }
     },
   },
@@ -120,7 +119,7 @@ export default {
 <style lang="scss" scoped>
 .address-box {
   cursor: pointer;
-  &:hover{
+  &:hover {
     background-color: #ebeaea81;
   }
   .contont-box {

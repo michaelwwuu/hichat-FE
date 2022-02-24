@@ -225,7 +225,6 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    // this.getUserId();
     this.infoMsgSettingData();
   },
   methods: {
@@ -272,19 +271,19 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
-      console.log(data, path, type)
+      console.log(data, path, type);
       if (path === "HiChat") {
         this.setInfoMsg({
           infoMsgShow: false,
           infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
         });
-        console.log(this.chatUser)
-        if(type === "address"){
-          delete this.chatUser.type
-          this.setChatUser(this.chatUser)
-        } else{
-           delete this.groupUser.type
-          this.setChatGroup(this.groupUser)
+        console.log(this.chatUser);
+        if (type === "address") {
+          delete this.chatUser.type;
+          this.setChatUser(this.chatUser);
+        } else {
+          delete this.groupUser.type;
+          this.setChatGroup(this.groupUser);
         }
         this.setHichatNav({ type: type, num: 1 });
         this.getHistory(type);

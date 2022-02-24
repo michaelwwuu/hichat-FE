@@ -73,7 +73,7 @@ export default {
   methods: {
     onCancel() {
       this.visible = false;
-      this.$emit("closePictureShow",pictureShow = false);
+      this.$emit("closePictureShow",false);
       this.resetCanvas();
       this.stopNavigator();
     },

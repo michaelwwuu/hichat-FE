@@ -2,7 +2,10 @@
   <div class="wrapper">
     <el-container>
       <el-main>
-        <el-header :height="device === 'moblie' ?'55px':'70px'" :class="{'PC-header':device === 'pc'}">
+        <el-header
+          :height="device === 'moblie' ? '55px' : '70px'"
+          :class="{ 'PC-header': device === 'pc' }"
+        >
           <template v-if="device === 'moblie'">
             <div class="home-header">
               <span class="home-user-link">
@@ -31,9 +34,21 @@
             <div class="home-header-pc">
               <span class="home-photo-link">
                 <div class="home-user-photo">
-                  <img :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)" />  
+                  <img
+                    :src="
+                      noIconShow(
+                        JSON.stringify(groupUser) === '{}'
+                          ? groupData
+                          : groupUser
+                      )
+                    "
+                  />
                 </div>
-                <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
+                <span>{{
+                  groupUser.groupName === undefined
+                    ? groupData.groupName
+                    : groupUser.groupName
+                }}</span>
               </span>
               <div class="home-user-more"></div>
             </div>
@@ -78,7 +93,7 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.setChatGroup(this.groupData)
+    this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
@@ -98,8 +113,8 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setChatGroup:"ws/setChatGroup",
-      setContactListData:"ws/setContactListData",
+      setChatGroup: "ws/setChatGroup",
+      setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData) {
       if (
@@ -120,7 +135,7 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
-        this.setContactListData(this.contactList)
+        this.setContactListData(this.contactList);
       });
     },
     // 訊息統一格式
@@ -178,13 +193,13 @@ export default {
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.messageData = []
+          this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          if(historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -341,7 +356,7 @@ export default {
     .PC-header {
       position: relative;
       padding: 0;
-      background-color: #FFFFFF;
+      background-color: #ffffff;
       display: flex;
       .home-header-pc {
         margin: 1em;
@@ -371,7 +386,7 @@ export default {
           width: 2em;
           height: 2em;
           border-radius: 10px;
-          background-size:70%;
+          background-size: 70%;
           background-position: center;
           background-repeat: no-repeat;
         }
@@ -403,7 +418,7 @@ export default {
               border-radius: 6px;
             }
           }
-          span{
+          span {
             font-size: 15px;
             padding-left: 10px;
             font-weight: 600;

@@ -1,8 +1,10 @@
 <template>
-  <div :class="[
-    { 'register-container-pc': device === 'pc' },
-    { 'register-container-moblie': device === 'moblie' }
-  ]">
+  <div
+    :class="[
+      { 'register-container-pc': device === 'pc' },
+      { 'register-container-moblie': device === 'moblie' },
+    ]"
+  >
     <template v-if="device === 'moblie'">
       <div class="register-header">
         <router-link :to="'/Login'"
@@ -107,7 +109,7 @@
       </div>
     </template>
     <el-dialog
-      :title="device === 'pc'?'解除帳號鎖定':''"
+      :title="device === 'pc' ? '解除帳號鎖定' : ''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -115,13 +117,23 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
-        <div style="margin-bottom:10px;"><span >帐号已解除锁定，请重新登录。</span></div>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/success.png" alt="" />
+        </div>
+        <div style="margin-bottom: 10px">
+          <span>帐号已解除锁定，请重新登录。</span>
+        </div>
         <div><span>若忘記密码，可使用「忘记密码」功能。</span></div>
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Login">
-          <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="dialogShow = false">确认</el-button>
+          <el-button
+            :class="
+              device === 'moblie' ? 'background-orange' : 'background-red'
+            "
+            @click="dialogShow = false"
+            >确认</el-button
+          >
         </router-link>
       </span>
     </el-dialog>
@@ -365,7 +377,7 @@ export default {
         .dialog-footer {
           display: flex;
           justify-content: space-between;
-          a{
+          a {
             width: 100vw;
           }
           .el-button {
@@ -389,56 +401,56 @@ export default {
     }
   }
 }
-.register-container-pc{
+.register-container-pc {
   width: 481px;
   margin: 0 auto;
   overflow: hidden;
-  .register-header{
+  .register-header {
     justify-content: center;
     margin-top: 105px;
-    .register-header-title{
+    .register-header-title {
       left: 0;
       color: #474747;
       margin: 19px 0 16px 0;
       font-size: 20px;
     }
-    .title-container{
+    .title-container {
       display: flex;
       align-items: center;
       flex-direction: column;
-      img{
+      img {
         height: 5em;
       }
     }
   }
-  .register-content{
-    .svg-container{
+  .register-content {
+    .svg-container {
       font-size: 14px;
       width: 15%;
     }
-    .login-form{
+    .login-form {
       height: 15em;
       padding: 0.45em 0;
-      .el-form-item{
-        .el-input{
+      .el-form-item {
+        .el-input {
           width: 70%;
-          /deep/.el-input__inner{
+          /deep/.el-input__inner {
             vertical-align: middle;
           }
         }
       }
     }
-    .show-pwd{
+    .show-pwd {
       cursor: pointer;
     }
-    .eye-off{
+    .eye-off {
       img {
         height: 1.5em;
       }
     }
   }
 
-  .verification-style{
+  .verification-style {
     font-size: 14px !important;
     border: 0 !important;
     right: 0.5em;

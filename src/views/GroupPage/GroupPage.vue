@@ -21,7 +21,7 @@
             <div>
               <span>{{ groupData.groupName }}</span>
               <span class="user-data-id">
-                <span class="user-paste" ></span>
+                <span class="user-paste"></span>
               </span>
             </div>
           </div>
@@ -41,7 +41,10 @@
             </a>
           </div>
 
-          <div class="setting-notification" @click="developmentMessage('提醒通知')">
+          <div
+            class="setting-notification"
+            @click="developmentMessage('提醒通知')"
+          >
             <div class="setting-button-left">
               <img src="./../../../static/images/notification.png" alt="" />
               <span>提醒通知</span>
@@ -71,7 +74,6 @@
               </div>
             </a>
           </div>
-
         </div>
       </el-main>
     </el-container>
@@ -105,7 +107,6 @@ import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { leaveGroup } from "@/api";
 
-
 export default {
   name: "GroupPage",
   data() {
@@ -133,37 +134,44 @@ export default {
           path: "GroupPeople",
         },
       ],
-      dialogContent:'',
-      noIcon:require("./../../../static/images/image_group_defult.png"),
+      dialogContent: "",
+      noIcon: require("./../../../static/images/image_group_defult.png"),
       notification: true,
-      leaveGroupDialogShow:false,
+      leaveGroupDialogShow: false,
       developmentMessage: developmentMessage,
     };
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.setChatGroup(this.groupData)
+    this.setChatGroup(this.groupData);
   },
   methods: {
     ...mapMutations({
-      setChatGroup:"ws/setChatGroup",
+      setChatGroup: "ws/setChatGroup",
     }),
-    noIconShow(iconData){
-      if(iconData.icon === undefined || iconData.icon === null || iconData.icon === ''){
-        return this.noIcon
-      }else{
-        return iconData.icon
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return this.noIcon;
+      } else {
+        return iconData.icon;
       }
     },
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
-    submitBtn(){
-      let groupId = this.groupData.groupId
-      leaveGroup({groupId}).then((res)=>{
-        if(res.code === 200) this.$router.push({ path: "/Address" });
-      })
-      .catch((err) => { console.log(err) })
+    submitBtn() {
+      let groupId = this.groupData.groupId;
+      leaveGroup({ groupId })
+        .then((res) => {
+          if (res.code === 200) this.$router.push({ path: "/Address" });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     back() {
       this.$router.back(-1);
@@ -179,7 +187,7 @@ export default {
       background-color: #fff;
       background-image: url("./../../../static/images/back.png");
     }
-    .edit{
+    .edit {
       background-color: #fff;
       background-image: url("./../../../static/images/edit.png");
     }
@@ -200,9 +208,9 @@ export default {
         text-align: center;
         height: 4.5em;
         font-weight: 600;
-      } 
+      }
     }
-    .setting-button{
+    .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
       &::after {
@@ -258,7 +266,7 @@ export default {
         }
       }
     }
-    .red-text{
+    .red-text {
       color: #ee5253 !important;
     }
   }

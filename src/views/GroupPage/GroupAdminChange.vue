@@ -22,25 +22,25 @@
         </template>
         <template v-else>
           <el-header height="70px">
-            <div class="home-header flex-start" >
+            <div class="home-header flex-start">
               <div class="home-user-pc" @click="back"></div>
               <span class="home-header-title">转移管理者权限</span>
             </div>
           </el-header>
-          <div style="border-bottom: 1px solid #e1e1e1b0;">
+          <div style="border-bottom: 1px solid #e1e1e1b0">
             <div class="home-search-pc">
               <el-input
-                  placeholder="搜寻"
-                  prefix-icon="el-icon-search"
-                  v-model="searchKey"
-                  @keyup.native.enter="developmentMessage(searchKey)"
-                >
+                placeholder="搜寻"
+                prefix-icon="el-icon-search"
+                v-model="searchKey"
+                @keyup.native.enter="developmentMessage(searchKey)"
+              >
               </el-input>
             </div>
           </div>
         </template>
-        
-        <div class="home-content" >
+
+        <div class="home-content">
           <el-radio-group v-model="checkList">
             <el-radio
               v-for="(item, index) in contactList"
@@ -67,7 +67,7 @@
       </el-main>
     </el-container>
     <el-dialog
-      :title="device === 'pc'?'轉移管理者權限':''"
+      :title="device === 'pc' ? '轉移管理者權限' : ''"
       :visible.sync="groupAdminChange"
       class="el-dialog-loginOut"
       width="75%"
@@ -75,18 +75,24 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
-        <span>确认是否將管理者權限轉移給 {{checkMember.name}} ？</span>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <span>确认是否將管理者權限轉移給 {{ checkMember.name }} ？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button :class="device === 'moblie' ?'border-red':'background-gray'" @click="groupAdminChange = false"
+        <el-button
+          :class="device === 'moblie' ? 'border-red' : 'background-gray'"
+          @click="groupAdminChange = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="successDialogShow = true">确认</el-button>
+        <el-button class="background-red" @click="successDialogShow = true"
+          >确认</el-button
+        >
       </span>
     </el-dialog>
     <el-dialog
-      :title="device === 'pc'?'轉移管理者權限':''"
+      :title="device === 'pc' ? '轉移管理者權限' : ''"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -94,11 +100,15 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/success.png" alt="" /></div>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/success.png" alt="" />
+        </div>
         <span>操作成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="changeGroupAdmin">確認</el-button>
+        <el-button class="background-orange" @click="changeGroupAdmin"
+          >確認</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -107,7 +117,7 @@
 <script>
 import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember,changeAdmin } from "@/api";
+import { groupListMember, changeAdmin } from "@/api";
 
 export default {
   name: "GroupAdminChange",
@@ -115,11 +125,11 @@ export default {
     return {
       groupData: {},
       checkList: "",
-      checkMember:'',
+      checkMember: "",
       contactList: [],
       searchKey: "",
       disabled: true,
-      successDialogShow:false,
+      successDialogShow: false,
       groupAdminChange: false,
       developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
@@ -133,52 +143,60 @@ export default {
   },
   watch: {
     checkList(val) {
-      this.disabled = val === '';
-      this.checkMember = this.contactList.filter(el=> el.memberId === val)[0]
+      this.disabled = val === "";
+      this.checkMember = this.contactList.filter(
+        (el) => el.memberId === val
+      )[0];
     },
   },
   methods: {
     ...mapMutations({
-      setInfoMsg:"ws/setInfoMsg",
-      setChatGroup:"ws/setChatGroup",
-      setMsgInfoPage:"ws/setMsgInfoPage"
+      setInfoMsg: "ws/setInfoMsg",
+      setChatGroup: "ws/setChatGroup",
+      setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     getGroupListMember() {
-      let groupId = this.groupData.groupId
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined){
-            res.icon = require("./../../../static/images/image_user_defult.png");
-          }
-          if(res.memberId === this.groupData.memberId){
-            this.checkList = res.memberId
-          }  
+      let groupId = this.groupData.groupId;
+      groupListMember({ groupId })
+        .then((res) => {
+          this.contactList = res.data.list;
+          this.contactList.forEach((res) => {
+            if (res.icon === undefined) {
+              res.icon = require("./../../../static/images/image_user_defult.png");
+            }
+            if (res.memberId === this.groupData.memberId) {
+              this.checkList = res.memberId;
+            }
+          });
         })
-      })
-      .catch((err) => { console.log(err) })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    changeGroupAdmin(){
+    changeGroupAdmin() {
       let param = {
         groupId: this.groupData.groupId,
-        memberId: this.checkList
-      }
-      changeAdmin(param).then((res)=>{
-        if(res.code === 200){
-          this.groupData.isAdmin = false
-          // localStorage.setItem("groupData",JSON.stringify(this.groupData))
-          this.setChatGroup(this.groupData)
-          this.back()
-        }
-      })
-      .catch((err) => { console.log(err) })
+        memberId: this.checkList,
+      };
+      changeAdmin(param)
+        .then((res) => {
+          if (res.code === 200) {
+            this.groupData.isAdmin = false;
+            // localStorage.setItem("groupData",JSON.stringify(this.groupData))
+            this.setChatGroup(this.groupData);
+            this.back();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     back() {
-      if(this.device === "moblie"){
+      if (this.device === "moblie") {
         this.$router.back(-1);
-      } else{
-        this.setInfoMsg({ infoMsgShow:false })
-        this.setMsgInfoPage({ pageShow:true })
+      } else {
+        this.setInfoMsg({ infoMsgShow: false });
+        this.setMsgInfoPage({ pageShow: true });
       }
     },
   },
@@ -308,52 +326,52 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .home-wrapper{
-    .el-container{
-      .el-main{
+.hichat-pc {
+  .home-wrapper {
+    .el-container {
+      .el-main {
         border-radius: 0;
         .home-header {
           .home-user-pc {
             background-color: #fff;
             background-image: url("./../../../static/images/pc/arrow-left.png");
             cursor: pointer;
-          }      
+          }
         }
         .home-search-pc {
           display: flex;
           align-items: center;
           justify-content: center;
           margin: 1em;
-          .el-input{
+          .el-input {
             width: 95%;
-            /deep/.el-input__inner{
+            /deep/.el-input__inner {
               background-color: #e9e8e8;
               color: #666666;
             }
           }
         }
-        .home-content{
-          .el-radio-group{
+        .home-content {
+          .el-radio-group {
             width: 100%;
-            .el-radio{
+            .el-radio {
               width: 100%;
             }
           }
         }
-        .home-footer-btn{
-          .el-button{
+        .home-footer-btn {
+          .el-button {
             padding: 9px 20px;
           }
         }
       }
     }
-    .el-dialog-loginOut{
-      /deep/.el-dialog{
-        .el-dialog__footer{
-          padding:0;
-          .el-button{
-            &:nth-child(2){
+    .el-dialog-loginOut {
+      /deep/.el-dialog {
+        .el-dialog__footer {
+          padding: 0;
+          .el-button {
+            &:nth-child(2) {
               border-left: 1px solid rgb(239, 239, 239);
             }
           }

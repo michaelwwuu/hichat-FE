@@ -1,8 +1,10 @@
 <template>
-  <div :class="[
-    { 'register-container-pc': device === 'pc' },
-    { 'register-container-moblie': device === 'moblie' }
-  ]">
+  <div
+    :class="[
+      { 'register-container-pc': device === 'pc' },
+      { 'register-container-moblie': device === 'moblie' },
+    ]"
+  >
     <template v-if="device === 'moblie'">
       <div class="register-header">
         <router-link :to="'/Login'"
@@ -48,7 +50,8 @@
               tabindex="2"
               maxLength="12"
               @input="
-                (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) =>
+                  (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -80,7 +83,10 @@
               maxLength="12"
               @input="
                 (v) =>
-                  (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                  (loginForm.passwordAganin = v.replace(
+                    /^[\u4E00-\u9FA5]+$/,
+                    ''
+                  ))
               "
             >
             </el-input>
@@ -108,7 +114,8 @@
               tabindex="1"
               maxLength="18"
               @input="
-                (v) => (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) =>
+                  (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -208,11 +215,16 @@
               tabindex="2"
               maxLength="12"
               @input="
-                (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) =>
+                  (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
-            <span class="show-pwd" :class="{'eye-off':passwordType === 'password'}" @click="showPwd('password')">
+            <span
+              class="show-pwd"
+              :class="{ 'eye-off': passwordType === 'password' }"
+              @click="showPwd('password')"
+            >
               <img
                 :src="
                   passwordType === 'password'
@@ -237,11 +249,18 @@
               maxLength="12"
               @input="
                 (v) =>
-                  (loginForm.passwordAganin = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                  (loginForm.passwordAganin = v.replace(
+                    /^[\u4E00-\u9FA5]+$/,
+                    ''
+                  ))
               "
             >
             </el-input>
-            <span class="show-pwd" :class="{'eye-off':passwordTypeAgain === 'password'}" @click="showPwd('passwordAgain')">
+            <span
+              class="show-pwd"
+              :class="{ 'eye-off': passwordTypeAgain === 'password' }"
+              @click="showPwd('passwordAgain')"
+            >
               <img
                 :src="
                   passwordTypeAgain === 'password'
@@ -262,7 +281,8 @@
               tabindex="1"
               maxLength="18"
               @input="
-                (v) => (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) =>
+                  (loginForm.username = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -283,9 +303,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="authCode">
-            <span class="svg-container">
-              验证码
-            </span>
+            <span class="svg-container"> 验证码 </span>
             <el-input
               ref="authCode"
               v-model.trim="loginForm.authCode"
@@ -335,12 +353,12 @@
       </div>
     </template>
     <el-dialog
-      :title="device === 'pc'?'会员注册':''"
+      :title="device === 'pc' ? '会员注册' : ''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       :show-close="false"
       width="70%"
-      center 
+      center
     >
       <div class="loginOut-box">
         <template v-if="device === 'moblie'">
@@ -353,7 +371,13 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link to="/Home">
-          <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="dialogShow = false">确认</el-button>
+          <el-button
+            :class="
+              device === 'moblie' ? 'background-orange' : 'background-red'
+            "
+            @click="dialogShow = false"
+            >确认</el-button
+          >
         </router-link>
       </span>
     </el-dialog>
@@ -483,7 +507,7 @@ export default {
             //登录成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              localStorage.setItem("email",this.loginForm.email);
+              localStorage.setItem("email", this.loginForm.email);
               this.dialogShow = true;
             }
           })
@@ -634,7 +658,7 @@ export default {
         .dialog-footer {
           display: flex;
           justify-content: space-between;
-          a{
+          a {
             width: 100vw;
           }
           .el-button {
@@ -660,55 +684,55 @@ export default {
 }
 
 //PC版本樣式
-.register-container-pc{
+.register-container-pc {
   width: 450px;
   margin: 3em auto;
   overflow: initial;
-  .register-header{
-    justify-content: center;  
-    .register-header-title{
+  .register-header {
+    justify-content: center;
+    .register-header-title {
       left: 0;
       color: #474747;
       margin: 20px 0;
       font-size: 20px;
     }
-    .title-container{
+    .title-container {
       display: flex;
       align-items: center;
       flex-direction: column;
-      img{
+      img {
         height: 5em;
       }
     }
   }
-  .register-content{
-    .svg-container{
+  .register-content {
+    .svg-container {
       font-size: 14px;
       width: 15%;
     }
-    .login-form{
-      .el-form-item{
-        .el-input{
+    .login-form {
+      .el-form-item {
+        .el-input {
           width: 70%;
-          /deep/.el-input__inner{
+          /deep/.el-input__inner {
             vertical-align: middle;
           }
         }
       }
     }
-    .register-footer{
-      top:0;
+    .register-footer {
+      top: 0;
     }
-    .show-pwd{
+    .show-pwd {
       cursor: pointer;
     }
-    .eye-off{
+    .eye-off {
       img {
         height: 1.5em;
       }
     }
   }
-  .verification-style{
+  .verification-style {
     font-size: 14px !important;
     border: 0 !important;
     right: 0.5em;
