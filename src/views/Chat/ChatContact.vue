@@ -287,6 +287,7 @@ export default {
             this.successDialogShow = true;
             data.isContact = true;
             this.setChatUser(data)
+            localStorage.removeItem("contactUser")
             if(this.device === "pc") {
               this.getHiChatDataList()
               this.setHichatNav({ type:"address", num: 1 });
@@ -312,8 +313,9 @@ export default {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
             if(this.device === "pc") {
-              this.setHichatNav({ type: 'address', num: 1 });
+              this.setHichatNav({ type: 'contact', num: 1 });
               this.setContactUser({})
+              this.getHiChatDataList()
             }
           }
         })

@@ -144,10 +144,6 @@
               hichatNav.type === 'contact' && JSON.stringify(contactUser) !== '{}'
             "
           />
-          <!-- <chat-msg v-else-if="
-              hichatNav.type === 'contact' && JSON.stringify(chatUser) !== '{}' && hichatNav.contact
-            "
-          /> -->
         </template>
       </el-main>
       <el-aside
@@ -262,7 +258,6 @@ export default {
       },
       num: 0,
       searchKey: "",
-      badgeNum: 0,
       chatDataList: [],
       downloadFilename: "",
       logoutDialogShow: false,
@@ -305,14 +300,17 @@ export default {
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
       contactUser: (state) => state.ws.contactUser,
+      badgeNum: (state) => state.ws.badgeNum,
     }),
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
+      setBadgeNum:"ws/setBadgeNum",
       setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
+      setContactUser:"ws/setContactUser",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
       setContactListData: "ws/setContactListData",
@@ -322,6 +320,7 @@ export default {
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: "address", num: this.num });
       this.getHistory("address");
+      this.getHiChatDataList()
     },
 
     copyUrl() {
@@ -354,14 +353,15 @@ export default {
       });
     },
     handleGetMessage(msg) {
-      this.badgeNum = 0;
       let msgInfo = JSON.parse(msg);
+      this.numNumber = 0
       switch (msgInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
           this.chatDataList = msgInfo.recentChat;
           this.chatDataList.forEach((item) => {
-            this.badgeNum += item.unreadCount;
+            this.numNumber += item.unreadCount;
+            this.setBadgeNum(this.numNumber)
           });
           break;
         case "SRV_USER_IMAGE":
@@ -371,12 +371,14 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
-            let filterList = this.chatDataList.some((list) => {
-              return list.toChatId === msgInfo.toChatId;
-            });
-            if (!filterList) this.getHiChatDataList();
+            // let filterList = this.chatDataList.some((list) => {
+            //   return list.toChatId === msgInfo.toChatId;
+            // });
+            this.getHiChatDataList();
+            // if (!filterList) this.getHiChatDataList();
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
+          this.getHiChatDataList();
           break;
 
         case "SRV_ERROR_MSG":
@@ -491,8 +493,10 @@ export default {
             this.notifyData = this.chatDataList.filter((el) => {
               return el.toChatId === even.target.data.toChatId;
             });
-            if (notify.type === "address" || notify.type === "contact") {
+            if (notify.type === "address") {
               this.setChatUser(this.notifyData[0]);
+            }else if(notify.type === "contact"){
+              this.setContactUser(this.notifyData[0]);
             } else if (notify.type === "group") {
               this.notifyData[0].icon = this.notifyData[0].icon;
               this.notifyData[0].groupName = this.notifyData[0].name;

@@ -1,5 +1,6 @@
 export const state = {
   wsRes: {},
+  badgeNum:0,
   chatUser:{},
   groupUser:{},
   contactUser:{},
@@ -24,6 +25,9 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setBadgeNum(state, num){
+    state.badgeNum = num
+  },
   setMsgInfoPage(state, payload){
     state.msgInfoPage = payload;
   },

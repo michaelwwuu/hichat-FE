@@ -370,6 +370,7 @@ export default {
             if(this.device === "pc") {
               this.setHichatNav({ type: 'address', num: 1 });
               this.setChatUser({})
+              this.getHiChatDataList()
             }
           }
         })
@@ -385,6 +386,7 @@ export default {
             if (res.code === 200) {
               data.isBlock = false;
               this.isBlockDialogShow = false;
+              this.getHiChatDataList()
               this.setChatUser(data)
             }
           })
@@ -399,6 +401,7 @@ export default {
             if (res.code === 200) {
               data.isBlock = true;
               this.isBlockDialogShow = false;
+              this.getHiChatDataList()
               this.setChatUser(data)
             } else {
               this.$message({ message: res.message, type: "error" });
@@ -409,6 +412,7 @@ export default {
             return false;
           });
       }
+      
     },
     deleteSubmitBtn(data){
       let contactId = data.toChatId.replace("u", "");

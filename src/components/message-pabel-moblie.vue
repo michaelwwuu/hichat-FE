@@ -109,6 +109,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.hichat-pc{
+  .message-pabel-box {
+    .message-styles-box{
+      .message-layout-left {
+        p {
+          .el-image{
+            width:auto !important;
+            height:10em !important;
+            /deep/.el-image__inner{
+              height: 100%;
+            }
+          }
+        }
+      }
+      .message-layout-right {
+        p {
+          .el-image{
+            width:auto !important;
+            height:10em !important;
+            /deep/.el-image__inner{
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+    
+  }
+}
 .message-pabel-box {
   padding: 0 15px 0 20px;
   flex: 1;

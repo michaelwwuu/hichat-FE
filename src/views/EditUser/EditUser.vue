@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="home-footer-btn">
-          <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
+          <el-button class="orange-btn" @click="settingAvatar">保存</el-button>
         </div>
       </el-main>
     </el-container>
@@ -41,7 +41,7 @@
           <div class="home-header flex-start" >
             <div class="home-user-pc" @click="back"></div>
             <span class="home-header-title">编辑个人资料</span>
-            <div class="home-add-user home-edit-img"></div>
+            <div class="home-add-user home-edit-img" @click="settingAvatar"></div>
           </div>
         </el-header>
         <div class="home-content">
@@ -64,9 +64,6 @@
               </el-form-item>
             </el-form>
           </div>
-        </div>
-        <div class="home-footer-btn" v-if ="device === 'moblie'">
-          <el-button class="orange-btn" @click="editSubmit(userEditForm.nickname)">保存</el-button>
         </div>
       </el-aside>
     </el-container>
@@ -105,7 +102,7 @@
 </template>
 
 <script>
-import { getUserInfo, updateNickname, uploadIcon } from "@/api";
+import { updateNickname, uploadIcon } from "@/api";
 
 export default {
   name: "EditUser",
@@ -138,18 +135,6 @@ export default {
         return iconData.icon;
       }
     },
-    // getUserData() {
-    //   getUserInfo().then((res) => {
-    //     if (res.data.icon === undefined){
-    //       res.data.icon = require("./../../../static/images/image_user_defult.png");
-    //     }
-    //     this.userData = res.data;
-    //     this.userEditForm.nickname = this.userData.nickname.replace(
-    //       /\["|"]/g,
-    //       ""
-    //     );
-    //   });
-    // },
     back() {
       this.$router.back(-1);
     },
@@ -157,12 +142,28 @@ export default {
       this.fileList = fileList;
     },
     submitAvatarUpload() {
+      this.userData.icon = this.fileList[0].url
+      this.uploadImgShow = false;
+      // uploadIcon(formData).then((res) => {
+      //   if (res.code === 200) {
+      //     this.fileList = [];
+      //     this.uploadImgShow = false;
+      //     this.userData.icon = res.data;
+      //     localStorage.setItem("userData", JSON.stringify(this.userData));
+      //   }
+      // });
+    },
+    settingAvatar(){
+      this.editSubmit()
+      if(this.fileList[0] !== undefined) this.photoStickers()
+    },
+    photoStickers(){
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
       uploadIcon(formData).then((res) => {
         if (res.code === 200) {
           this.fileList = [];
-          this.uploadImgShow = false;
+          // this.uploadImgShow = false;
           this.userData.icon = res.data;
           localStorage.setItem("userData", JSON.stringify(this.userData));
         }
@@ -178,7 +179,8 @@ export default {
           // this.getUserData();
           this.back();
         }
-      });
+      })
+
     },
   },
 };

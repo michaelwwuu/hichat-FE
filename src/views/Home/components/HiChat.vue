@@ -221,6 +221,13 @@ export default {
   mounted() {
     this.getHiChatDataList();
   },
+  watch:{
+    contactDataList(val){
+      if(val.length === 0){
+        this.setHichatNav({ type:"address", num: 1 });
+      }
+    }
+  },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",

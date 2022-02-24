@@ -280,6 +280,13 @@ export default {
         width: 95%;
       }
     }
+    .el-dialog-loginOut{
+     /deep/ .el-dialog{
+        .el-dialog__footer{
+          padding: 0 !important;
+        }
+      } 
+    }
   }
   .home-content{
     .group-data{
