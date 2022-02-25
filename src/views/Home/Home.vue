@@ -323,9 +323,12 @@ export default {
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
       if(this.num === 1 ) this.getHistory("address");
-      this.getHiChatDataList()
-    },
+      this.getHistorySetTimeout()
 
+    },
+    getHistorySetTimeout(){
+      setTimeout(() => this.getHiChatDataList(), 2000);
+    },
     copyUrl() {
       let url = this.qrCodeConfig.text;
       urlCopy(url);
@@ -365,7 +368,11 @@ export default {
           this.chatDataList.forEach((item) => {
             this.numNumber += item.unreadCount;
             this.setBadgeNum(this.numNumber)
+            if(item.toChatId === this.chatUser.toChatId){
+              this.setChatUser(item)
+            }
           });
+
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -518,9 +525,7 @@ export default {
               this.getGroupListMember();
             }
             this.getHistory(notify.type);
-            setTimeout(() => {
-              this.getHiChatDataList();
-            }, 3000);
+            this.getHistorySetTimeout()
           },
         }
       );

@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="home-footer-btn">
-          <el-button class="orange-btn" @click="settingAvatar">保存</el-button>
+          <el-button class="orange-btn" @click="editSubmit">保存</el-button>
         </div>
       </el-main>
     </el-container>
@@ -41,7 +41,7 @@
           <div class="home-header flex-start">
             <div class="home-user-pc" @click="back"></div>
             <span class="home-header-title">编辑个人资料</span>
-            <div class="home-add-user home-edit-img" @click="settingAvatar"></div>
+            <div class="home-add-user home-edit-img" @click="editSubmit"></div>
           </div>
         </el-header>
         <div class="home-content">
@@ -107,6 +107,7 @@
 
 <script>
 import { updateNickname, uploadIcon } from "@/api";
+import { mapMutations } from "vuex";
 
 export default {
   name: "EditUser",
@@ -123,11 +124,13 @@ export default {
     };
   },
   created() {
-    // this.getUserData();
-    this.userData = JSON.parse(localStorage.getItem("myUserList"));
+    this.userData = JSON.parse(localStorage.getItem("myUserInfo"));
     this.userEditForm.nickname = this.userData.nickname;
   },
   methods: {
+    ...mapMutations({
+      setMyUserInfo: "ws/setMyUserInfo",
+    }),
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -146,21 +149,14 @@ export default {
       this.fileList = fileList;
     },
     submitAvatarUpload() {
-      this.userData.icon = this.fileList[0].url
       this.uploadImgShow = false;
-    },
-    settingAvatar(){
-      this.editSubmit()
-      if(this.fileList[0] !== undefined) this.photoStickers()
-    },
-    photoStickers(){
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
       uploadIcon(formData).then((res) => {
         if (res.code === 200) {
           this.fileList = [];
           this.userData.icon = res.data;
-          localStorage.setItem("myUserList", JSON.stringify(this.userData));
+          this.setMyUserInfo(this.userData)
         }
       });
     },

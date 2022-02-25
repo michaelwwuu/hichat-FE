@@ -2,16 +2,16 @@
   <div class="home-content" @touchmove="$root.handleTouch">
     <div class="user-data">
       <el-image
-        v-if="userData.icon !== undefined"
-        :src="userData.icon"
-        :preview-src-list="[userData.icon]"
+        v-if="myUserInfo.icon !== undefined"
+        :src="myUserInfo.icon"
+        :preview-src-list="[myUserInfo.icon]"
       />
       <div>
-        <span>{{ userData.nickname }}</span>
+        <span>{{ myUserInfo.nickname }}</span>
         <span class="user-data-id">
           ID :
-          <span class="user-paste" @click="copyPaste(userData.username)">{{
-            userData.username
+          <span class="user-paste" @click="copyPaste(myUserInfo.username)">{{
+            myUserInfo.username
           }}</span></span
         >
       </div>
@@ -93,13 +93,13 @@
 
 <script>
 import { getUserInfo } from "@/api";
+import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 
 export default {
   name: "Setting",
   data() {
     return {
-      userData: {},
       settingData: [
         {
           name: "密码管理",
@@ -143,9 +143,12 @@ export default {
       device: localStorage.getItem("device"),
     };
   },
+  computed: {
+    ...mapState({
+      myUserInfo: (state) => state.ws.myUserInfo,
+    }),
+  },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("myUserList"));
-    this.getUserData();
     if (this.device === "pc") {
       this.editMyList = {
         icon: "",
@@ -158,8 +161,12 @@ export default {
         if (el.name === "密码管理") el.path = "/PasswordEdit";
       });
     }
+    this.getUserData();
   },
   methods: {
+    ...mapMutations({
+      setMyUserInfo: "ws/setMyUserInfo",
+    }),
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
@@ -178,8 +185,8 @@ export default {
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../../static/images/image_user_defult.png");
         }
-        this.userData = res.data;
-        localStorage.setItem("myUserList", JSON.stringify(this.userData));
+        console.log(res.data.icon)
+        this.setMyUserInfo(res.data)
       });
     },
     loginOut() {

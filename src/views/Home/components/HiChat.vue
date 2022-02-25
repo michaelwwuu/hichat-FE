@@ -226,7 +226,7 @@ export default {
   },
   watch:{
     contactDataList(val){
-      if(val.length === 0){
+      if(this.hichatNav === "contact" && val.length === 0){
         this.setHichatNav({ type:"address", num: 1 });
       }
     }
@@ -236,10 +236,10 @@ export default {
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
-      setChatGroup: "ws/setChatGroup",
-      setContactUser: "ws/setContactUser",
-      setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
+      setChatGroup: "ws/setChatGroup",
+      setGroupList: "ws/setGroupList",
+      setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
     }),
     handleClick(tab) {
@@ -351,9 +351,7 @@ export default {
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
         });
         this.getHistory(data, path);
-        setTimeout(() => {
-          this.getHiChatDataList();
-        }, 3000);
+        setTimeout(() => this.getHiChatDataList(), 2000);
       }
     },
     getHistory(data, path) {

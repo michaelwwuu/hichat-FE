@@ -3,6 +3,7 @@ export const state = {
   badgeNum:0,
   chatUser:{},
   groupUser:{},
+  myUserInfo:{},
   contactUser:{},
   groupList:[],
   contactListData:[],
@@ -24,6 +25,10 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setMyUserInfo(state, payload){
+    state.myUserInfo = payload;
+    localStorage.setItem("myUserInfo", JSON.stringify(payload));
+  },
   setBadgeNum(state, num){
     state.badgeNum = num
   },
