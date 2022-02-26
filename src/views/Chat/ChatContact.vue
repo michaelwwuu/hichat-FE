@@ -250,10 +250,11 @@ export default {
           if(this.contactUser.toChatId === userInfo.toChatId){
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
-          }
-          if(userInfo.toChatId === JSON.parse(localStorage.getItem("userData")).toChatId){
             if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
+          // if(userInfo.toChatId === JSON.parse(localStorage.getItem("userData")).toChatId){
+          //   if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
+          // }
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":

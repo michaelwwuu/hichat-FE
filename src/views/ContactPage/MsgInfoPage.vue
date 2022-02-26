@@ -8,7 +8,7 @@
               <span class="home-header-title">
                 <div
                   style="display: flex; align-items: center; cursor: pointer"
-                  @click="closeInfoMsgShow"
+                  @click="infoMsg.infoMsgChat ? closeInfoMsgShow() : false"
                 >
                   <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat"
                     ><img
@@ -160,11 +160,11 @@
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import EditContact from "./../EditContact/EditContact.vue";
 import EditGroup from "./../EditContact/EditGroup.vue";
-import GroupAdminChange from "./../GroupPage/GroupAdminChange.vue";
+import EditContact from "./../EditContact/EditContact.vue";
 import GroupPeople from "../GroupPage/GroupPeople.vue";
 import GroupAddPeople from "../GroupPage/GroupAddPeople.vue";
+import GroupAdminChange from "./../GroupPage/GroupAdminChange.vue";
 export default {
   name: "MsgInfoPage",
   data() {
@@ -292,6 +292,7 @@ export default {
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },
+
     back() {
       this.$router.back(-1);
     },

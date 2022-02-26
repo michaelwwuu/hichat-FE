@@ -221,7 +221,11 @@ export default {
     };
   },
   created() {
-    this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }
   },
   mounted() {
     this.getGroupListMember();
@@ -233,6 +237,7 @@ export default {
   },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },

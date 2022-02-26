@@ -278,7 +278,6 @@ export default {
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
-          
         }
       });
     },
