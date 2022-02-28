@@ -25,9 +25,8 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
-  setMyUserInfo(state, payload){
-    state.myUserInfo = payload;
-    localStorage.setItem("myUserInfo", JSON.stringify(payload));
+  setWsRes(state, payload) {
+    state.wsRes = payload;
   },
   setBadgeNum(state, num){
     state.badgeNum = num
@@ -35,43 +34,50 @@ export const mutations = {
   setMsgInfoPage(state, payload){
     state.msgInfoPage = payload;
   },
-  setWsRes(state, payload) {
-    state.wsRes = payload;
-  },
-  setMyContactDataList(state, payload) {
-    state.myContactDataList = payload;
-    localStorage.setItem("myContactDataList", JSON.stringify(payload));
-  },
-  setChatUser(state, payload) {
-    state.chatUser = payload;
-    if(payload.type !== "address"){
-      localStorage.setItem("userData", JSON.stringify(payload));
-    }
-  },
-  setChatGroup(state, payload) {
-    state.groupUser = payload;
-    if(payload.type !== "address"){
-      localStorage.setItem("groupData", JSON.stringify(payload));
-    }
-  },
-  setContactUser(state, payload) {
-    state.contactUser = payload;
-    if(payload.type !== "address"){
-      localStorage.setItem("contactUser", JSON.stringify(payload));
-    }
-  },
   setHichatNav(state, payload) {
     state.hichatNav = payload;
   },  
   setGroupList(state, payload) {
     state.groupList = payload;
   },
+  setInfoMsg(state, payload) {
+    state.infoMsg = payload;
+  },
+  //個人資料
+  setMyUserInfo(state, payload){
+    state.myUserInfo = payload;
+    localStorage.setItem("myUserInfo", JSON.stringify(payload));
+  },
+  //對話中對象
+  setChatUser(state, payload) {
+    state.chatUser = payload;
+    if(payload.type !== "address"){
+      localStorage.setItem("userData", JSON.stringify(payload));
+    }
+  },
+  //對話中群組
+  setChatGroup(state, payload) {
+    state.groupUser = payload;
+    if(payload.type !== "address"){
+      localStorage.setItem("groupData", JSON.stringify(payload));
+    }
+  },
+  //對話中陌生人
+  setContactUser(state, payload) {
+    state.contactUser = payload;
+    if(payload.type !== "address"){
+      localStorage.setItem("contactUser", JSON.stringify(payload));
+    }
+  },
+  //聯絡人 List
+  setMyContactDataList(state, payload) {
+    state.myContactDataList = payload;
+    localStorage.setItem("myContactDataList", JSON.stringify(payload));
+  },
+  //群組 List
   setContactListData(state, payload) {
     state.contactListData = payload;
     localStorage.setItem("groupListMember", JSON.stringify(payload));
-  },
-  setInfoMsg(state, payload) {
-    state.infoMsg = payload;
   },
 };
 export const getters = {};
