@@ -14,6 +14,9 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
+              @mousedown="mousedown" 
+              @contextmenu.prevent
+              @dblclick="dblclick"
               >{{ el.message.content }}</span
             >
             <audio
@@ -104,6 +107,16 @@ export default {
         return "message-layout-left";
       }
     },
+    mousedown(event) {
+      if (event.which === 3) {
+        console.log("Right mouse down");        
+      }
+    },
+    dblclick(event){
+      if (event.which === 1) {
+        console.log("doubble mouse");        
+      }
+    }
   },
 };
 </script>

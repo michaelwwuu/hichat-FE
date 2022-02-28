@@ -127,6 +127,9 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
+        <div class="disabled-user">
+          <span>該用戶已被封鎖</span>
+        </div>
         <div class="disabled-user" v-if="chatUser.isBlock">
           <span>該用戶已被封鎖</span>
         </div>
