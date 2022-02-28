@@ -94,12 +94,10 @@ export default {
         }
       }
     }
-
     .message-nickname {
       color: #777777;
       font-size: 12px;
     }
-
     .message-classic{
       position: relative;
       max-width: 45%;

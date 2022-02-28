@@ -1,10 +1,10 @@
 <template>
   <div class="message-input-box">
-    <div class="no-login">
+    <div class="no-login" v-if="!isLogin">
       <span>登入后加入讨论</span>
     </div>
     
-    <!-- <div class="text-send-box"> 
+    <div class="text-send-box" v-else> 
       <el-input
         type="textarea"
         resize="none"
@@ -18,7 +18,7 @@
       <div class="footer-tools">
         <el-button size="mini" class="send-button" @click="sendMessage">发送</el-button>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       textArea: "",
-      search: "",
+      isLogin:localStorage.getItem("isLogin")
     };
   },
   props: {
