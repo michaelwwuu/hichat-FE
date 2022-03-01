@@ -27,6 +27,7 @@
     "view-design": "^4.4.0",
     "vue": "^2.6.11",
     "vue-audio-recorder": "^3.0.1",
+    "vue-contextmenujs": "^1.3.13",
     "vue-emoji-picker": "^1.0.3",
     "vue-linkify": "^1.0.1",
     "vue-native-notification": "^1.1.1",

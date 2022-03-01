@@ -39,6 +39,9 @@ import mixins from './mixins/root.js'
 
 Vue.use(ElementUI);
 
+import Contextmenu from "vue-contextmenujs"
+Vue.use(Contextmenu);
+
 Vue.prototype.$md5 = md5;
 Vue.prototype.$moment = moment;
 Vue.config.productionTip = false
