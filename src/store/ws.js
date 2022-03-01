@@ -21,6 +21,10 @@ export const state = {
     pageShow:true,
     type:"",
   },
+  replyMsg:{
+    type:"",
+    innerText:"",
+  }
 };
 export const actions = {};
 
@@ -42,6 +46,10 @@ export const mutations = {
   },
   setInfoMsg(state, payload) {
     state.infoMsg = payload;
+  },
+  setReplyMsg(state, payload) {
+    console.log(payload)
+    state.replyMsg = payload;
   },
   //個人資料
   setMyUserInfo(state, payload){

@@ -127,8 +127,15 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="disabled-user">
-          <span>回復用戶</span>
+        <div class="reply-message" v-if="replyMsg.type === 'dblclick'">
+          <el-avatar shape="square" size="large" :src="chatUser.icon"></el-avatar>
+          <div class="reply-message-box">
+            <span>{{chatUser.name}}</span>
+            <span>{{replyMsg.innerText}}</span>
+          </div>
+          <div class="reply-close-btn" @click="closeReplyMessage">
+            <i class="el-icon-close"></i>
+          </div>
         </div>
         <div class="disabled-user" v-if="chatUser.isBlock">
           <span>該用戶已被封鎖</span>
@@ -292,9 +299,18 @@ export default {
       wsRes: (state) => state.ws.wsRes,
       chatUser: (state) => state.ws.chatUser,
       hichatNav: (state) => state.ws.hichatNav,
+      replyMsg: (state) => state.ws.replyMsg,
     }),
   },
   methods: {
+    ...mapMutations({
+      setWsRes: "ws/setWsRes",
+      setInfoMsg: "ws/setInfoMsg",
+      setReplyMsg:"ws/setReplyMsg",
+      setChatUser: "ws/setChatUser",
+      setHichatNav: "ws/setHichatNav",
+      setMsgInfoPage: "ws/setMsgInfoPage",
+    }),
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -306,13 +322,9 @@ export default {
         return iconData.icon;
       }
     },
-    ...mapMutations({
-      setWsRes: "ws/setWsRes",
-      setInfoMsg: "ws/setInfoMsg",
-      setChatUser: "ws/setChatUser",
-      setHichatNav: "ws/setHichatNav",
-      setMsgInfoPage: "ws/setMsgInfoPage",
-    }),
+    closeReplyMessage(){
+      this.setReplyMsg({type:"",innerText:""})
+    },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -817,6 +829,31 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 10px;
+}
+.reply-message{
+  height: 80px;
+  background-color: rgba(225, 225, 225, 0.85);
+  border-top: 1px solid #dddddd;
+  display: flex;
+  color: #959393;
+  // justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  .reply-message-box{
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    span{
+      line-height:20px;
+      color: #363636;
+    }
+  }
+  .reply-close-btn{
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
 }
 .hichat-pc {
   .disabled-user {

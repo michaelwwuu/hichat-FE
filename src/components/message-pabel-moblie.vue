@@ -37,7 +37,6 @@
               >
               </el-image>
             </span>
-
             <span class="nickname-time">{{
               $root.formatTimeSecound(el.message.time)
             }}</span>
@@ -50,6 +49,15 @@
               ><img src="./../../static/images/check.png" alt=""
             /></span>
           </div>
+          <div class="click-more-btn">
+            <ul>
+              <li>編輯</li>
+              <li>複製</li>
+              <li>回覆</li>
+              <li>在所有人的對話紀錄中刪除</li>
+              <li>只在我的對話紀錄中刪除</li>
+            </ul>
+          </div>
         </li>
       </div>
     </ul>
@@ -57,6 +65,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: "MessagePabel",
   props: {
@@ -99,6 +108,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setReplyMsg:"ws/setReplyMsg"
+    }),
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === 'u' + localStorage.getItem('id')) {
@@ -114,7 +126,9 @@ export default {
     },
     dblclick(event){
       if (event.which === 1) {
-        console.log("doubble mouse");        
+        console.log(event)
+        this.setReplyMsg({type:event.type,innerText:event.target.innerText})
+        console.log(event.target.innerHTML);        
       }
     }
   },
@@ -213,6 +227,13 @@ export default {
       }
       .read-check-box {
         display: none;
+      }
+      .click-more-btn{
+        ul{
+          li{
+            font-size: 16px;
+          }
+        }
       }
     }
 

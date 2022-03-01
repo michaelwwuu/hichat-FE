@@ -147,7 +147,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setChatUser:"ws/setChatUser"
+      setChatUser:"ws/setChatUser",
+      setContactUser:"ws/setContactUser",
     }),
     getBlockDataList(){
       blockListMember().then((res)=>{
@@ -171,6 +172,7 @@ export default {
             if(el === this.chatUser.contactId || this.chatUser.toChatId.replace("u", "")){
               this.chatUser.isBlock = false
               this.setChatUser(this.chatUser)
+              this.setContactUser(this.chatUser)
             }
           })
           this.getBlockDataList()

@@ -19,7 +19,7 @@
           :autosize="{ minRows: 1, maxRows: 1 }"
           placeholder="Aa"
           v-model="textArea"
-
+          maxlength="500"
         >
         </el-input>
         <div class="footer-tools">
@@ -78,6 +78,7 @@
           :autosize="{ minRows: 1, maxRows: 1 }"
           placeholder="Aa"
           v-model="textArea"
+          maxlength="500"
           @keyup.native="keyUp" 
         >
         </el-input>

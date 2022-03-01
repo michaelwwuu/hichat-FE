@@ -19,6 +19,7 @@
           :autosize="{ minRows: 1, maxRows: 1 }"
           placeholder="Aa"
           v-model="textArea"
+          maxlength="500"
 
         >
         </el-input>
@@ -77,6 +78,7 @@
           resize="none"
           :autosize="{ minRows: 1, maxRows: 1 }"
           placeholder="Aa"
+          maxlength="500"
           v-model="textArea"
           @keyup.native="keyUp" 
         >
@@ -471,7 +473,7 @@ export default {
         toChatId:this.userData.toChatId,
         text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
         deviceId: localStorage.getItem('UUID'),
-        token: localStorage.getItem('token')
+        token: localStorage.getItem('token'),
       }
       if (this.blankTesting()) {
         // 发送服务器
