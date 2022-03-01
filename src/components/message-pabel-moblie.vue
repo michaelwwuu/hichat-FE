@@ -15,7 +15,7 @@
               <span
                 class="message-classic"
                 v-if="el.chatType === 'SRV_USER_SEND'"
-                @contextmenu.prevent="onContextmenu"
+                @contextmenu.prevent="onContextmenu(el)"
                 @dblclick="dblclick"
                 >{{ el.message.content }}</span
               >
@@ -52,7 +52,7 @@
                 ><img src="./../../static/images/check.png" alt=""
               /></span>
             </div>
-            <div class="click-more-btn" v-show="el.isMoreSetUp">
+            <!-- <div class="click-more-btn" v-show="el.isMoreSetUp">
               <ul>
                 <li>編輯</li>
                 <li>複製</li>
@@ -60,7 +60,7 @@
                 <li class="red-text">在所有人的對話紀錄中刪除</li>
                 <li class="red-text">只在我的對話紀錄中刪除</li>
               </ul>
-            </div>
+            </div> -->
         </li>
       </div>
     </ul>
@@ -139,48 +139,47 @@ export default {
         this.setReplyMsg({type:event.type,innerText:event.target.innerText})
       }
     },
-    onContextmenu(event) {
+    onContextmenu(data){
+      console.log(data)
       this.$contextmenu({
         items: [
           {
-            label: "返回(B)",
+            label: "編輯",
             onClick: () => {
-              this.message = "返回(B)";
               console.log("返回(B)");
             }
           },
-          { label: "前进(F)", disabled: true },
-          { label: "重新加载(R)", divided: true, icon: "el-icon-refresh" },
-          { label: "另存为(A)..." },
-          { label: "打印(P)...", icon: "el-icon-printer" },
-          { label: "投射(C)...", divided: true },
           {
-            label: "使用网页翻译(T)",
+            label: "複製",
+            onClick: () => {
+              console.log("返回(B)");
+            }
+          },
+          {
+            label: "回覆",
+            onClick: () => {
+              console.log("返回(B)");
+            }
+          },
+          {
+            label: "在所有人的對話紀錄中刪除",
             divided: true,
-            minWidth: 0,
-            children: [{ label: "翻译成简体中文" }, { label: "翻译成繁体中文" }]
+            onClick: () => {
+              console.log("返回(B)");
+            }
           },
           {
-            label: "截取网页(R)",
-            minWidth: 0,
-            children: [
-              {
-                label: "截取可视化区域",
-                onClick: () => {
-                  this.message = "截取可视化区域";
-                  console.log("截取可视化区域");
-                }
-              },
-              { label: "截取全屏" }
-            ]
+            label: "只在我的對話紀錄中刪除",
+            divided: true,
+            onClick: () => {
+              console.log("返回(B)");
+            }
           },
-          { label: "查看网页源代码(V)", icon: "el-icon-view" },
-          { label: "检查(N)" }
         ],
         event,
         //x: event.clientX,
         //y: event.clientY,
-        customClass: "class-a",
+        customClass: "custom-class",
         zIndex: 3,
         minWidth: 230
       });
@@ -307,10 +306,7 @@ export default {
           }
         }
         
-      }
-      .red-text{
-        color: #ee5253;
-      }
+      }      
     }
 
     .message-layout-right {
