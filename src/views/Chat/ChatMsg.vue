@@ -131,7 +131,7 @@
           <el-avatar shape="square" size="large" :src="chatUser.icon"></el-avatar>
           <div class="reply-message-box">
             <span>{{chatUser.name}}</span>
-            <span>{{replyMsg.innerText}}</span>
+            <span>{{replyMsg.innerText.length > 110 ? replyMsg.innerText.substr(0, 110) + ' ...' : replyMsg.innerText }}</span>
           </div>
           <div class="reply-close-btn" @click="closeReplyMessage">
             <i class="el-icon-close"></i>
@@ -336,6 +336,7 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
+        isMoreSetUp:false,
       };
     },
     // 獲取歷史訊息
@@ -831,14 +832,14 @@ export default {
   padding: 0 10px;
 }
 .reply-message{
-  height: 80px;
+  height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
   border-top: 1px solid #dddddd;
   display: flex;
   color: #959393;
   // justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 10px;
   .reply-message-box{
     display: flex;
     flex-direction: column;
@@ -846,6 +847,8 @@ export default {
     span{
       line-height:20px;
       color: #363636;
+      width: 90em;
+      word-wrap:break-word;
     }
   }
   .reply-close-btn{
@@ -853,6 +856,11 @@ export default {
     right: 20px;
     font-size: 20px;
     cursor: pointer;
+  }
+  /deep/.el-avatar{
+    img{
+      width: -webkit-fill-available;
+    }
   }
 }
 .hichat-pc {

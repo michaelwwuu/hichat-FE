@@ -10,54 +10,56 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <p>
-            <span
-              class="message-classic"
-              v-if="el.chatType === 'SRV_USER_SEND'"
-              @mousedown="mousedown" 
-              @contextmenu.prevent
-              @dblclick="dblclick"
-              >{{ el.message.content }}</span
-            >
-            <audio
-              class="message-audio"
-              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-              controls
-              :src="el.message.content"
-              type="mp3"
-            ></audio>
-
-            <span
-              class="message-image"
-              v-else-if="el.chatType === 'SRV_USER_IMAGE'"
-            >
-              <el-image
-                :src="el.message.content"
-                :preview-src-list="[el.message.content]"
+          
+            <p>
+              <span
+                class="message-classic"
+                v-if="el.chatType === 'SRV_USER_SEND'"
+                :key="el.index"
+                @click.right="rightEvent(el)"
+                @dblclick="dblclick"
+                @contextmenu.prevent
+                >{{ el.message.content }}</span
               >
-              </el-image>
-            </span>
-            <span class="nickname-time">{{
-              $root.formatTimeSecound(el.message.time)
-            }}</span>
-          </p>
-          <div class="read-check-box">
-            <span class="read-check" v-if="el.isRead"
-              ><img src="./../../static/images/check.png" alt=""
-            /></span>
-            <span class="read-check2"
-              ><img src="./../../static/images/check.png" alt=""
-            /></span>
-          </div>
-          <div class="click-more-btn">
-            <ul>
-              <li>編輯</li>
-              <li>複製</li>
-              <li>回覆</li>
-              <li>在所有人的對話紀錄中刪除</li>
-              <li>只在我的對話紀錄中刪除</li>
-            </ul>
-          </div>
+              <audio
+                class="message-audio"
+                v-else-if="el.chatType === 'SRV_USER_AUDIO'"
+                controls
+                :src="el.message.content"
+                type="mp3"
+              ></audio>
+
+              <span
+                class="message-image"
+                v-else-if="el.chatType === 'SRV_USER_IMAGE'"
+              >
+                <el-image
+                  :src="el.message.content"
+                  :preview-src-list="[el.message.content]"
+                >
+                </el-image>
+              </span>
+              <span class="nickname-time">{{
+                $root.formatTimeSecound(el.message.time)
+              }}</span>
+            </p>
+            <div class="read-check-box">
+              <span class="read-check" v-if="el.isRead"
+                ><img src="./../../static/images/check.png" alt=""
+              /></span>
+              <span class="read-check2"
+                ><img src="./../../static/images/check.png" alt=""
+              /></span>
+            </div>
+            <div class="click-more-btn" v-show="el.isMoreSetUp">
+              <ul>
+                <li>編輯</li>
+                <li>複製</li>
+                <li>回覆</li>
+                <li class="red-text">在所有人的對話紀錄中刪除</li>
+                <li class="red-text">只在我的對話紀錄中刪除</li>
+              </ul>
+            </div>
         </li>
       </div>
     </ul>
@@ -119,16 +121,21 @@ export default {
         return "message-layout-left";
       }
     },
-    mousedown(event) {
-      if (event.which === 3) {
-        console.log("Right mouse down");        
+    rightEvent(event) {
+      for (let item in this.newMessageData) {
+        this.newMessageData[item].forEach((res)=>{
+          if(res.historyId === event.historyId) {
+            return res.isMoreSetUp = true
+          }else{
+            return res.isMoreSetUp = false
+          }
+        })
       }
     },
     dblclick(event){
+      console.log(event)
       if (event.which === 1) {
-        console.log(event)
         this.setReplyMsg({type:event.type,innerText:event.target.innerText})
-        console.log(event.target.innerHTML);        
       }
     }
   },
@@ -228,12 +235,33 @@ export default {
       .read-check-box {
         display: none;
       }
-      .click-more-btn{
-        ul{
-          li{
-            font-size: 16px;
+      
+    }
+
+    .click-more-btn{
+      width: 180px;
+      background-color:#ffffffcb;
+      box-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.4);
+      position: relative;
+      border-radius:5px;
+      padding: 10px;
+      ul{
+        li{
+          line-height:2em;
+          font-size: 14px;
+          font-weight: 600;
+          padding:5px;
+          color: #403f3f;
+          cursor: pointer;
+          &:hover{
+            background-color:#dadadacb;
+            border-radius:5px;
           }
         }
+        
+      }
+      .red-text{
+        color: #ee5253;
       }
     }
 
