@@ -336,7 +336,8 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
-        isMoreSetUp:false,
+        nickName:data.nickName,
+        isRplay:data.replyChat === null ? null : data.replyChat.text,
       };
     },
     // 獲取歷史訊息
@@ -359,7 +360,6 @@ export default {
         infoMsgNav: "ContactPage",
         infoMsgChat: true,
       });
-      console.log(this.hichatNav.type)
     },
     // 已讀
     readMsgShow(data) {
@@ -381,22 +381,20 @@ export default {
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
           if (this.chatUser.toChatId === userInfo.toChatId) {
+            userInfo.nickName = this.chatUser.name
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
-          // if (
-          //   userInfo.toChatId ===
-          //   JSON.parse(localStorage.getItem("userData")).toChatId
-          // ) {
-          //   if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
-          // }
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
+            if (this.chatUser.toChatId === el.toChatId) {
+              el.nickName = this.chatUser.name
+            }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });

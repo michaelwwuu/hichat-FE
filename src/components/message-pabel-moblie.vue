@@ -14,14 +14,29 @@
             <p>
               <span
                 class="message-classic"
-                v-if="el.chatType === 'SRV_USER_SEND'"
+                v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay === null"
                 @contextmenu.prevent="onContextmenu(el)"
                 @dblclick="dblclick"
+                v-linkified
                 >{{ el.message.content }}</span
               >
                 <!-- @click.right="mouseClick(el)"
                 
                 @contextmenu.prevent -->
+              <span
+                class="message-classic"
+                v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay !== null"
+                @contextmenu.prevent="onContextmenu(el)"
+                @dblclick="dblclick"
+                v-linkified
+                >
+                <div style="color:#00a1ff">{{ el.nickName }}</div>
+                <div style="color:#ababab">{{ el.isRplay }}</div>
+                <div>{{ el.message.content }}</div>
+                </span 
+              >
+              
+              
               <audio
                 class="message-audio"
                 v-else-if="el.chatType === 'SRV_USER_AUDIO'"
@@ -110,6 +125,7 @@ export default {
       });
     },
   },
+  
   methods: {
     ...mapMutations({
       setReplyMsg:"ws/setReplyMsg"
@@ -141,41 +157,54 @@ export default {
     },
     onContextmenu(data){
       console.log(data)
+      let item = [
+        {
+          name:"edit",
+          label: "編輯",
+          onClick: () => {
+            console.log("返回(B)");
+          }
+        },
+        {
+          name:"copy",
+          label: "複製",
+          onClick: () => {
+            this.copyPaste(data)
+          }
+        },
+        {
+          name:"reply",
+          label: "回覆",
+          onClick: () => {
+            console.log("返回(B)");
+          }
+        },
+        {
+          name:"deleteAllChat",
+          label: "在所有人的對話紀錄中刪除",
+          divided: true,
+          onClick: () => {
+            console.log("返回(B)");
+          }
+        },
+        {
+          name:"deleteMyChat",
+          label: "只在我的對話紀錄中刪除",
+          divided: true,
+          onClick: () => {
+            console.log("返回(B)");
+          }
+        },
+      ]
+      if(data.userChatId !== "u" + localStorage.getItem("id")){
+        this.newItem =  item.filter((list) => {
+          return list.name !== "deleteAllChat"
+        })
+      } else{
+        this.newItem = item
+      }   
       this.$contextmenu({
-        items: [
-          {
-            label: "編輯",
-            onClick: () => {
-              console.log("返回(B)");
-            }
-          },
-          {
-            label: "複製",
-            onClick: () => {
-              console.log("返回(B)");
-            }
-          },
-          {
-            label: "回覆",
-            onClick: () => {
-              console.log("返回(B)");
-            }
-          },
-          {
-            label: "在所有人的對話紀錄中刪除",
-            divided: true,
-            onClick: () => {
-              console.log("返回(B)");
-            }
-          },
-          {
-            label: "只在我的對話紀錄中刪除",
-            divided: true,
-            onClick: () => {
-              console.log("返回(B)");
-            }
-          },
-        ],
+        items: this.newItem,
         event,
         //x: event.clientX,
         //y: event.clientY,
@@ -184,7 +213,23 @@ export default {
         minWidth: 230
       });
       return false;
-    }
+    },
+    copyPaste(data) {
+      console.log(data.message.content)
+      let url = document.createElement("textarea");
+      document.body.appendChild(url);
+      url.value = data.message.content;
+      url.select();
+      console.log(url.select())
+      document.execCommand("copy");
+      document.body.removeChild(url);
+
+      this.$message({
+        message: `${url.value.length > 110 ? url.value.substr(0, 110) + ' ...' : url.value} 复制成功`,
+        type: "success",
+        duration: 1000,
+      });
+    },
   },
 };
 </script>
@@ -197,7 +242,7 @@ export default {
         p {
           .el-image{
             width:auto !important;
-            height:10em !important;
+            height:20em !important;
             /deep/.el-image__inner{
               height: 100%;
             }

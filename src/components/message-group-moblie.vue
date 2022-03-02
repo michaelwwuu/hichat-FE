@@ -15,6 +15,7 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
+              v-linkified
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
@@ -361,6 +362,35 @@ export default {
       display: inline-block;
       border: 1px solid #eeeeee;
     }
+  }
+}
+.hichat-pc{
+  .message-pabel-box {
+    .message-styles-box{
+      .message-layout-left {
+        p {
+          .el-image{
+            width:auto !important;
+            height:20em !important;
+            /deep/.el-image__inner{
+              height: 100%;
+            }
+          }
+        }
+      }
+      .message-layout-right {
+        p {
+          .el-image{
+            width:auto !important;
+            height:20em !important;
+            /deep/.el-image__inner{
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+    
   }
 }
 </style>
