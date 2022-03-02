@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <el-container>
-      <el-main>
+      <el-main style="overflow-y: auto; overflow-x: hidden;">
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
           :class="{ 'PC-header': device === 'pc' }"
@@ -856,7 +856,9 @@ export default {
     cursor: pointer;
   }
   /deep/.el-avatar{
+    overflow: initial;
     img{
+      border-radius:4px;
       width: -webkit-fill-available;
     }
   }

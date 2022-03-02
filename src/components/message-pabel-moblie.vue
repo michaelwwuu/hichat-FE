@@ -11,71 +11,62 @@
           :class="judgeClass(item[index])"
         >
           
-            <p>
-              <span
-                class="message-classic"
-                v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay === null"
-                @contextmenu.prevent="onContextmenu(el)"
-                @dblclick="dblclick"
-                v-linkified
-                >{{ el.message.content }}</span
-              >
-                <!-- @click.right="mouseClick(el)"
-                
-                @contextmenu.prevent -->
-              <span
-                class="message-classic"
-                v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay !== null"
-                @contextmenu.prevent="onContextmenu(el)"
-                @dblclick="dblclick"
-                v-linkified
-                >
-                <div style="color:#00a1ff">{{ el.nickName }}</div>
-                <div style="color:#ababab">{{ el.isRplay }}</div>
-                <div>{{ el.message.content }}</div>
-                </span 
-              >
+          <p>
+            <span
+              class="message-classic"
+              v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay === null"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick"
+              v-linkified
+              >{{ el.message.content }}</span
+            >
+              <!-- @click.right="mouseClick(el)"
               
-              
-              <audio
-                class="message-audio"
-                v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-                controls
-                :src="el.message.content"
-                type="mp3"
-              ></audio>
+              @contextmenu.prevent -->
+            <span
+              class="message-classic"
+              v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay !== null"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick"
+              v-linkified
+              >
+              <div style="color:#00a1ff">{{ el.nickName }}</div>
+              <div style="color:#ababab">{{ el.isRplay }}</div>
+              <div>{{ el.message.content }}</div>
+              </span 
+            >
+            
+            
+            <audio
+              class="message-audio"
+              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
+              controls
+              :src="el.message.content"
+              type="mp3"
+            ></audio>
 
-              <span
-                class="message-image"
-                v-else-if="el.chatType === 'SRV_USER_IMAGE'"
+            <span
+              class="message-image"
+              v-else-if="el.chatType === 'SRV_USER_IMAGE'"
+            >
+              <el-image
+                :src="el.message.content"
+                :preview-src-list="[el.message.content]"
               >
-                <el-image
-                  :src="el.message.content"
-                  :preview-src-list="[el.message.content]"
-                >
-                </el-image>
-              </span>
-              <span class="nickname-time">{{
-                $root.formatTimeSecound(el.message.time)
-              }}</span>
-            </p>
-            <div class="read-check-box">
-              <span class="read-check" v-if="el.isRead"
-                ><img src="./../../static/images/check.png" alt=""
-              /></span>
-              <span class="read-check2"
-                ><img src="./../../static/images/check.png" alt=""
-              /></span>
-            </div>
-            <!-- <div class="click-more-btn" v-show="el.isMoreSetUp">
-              <ul>
-                <li>編輯</li>
-                <li>複製</li>
-                <li>回覆</li>
-                <li class="red-text">在所有人的對話紀錄中刪除</li>
-                <li class="red-text">只在我的對話紀錄中刪除</li>
-              </ul>
-            </div> -->
+              </el-image>
+            </span>
+            <span class="nickname-time">{{
+              $root.formatTimeSecound(el.message.time)
+            }}</span>
+          </p>
+          <div class="read-check-box">
+            <span class="read-check" v-if="el.isRead"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+            <span class="read-check2"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+          </div>
         </li>
       </div>
     </ul>
@@ -150,8 +141,10 @@ export default {
       }
     },
     dblclick(event){
-      console.log(event)
+      this.setReplyMsg({type:event.type,innerText:event.target.innerText})
+
       if (event.which === 1) {
+        console.log('123',event)
         this.setReplyMsg({type:event.type,innerText:event.target.innerText})
       }
     },
@@ -176,7 +169,7 @@ export default {
           name:"reply",
           label: "回覆",
           onClick: () => {
-            console.log("返回(B)");
+            this.dblclick({type: "dblclick",target: {innerText:data.message.content},})
           }
         },
         {
