@@ -158,7 +158,7 @@ export default {
         this.$router.back(-1);
       } else {
         this.setInfoMsg({ infoMsgShow: true });
-        this.setMsgInfoPage({ pageShow: false, type: "groupPeople" });
+        this.setMsgInfoPage({ pageShow: false, type: "GroupPeople" });
       }
     },
   },

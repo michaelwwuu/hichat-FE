@@ -127,7 +127,7 @@ export default {
       }
     },
     changeGroupAdminShow(){
-      this.setMsgInfoPage({ pageShow:false, type:'adminChange',})
+      this.setMsgInfoPage({ pageShow:false, type:'AdminChange',})
       this.infoMsgShow()
     },
     infoMsgShow(){

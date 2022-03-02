@@ -57,14 +57,14 @@
                 <div
                   class="home-user"
                   @click="back"
-                  style="position: absolute"
+                  style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
               <template v-else-if="groupData.isAdmin">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
-                  style="position: absolute"
+                  style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
 
@@ -288,7 +288,7 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: true });
+        this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
         this.setMsgInfoPage({ pageShow: true });
       }
     },
@@ -509,7 +509,7 @@ export default {
         .home-header {
           margin: 1.8em 1em 1.8em 0.7em !important;
           .home-user {
-            background-size: 70%;
+            background-size: 75%;
             background-color: #fff;
             background-image: url("./../../../static/images/pc/arrow-left.png");
             cursor: pointer;
@@ -521,7 +521,7 @@ export default {
             cursor: pointer;
           }
           .home-header-title {
-            margin-left: 40px;
+            margin-left: 39px;
           }
           .home-user-edit {
             background-size: 70%;

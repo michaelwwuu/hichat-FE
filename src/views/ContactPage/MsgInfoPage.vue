@@ -149,9 +149,9 @@
       </el-container>
     </div>
     <edit-contact v-if="msgInfoPage.type === 'ContactPage'" />
-    <group-admin-change v-else-if="msgInfoPage.type === 'adminChange'" />
-    <group-people v-else-if="msgInfoPage.type === 'groupPeople'" />
-    <group-add-people v-else-if="msgInfoPage.type === 'addGroupPeople'" />
+    <group-admin-change v-else-if="msgInfoPage.type === 'AdminChange'" />
+    <group-people v-else-if="msgInfoPage.type === 'GroupPeople'" />
+    <group-add-people v-else-if="msgInfoPage.type === 'AddGroupPeople'" />
     <edit-group v-else-if="msgInfoPage.type === 'GroupPage'" />
   </div>
 </template>
@@ -196,7 +196,7 @@ export default {
         {
           name: "成員",
           icon: require("./../../../static/images/pc/users.png"),
-          path: "groupPeople",
+          path: "GroupPeople",
         },
       ],
       getHistoryMessage: {
@@ -277,7 +277,6 @@ export default {
           infoMsgShow: false,
           infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
         });
-        console.log(this.chatUser);
         if (type === "address") {
           delete this.chatUser.type;
           this.setChatUser(this.chatUser);
@@ -288,7 +287,7 @@ export default {
         this.setHichatNav({ type: type, num: 1 });
         this.getHistory(type);
         this.$router.push({ name: path, params: data });
-      } else if (path === "groupPeople") {
+      } else if (path === "GroupPeople") {
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },
