@@ -481,7 +481,7 @@ export default {
       if (event.shiftKey && keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
-        if(this.replyMsg.clickType === ""){
+        if(this.replyMsg.clickType === "replyMsg"){
           this.sendMessage();
         }else{
           this.editMessage()
@@ -527,7 +527,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
-        targetId: this.userData.lastChat.historyId,
+        targetId: this.replyMsg.replyHistoryId,
         text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
