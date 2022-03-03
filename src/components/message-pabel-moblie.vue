@@ -16,26 +16,32 @@
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent="onContextmenu(el)"
               @dblclick="dblclick(el)"
-              > 
-                <template v-if="el.isRplay !== null">
-                  <div style="color:#00a1ff">{{ el.nickName }}</div>
-                  <div style="color:#ababab" v-if="el.isRplay.chatType === 'SRV_USER_SEND'">{{ el.isRplay.text }}</div>
-                  <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
-                    <img :src="el.isRplay.text" style="border-radius:5px;">
-                  </div>
-                  <div v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
-                    <audio
-                      class="message-audio"
-                      controls
-                      :src="el.isRplay.text"
-                      type="mp3"
-                    ></audio>
-                  </div>
-                </template>
-                <div v-linkified>{{ el.message.content }}</div>
-              </span
             >
-            
+              <template v-if="el.isRplay !== null">
+                <div style="color: #00a1ff">{{ el.nickName }}</div>
+                <div
+                  style="color: #ababab"
+                  v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+                >
+                  {{ el.isRplay.text }}
+                </div>
+                <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
+                  <img :src="el.isRplay.text" style="border-radius: 5px" />
+                </div>
+                <div v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                  <audio
+                    class="message-audio"
+                    controls
+                    :src="el.isRplay.text"
+                    type="mp3"
+                  ></audio>
+                </div>
+              </template>
+              <span>
+                <div v-linkified>{{ el.message.content }}</div>
+              </span>
+            </span>
+
             <audio
               class="message-audio"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
@@ -117,14 +123,14 @@ export default {
       });
     },
   },
-  
+
   methods: {
     ...mapMutations({
-      setReplyMsg:"ws/setReplyMsg"
+      setReplyMsg: "ws/setReplyMsg",
     }),
     // 判断讯息Class名称
     judgeClass(item) {
-      if (item.userChatId === 'u' + localStorage.getItem('id')) {
+      if (item.userChatId === "u" + localStorage.getItem("id")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
@@ -132,65 +138,80 @@ export default {
     },
     mouseClick(event) {
       for (let item in this.newMessageData) {
-        this.newMessageData[item].forEach((res)=>{
-          if(res.historyId === event.historyId) {
-            return res.isMoreSetUp = true
-          }else{
-            return res.isMoreSetUp = false
+        this.newMessageData[item].forEach((res) => {
+          if (res.historyId === event.historyId) {
+            return (res.isMoreSetUp = true);
+          } else {
+            return (res.isMoreSetUp = false);
           }
-        })
+        });
       }
     },
-    dblclick(event){
-      this.setReplyMsg({chatType:event.chatType,clickType:"replyMsg",innerText:event.message.content,replyHistoryId:event.historyId})
+    dblclick(event) {
+      this.setReplyMsg({
+        chatType: event.chatType,
+        clickType: "replyMsg",
+        innerText: event.message.content,
+        replyHistoryId: event.historyId,
+      });
     },
-    onContextmenu(data){
+    onContextmenu(data) {
       let item = [
         {
-          name:"edit",
+          name: "edit",
           label: "編輯",
           onClick: () => {
-            this.setReplyMsg({chatType:data.chatType,clickType:"editMsg",innerText:data.message.content,replyHistoryId:data.historyId})
-          }
+            this.setReplyMsg({
+              chatType: data.chatType,
+              clickType: "editMsg",
+              innerText: data.message.content,
+              replyHistoryId: data.historyId,
+            });
+          },
         },
         {
-          name:"copy",
+          name: "copy",
           label: "複製",
           onClick: () => {
-            this.copyPaste(data)
-          }
+            this.copyPaste(data);
+          },
         },
         {
-          name:"reply",
+          name: "reply",
           label: "回覆",
           onClick: () => {
-            this.setReplyMsg({chatType:data.chatType,clickType:"replyMsg",innerText:data.message.content,replyHistoryId:data.historyId})
-          }
+            this.setReplyMsg({
+              chatType: data.chatType,
+              clickType: "replyMsg",
+              innerText: data.message.content,
+              replyHistoryId: data.historyId,
+            });
+          },
         },
         {
-          name:"deleteAllChat",
+          name: "deleteAllChat",
           label: "在所有人的對話紀錄中刪除",
           divided: true,
           onClick: () => {
             // console.log("返回(B)");
-          }
+          },
         },
         {
-          name:"deleteMyChat",
+          name: "deleteMyChat",
           label: "只在我的對話紀錄中刪除",
           divided: true,
           onClick: () => {
             // console.log("返回(B)");
-          }
+          },
         },
-      ]
-      if(data.userChatId !== "u" + localStorage.getItem("id")){
-        this.newItem =  item.filter((list) => {
-          return list.name !== "deleteAllChat" && list.name !== "edit"
-        })
-      } else{
-        this.newItem = item
-      }   
+      ];
+      if (data.userChatId !== "u" + localStorage.getItem("id")) {
+        this.newItem = item.filter((list) => {
+          return list.name !== "deleteAllChat" && list.name !== "edit";
+        });
+      } else {
+        this.newItem = item;
+      }
       this.$contextmenu({
         items: this.newItem,
         event,
@@ -198,7 +219,7 @@ export default {
         //y: event.clientY,
         customClass: "custom-class",
         zIndex: 3,
-        minWidth: 230
+        minWidth: 230,
       });
       return false;
     },
@@ -211,7 +232,9 @@ export default {
       document.body.removeChild(url);
 
       this.$message({
-        message: `${url.value.length > 110 ? url.value.substr(0, 110) + ' ...' : url.value} 复制成功`,
+        message: `${
+          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : url.value
+        } 复制成功`,
         type: "success",
         duration: 1000,
       });
@@ -221,15 +244,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.hichat-pc{
+.hichat-pc {
   .message-pabel-box {
-    .message-styles-box{
+    .message-styles-box {
       .message-layout-left {
         p {
-          .el-image{
-            width:auto !important;
-            height:15em !important;
-            /deep/.el-image__inner{
+          .el-image {
+            width: auto !important;
+            height: 15em !important;
+            /deep/.el-image__inner {
               height: 100%;
             }
           }
@@ -237,17 +260,16 @@ export default {
       }
       .message-layout-right {
         p {
-          .el-image{
-            width:auto !important;
-            height:15em !important;
-            /deep/.el-image__inner{
+          .el-image {
+            width: auto !important;
+            height: 15em !important;
+            /deep/.el-image__inner {
               height: 100%;
             }
           }
         }
       }
     }
-    
   }
 }
 .message-pabel-box {
@@ -281,15 +303,15 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f3f9ff; 
+          background-color: #f3f9ff;
         }
         audio {
           width: 190px;
         }
-        .el-image{
-          width:10em !important;
-          height:10em !important;
-          /deep/.el-image__inner{
+        .el-image {
+          width: 10em !important;
+          height: 10em !important;
+          /deep/.el-image__inner {
             height: 100%;
           }
         }
@@ -313,31 +335,29 @@ export default {
       .read-check-box {
         display: none;
       }
-      
     }
 
-    .click-more-btn{
+    .click-more-btn {
       width: 180px;
-      background-color:#ffffffcb;
+      background-color: #ffffffcb;
       box-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.4);
       position: relative;
-      border-radius:5px;
+      border-radius: 5px;
       padding: 10px;
-      ul{
-        li{
-          line-height:2em;
+      ul {
+        li {
+          line-height: 2em;
           font-size: 14px;
           font-weight: 600;
-          padding:5px;
+          padding: 5px;
           color: #403f3f;
           cursor: pointer;
-          &:hover{
-            background-color:#dadadacb;
-            border-radius:5px;
+          &:hover {
+            background-color: #dadadacb;
+            border-radius: 5px;
           }
         }
-        
-      }      
+      }
     }
 
     .message-layout-right {
@@ -352,10 +372,10 @@ export default {
             width: 190px;
           }
         }
-        .el-image{
-          width:10em !important;
-          height:10em !important;
-          /deep/.el-image__inner{
+        .el-image {
+          width: 10em !important;
+          height: 10em !important;
+          /deep/.el-image__inner {
             height: 100%;
           }
         }

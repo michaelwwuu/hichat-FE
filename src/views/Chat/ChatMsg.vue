@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <el-container>
-      <el-main style="overflow-y: auto; overflow-x: hidden;">
+      <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
           :class="{ 'PC-header': device === 'pc' }"
@@ -127,15 +127,34 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="reply-message" v-if="replyMsg.clickType === 'replyMsg' ||replyMsg.clickType === 'editMsg'">
-          <el-avatar shape="square" size="large" :src="chatUser.icon"></el-avatar>
+        <div
+          class="reply-message"
+          v-if="
+            replyMsg.clickType === 'replyMsg' ||
+            replyMsg.clickType === 'editMsg'
+          "
+        >
+          <el-avatar
+            shape="square"
+            size="large"
+            :src="chatUser.icon"
+          ></el-avatar>
           <div class="reply-message-box">
-            <span>{{chatUser.name}}</span>
-            <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{replyMsg.innerText.length > 110 ? replyMsg.innerText.substr(0, 110) + ' ...' : replyMsg.innerText }}</span>
-            <span v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'" class="replyMsg-Img">
-              <img :src="replyMsg.innerText" alt="">
+            <span>{{ chatUser.name }}</span>
+            <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
+              replyMsg.innerText.length > 110
+                ? replyMsg.innerText.substr(0, 110) + " ..."
+                : replyMsg.innerText
+            }}</span>
+            <span
+              v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'"
+              class="replyMsg-Img"
+            >
+              <img :src="replyMsg.innerText" alt="" />
             </span>
-            <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'">回復語音訊息</span>
+            <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'"
+              >回復語音訊息</span
+            >
           </div>
           <div class="reply-close-btn" @click="closeReplyMessage">
             <i class="el-icon-close"></i>
@@ -281,9 +300,9 @@ export default {
       readMsgData: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
       deleteDialogShow: false,
+      successDialogShow: false,
       isBlockDialogShow: false,
       isDeleteContactDialogShow: false,
-      successDialogShow: false,
       device: localStorage.getItem("device"),
     };
   },
@@ -310,7 +329,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setReplyMsg:"ws/setReplyMsg",
+      setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
@@ -326,8 +345,13 @@ export default {
         return iconData.icon;
       }
     },
-    closeReplyMessage(){
-      this.setReplyMsg({chatType:"",clickType:"",innerText:"",replyHistoryId:"",})
+    closeReplyMessage() {
+      this.setReplyMsg({
+        chatType:"",
+        clickType:"",
+        innerText:"",
+        replyHistoryId:"",
+      });
     },
     // 訊息統一格式
     messageList(data) {
@@ -340,9 +364,8 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
-        nickName:data.nickName,
-        isRplay:data.replyChat === null ? null : data.replyChat,
-        
+        nickName: data.nickName,
+        isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },
     // 獲取歷史訊息
@@ -386,10 +409,10 @@ export default {
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
           if (this.chatUser.toChatId === userInfo.toChatId) {
-            userInfo.nickName = this.chatUser.name
+            userInfo.nickName = this.chatUser.name;
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
-            if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
           break;
         // 历史讯息
@@ -398,21 +421,28 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             if (this.chatUser.toChatId === el.toChatId) {
-              el.nickName = this.chatUser.name
+              el.nickName = this.chatUser.name;
             }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsg = historyMsgList.filter((el)=>{
-            return el.chat.toChatId === "u" + localStorage.getItem("id") 
-          })
+          this.readMsg = historyMsgList.filter((el) => {
+            return el.chat.toChatId === "u" + localStorage.getItem("id");
+          });
           if (historyMsgList.length > 0) this.readMsgShow(this.readMsg[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
-          this.messageData.forEach((res) => res.isRead = true);
+          this.messageData.forEach((res) => (res.isRead = true));
           break;
         // 撈取歷史訊息
+        case "SRV_CHAT_EDIT":
+          this.messageData = this.messageData.forEach((res) =>{
+            if (res.historyId === userInfo.chat.historyId) {
+              return res.message.content = userInfo.chat.text
+            }
+          })
+          break;
         case "SRV_RECENT_CHAT":
           if (this.device === "moblie") this.getChatHistoryMessage();
           break;
@@ -453,10 +483,10 @@ export default {
           if (res.code === 200) {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
-            if(this.device === "pc") {
-              this.setHichatNav({ type: 'address', num: 1 });
-              this.setChatUser({})
-              this.getHiChatDataList()
+            if (this.device === "pc") {
+              this.setHichatNav({ type: "address", num: 1 });
+              this.setChatUser({});
+              this.getHiChatDataList();
             }
           }
         })
@@ -472,8 +502,8 @@ export default {
             if (res.code === 200) {
               data.isBlock = false;
               this.isBlockDialogShow = false;
-              this.getHiChatDataList()
-              this.setChatUser(data)
+              this.getHiChatDataList();
+              this.setChatUser(data);
             }
           })
           .catch((err) => {
@@ -487,8 +517,8 @@ export default {
             if (res.code === 200) {
               data.isBlock = true;
               this.isBlockDialogShow = false;
-              this.getHiChatDataList()
-              this.setChatUser(data)
+              this.getHiChatDataList();
+              this.setChatUser(data);
             } else {
               this.$message({ message: res.message, type: "error" });
             }
@@ -498,7 +528,6 @@ export default {
             return false;
           });
       }
-      
     },
     deleteSubmitBtn(data) {
       let contactId = data.toChatId.replace("u", "");
@@ -835,7 +864,7 @@ export default {
   align-items: center;
   padding: 0 10px;
 }
-.reply-message{
+.reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
   border-top: 1px solid #dddddd;
@@ -844,33 +873,33 @@ export default {
   // justify-content: center;
   align-items: center;
   padding: 10px;
-  .reply-message-box{
+  .reply-message-box {
     display: flex;
     flex-direction: column;
     padding-left: 10px;
-    span{
-      line-height:20px;
+    span {
+      line-height: 20px;
       color: #363636;
       width: 90em;
-      word-wrap:break-word;
+      word-wrap: break-word;
     }
-    .replyMsg-Img{
-      img{
-        height:2em;
+    .replyMsg-Img {
+      img {
+        height: 2em;
         border-radius: 5px;
       }
     }
   }
-  .reply-close-btn{
+  .reply-close-btn {
     position: absolute;
     right: 20px;
     font-size: 20px;
     cursor: pointer;
   }
-  /deep/.el-avatar{
+  /deep/.el-avatar {
     overflow: initial;
-    img{
-      border-radius:4px;
+    img {
+      border-radius: 4px;
       width: -webkit-fill-available;
     }
   }

@@ -18,7 +18,9 @@
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
-                <span v-linkified>{{ el.message.content }}</span>
+                <span>
+                  <div v-linkified>{{ el.message.content }}</div>
+                </span>
               </div>
             </span>
             <span

@@ -1,5 +1,8 @@
 <template>
-  <div class="message-input-box" :style="device !== 'moblie' ? 'height:59px':''">
+  <div
+    class="message-input-box"
+    :style="device !== 'moblie' ? 'height:59px' : ''"
+  >
     <template v-if="device === 'moblie'">
       <div class="input-tools-right">
         <div>
@@ -20,7 +23,6 @@
           placeholder="Aa"
           v-model="textArea"
           maxlength="500"
-
         >
         </el-input>
         <div class="footer-tools">
@@ -80,7 +82,7 @@
           placeholder="Aa"
           maxlength="500"
           v-model="textArea"
-          @keyup.native="keyUp" 
+          @keyup.native="keyUp"
         >
         </el-input>
         <div class="footer-tools">
@@ -129,7 +131,11 @@
             alt=""
             @click="uploadImgShow = true"
           />
-          <img src="./../../static/images/camera.png" alt="" @click="takePictureShow = true">
+          <img
+            src="./../../static/images/camera.png"
+            alt=""
+            @click="takePictureShow = true"
+          />
         </div>
       </div>
     </template>
@@ -137,8 +143,8 @@
       title="上传图片"
       :visible.sync="uploadImgShow"
       width="100%"
-      :append-to-body="device !=='pc'"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
+      :append-to-body="device !== 'pc'"
+      :class="{ 'el-dialog-loginOut': device === 'pc' }"
       center
     >
       <el-upload
@@ -155,13 +161,17 @@
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <template v-if="device ==='moblie'">
+        <template v-if="device === 'moblie'">
           <el-button type="success" @click="submitAvatarUpload">确认</el-button>
           <el-button @click="uploadImgShow = false">取消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
-          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+          <el-button class="background-gray" @click="uploadImgShow = false"
+            >取消</el-button
+          >
+          <el-button class="background-orange" @click="submitAvatarUpload"
+            >确认</el-button
+          >
         </template>
       </span>
     </el-dialog>
@@ -201,8 +211,11 @@
       class="el-dialog-takePicture"
       center
     >
-      <Photo :chatType="'CLI_USER_IMAGE'" v-on:closePictureShow="pictureShow"></Photo>
-    </el-dialog>    
+      <Photo
+        :chatType="'CLI_USER_IMAGE'"
+        v-on:closePictureShow="pictureShow"
+      ></Photo>
+    </el-dialog>
   </div>
 </template>
 
@@ -211,7 +224,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
-import Photo from "./Photo.vue"
+import Photo from "./Photo.vue";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
@@ -223,7 +236,7 @@ export default {
       textArea: "",
       sendAduioShow: false,
       uploadImgShow: false,
-      takePictureShow:false,
+      takePictureShow: false,
       fileList: [],
       device: localStorage.getItem("device"),
       //錄音
@@ -246,7 +259,6 @@ export default {
       cde: 0, // 分的計數
       efg: 0, // 時的計數
       scrollTop: 0,
-      
     };
   },
   props: {
@@ -259,17 +271,17 @@ export default {
       type: Object,
     },
   },
-    computed: {
+  computed: {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
     }),
   },
   methods: {
     ...mapMutations({
-      setReplyMsg:"ws/setReplyMsg",
+      setReplyMsg: "ws/setReplyMsg",
     }),
-    pictureShow(val){
-      this.takePictureShow = val
+    pictureShow(val) {
+      this.takePictureShow = val;
     },
     // 取得圖片
     uploadImg(file, fileList) {
@@ -284,7 +296,7 @@ export default {
           let message = this.userInfoData;
           message.chatType = "CLI_USER_IMAGE";
           message.id = Math.random();
-          message.fromChatId = 'u' + localStorage.getItem('id');
+          message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
           message.text = res.data;
           Socket.send(message);
@@ -423,7 +435,7 @@ export default {
           let message = this.userInfoData;
           message.chatType = "CLI_USER_AUDIO";
           message.id = Math.random();
-          message.fromChatId = 'u' + localStorage.getItem('id');
+          message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
           message.text = res.data;
           Socket.send(message);
@@ -459,43 +471,76 @@ export default {
       if (this.textArea.replace(/\s+/g, "") === "") {
         this.$alert("不能发送空白消息", "提示", {
           confirmButtonText: "确定",
-          customClass: 'winClass',//弹窗样式
+          customClass: "winClass", //弹窗样式
         });
         return false;
       }
       return true;
     },
-    keyUp (event) {
-      if (event.shiftKey && keyCode === 13){
-        return this.textArea
-      } else if (event.key === 'Enter') {
-        this.sendMessage()
+    keyUp(event) {
+      if (event.shiftKey && keyCode === 13) {
+        return this.textArea;
+      } else if (event.key === "Enter") {
+        if(this.replyMsg.clickType === ""){
+          this.sendMessage();
+        }else{
+          this.editMessage()
+        }
       }
     },
-    closeReplyMessage(){
-      this.setReplyMsg({chatType:"",clickType:"",innerText:"",replyHistoryId:"",})
+    closeReplyMessage() {
+      this.setReplyMsg({
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
+      });
     },
+
     // 发送消息
     sendMessage() {
-      let message = { 
+      let message = {
         chatType: "CLI_USER_SEND",
         id: Math.random(),
         tokenType: 0,
-        toChatId:this.userData.toChatId,
-        replyHistoryId:this.replyMsg.replyHistoryId !=="" ? this.replyMsg.replyHistoryId : "",
-        targetArray:[],
+        toChatId: this.userData.toChatId,
+        replyHistoryId:
+          this.replyMsg.replyHistoryId !== ""
+            ? this.replyMsg.replyHistoryId
+            : "",
+        targetArray: [],
         text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
-        deviceId: localStorage.getItem('UUID'),
-        token: localStorage.getItem('token'),
-      }
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
-        this.closeReplyMessage()
+        this.closeReplyMessage();
         // 消息清空
         this.textArea = "";
       }
     },
+    editMessage() {
+      let editMessage ={
+        chatType: "CLI_CHAT_EDIT",
+        id: Math.random(),
+        tokenType: 0,
+        fromChatId: this.userData.lastChat.fromChatId,
+        targetId: this.userData.lastChat.historyId,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        toChatId: this.userData.lastChat.toChatId,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
+      if (this.blankTesting()) {
+        // 发送服务器
+        Socket.send(editMessage);
+        this.closeReplyMessage();
+        // 消息清空
+        this.textArea = "";
+      } 
+    }
   },
   components: {
     EmojiPicker,
@@ -513,7 +558,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
-  .input-tools-left,.input-tools-right {
+  .input-tools-left,
+  .input-tools-right {
     padding: 15px 0;
     img {
       height: 1.1em;
@@ -660,7 +706,7 @@ export default {
       .dialog-footer {
         display: flex;
         justify-content: space-between;
-        .el-button{
+        .el-button {
           width: 90%;
         }
         img {
@@ -670,22 +716,22 @@ export default {
     }
   }
 }
-.winClass{
+.winClass {
   width: 90%;
 }
-.hichat-pc{
-  .el-dialog__wrapper.el-dialog-takePicture{
-    .el-dialog{
+.hichat-pc {
+  .el-dialog__wrapper.el-dialog-takePicture {
+    .el-dialog {
       width: 880px !important;
       margin-top: 3em !important;
-      .el-dialog__footer{
-        padding: 0 !important;  
-        .el-button{
+      .el-dialog__footer {
+        padding: 0 !important;
+        .el-button {
           padding: 20px !important;
-          border-radius:0 !important;
-          
-          &:nth-child(2){
-            border-left:1px solid #efefef;
+          border-radius: 0 !important;
+
+          &:nth-child(2) {
+            border-left: 1px solid #efefef;
           }
         }
       }

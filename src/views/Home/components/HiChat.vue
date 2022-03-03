@@ -224,18 +224,18 @@ export default {
   mounted() {
     this.getHiChatDataList();
   },
-  watch:{
-    contactDataList(val){
-      if(this.hichatNav === "contact" && val.length === 0){
-        this.setHichatNav({ type:"address", num: 1 });
+  watch: {
+    contactDataList(val) {
+      if (this.hichatNav === "contact" && val.length === 0) {
+        this.setHichatNav({ type: "address", num: 1 });
       }
-    }
+    },
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setReplyMsg:"ws/setReplyMsg",
+      setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
       setChatGroup: "ws/setChatGroup",
@@ -353,11 +353,16 @@ export default {
         });
         this.getHistory(data, path);
         setTimeout(() => this.getHiChatDataList(), 2000);
-        this.closeReplyMessage()
+        this.closeReplyMessage();
       }
     },
-    closeReplyMessage(){
-      this.setReplyMsg({chatType:"",clickType:"",innerText:"",replyHistoryId:"",})
+    closeReplyMessage() {
+      this.setReplyMsg({
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
+      });
     },
     getHistory(data, path) {
       if (path === "ChatMsg" || path === "ChatContact") {
