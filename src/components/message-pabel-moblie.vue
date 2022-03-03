@@ -10,32 +10,31 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          
           <p>
             <span
               class="message-classic"
-              v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay === null"
+              v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent="onContextmenu(el)"
-              @dblclick="dblclick"
-              v-linkified
-              >{{ el.message.content }}</span
+              @dblclick="dblclick(el)"
+              > 
+                <template v-if="el.isRplay !== null">
+                  <div style="color:#00a1ff">{{ el.nickName }}</div>
+                  <div style="color:#ababab" v-if="el.isRplay.chatType === 'SRV_USER_SEND'">{{ el.isRplay.text }}</div>
+                  <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
+                    <img :src="el.isRplay.text" style="border-radius:5px;">
+                  </div>
+                  <div v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                    <audio
+                      class="message-audio"
+                      controls
+                      :src="el.isRplay.text"
+                      type="mp3"
+                    ></audio>
+                  </div>
+                </template>
+                <div v-linkified>{{ el.message.content }}</div>
+              </span
             >
-              <!-- @click.right="mouseClick(el)"
-              
-              @contextmenu.prevent -->
-            <span
-              class="message-classic"
-              v-if="el.chatType === 'SRV_USER_SEND' && el.isRplay !== null"
-              @contextmenu.prevent="onContextmenu(el)"
-              @dblclick="dblclick"
-              v-linkified
-              >
-              <div style="color:#00a1ff">{{ el.nickName }}</div>
-              <div style="color:#ababab">{{ el.isRplay }}</div>
-              <div>{{ el.message.content }}</div>
-              </span 
-            >
-            
             
             <audio
               class="message-audio"
@@ -48,6 +47,8 @@
             <span
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             >
               <el-image
                 :src="el.message.content"
@@ -141,21 +142,15 @@ export default {
       }
     },
     dblclick(event){
-      this.setReplyMsg({type:event.type,innerText:event.target.innerText})
-
-      if (event.which === 1) {
-        console.log('123',event)
-        this.setReplyMsg({type:event.type,innerText:event.target.innerText})
-      }
+      this.setReplyMsg({chatType:event.chatType,clickType:"replyMsg",innerText:event.message.content,replyHistoryId:event.historyId})
     },
     onContextmenu(data){
-      console.log(data)
       let item = [
         {
           name:"edit",
           label: "編輯",
           onClick: () => {
-            console.log("返回(B)");
+            this.setReplyMsg({chatType:data.chatType,clickType:"editMsg",innerText:data.message.content,replyHistoryId:data.historyId})
           }
         },
         {
@@ -169,7 +164,7 @@ export default {
           name:"reply",
           label: "回覆",
           onClick: () => {
-            this.dblclick({type: "dblclick",target: {innerText:data.message.content},})
+            this.setReplyMsg({chatType:data.chatType,clickType:"replyMsg",innerText:data.message.content,replyHistoryId:data.historyId})
           }
         },
         {
@@ -177,7 +172,7 @@ export default {
           label: "在所有人的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            console.log("返回(B)");
+            // console.log("返回(B)");
           }
         },
         {
@@ -185,13 +180,13 @@ export default {
           label: "只在我的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            console.log("返回(B)");
+            // console.log("返回(B)");
           }
         },
       ]
       if(data.userChatId !== "u" + localStorage.getItem("id")){
         this.newItem =  item.filter((list) => {
-          return list.name !== "deleteAllChat"
+          return list.name !== "deleteAllChat" && list.name !== "edit"
         })
       } else{
         this.newItem = item
@@ -208,12 +203,10 @@ export default {
       return false;
     },
     copyPaste(data) {
-      console.log(data.message.content)
       let url = document.createElement("textarea");
       document.body.appendChild(url);
       url.value = data.message.content;
       url.select();
-      console.log(url.select())
       document.execCommand("copy");
       document.body.removeChild(url);
 
@@ -235,7 +228,7 @@ export default {
         p {
           .el-image{
             width:auto !important;
-            height:20em !important;
+            height:15em !important;
             /deep/.el-image__inner{
               height: 100%;
             }
@@ -246,7 +239,7 @@ export default {
         p {
           .el-image{
             width:auto !important;
-            height:10em !important;
+            height:15em !important;
             /deep/.el-image__inner{
               height: 100%;
             }

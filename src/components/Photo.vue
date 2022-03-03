@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     onCancel() {
-      this.visible = false;
+      // this.visible = false;
       this.$emit("closePictureShow",false);
       this.resetCanvas();
       this.stopNavigator();
@@ -91,6 +91,7 @@ export default {
           .then((res) => {
             this.loading = false;
             if (res.code === 200) {
+              
               let message = {
                 chatType: this.chatType,
                 token: localStorage.getItem("token"),
@@ -101,25 +102,19 @@ export default {
                 toChatId: "",
                 text: res.data,
               };
-              if(chatType === "CLI_USER_IMAGE"){
+              if(this.chatType === "CLI_USER_IMAGE"){
                 message.toChatId = JSON.parse(localStorage.getItem("userData")).toChatId;
               }else{
                 message.toChatId = JSON.parse(localStorage.getItem("groupData")).toChatId;
               }
               Socket.send(message);
-              this.onCancel();
               this.$notify({
                 title: "上传成功",
                 type: "success",
               });
+              this.onCancel();
             }
           })
-          .catch((err) => {
-            this.loading = false;
-            this.$notify.error({
-              title: "上传失败",
-            });
-          });
       } else {
         this.$notify({
           title: "警告",

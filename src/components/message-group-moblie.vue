@@ -15,11 +15,10 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
-              v-linkified
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
-                <span>{{ el.message.content }}</span>
+                <span v-linkified>{{ el.message.content }}</span>
               </div>
             </span>
             <span
@@ -154,12 +153,6 @@ export default {
             res.icon = require("./../../static/images/image_user_defult.png");
           }
           this.setContactListData(this.contactList);
-          // this.message.forEach((el) => {
-          //   if (el.userChatId === "u" + res.memberId) {
-          //     el.icon = res.icon;
-          //     el.name = res.name;
-          //   }
-          // });
         });
       });
     },

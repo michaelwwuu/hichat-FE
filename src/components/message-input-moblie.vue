@@ -212,6 +212,7 @@ import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue"
+import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
 export default {
@@ -248,7 +249,6 @@ export default {
       
     };
   },
-
   props: {
     // 当前用户
     userInfoData: {
@@ -259,7 +259,15 @@ export default {
       type: Object,
     },
   },
+    computed: {
+    ...mapState({
+      replyMsg: (state) => state.ws.replyMsg,
+    }),
+  },
   methods: {
+    ...mapMutations({
+      setReplyMsg:"ws/setReplyMsg",
+    }),
     pictureShow(val){
       this.takePictureShow = val
     },
@@ -464,6 +472,9 @@ export default {
         this.sendMessage()
       }
     },
+    closeReplyMessage(){
+      this.setReplyMsg({chatType:"",clickType:"",innerText:"",replyHistoryId:"",})
+    },
     // 发送消息
     sendMessage() {
       let message = { 
@@ -471,6 +482,8 @@ export default {
         id: Math.random(),
         tokenType: 0,
         toChatId:this.userData.toChatId,
+        replyHistoryId:this.replyMsg.replyHistoryId !=="" ? this.replyMsg.replyHistoryId : "",
+        targetArray:[],
         text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
@@ -478,6 +491,7 @@ export default {
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
+        this.closeReplyMessage()
         // 消息清空
         this.textArea = "";
       }

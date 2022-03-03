@@ -420,6 +420,7 @@ export default {
               top: 0;
               height: 2em;
               border-radius: 6px;
+              width: inherit;
             }
           }
           span {

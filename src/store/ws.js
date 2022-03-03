@@ -22,8 +22,10 @@ export const state = {
     type:"",
   },
   replyMsg:{
-    type:"",
+    chatType:"",
+    clickType:"",
     innerText:"",
+    replyHistoryId:"",
   }
 };
 export const actions = {};
@@ -48,7 +50,6 @@ export const mutations = {
     state.infoMsg = payload;
   },
   setReplyMsg(state, payload) {
-    console.log(payload)
     state.replyMsg = payload;
   },
   //個人資料

@@ -185,7 +185,6 @@ export default {
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../../static/images/image_user_defult.png");
         }
-        console.log(res.data.icon)
         this.setMyUserInfo(res.data)
       });
     },

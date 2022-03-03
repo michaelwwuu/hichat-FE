@@ -271,7 +271,6 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
-      console.log(data, path, type);
       if (path === "HiChat") {
         this.setInfoMsg({
           infoMsgShow: false,

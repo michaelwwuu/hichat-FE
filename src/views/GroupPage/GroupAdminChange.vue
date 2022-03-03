@@ -170,7 +170,7 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     },
     changeGroupAdmin() {
@@ -188,7 +188,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     },
     back() {

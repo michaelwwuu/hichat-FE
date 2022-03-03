@@ -57,14 +57,14 @@
                 <div
                   class="home-user"
                   @click="back"
-                  style="position: absolute; left: 12px; top: 20px;"
+                  style="position: absolute; left: 12px; top: 19px;"
                 ></div>
               </template>
               <template v-else-if="groupData.isAdmin">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
-                  style="position: absolute; left: 12px; top: 20px;"
+                  style="position: absolute; left: 12px; top: 19px;"
                 ></div>
               </template>
 
@@ -281,7 +281,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     },
     back() {

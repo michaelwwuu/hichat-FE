@@ -127,11 +127,15 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <div class="reply-message" v-if="replyMsg.type === 'dblclick'">
+        <div class="reply-message" v-if="replyMsg.clickType === 'replyMsg' ||replyMsg.clickType === 'editMsg'">
           <el-avatar shape="square" size="large" :src="chatUser.icon"></el-avatar>
           <div class="reply-message-box">
             <span>{{chatUser.name}}</span>
-            <span>{{replyMsg.innerText.length > 110 ? replyMsg.innerText.substr(0, 110) + ' ...' : replyMsg.innerText }}</span>
+            <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{replyMsg.innerText.length > 110 ? replyMsg.innerText.substr(0, 110) + ' ...' : replyMsg.innerText }}</span>
+            <span v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'" class="replyMsg-Img">
+              <img :src="replyMsg.innerText" alt="">
+            </span>
+            <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'">回復語音訊息</span>
           </div>
           <div class="reply-close-btn" @click="closeReplyMessage">
             <i class="el-icon-close"></i>
@@ -323,7 +327,7 @@ export default {
       }
     },
     closeReplyMessage(){
-      this.setReplyMsg({type:"",innerText:""})
+      this.setReplyMsg({chatType:"",clickType:"",innerText:"",replyHistoryId:"",})
     },
     // 訊息統一格式
     messageList(data) {
@@ -337,7 +341,8 @@ export default {
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
         nickName:data.nickName,
-        isRplay:data.replyChat === null ? null : data.replyChat.text,
+        isRplay:data.replyChat === null ? null : data.replyChat,
+        
       };
     },
     // 獲取歷史訊息
@@ -725,6 +730,7 @@ export default {
               top: 0;
               height: 2em;
               border-radius: 6px;
+              width: inherit;
             }
           }
           span {
@@ -847,6 +853,12 @@ export default {
       color: #363636;
       width: 90em;
       word-wrap:break-word;
+    }
+    .replyMsg-Img{
+      img{
+        height:2em;
+        border-radius: 5px;
+      }
     }
   }
   .reply-close-btn{

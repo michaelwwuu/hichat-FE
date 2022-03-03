@@ -308,7 +308,9 @@ export default {
               type: "error",
             });
             localStorage.clear();
-            window.location.reload();
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000);
             return false;
           });
       });

@@ -215,7 +215,9 @@ export default {
           this.getHiChatDataList()
         }
       })
-      .catch((err) => { console.log(err) })
+      .catch((err) => { 
+        // console.log(err) 
+      })
     },
     getHiChatDataList() {
       let chatMsgKey = {
@@ -427,6 +429,7 @@ export default {
               top: 0;
               height: 2em;
               border-radius: 6px;
+              width: inherit;
             }
           }
           span{
