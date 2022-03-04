@@ -292,8 +292,8 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        case "SRV_MSG_READ":
-          // this.getHiChatDataList();
+        // case "SRV_MSG_READ":
+          this.getHiChatDataList();
           break;
       }
     },
@@ -332,7 +332,6 @@ export default {
         this.setChatGroup(data);
         this.getGroupListMember();
       }
-
       if (this.device === "moblie") {
         this.$router.push({ name: path });
       } else {

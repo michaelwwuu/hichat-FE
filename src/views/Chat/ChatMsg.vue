@@ -332,6 +332,7 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
+      setChatMsgData:"ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     noIconShow(iconData) {
@@ -364,6 +365,7 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
+        toChatId: data.toChatId,
         nickName: data.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
@@ -429,12 +431,30 @@ export default {
           this.readMsg = historyMsgList.filter((el) => {
             return el.chat.toChatId === "u" + localStorage.getItem("id");
           });
-          if (historyMsgList.length > 0) this.readMsgShow(this.readMsg[0]);
+          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
           this.messageData.forEach((res) => (res.isRead = true));
           break;
+        // 編輯訊息
+        case "SRV_CHAT_EDIT":
+          this.messageData.forEach((res) =>{
+            if(res.historyId === userInfo.historyId){
+              res.message.content = userInfo.chat.text
+            }
+          })
+          this.getHiChatDataList()
+          break;
+        // 刪除訊息
+        case "SRV_CHAT_DEL":
+          this.messageData.forEach((res,index) =>{
+            if(res.historyId === userInfo.targetId){
+              this.messageData.splice(index,1)
+            }
+          })
+          this.getHiChatDataList()
+          break;   
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
           if (this.device === "moblie") this.getChatHistoryMessage();

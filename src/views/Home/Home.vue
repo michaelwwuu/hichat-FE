@@ -372,7 +372,6 @@ export default {
               this.setChatUser(item)
             }
           });
-
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":

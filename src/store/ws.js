@@ -26,7 +26,7 @@ export const state = {
     clickType:"",
     innerText:"",
     replyHistoryId:"",
-  }
+  },
 };
 export const actions = {};
 

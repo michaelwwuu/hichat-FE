@@ -37,9 +37,7 @@
                   ></audio>
                 </div>
               </template>
-              <span>
-                <div v-linkified>{{ el.message.content }}</div>
-              </span>
+               <div v-html="el.message.content" v-linkified></div>
             </span>
 
             <audio
@@ -82,6 +80,7 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { deleteRecentChat } from "@/api";
 import { mapMutations } from "vuex";
 export default {
   name: "MessagePabel",
@@ -95,7 +94,7 @@ export default {
   },
   data() {
     return {
-      // newData: [],
+      newData: [],
       message: [],
       newMessageData: {},
     };
@@ -121,11 +120,7 @@ export default {
         });
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData;
       });
-      console.log(this.newMessageData)
     },
-  },
-  created() {
-    Socket.$on("message", this.handleGetMessage);
   },
   methods: {
     ...mapMutations({
@@ -196,7 +191,7 @@ export default {
           label: "在所有人的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            // console.log("返回(B)");
+            this.deleteRecent(data,'all')
           },
         },
         {
@@ -204,7 +199,7 @@ export default {
           label: "只在我的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            // console.log("返回(B)");
+            this.deleteRecent(data,'only')
           },
         },
       ];
@@ -242,18 +237,33 @@ export default {
         duration: 1000,
       });
     },
-    handleGetMessage(msg) {
-      let userInfo = JSON.parse(msg);
-      switch (userInfo.chatType) {
-        case "SRV_CHAT_EDIT":
-          this.message.forEach((el)=>{
-            if(el.historyId === userInfo.chat.historyId){
-              el.message.content = userInfo.chat.text
-            }
-          })
-          break;
-      }
-    }
+    deleteRecent(data,type) {
+      let parmas = {
+        fullDelete: type === "all",
+        historyId: data.historyId,
+        toChatId: data.toChatId,
+      };
+      deleteRecentChat(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            this.message = this.message.filter( item => item.historyId !== parmas.historyId )
+            this.getHiChatDataList();
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+        });
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
+    },
   },
 };
 </script>
