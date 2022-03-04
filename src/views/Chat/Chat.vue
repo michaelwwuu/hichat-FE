@@ -61,22 +61,22 @@
           <el-avatar
             shape="square"
             size="large"
-            :src="groupUser.icon"
+            :src="replyMsg.icon"
           ></el-avatar>
           <div class="reply-message-box">
-            <span>{{ groupUser.name }}</span>
-            <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
+            <span>{{ replyMsg.name }}</span>
+            <span v-if="replyMsg.chatType === 'SRV_GROUP_SEND'">{{
               replyMsg.innerText.length > 110
                 ? replyMsg.innerText.substr(0, 110) + " ..."
                 : replyMsg.innerText
             }}</span>
             <span
-              v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'"
+              v-else-if="replyMsg.chatType === 'SRV_GROUP_IMAGE'"
               class="replyMsg-Img"
             >
               <img :src="replyMsg.innerText" alt="" />
             </span>
-            <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'"
+            <span v-else-if="replyMsg.chatType === 'SRV_GROUP_AUDIO'"
               >回復語音訊息</span
             >
           </div>
@@ -142,9 +142,8 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-  },
-  mounted() {
     this.getGroupListMember();
+
   },
   computed: {
     ...mapState({
@@ -220,8 +219,7 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
-        toChatId: data.toChatId,
-        nickName: data.nickName,
+        toChatId: data.chat.toChatId,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },

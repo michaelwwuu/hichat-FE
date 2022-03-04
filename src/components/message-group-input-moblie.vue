@@ -211,6 +211,7 @@ import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue"
+import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
 export default {
@@ -253,9 +254,16 @@ export default {
     groupData: {
       type: Object,
     },
-    
+  },
+  computed: {
+    ...mapState({
+      replyMsg: (state) => state.ws.replyMsg,
+    }),
   },
   methods: {
+    ...mapMutations({
+      setReplyMsg: "ws/setReplyMsg",
+    }),    
     pictureShow(val){
       this.takePictureShow = val
     },
@@ -456,11 +464,24 @@ export default {
       return true;
     },
     keyUp (event) {
-      if (event.shiftKey && keyCode === 13){
-        return this.textArea
-      } else if (event.key === 'Enter') {
-        this.sendMessage()
+      console.log(this.replyMsg)
+      if (event.shiftKey && keyCode === 13) {
+        return this.textArea;
+      } else if (event.key === "Enter") {
+        if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
+          this.sendMessage();
+        }else{
+          this.editMessage()
+        }
       }
+    },
+    closeReplyMessage() {
+      this.setReplyMsg({
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
+      });
     },
     // 发送消息
     sendMessage() {
@@ -468,6 +489,11 @@ export default {
         chatType: "CLI_GROUP_SEND",
         id: Math.random(),
         toChatId:this.groupData.toChatId,
+        replyHistoryId:
+          this.replyMsg.replyHistoryId !== ""
+            ? this.replyMsg.replyHistoryId
+            : "",
+        targetArray: [],
         text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
@@ -476,10 +502,31 @@ export default {
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
+        this.closeReplyMessage();
         // 消息清空
         this.textArea = "";
       }
     },
+    editMessage() {
+      let editMessage ={
+        chatType: "CLI_CHAT_EDIT",
+        id: Math.random(),
+        tokenType: 0,
+        fromChatId: this.groupData.lastChat.fromChatId,
+        targetId: this.replyMsg.replyHistoryId,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        toChatId: this.groupData.lastChat.toChatId,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
+      if (this.blankTesting()) {
+        // 发送服务器
+        Socket.send(editMessage);
+        this.closeReplyMessage();
+        // 消息清空
+        this.textArea = "";
+      } 
+    }
   },
   components: {
     EmojiPicker,

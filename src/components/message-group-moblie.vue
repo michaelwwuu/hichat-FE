@@ -24,14 +24,14 @@
                   <div style="color: #00a1ff">{{ el.name }}</div>
                   <div
                     style="color: #ababab"
-                    v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+                    v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
                   >
                     {{ el.isRplay.text }}
                   </div>
-                  <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
+                  <div v-else-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'">
                     <img :src="el.isRplay.text" style="border-radius: 5px" />
                   </div>
-                  <div v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                  <div v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'">
                     <audio
                       class="message-audio"
                       controls
@@ -185,6 +185,8 @@ export default {
         clickType: "replyMsg",
         innerText: event.message.content,
         replyHistoryId: event.historyId,
+        name:data.name,
+        icon:data.icon,
       });
     },
     onContextmenu(data) {
@@ -198,6 +200,8 @@ export default {
               clickType: "editMsg",
               innerText: data.message.content,
               replyHistoryId: data.historyId,
+              name:data.name,
+              icon:data.icon,
             });
           },
         },
@@ -217,6 +221,8 @@ export default {
               clickType: "replyMsg",
               innerText: data.message.content,
               replyHistoryId: data.historyId,
+              name:data.name,
+              icon:data.icon,
             });
           },
         },
