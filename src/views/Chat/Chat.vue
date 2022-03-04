@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <el-container>
-      <el-main>
+      <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
             <span class="home-photo-link" @click="infoMsgShow">
@@ -45,11 +45,45 @@
             </el-dropdown>
           </div>
         </el-header>
+        
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
           :contactListData="contactListData"
         />
+        <div
+          class="reply-message"
+          v-if="
+            replyMsg.clickType === 'replyMsg' ||
+            replyMsg.clickType === 'editMsg'
+          "
+        >
+          <el-avatar
+            shape="square"
+            size="large"
+            :src="groupUser.icon"
+          ></el-avatar>
+          <div class="reply-message-box">
+            <span>{{ groupUser.name }}</span>
+            <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
+              replyMsg.innerText.length > 110
+                ? replyMsg.innerText.substr(0, 110) + " ..."
+                : replyMsg.innerText
+            }}</span>
+            <span
+              v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'"
+              class="replyMsg-Img"
+            >
+              <img :src="replyMsg.innerText" alt="" />
+            </span>
+            <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'"
+              >回復語音訊息</span
+            >
+          </div>
+          <div class="reply-close-btn" @click="closeReplyMessage">
+            <i class="el-icon-close"></i>
+          </div>
+        </div>        
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
@@ -117,6 +151,7 @@ export default {
       wsRes: (state) => state.ws.wsRes,
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
+      replyMsg: (state) => state.ws.replyMsg,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -124,6 +159,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
+      setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
@@ -139,6 +175,14 @@ export default {
       } else {
         return iconData.icon;
       }
+    },
+    closeReplyMessage() {
+      this.setReplyMsg({
+        chatType:"",
+        clickType:"",
+        innerText:"",
+        replyHistoryId:"",
+      });
     },
     changeGroupAdminShow() {
       this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
@@ -176,6 +220,9 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
+        toChatId: data.toChatId,
+        nickName: data.nickName,
+        isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },
     // 已讀
@@ -529,6 +576,46 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 10px;
+}
+.reply-message {
+  height: 50px;
+  background-color: rgba(225, 225, 225, 0.85);
+  border-top: 1px solid #dddddd;
+  display: flex;
+  color: #959393;
+  // justify-content: center;
+  align-items: center;
+  padding: 10px;
+  .reply-message-box {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    span {
+      line-height: 20px;
+      color: #363636;
+      width: 90em;
+      word-wrap: break-word;
+    }
+    .replyMsg-Img {
+      img {
+        height: 2em;
+        border-radius: 5px;
+      }
+    }
+  }
+  .reply-close-btn {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  /deep/.el-avatar {
+    overflow: initial;
+    img {
+      border-radius: 4px;
+      width: -webkit-fill-available;
+    }
+  }
 }
 /* width */
 ::-webkit-scrollbar {

@@ -351,8 +351,8 @@ export default {
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
         });
         this.getHistory(data, path);
-        setTimeout(() => this.getHiChatDataList(), 2000);
         this.closeReplyMessage();
+        setTimeout(() => this.getHiChatDataList(), 2000);
       }
     },
     closeReplyMessage() {

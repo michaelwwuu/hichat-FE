@@ -15,9 +15,31 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
+                <template v-if="el.isRplay !== null">
+                  <div style="color: #00a1ff">{{ el.name }}</div>
+                  <div
+                    style="color: #ababab"
+                    v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+                  >
+                    {{ el.isRplay.text }}
+                  </div>
+                  <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
+                    <img :src="el.isRplay.text" style="border-radius: 5px" />
+                  </div>
+                  <div v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                    <audio
+                      class="message-audio"
+                      controls
+                      :src="el.isRplay.text"
+                      type="mp3"
+                    ></audio>
+                  </div>
+                </template>
                 <div v-html="el.message.content" v-linkified></div>
               </div>
             </span>
@@ -134,6 +156,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setReplyMsg:"ws/setReplyMsg",
       setContactListData: "ws/setContactListData",
     }),
     // 判断讯息Class名称
@@ -155,6 +178,99 @@ export default {
           this.setContactListData(this.contactList);
         });
       });
+    },
+    dblclick(event) {
+      this.setReplyMsg({
+        chatType: event.chatType,
+        clickType: "replyMsg",
+        innerText: event.message.content,
+        replyHistoryId: event.historyId,
+      });
+    },
+    onContextmenu(data) {
+      let item = [
+        {
+          name: "edit",
+          label: "編輯",
+          onClick: () => {
+            this.setReplyMsg({
+              chatType: data.chatType,
+              clickType: "editMsg",
+              innerText: data.message.content,
+              replyHistoryId: data.historyId,
+            });
+          },
+        },
+        {
+          name: "copy",
+          label: "複製",
+          onClick: () => {
+            this.copyPaste(data);
+          },
+        },
+        {
+          name: "reply",
+          label: "回覆",
+          onClick: () => {
+            this.setReplyMsg({
+              chatType: data.chatType,
+              clickType: "replyMsg",
+              innerText: data.message.content,
+              replyHistoryId: data.historyId,
+            });
+          },
+        },
+        {
+          name: "deleteAllChat",
+          label: "在所有人的對話紀錄中刪除",
+          divided: true,
+          onClick: () => {
+            this.deleteRecent(data,'all')
+          },
+        },
+        {
+          name: "deleteMyChat",
+          label: "只在我的對話紀錄中刪除",
+          divided: true,
+          onClick: () => {
+            this.deleteRecent(data,'only')
+          },
+        },
+      ];
+      if (data.userChatId !== "u" + localStorage.getItem("id")) {
+        this.newItem = item.filter((list) => {
+          return list.name !== "deleteAllChat" && list.name !== "edit";
+        });
+      } else {
+        this.newItem = item;
+      }
+      this.$contextmenu({
+        items: this.newItem,
+        event,
+        //x: event.clientX,
+        //y: event.clientY,
+        customClass: "custom-class",
+        zIndex: 3,
+        minWidth: 230,
+      });
+      return false;
+    },
+    deleteRecent(data,type) {
+      let parmas = {
+        fullDelete: type === "all",
+        historyId: data.historyId,
+        toChatId: data.toChatId,
+      };
+      deleteRecentChat(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            this.message = this.message.filter( item => item.historyId !== parmas.historyId )
+            this.getHiChatDataList();
+          }
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+        });
     },
   },
 };
