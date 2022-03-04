@@ -293,7 +293,7 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
         case "SRV_MSG_READ":
-          this.getHiChatDataList();
+          // this.getHiChatDataList();
           break;
       }
     },

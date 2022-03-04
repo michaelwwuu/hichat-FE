@@ -481,7 +481,7 @@ export default {
       if (event.shiftKey && keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
-        if(this.replyMsg.clickType === "replyMsg"){
+        if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
           this.sendMessage();
         }else{
           this.editMessage()

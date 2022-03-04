@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { mapMutations } from "vuex";
 export default {
   name: "MessagePabel",
@@ -94,7 +95,7 @@ export default {
   },
   data() {
     return {
-      newData: [],
+      // newData: [],
       message: [],
       newMessageData: {},
     };
@@ -118,12 +119,14 @@ export default {
             this.$root.formatTimeDay(el.message.time)
           );
         });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-          newData;
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData;
       });
+      console.log(this.newMessageData)
     },
   },
-
+  created() {
+    Socket.$on("message", this.handleGetMessage);
+  },
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
@@ -239,6 +242,18 @@ export default {
         duration: 1000,
       });
     },
+    handleGetMessage(msg) {
+      let userInfo = JSON.parse(msg);
+      switch (userInfo.chatType) {
+        case "SRV_CHAT_EDIT":
+          this.message.forEach((el)=>{
+            if(el.historyId === userInfo.chat.historyId){
+              el.message.content = userInfo.chat.text
+            }
+          })
+          break;
+      }
+    }
   },
 };
 </script>

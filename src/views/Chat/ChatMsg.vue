@@ -436,13 +436,6 @@ export default {
           this.messageData.forEach((res) => (res.isRead = true));
           break;
         // 撈取歷史訊息
-        case "SRV_CHAT_EDIT":
-          this.messageData = this.messageData.forEach((res) =>{
-            if (res.historyId === userInfo.chat.historyId) {
-              return res.message.content = userInfo.chat.text
-            }
-          })
-          break;
         case "SRV_RECENT_CHAT":
           if (this.device === "moblie") this.getChatHistoryMessage();
           break;

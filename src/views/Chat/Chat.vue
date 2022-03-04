@@ -4,31 +4,45 @@
       <el-main>
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
-            <span class="home-photo-link"  @click="infoMsgShow">
+            <span class="home-photo-link" @click="infoMsgShow">
               <div class="home-user-photo">
-                <img :src="noIconShow(JSON.stringify(groupUser) === '{}'? groupData : groupUser)" />  
+                <img
+                  :src="
+                    noIconShow(
+                      JSON.stringify(groupUser) === '{}' ? groupData : groupUser
+                    )
+                  "
+                />
               </div>
-              <span>{{ groupUser.groupName === undefined ? groupData.groupName: groupUser.groupName}}</span>
+              <span>{{
+                groupUser.groupName === undefined
+                  ? groupData.groupName
+                  : groupUser.groupName
+              }}</span>
             </span>
-              <el-dropdown trigger="click" >
-                <div class="el-dropdown-link">
-                  <div class="home-user-more"></div>
-                </div>
-                <el-dropdown-menu slot="dropdown" class="chat-more">
-                  <el-dropdown-item>
-                    <div class="logout-btn" v-if="groupUser.isAdmin" @click="changeGroupAdminShow">
-                      <img src="./../../../static/images/pc/key.png" alt="" />
-                      <span>转移管理者权限</span>
-                    </div>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <div class="logout-btn" @click="leaveGroupDialogShow = true">
-                      <img src="./../../../static/images/pc/trash.png" alt="" />
-                      <span style="color:#ee5253">退出群组</span>
-                    </div>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+            <el-dropdown trigger="click">
+              <div class="el-dropdown-link">
+                <div class="home-user-more"></div>
+              </div>
+              <el-dropdown-menu slot="dropdown" class="chat-more">
+                <el-dropdown-item>
+                  <div
+                    class="logout-btn"
+                    v-if="groupUser.isAdmin"
+                    @click="changeGroupAdminShow"
+                  >
+                    <img src="./../../../static/images/pc/key.png" alt="" />
+                    <span>转移管理者权限</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <div class="logout-btn" @click="leaveGroupDialogShow = true">
+                    <img src="./../../../static/images/pc/trash.png" alt="" />
+                    <span style="color: #ee5253">退出群组</span>
+                  </div>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-header>
         <message-pabel
@@ -66,7 +80,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { groupListMember,leaveGroup } from "@/api";
+import { groupListMember, leaveGroup } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
@@ -87,12 +101,12 @@ export default {
       groupData: {},
       readMsgData: [],
       contactList: [],
-      leaveGroupDialogShow:false,
+      leaveGroupDialogShow: false,
     };
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.setChatGroup(this.groupData)
+    this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
@@ -109,11 +123,11 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setInfoMsg:"ws/setInfoMsg",
-      setChatGroup:"ws/setChatGroup",
+      setInfoMsg: "ws/setInfoMsg",
+      setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
-      setMsgInfoPage:"ws/setMsgInfoPage",
-      setContactListData:"ws/setContactListData",
+      setMsgInfoPage: "ws/setMsgInfoPage",
+      setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData) {
       if (
@@ -126,13 +140,17 @@ export default {
         return iconData.icon;
       }
     },
-    changeGroupAdminShow(){
-      this.setMsgInfoPage({ pageShow:false, type:'AdminChange',})
-      this.infoMsgShow()
+    changeGroupAdminShow() {
+      this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
+      this.infoMsgShow();
     },
-    infoMsgShow(){
-      this.setMsgInfoPage({ pageShow:true, type:'',})
-      this.setInfoMsg({ infoMsgShow:true,infoMsgNav:'GroupPage',infoMsgChat:true })
+    infoMsgShow() {
+      this.setMsgInfoPage({ pageShow: true, type: "" });
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "GroupPage",
+        infoMsgChat: true,
+      });
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -142,7 +160,7 @@ export default {
           if (res.icon === undefined)
             res.icon = require("./../../../static/images/image_user_defult.png");
         });
-        this.setContactListData(this.contactList)
+        this.setContactListData(this.contactList);
       });
     },
     // 訊息統一格式
@@ -178,24 +196,21 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          if(this.groupUser.toChatId === userInfo.toChatId){
+          if (this.groupUser.toChatId === userInfo.toChatId) {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
-            if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
-          // if(userInfo.toChatId === JSON.parse(localStorage.getItem("groupData")).toChatId){
-          //   if(this.hichatNav.num === 1) this.readMsgShow(userInfo);
-          // }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.messageData = []
+          this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          if(historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -205,19 +220,20 @@ export default {
           break;
       }
     },
-    submitBtn(){
-      let groupId = this.groupUser.groupId
-      leaveGroup({groupId}).then((res)=>{
-        if(res.code === 200) {
-          this.leaveGroupDialogShow = false
-          this.setHichatNav({ type:"group", num: 1 })
-          this.setChatGroup({})
-          this.getHiChatDataList()
-        }
-      })
-      .catch((err) => { 
-        // console.log(err) 
-      })
+    submitBtn() {
+      let groupId = this.groupUser.groupId;
+      leaveGroup({ groupId })
+        .then((res) => {
+          if (res.code === 200) {
+            this.leaveGroupDialogShow = false;
+            this.setHichatNav({ type: "group", num: 1 });
+            this.setChatGroup({});
+            this.getHiChatDataList();
+          }
+        })
+        .catch((err) => {
+          // console.log(err)
+        });
     },
     getHiChatDataList() {
       let chatMsgKey = {
@@ -372,7 +388,7 @@ export default {
     .PC-header {
       position: relative;
       padding: 0;
-      background-color: #FFFFFF;
+      background-color: #ffffff;
       display: flex;
       .home-header-pc {
         margin: 1em;
@@ -402,7 +418,7 @@ export default {
           width: 2em;
           height: 2em;
           border-radius: 10px;
-          background-size:70%;
+          background-size: 70%;
           background-position: center;
           background-repeat: no-repeat;
         }
@@ -432,7 +448,7 @@ export default {
               width: inherit;
             }
           }
-          span{
+          span {
             font-size: 15px;
             padding-left: 10px;
             font-weight: 600;
