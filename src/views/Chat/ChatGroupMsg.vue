@@ -59,6 +59,39 @@
           :userInfoData="userInfoData"
           :contactListData="contactListData"
         />
+                <div
+          class="reply-message"
+          v-if="
+            replyMsg.clickType === 'replyMsg' ||
+            replyMsg.clickType === 'editMsg'
+          "
+        >
+          <el-avatar
+            shape="square"
+            size="large"
+            :src="replyMsg.icon"
+          ></el-avatar>
+          <div class="reply-message-box">
+            <span>{{ replyMsg.name }}</span>
+            <span v-if="replyMsg.chatType === 'SRV_GROUP_SEND'">{{
+              replyMsg.innerText.length > 110
+                ? replyMsg.innerText.substr(0, 110) + " ..."
+                : replyMsg.innerText
+            }}</span>
+            <span
+              v-else-if="replyMsg.chatType === 'SRV_GROUP_IMAGE'"
+              class="replyMsg-Img"
+            >
+              <img :src="replyMsg.innerText" alt="" />
+            </span>
+            <span v-else-if="replyMsg.chatType === 'SRV_GROUP_AUDIO'"
+              >回復語音訊息</span
+            >
+          </div>
+          <div class="reply-close-btn" @click="closeReplyMessage">
+            <i class="el-icon-close"></i>
+          </div>
+        </div>        
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
@@ -107,6 +140,7 @@ export default {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
       groupUser: (state) => state.ws.groupUser,
+      replyMsg: (state) => state.ws.replyMsg,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -114,6 +148,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setChatGroup: "ws/setChatGroup",
+      setReplyMsg: "ws/setReplyMsg",
       setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData) {
@@ -126,6 +161,14 @@ export default {
       } else {
         return iconData.icon;
       }
+    },
+    closeReplyMessage() {
+      this.setReplyMsg({
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
+      });
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -152,6 +195,8 @@ export default {
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
+        toChatId: data.chat.toChatId,
+        isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },
     // 獲取歷史訊息
@@ -216,6 +261,16 @@ export default {
           this.getChatHistoryMessage();
           break;
       }
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
     },
   },
   components: {

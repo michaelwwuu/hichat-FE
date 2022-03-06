@@ -45,7 +45,7 @@
             </el-dropdown>
           </div>
         </el-header>
-        
+
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -83,7 +83,7 @@
           <div class="reply-close-btn" @click="closeReplyMessage">
             <i class="el-icon-close"></i>
           </div>
-        </div>        
+        </div>
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
@@ -143,7 +143,6 @@ export default {
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
     this.getGroupListMember();
-
   },
   computed: {
     ...mapState({
@@ -177,10 +176,10 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
     },
     changeGroupAdminShow() {
