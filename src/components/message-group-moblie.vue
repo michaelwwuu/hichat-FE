@@ -21,7 +21,7 @@
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
                 <template v-if="el.isRplay !== null">
-                  <div style="color: #00a1ff">{{ el.name }}</div>
+                  <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                   <div
                     style="color: #ababab"
                     v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
@@ -116,10 +116,16 @@ export default {
   watch: {
     contactListData(val) {
       val.forEach((res) => {
+        console.log(res)
         this.message.forEach((el) => {
+          console.log(el)
+
           if (el.userChatId === "u" + res.memberId) {
             el.icon = res.icon;
             el.name = res.name;
+          }
+          if(el.isRplay !== null && el.isRplay.fromChatId === "u" + res.memberId){
+            el.isRplay.nickName = res.name
           }
         });
       });
@@ -136,12 +142,13 @@ export default {
     message(val) {
       this.newMessageData = {};
       val.forEach((el) => {
-        this.contactList.forEach((res) => {
-          if (el.userChatId === "u" + res.memberId) {
-            el.icon = res.icon;
-            el.name = res.name;
-          }
-        });
+        // this.contactList.forEach((res) => {
+        //   console.log(res)
+        //   if (el.userChatId === "u" + res.memberId) {
+        //     el.icon = res.icon;
+        //     el.name = res.name;
+        //   }
+        // });
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (

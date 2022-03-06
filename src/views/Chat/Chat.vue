@@ -221,6 +221,7 @@ export default {
         toChatId: data.chat.toChatId,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
+
     },
     // 已讀
     readMsgShow(data) {
