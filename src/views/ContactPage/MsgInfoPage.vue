@@ -253,7 +253,11 @@ export default {
         iconData.icon === null ||
         iconData.icon === ""
       ) {
-        return require(`./../../../static/images/image_${key}_defult.png`);
+        if(key === "user"){
+          return require('./../../../static/images/image_user_defult.png');
+        } else{
+          return require('./../../../static/images/image_group_defult.png');
+        }
       } else {
         return iconData.icon;
       }

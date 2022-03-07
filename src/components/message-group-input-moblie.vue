@@ -120,6 +120,7 @@
             </div>
           </emoji-picker>
         </div>
+
       </div>
       <div class="input-tools-left">
         <div>
@@ -132,6 +133,20 @@
         </div>
       </div>      
     </template>
+    <div class="callout-message" v-show="calloutShow">
+      <ul>
+        <li v-for="(item,index) in searchContactData" :key="index" @click="checkCallout(item)">
+          <el-avatar
+            shape="square"
+            size="small"
+            :src="item.icon"
+          ></el-avatar>
+          <div class="callout-message-box">
+              <span>{{ item.name }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>    
     <el-dialog
       title="上传图片"
       :visible.sync="uploadImgShow"
@@ -220,10 +235,13 @@ export default {
     return {
       textArea: "",
       search: "",
+      calloutShow:false,
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow:false,
+      checkName:[],
       fileList: [],
+      searchContactData:[],
       device: localStorage.getItem("device"),
       //錄音
       isVoice: false,
@@ -258,12 +276,23 @@ export default {
   computed: {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
+      contactListData: (state) => state.ws.contactListData,
     }),
+
+  },
+  watch:{
+    textArea:function(val){
+
+      // let searchKey = val.replace("@","")
+      // this.searchContactData= this.contactListData.filter(item => (~item.name.indexOf(searchKey)));
+      this.searchContactData= this.contactListData
+    }
   },
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
-    }),    
+      // setCalloutShow:"ws/setCalloutShow",
+    }), 
     pictureShow(val){
       this.takePictureShow = val
     },
@@ -271,7 +300,6 @@ export default {
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
-
     // 上傳圖片
     submitAvatarUpload() {
       let formData = new FormData();
@@ -463,9 +491,12 @@ export default {
       }
       return true;
     },
-    keyUp (event) {
-      console.log(this.replyMsg)
-      if (event.shiftKey && keyCode === 13) {
+    keyUp(event) {
+      if(event.code === "Digit2"){
+        this.calloutShow = true
+      } else if(this.textArea === "" || event.code === "Space"){
+        this.calloutShow = false
+      } else if(event.shiftKey && keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
@@ -474,6 +505,12 @@ export default {
           this.editMessage()
         }
       }
+    },
+    checkCallout(data){
+      this.calloutShow = false
+      console.log(data)
+      this.checkName.push("@" + data.name)
+      this.textArea = this.checkName.toString().replace(/[,]/g," ")
     },
     closeReplyMessage() {
       this.setReplyMsg({
@@ -720,6 +757,61 @@ export default {
           }
         }
       }
+    }
+  }
+}
+.callout-message {
+  background-color: rgba(225, 225, 225, 0.95);
+  border-top: 1px solid #dddddd;
+  color: #959393;
+  position:absolute;
+  left: 0;
+  bottom: 60px;
+  width: 100%;
+  ul{
+    max-height:200px; 
+    overflow-x: none;
+    overflow-y: auto;
+    li{
+      display: flex;
+      padding:8px;
+      cursor: pointer;
+      &:hover{
+        background:#ecf5ff;
+      }
+      .callout-message-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 10px;
+        span {
+          line-height: 20px;
+          color: #363636;
+          width: 90em;
+          word-wrap: break-word;
+        }
+        .replyMsg-Img {
+          img {
+            height: 2em;
+            border-radius: 5px;
+          }
+        }
+      }
+      
+    }
+  }
+
+  .reply-close-btn {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  /deep/.el-avatar {
+    overflow: initial;
+    img {
+      border-radius: 4px;
+      width: -webkit-fill-available;
     }
   }
 }

@@ -279,6 +279,7 @@ export default {
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
+      setCalloutShow:"ws/setCalloutShow",
     }),
     pictureShow(val) {
       this.takePictureShow = val;
@@ -478,7 +479,11 @@ export default {
       return true;
     },
     keyUp(event) {
-      if (event.shiftKey && keyCode === 13) {
+      if(event.code === "Digit2" || event.target.value === "@"){
+        this.setCalloutShow(true)
+      } else if(event.code === "Backspace" || event.code === "Space"){
+        this.setCalloutShow(false)
+      } else if(event.shiftKey && keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){

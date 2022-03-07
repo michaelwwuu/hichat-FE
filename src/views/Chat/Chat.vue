@@ -150,6 +150,7 @@ export default {
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
       replyMsg: (state) => state.ws.replyMsg,
+      calloutShow: (state) => state.ws.calloutShow,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -160,6 +161,7 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
+      setCalloutShow:"ws/setCalloutShow",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
     }),
@@ -174,6 +176,7 @@ export default {
         return iconData.icon;
       }
     },
+
     closeReplyMessage() {
       this.setReplyMsg({
         chatType: "",

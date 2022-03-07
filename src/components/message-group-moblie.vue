@@ -85,8 +85,9 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { mapMutations } from "vuex";
-import { groupListMember } from "@/api";
+import { groupListMember,deleteRecentChat } from "@/api";
 
 export default {
   name: "MessagePabel",
@@ -116,10 +117,7 @@ export default {
   watch: {
     contactListData(val) {
       val.forEach((res) => {
-        console.log(res)
         this.message.forEach((el) => {
-          console.log(el)
-
           if (el.userChatId === "u" + res.memberId) {
             el.icon = res.icon;
             el.name = res.name;
@@ -142,13 +140,15 @@ export default {
     message(val) {
       this.newMessageData = {};
       val.forEach((el) => {
-        // this.contactList.forEach((res) => {
-        //   console.log(res)
-        //   if (el.userChatId === "u" + res.memberId) {
-        //     el.icon = res.icon;
-        //     el.name = res.name;
-        //   }
-        // });
+        this.contactList.forEach((res) => {
+          if (el.userChatId === "u" + res.memberId) {
+            el.icon = res.icon;
+            el.name = res.name;
+          }
+        });
+        if(el.message.content === ""){
+          console.log(el)
+        }
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
@@ -285,6 +285,16 @@ export default {
           this.$message({ message: err, type: "error" });
         });
     },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      };
+      Socket.send(chatMsgKey);
+    },    
   },
 };
 </script>

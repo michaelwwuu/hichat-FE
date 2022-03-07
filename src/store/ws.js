@@ -31,6 +31,9 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setCalloutShow(state, payload){
+    state.calloutShow = payload;
+  },
   setWsRes(state, payload) {
     state.wsRes = payload;
   },
