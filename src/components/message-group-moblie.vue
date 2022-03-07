@@ -16,6 +16,7 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
               @contextmenu.prevent="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">

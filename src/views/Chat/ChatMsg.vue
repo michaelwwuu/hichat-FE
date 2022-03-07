@@ -472,9 +472,9 @@ export default {
             this.successDialogShow = true;
             data.isContact = true;
             this.setChatUser(data);
+            this.setHichatNav({ type: "address", num: 1 });
             if (this.device === "pc") {
               this.getHiChatDataList();
-              this.setHichatNav({ type: "address", num: 1 });
             }
           } else {
             this.$message({ message: res.message, type: "error" });
@@ -496,8 +496,8 @@ export default {
           if (res.code === 200) {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
+            this.setHichatNav({ type: "address", num: 1 });
             if (this.device === "pc") {
-              this.setHichatNav({ type: "address", num: 1 });
               this.setChatUser({});
               this.getHiChatDataList();
             }
@@ -551,6 +551,7 @@ export default {
             data.isContact = false;
             this.getHiChatDataList();
             this.setChatUser(data);
+            this.setHichatNav({ type: "address", num: 1 });
           }
         })
         .catch((err) => {
@@ -832,7 +833,7 @@ export default {
         align-items: center;
         background-color: #fff;
         height: 3em;
-        width: 85%;
+        width: 70%;
         margin: 0 auto;
         font-weight: 550;
         li {

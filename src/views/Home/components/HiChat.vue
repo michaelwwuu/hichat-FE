@@ -24,7 +24,6 @@
                   class="content-text"
                 >
                   <span>{{ item.lastChat.text }}</span>
-                  <span v-if="item.lastChat.text.length > 55">...</span>
                 </span>
 
                 <span
@@ -78,7 +77,6 @@
                   class="content-text"
                 >
                   <span>{{ item.lastChat.text }}</span>
-                  <span v-if="item.lastChat.text.length > 55">...</span>
                 </span>
                 <span
                   v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
@@ -141,7 +139,6 @@
                   class="content-text"
                 >
                   <span>{{ item.lastChat.text }}</span>
-                  <span v-if="item.lastChat.text.length > 55">...</span>
                 </span>
 
                 <span
@@ -402,8 +399,10 @@ export default {
         opacity: 0.5;
         span {
           &:nth-child(1) {
-            width: 10em;
+            width: 15em;
             overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             margin-bottom: 0;
             font-size: 14px;
           }

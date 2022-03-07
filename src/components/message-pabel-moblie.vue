@@ -15,6 +15,7 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <template v-if="el.isRplay !== null">
