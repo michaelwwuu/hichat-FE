@@ -348,6 +348,7 @@ export default {
     endHandler() {
       this.flag = clearInterval(this.flag);
     },
+
     // 重置秒數
     resetTime() {
       this.one = "00"; // 時
@@ -371,6 +372,7 @@ export default {
       this.endDisabledPlay = true;
       this.uploadDisabledPlay = true;
     },
+
     // 开始录音
     onStartVoice() {
       this.onStopAudio();
@@ -393,6 +395,7 @@ export default {
       });
       this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
     },
+
     // 结束录音
     onEndVoice() {
       this.isFinished = true;
@@ -426,6 +429,7 @@ export default {
       this.sendAduioShow = false;
       this.audioMessageData = {};
     },
+
     // 上傳錄音
     onAudioFile() {
       let formData = new FormData();
@@ -455,6 +459,7 @@ export default {
       if (category === "Places") return "旅游与地标";
       if (category === "Symbols") return "符号";
     },
+
     // 表情符号
     insert(emoji) {
       this.textArea += emoji;
@@ -478,6 +483,7 @@ export default {
       }
       return true;
     },
+
     keyUp(event) {
       if(event.code === "Digit2" || event.target.value === "@"){
         this.setCalloutShow(true)
@@ -493,6 +499,7 @@ export default {
         }
       }
     },
+    // 關閉回復訊息
     closeReplyMessage() {
       this.setReplyMsg({
         chatType: "",
@@ -526,6 +533,7 @@ export default {
         this.textArea = "";
       }
     },
+
     editMessage() {
       let editMessage ={
         chatType: "CLI_CHAT_EDIT",
