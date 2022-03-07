@@ -174,12 +174,11 @@ export default {
       let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
-        let userDefultImg = require("./../../../static/images/image_user_defult.png")
-        this.contactList.forEach((res) => {
-          this.messageData.forEach((el) => {
-            if ("u" + res.memberId === el.userChatId) {
-              el.icon = res.icon === undefined ? userDefultImg : res.icon;
-              el.name = res.name;
+        this.contactList.forEach((item) => {
+          this.messageData.forEach((data) => {
+            if ("u" + item.memberId === data.userChatId) {
+              data.icon = item.icon === undefined ? this.noIcon : item.icon;
+              data.name = item.name;
             }
           })  
         });

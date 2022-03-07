@@ -140,13 +140,8 @@ export default {
     },
     message(val) {
       this.newMessageData = {};
+      
       val.forEach((el) => {
-        this.contactList.forEach((res) => {
-          if (el.userChatId === "u" + res.memberId) {
-            el.icon = res.icon;
-            el.name = res.name;
-          }
-        });
         if(el.message.content === ""){
           console.log(el)
         }
