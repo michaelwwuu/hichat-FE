@@ -113,23 +113,23 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.getGroupListMember();
+    // this.getGroupListMember();
   },
   watch: {
-    contactListData(val) {
-      val.forEach((res) => {
-        this.message.forEach((el) => {
-          if (el.userChatId === "u" + res.memberId) {
-            el.icon = res.icon;
-            el.name = res.name;
-          }
-          if(el.isRplay !== null && el.isRplay.fromChatId === "u" + res.memberId){
-            el.isRplay.nickName = res.name
-          }
-        });
-      });
-      this.$root.gotoBottom();
-    },
+    // contactListData(val) {
+    //   val.forEach((res) => {
+    //     this.message.forEach((el) => {
+    //       if (el.userChatId === "u" + res.memberId) {
+    //         el.icon = res.icon;
+    //         el.name = res.name;
+    //       }
+    //       if(el.isRplay !== null && el.isRplay.fromChatId === "u" + res.memberId){
+    //         el.isRplay.nickName = res.name
+    //       }
+    //     });
+    //   });
+    //   this.$root.gotoBottom();
+    // },
     messageData(val) {
       //去除重复
       const set = new Set();
@@ -175,18 +175,18 @@ export default {
         return "message-layout-left";
       }
     },
-    getGroupListMember() {
-      let groupId = this.groupData.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined) {
-            res.icon = require("./../../static/images/image_user_defult.png");
-          }
-          this.setContactListData(this.contactList);
-        });
-      });
-    },
+    // getGroupListMember() {
+    //   let groupId = this.groupData.toChatId.replace("g", "");
+    //   groupListMember({ groupId }).then((res) => {
+    //     this.contactList = res.data.list;
+    //     this.contactList.forEach((res) => {
+    //       if (res.icon === undefined) {
+    //         res.icon = require("./../../static/images/image_user_defult.png");
+    //       }
+    //       this.setContactListData(this.contactList);
+    //     });
+    //   });
+    // },
     dblclick(event) {
       this.setReplyMsg({
         chatType: event.chatType,
