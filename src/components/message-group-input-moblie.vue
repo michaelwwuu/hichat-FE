@@ -493,9 +493,10 @@ export default {
       return true;
     },
     keyUp(event) {
+      console.log(event)
       if(event.code === "Digit2"){
         this.calloutShow = true
-      } else if(this.textArea === "" || event.code === "Space"){
+      } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
         this.calloutShow = false
       } else if(event.shiftKey && keyCode === 13) {
         return this.textArea;
@@ -510,7 +511,6 @@ export default {
     checkCallout(data){
       this.calloutShow = false
       this.targetArray.push("u" + data.memberId)
-      console.log(this.targetArray)
       this.checkName.push("@" + data.name)
       this.textArea = this.checkName.toString().replace(/[,]/g," ")
     },
@@ -543,6 +543,8 @@ export default {
         Socket.send(message);
         this.closeReplyMessage();
         // 消息清空
+        this.targetArray = []
+        this.checkName = []
         this.textArea = "";
       }
     },
