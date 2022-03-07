@@ -20,6 +20,7 @@
           placeholder="Aa"
           v-model="textArea"
           maxlength="500"
+          @keyup.native="callout" 
         >
         </el-input>
         <div class="footer-tools">
@@ -492,6 +493,13 @@ export default {
       }
       return true;
     },
+    callout(event){
+      if(event.code === "Digit2"){
+        this.calloutShow = true
+      } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
+        this.calloutShow = false
+      }
+    },
     keyUp(event) {
       console.log(event)
       if(event.code === "Digit2"){
@@ -764,6 +772,23 @@ export default {
     }
   }
 }
+.hichat-moblie{
+  .callout-message {
+    bottom: 55px;
+    overflow: scroll;
+    ul{
+      li{
+        .callout-message-box {
+          span {
+            line-height: 20px;
+            color: #363636;
+            word-wrap: break-word;
+          }
+        }
+      }
+    }
+  }
+}
 .callout-message {
   background-color: rgba(225, 225, 225, 0.95);
   border-top: 1px solid #dddddd;
@@ -778,8 +803,15 @@ export default {
     overflow-y: auto;
     li{
       display: flex;
-      padding:8px;
+      padding:11px 8px;
       cursor: pointer;
+      .el-avatar {
+        overflow: initial;
+        img {
+          border-radius: 4px;
+          width: -webkit-fill-available;
+        }
+      }
       &:hover{
         background:#ecf5ff;
       }
@@ -791,7 +823,6 @@ export default {
         span {
           line-height: 20px;
           color: #363636;
-          width: 90em;
           word-wrap: break-word;
         }
         .replyMsg-Img {
@@ -801,7 +832,6 @@ export default {
           }
         }
       }
-      
     }
   }
 

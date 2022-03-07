@@ -227,12 +227,6 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          // this.contactList.forEach((item) => {
-          //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
-          //     userInfo.chat.icon = item.icon;
-          //     userInfo.chat.name = item.name;
-          //   }
-          // });
           this.messageList(userInfo);
           this.messageData.push(this.chatRoomMsg);
           this.readMsgShow(userInfo);
@@ -245,10 +239,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsg = historyMsgList.filter((el)=>{
-            return el.chat.toChatId === "u" + localStorage.getItem("id") 
-          })
-          if (historyMsgList.length > 0) this.readMsgShow(this.readMsg[0]);
+          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -559,6 +550,47 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 10px;
+}
+.reply-message {
+  height: 50px;
+  background-color: rgba(225, 225, 225, 0.85);
+  border-top: 1px solid #dddddd;
+  display: flex;
+  color: #959393;
+  // justify-content: center;
+  align-items: center;
+  padding: 10px;
+  overflow: hidden;
+  .reply-message-box {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    span {
+      line-height: 20px;
+      color: #363636;
+      width: 90em;
+      word-wrap: break-word;
+    }
+    .replyMsg-Img {
+      img {
+        height: 2em;
+        border-radius: 5px;
+      }
+    }
+  }
+  .reply-close-btn {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  /deep/.el-avatar {
+    overflow: initial;
+    img {
+      border-radius: 4px;
+      width: -webkit-fill-available;
+    }
+  }
 }
 /* width */
 ::-webkit-scrollbar {

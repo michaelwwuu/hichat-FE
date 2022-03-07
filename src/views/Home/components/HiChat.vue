@@ -183,7 +183,7 @@ export default {
   data() {
     return {
       searchKey: "",
-      groupList: {},
+      groupList: [],
       groupDataList: [],
       hiChatDataList: [],
       newMsgDataList: [],
@@ -252,6 +252,7 @@ export default {
       }
       Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
+      this.closeReplyMessage();
     },
     getHiChatDataList() {
       let chatMsgKey = {
