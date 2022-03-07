@@ -241,6 +241,7 @@ export default {
       takePictureShow:false,
       checkName:[],
       fileList: [],
+      targetArray:[],
       searchContactData:[],
       device: localStorage.getItem("device"),
       //錄音
@@ -508,7 +509,8 @@ export default {
     },
     checkCallout(data){
       this.calloutShow = false
-      console.log(data)
+      this.targetArray.push("u" + data.memberId)
+      console.log(this.targetArray)
       this.checkName.push("@" + data.name)
       this.textArea = this.checkName.toString().replace(/[,]/g," ")
     },
@@ -530,7 +532,7 @@ export default {
           this.replyMsg.replyHistoryId !== ""
             ? this.replyMsg.replyHistoryId
             : "",
-        targetArray: [],
+        targetArray: this.targetArray,
         text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
