@@ -41,9 +41,18 @@
                     ></audio>
                   </div>
                 </template>
-                {{newContent}}
-                <div v-for="(item,index) in newContent" :key="index">
-                  <span v-linkified>{{ item}}</span>
+                <!-- {{newContent}} -->
+                <!-- <span v-linkified>{{el.message.content}}</span> -->
+
+                <div class="message-box-content">
+                  <span
+                    v-for="(item, index) in el.newContent"
+                    :key="index"
+                    v-linkified
+                    :class="{'message-touch-carte':item.startsWith('@')}"
+                    @click="item.startsWith('@') ? carteMsgShow(item) : false"
+                    >{{ item }}</span
+                  >
                 </div>
               </div>
             </span>
@@ -91,7 +100,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapMutations } from "vuex";
-import { groupListMember,deleteRecentChat } from "@/api";
+import { groupListMember, deleteRecentChat } from "@/api";
 
 export default {
   name: "MessagePabel",
@@ -110,7 +119,6 @@ export default {
     return {
       newData: [],
       message: [],
-      newContent:[],
       newMessageData: {},
       contactList: [],
       noIcon: require("./../../static/images/image_user_defult.png"),
@@ -128,8 +136,11 @@ export default {
             el.icon = res.icon;
             el.name = res.name;
           }
-          if(el.isRplay !== null && el.isRplay.fromChatId === "u" + res.memberId){
-            el.isRplay.nickName = res.name
+          if (
+            el.isRplay !== null &&
+            el.isRplay.fromChatId === "u" + res.memberId
+          ) {
+            el.isRplay.nickName = res.name;
           }
         });
       });
@@ -144,21 +155,11 @@ export default {
       this.$root.gotoBottom();
     },
     message(val) {
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         setTimeout(() => {
           this.newMessageData = {};
           val.forEach((el) => {
-            if(el.message.content === ""){
-            }
-
-            el.message.content.split(' ').forEach((num)=>{
-              if(num.match(/@/ig)){
-                num = `<span>${num}</span>`
-              }
-              this.newContent.push(num)
-            })
-
-            el.message.content = newContent.toString().replace(/,/ig," ")
+            el.newContent = el.message.content.split(" ");
             this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
             let newData = this.message.filter((res) => {
               return (
@@ -167,16 +168,16 @@ export default {
               );
             });
             this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-            newData;
+              newData;
             this.$root.gotoBottom();
           });
         }, 500);
-      })
+      });
     },
   },
   methods: {
     ...mapMutations({
-      setReplyMsg:"ws/setReplyMsg",
+      setReplyMsg: "ws/setReplyMsg",
       setContactListData: "ws/setContactListData",
     }),
     // 判断讯息Class名称
@@ -187,8 +188,17 @@ export default {
         return "message-layout-left";
       }
     },
-    contentCarteShow(){
-      console.log(123)
+    carteMsgShow(data) {
+      this.carteContact = this.contactList.filter((el) => {
+        return el.username === "@aassga1231"
+      })
+      console.log(this.carteContact)
+          //       this.setInfoMsg({
+          //   infoMsgShow: true,
+          //   infoMsgChat: true,
+          //   infoMsgNav: "ContactPage",
+          // });
+          // this.setMsgInfoPage({ pageShow: true, type: "ContactPage" });
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -196,7 +206,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {
-            return item.icon = this.noIcon
+            return (item.icon = this.noIcon);
           }
           this.setContactListData(this.contactList);
         });
@@ -208,8 +218,8 @@ export default {
         clickType: "replyMsg",
         innerText: event.message.content,
         replyHistoryId: event.historyId,
-        name:event.name,
-        icon:event.icon,
+        name: event.name,
+        icon: event.icon,
       });
     },
     onContextmenu(data) {
@@ -223,8 +233,8 @@ export default {
               clickType: "editMsg",
               innerText: data.message.content,
               replyHistoryId: data.historyId,
-              name:data.name,
-              icon:data.icon,
+              name: data.name,
+              icon: data.icon,
             });
           },
         },
@@ -244,8 +254,8 @@ export default {
               clickType: "replyMsg",
               innerText: data.message.content,
               replyHistoryId: data.historyId,
-              name:data.name,
-              icon:data.icon,
+              name: data.name,
+              icon: data.icon,
             });
           },
         },
@@ -254,7 +264,7 @@ export default {
           label: "在所有人的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            this.deleteRecent(data,'all')
+            this.deleteRecent(data, "all");
           },
         },
         {
@@ -262,7 +272,7 @@ export default {
           label: "只在我的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            this.deleteRecent(data,'only')
+            this.deleteRecent(data, "only");
           },
         },
       ];
@@ -300,7 +310,7 @@ export default {
         duration: 1000,
       });
     },
-    deleteRecent(data,type) {
+    deleteRecent(data, type) {
       let parmas = {
         fullDelete: type === "all",
         historyId: data.historyId,
@@ -309,7 +319,9 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.message = this.message.filter( item => item.historyId !== parmas.historyId )
+            this.message = this.message.filter(
+              (item) => item.historyId !== parmas.historyId
+            );
             this.getHiChatDataList();
           }
         })
@@ -326,7 +338,7 @@ export default {
         token: localStorage.getItem("token"),
       };
       Socket.send(chatMsgKey);
-    },    
+    },
   },
 };
 </script>
@@ -527,15 +539,15 @@ export default {
     }
   }
 }
-.hichat-pc{
+.hichat-pc {
   .message-pabel-box {
-    .message-styles-box{
+    .message-styles-box {
       .message-layout-left {
         p {
-          .el-image{
-            width:auto !important;
-            height:20em !important;
-            /deep/.el-image__inner{
+          .el-image {
+            width: auto !important;
+            height: 20em !important;
+            /deep/.el-image__inner {
               height: 100%;
             }
           }
@@ -543,17 +555,26 @@ export default {
       }
       .message-layout-right {
         p {
-          .el-image{
-            width:auto !important;
-            height:20em !important;
-            /deep/.el-image__inner{
+          .el-image {
+            width: auto !important;
+            height: 20em !important;
+            /deep/.el-image__inner {
               height: 100%;
             }
           }
         }
       }
     }
-    
+  }
+}
+.message-box-content {
+  display: flex;
+  span {
+    margin-right: 5px;
+  }
+  .message-touch-carte{
+    color: #00a1ff;
+    cursor: pointer;
   }
 }
 </style>
