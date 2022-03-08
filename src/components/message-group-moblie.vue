@@ -41,7 +41,10 @@
                     ></audio>
                   </div>
                 </template>
-                <div v-html="el.message.content" v-linkified></div>
+                {{newContent}}
+                <div v-for="(item,index) in newContent" :key="index">
+                  <span v-linkified>{{ item}}</span>
+                </div>
               </div>
             </span>
             <span
@@ -107,29 +110,31 @@ export default {
     return {
       newData: [],
       message: [],
+      newContent:[],
       newMessageData: {},
       contactList: [],
+      noIcon: require("./../../static/images/image_user_defult.png"),
     };
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    // this.getGroupListMember();
+    this.getGroupListMember();
   },
   watch: {
-    // contactListData(val) {
-    //   val.forEach((res) => {
-    //     this.message.forEach((el) => {
-    //       if (el.userChatId === "u" + res.memberId) {
-    //         el.icon = res.icon;
-    //         el.name = res.name;
-    //       }
-    //       if(el.isRplay !== null && el.isRplay.fromChatId === "u" + res.memberId){
-    //         el.isRplay.nickName = res.name
-    //       }
-    //     });
-    //   });
-    //   this.$root.gotoBottom();
-    // },
+    contactListData(val) {
+      val.forEach((res) => {
+        this.message.forEach((el) => {
+          if (el.userChatId === "u" + res.memberId) {
+            el.icon = res.icon;
+            el.name = res.name;
+          }
+          if(el.isRplay !== null && el.isRplay.fromChatId === "u" + res.memberId){
+            el.isRplay.nickName = res.name
+          }
+        });
+      });
+      this.$root.gotoBottom();
+    },
     messageData(val) {
       //去除重复
       const set = new Set();
@@ -139,22 +144,34 @@ export default {
       this.$root.gotoBottom();
     },
     message(val) {
-      this.newMessageData = {};
-      
-      val.forEach((el) => {
-        if(el.message.content === ""){
-          console.log(el)
-        }
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-        let newData = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-          newData;
-      });
+      this.$nextTick(()=>{
+        setTimeout(() => {
+          this.newMessageData = {};
+          val.forEach((el) => {
+            if(el.message.content === ""){
+            }
+
+            el.message.content.split(' ').forEach((num)=>{
+              if(num.match(/@/ig)){
+                num = `<span>${num}</span>`
+              }
+              this.newContent.push(num)
+            })
+
+            el.message.content = newContent.toString().replace(/,/ig," ")
+            this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
+            let newData = this.message.filter((res) => {
+              return (
+                this.$root.formatTimeDay(res.message.time) ===
+                this.$root.formatTimeDay(el.message.time)
+              );
+            });
+            this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+            newData;
+            this.$root.gotoBottom();
+          });
+        }, 500);
+      })
     },
   },
   methods: {
@@ -170,26 +187,29 @@ export default {
         return "message-layout-left";
       }
     },
-    // getGroupListMember() {
-    //   let groupId = this.groupData.toChatId.replace("g", "");
-    //   groupListMember({ groupId }).then((res) => {
-    //     this.contactList = res.data.list;
-    //     this.contactList.forEach((res) => {
-    //       if (res.icon === undefined) {
-    //         res.icon = require("./../../static/images/image_user_defult.png");
-    //       }
-    //       this.setContactListData(this.contactList);
-    //     });
-    //   });
-    // },
+    contentCarteShow(){
+      console.log(123)
+    },
+    getGroupListMember() {
+      let groupId = this.groupData.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((item) => {
+          if (item.icon === undefined) {
+            return item.icon = this.noIcon
+          }
+          this.setContactListData(this.contactList);
+        });
+      });
+    },
     dblclick(event) {
       this.setReplyMsg({
         chatType: event.chatType,
         clickType: "replyMsg",
         innerText: event.message.content,
         replyHistoryId: event.historyId,
-        name:data.name,
-        icon:data.icon,
+        name:event.name,
+        icon:event.icon,
       });
     },
     onContextmenu(data) {
@@ -264,6 +284,22 @@ export default {
       });
       return false;
     },
+    copyPaste(data) {
+      let url = document.createElement("textarea");
+      document.body.appendChild(url);
+      url.value = data.message.content;
+      url.select();
+      document.execCommand("copy");
+      document.body.removeChild(url);
+
+      this.$message({
+        message: `${
+          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : url.value
+        } 复制成功`,
+        type: "success",
+        duration: 1000,
+      });
+    },
     deleteRecent(data,type) {
       let parmas = {
         fullDelete: type === "all",
@@ -312,7 +348,6 @@ export default {
       border-radius: 10px;
     }
   }
-
   .message-styles-box {
     margin-bottom: 20px;
     .message-layout-left,

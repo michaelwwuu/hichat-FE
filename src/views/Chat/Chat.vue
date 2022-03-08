@@ -201,12 +201,7 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          this.messageData.forEach((data) => {
-            if ("u" + item.memberId === data.userChatId) {
-              data.icon = item.icon === undefined ? this.noIcon : item.icon;
-              data.name = item.name;
-            }
-          })  
+          if(item.icon === undefined) return item.icon = this.noIcon
         });
         this.setContactListData(this.contactList);
       });

@@ -284,7 +284,7 @@ export default {
   },
   watch:{
     textArea:function(val){
-
+      console.log(val)
       // let searchKey = val.replace("@","")
       // this.searchContactData= this.contactListData.filter(item => (~item.name.indexOf(searchKey)));
       this.searchContactData= this.contactListData
@@ -441,6 +441,7 @@ export default {
       this.sendAduioShow = false;
       this.audioMessageData = {};
     },
+
     // 上傳錄音
     onAudioFile() {
       let formData = new FormData();
@@ -470,6 +471,7 @@ export default {
       if (category === "Places") return "旅游与地标";
       if (category === "Symbols") return "符号";
     },
+
     // 表情符号
     insert(emoji) {
       this.textArea += emoji;
@@ -493,6 +495,7 @@ export default {
       }
       return true;
     },
+
     callout(event){
       if(event.code === "Digit2"){
         this.calloutShow = true
@@ -500,8 +503,8 @@ export default {
         this.calloutShow = false
       }
     },
+
     keyUp(event) {
-      console.log(event)
       if(event.code === "Digit2"){
         this.calloutShow = true
       } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
@@ -516,12 +519,14 @@ export default {
         }
       }
     },
+
     checkCallout(data){
       this.calloutShow = false
       this.targetArray.push("u" + data.memberId)
       this.checkName.push("@" + data.name)
       this.textArea = this.checkName.toString().replace(/[,]/g," ")
     },
+
     closeReplyMessage() {
       this.setReplyMsg({
         chatType: "",

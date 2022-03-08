@@ -130,7 +130,7 @@ export default {
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
-    this.getGroupListMember();
+    // this.getGroupListMember();
     this.getChatHistoryMessage();
   },
   // beforeDestroy() {
@@ -170,21 +170,16 @@ export default {
         replyHistoryId: "",
       });
     },
-    getGroupListMember() {
-      let groupId = this.groupData.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((item) => {
-          this.messageData.forEach((data) => {
-            if ("u" + item.memberId === data.userChatId) {
-              data.icon = item.icon === undefined ? this.noIcon : item.icon;
-              data.name = item.name;
-            }
-          })  
-        });
-        this.setContactListData(this.contactList);
-      });
-    },
+    // getGroupListMember() {
+    //   let groupId = this.groupData.toChatId.replace("g", "");
+    //   groupListMember({ groupId }).then((res) => {
+    //     this.contactList = res.data.list;
+    //     this.contactList.forEach((item) => {
+    //       if(item.icon === undefined) return item.icon = this.noIcon
+    //     });
+    //     this.setContactListData(this.contactList);
+    //   });
+    // },
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
