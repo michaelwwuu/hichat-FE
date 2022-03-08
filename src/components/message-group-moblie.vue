@@ -50,7 +50,7 @@
                     :key="index"
                     v-linkified
                     :class="{'message-touch-carte':item.startsWith('@')}"
-                    @click="item.startsWith('@') ? carteMsgShow(item.split('@')) : false"
+                    @click="item.startsWith('@') ? carteMsgShow(item.replace(/\s*/g,'')) : false"
                     >{{ item }}</span
                   >
                 </div>
@@ -177,6 +177,8 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setInfoMsg:"ws/setInfoMsg",
+      setChatUser:"ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
       setContactListData: "ws/setContactListData",
     }),
@@ -190,16 +192,19 @@ export default {
     },
     carteMsgShow(data) {
       this.carteContact = this.contactList.filter((el) => {
-        return data === el.username
+        return el.username === data.replace("@", "")
       })
-      
-      console.log(this.carteContact)
-          //       this.setInfoMsg({
-          //   infoMsgShow: true,
-          //   infoMsgChat: true,
-          //   infoMsgNav: "ContactPage",
-          // });
-          // this.setMsgInfoPage({ pageShow: true, type: "ContactPage" });
+      if(this.carteContact.length === 0){
+        this.$message({ message: "無此成員", type: "error" });
+      }
+      this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
+      this.carteContact[0].type = "address";
+      this.setChatUser(this.carteContact[0]);
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgChat: true,
+        infoMsgNav: "ContactPage",
+      });
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
