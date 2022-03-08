@@ -50,7 +50,7 @@
                     :key="index"
                     v-linkified
                     :class="{'message-touch-carte':item.startsWith('@')}"
-                    @click="item.startsWith('@') ? carteMsgShow(item) : false"
+                    @click="item.startsWith('@') ? carteMsgShow(item.split('@')) : false"
                     >{{ item }}</span
                   >
                 </div>
@@ -190,8 +190,9 @@ export default {
     },
     carteMsgShow(data) {
       this.carteContact = this.contactList.filter((el) => {
-        return el.username === "@aassga1231"
+        return data === el.username
       })
+      
       console.log(this.carteContact)
           //       this.setInfoMsg({
           //   infoMsgShow: true,
