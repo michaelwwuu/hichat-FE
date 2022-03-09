@@ -272,17 +272,18 @@ export default {
         //成功收到
         case "SRV_RECENT_CHAT":
           this.hiChatDataList = userInfo.recentChat.filter(
-            (item) => item.isContact
+            (item) => item.isContact && item.lastChat !== null
           );
           this.groupDataList = userInfo.recentChat.filter(
-            (item) => item.isGroup
+            (item) => item.isGroup && item.lastChat !== null
           );
           this.contactDataList = userInfo.recentChat.filter(
-            (item) => !item.isContact && item.isContact !== null
+            (item) => !item.isContact && item.isContact !== null && item.lastChat !== null
           );
           this.messageNum = this.contactDataList.some(
             (item) => item.unreadCount > 0
           );
+
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":

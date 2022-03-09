@@ -21,10 +21,10 @@
               <template v-if="el.isRplay !== null">
                 <div style="color: #00a1ff">{{ el.nickName }}</div>
                 <div
-                  style="color: #ababab"
+                  class="goAnchor-box"
                   v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
                 >
-                  {{ el.isRplay.text }}
+                  <a href="#" @click="goAnchor(el.isRplay.historyId)" class="goAnchor">{{ el.isRplay.text }}</a>
                 </div>
                 <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
                   <img :src="el.isRplay.text" style="border-radius: 5px" />
@@ -38,7 +38,7 @@
                   ></audio>
                 </div>
               </template>
-               <div v-html="el.message.content" v-linkified></div>
+               <div :id="el.historyId" v-html="el.message.content" v-linkified></div>
             </span>
 
             <audio
@@ -127,6 +127,9 @@ export default {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
     }),
+    goAnchor(data) {
+      document.getElementById(data).scrollIntoView(true);
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -489,4 +492,19 @@ export default {
     }
   }
 }
+.goAnchor-box{
+  cursor: pointer;
+  .goAnchor{
+    color: #ababab;
+    text-decoration: none;
+  }
+  &:hover{
+    .goAnchor{
+      color: #5f5f5f;
+    }
+    background-color: #85d2ff56;
+    border-radius: 8px;
+  }
+}
+
 </style>
