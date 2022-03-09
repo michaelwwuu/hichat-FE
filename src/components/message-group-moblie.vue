@@ -41,16 +41,13 @@
                     ></audio>
                   </div>
                 </template>
-                <!-- {{newContent}} -->
-                <!-- <span v-linkified>{{el.message.content}}</span> -->
-
                 <div class="message-box-content">
                   <span
                     v-for="(item, index) in el.newContent"
                     :key="index"
                     v-linkified
-                    :class="{'message-touch-carte':item.startsWith('@')}"
-                    @click="item.startsWith('@') ? carteMsgShow(item.replace(/\s*/g,'')) : false"
+                    :class="{'message-touch-carte':item.startsWith('@') && item.length > 1}"
+                    @click="item.startsWith('@') ? carteMsgShow(item.replace(/[\@|\s*]/g,'')) : false"
                     >{{ item }}</span
                   >
                 </div>
@@ -192,11 +189,11 @@ export default {
     },
     carteMsgShow(data) {
       this.carteContact = this.contactList.filter((el) => {
-        return el.username === data.replace("@", "")
+        return el.username === data
       })
       if(this.carteContact.length === 0){
         this.$message({ message: "無此成員", type: "error" });
-      }
+      } 
       this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
       this.carteContact[0].type = "address";
       this.setChatUser(this.carteContact[0]);
@@ -212,7 +209,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {
-            return (item.icon = this.noIcon);
+            return item.icon = this.noIcon;
           }
           this.setContactListData(this.contactList);
         });

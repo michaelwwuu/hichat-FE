@@ -134,7 +134,7 @@
         </div>
       </div>      
     </template>
-    <div class="callout-message" v-show="calloutShow">
+    <div class="callout-message" v-show="calloutShow && searchContactData.length > 0">
       <ul>
         <li v-for="(item,index) in searchContactData" :key="index" @click="checkCallout(item)">
           <el-avatar
@@ -280,14 +280,18 @@ export default {
       replyMsg: (state) => state.ws.replyMsg,
       contactListData: (state) => state.ws.contactListData,
     }),
-
   },
   watch:{
-    textArea:function(val){
-      console.log(val)
-      // let searchKey = val.replace("@","")
-      // this.searchContactData= this.contactListData.filter(item => (~item.name.indexOf(searchKey)));
-      this.searchContactData= this.contactListData
+    textArea:{
+      immediate:true,
+      handler(val){
+        let textAreaSearchData = val.split(" ")
+        textAreaSearchData.forEach(el => {
+          this.searchContactData = this.contactListData.filter((item) => {
+            return item.name.indexOf(el.replace("@","")) !==-1
+          });
+        });
+      }
     }
   },
   methods: {
@@ -523,8 +527,7 @@ export default {
     checkCallout(data){
       this.calloutShow = false
       this.targetArray.push("u" + data.memberId)
-      this.checkName.push("@" + data.name)
-      this.textArea = this.checkName.toString().replace(/[,]/g," ")
+      this.textArea = this.textArea + data.username
     },
 
     closeReplyMessage() {
