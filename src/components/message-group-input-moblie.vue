@@ -297,7 +297,6 @@ export default {
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
-      // setCalloutShow:"ws/setCalloutShow",
     }), 
     pictureShow(val){
       this.takePictureShow = val

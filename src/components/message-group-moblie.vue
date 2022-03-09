@@ -119,6 +119,7 @@ export default {
       newMessageData: {},
       contactList: [],
       noIcon: require("./../../static/images/image_user_defult.png"),
+      device: localStorage.getItem("device"),
     };
   },
   created() {
@@ -193,15 +194,22 @@ export default {
       })
       if(this.carteContact.length === 0){
         this.$message({ message: "無此成員", type: "error" });
-      } 
-      this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
-      this.carteContact[0].type = "address";
-      this.setChatUser(this.carteContact[0]);
-      this.setInfoMsg({
-        infoMsgShow: true,
-        infoMsgChat: true,
-        infoMsgNav: "ContactPage",
-      });
+        return
+      } else{
+        this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
+        if(this.device === "moblie"){
+          this.$router.push({ name: "ContactPage" });
+        }else{
+          this.carteContact[0].type = "address";
+          this.setInfoMsg({
+            infoMsgShow: true,
+            infoMsgChat: true,
+            infoMsgNav: "ContactPage",
+          });
+        }    
+      }
+      
+      this.setChatUser(this.carteContact[0]); 
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -578,6 +586,13 @@ export default {
   .message-touch-carte{
     color: #00a1ff;
     cursor: pointer;
+  }
+}
+.hichat-moblie{
+  .message-box-content{
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5em;
   }
 }
 </style>
