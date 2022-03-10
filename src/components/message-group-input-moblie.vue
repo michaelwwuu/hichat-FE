@@ -548,7 +548,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: this.targetArray,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 0,
@@ -570,7 +570,7 @@ export default {
         tokenType: 0,
         fromChatId: this.groupData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         toChatId: this.groupData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
