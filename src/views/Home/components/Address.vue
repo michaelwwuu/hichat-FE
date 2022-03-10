@@ -102,11 +102,11 @@ export default {
     goContactPage(data, path) {
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
-        data.type = "address";
+        data.type = this.device === "pc" ? "address":"";
         this.getUserId(data);
       } else {
         data.toChatId = "g" + data.groupId;
-        data.type = "address";
+        data.type = this.device === "pc" ? "address":"";
         this.setChatGroup(data);
       }
       if (this.device === "moblie") {

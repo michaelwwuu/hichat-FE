@@ -322,7 +322,7 @@ export default {
       this.num = index;
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
-      if(this.num === 1 ) this.getHistory("address");
+      if(this.num === 1 ) this.getHistory(this.hichatNav.type);
       this.getHistorySetTimeout()
 
     },

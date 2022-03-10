@@ -23,31 +23,43 @@
                 <span class="message-name">{{ el.name }}</span>
                 <template v-if="el.isRplay !== null">
                   <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
-                  <div
-                    style="color: #ababab"
-                    v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
-                  >
-                    {{ el.isRplay.text }}
-                  </div>
-                  <div v-else-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'">
-                    <img :src="el.isRplay.text" style="border-radius: 5px" />
-                  </div>
-                  <div v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'">
-                    <audio
-                      class="message-audio"
-                      controls
-                      :src="el.isRplay.text"
-                      type="mp3"
-                    ></audio>
+                  <div @click="goAnchor(el.isRplay.historyId)">
+                    <div class="goAnchor-box">
+                      <span
+                        v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
+                        class="goAnchor"
+                        >{{ el.isRplay.text }}</span
+                      >
+                      <img
+                        v-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'"
+                        :src="el.isRplay.text"
+                        style="border-radius: 5px"
+                      />
+                      <audio
+                        v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
+                        class="message-audio"
+                        controls
+                        :src="el.isRplay.text"
+                        type="mp3"
+                      ></audio>
+                    </div>
                   </div>
                 </template>
                 <div class="message-box-content">
                   <span
                     v-for="(item, index) in el.newContent"
                     :key="index"
+                    :id="el.historyId"
                     v-linkified
-                    :class="{'message-touch-carte':item.startsWith('@') && item.length > 1}"
-                    @click="item.startsWith('@') ? carteMsgShow(item.replace(/[\@|\s*]/g,'')) : false"
+                    :class="{
+                      'message-touch-carte':
+                        item.startsWith('@') && item.length > 1,
+                    }"
+                    @click="
+                      item.startsWith('@')
+                        ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                        : false
+                    "
                     >{{ item }}</span
                   >
                 </div>
@@ -56,20 +68,30 @@
             <span
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
-                <audio controls :src="el.message.content" type="mp3"></audio>
+                <audio
+                  controls
+                  :src="el.message.content"
+                  type="mp3"
+                  :id="el.historyId"
+                ></audio>
               </div>
             </span>
 
             <span
               class="message-image"
               v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
                 <el-image
+                  :id="el.historyId"
                   :src="el.message.content"
                   :preview-src-list="[el.message.content]"
                 />
@@ -175,11 +197,14 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setInfoMsg:"ws/setInfoMsg",
-      setChatUser:"ws/setChatUser",
+      setInfoMsg: "ws/setInfoMsg",
+      setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
       setContactListData: "ws/setContactListData",
     }),
+    goAnchor(data) {
+      document.getElementById(data).scrollIntoView(true);
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -190,26 +215,26 @@ export default {
     },
     carteMsgShow(data) {
       this.carteContact = this.contactList.filter((el) => {
-        return el.username === data
-      })
-      if(this.carteContact.length === 0){
+        return el.username === data;
+      });
+      if (this.carteContact.length === 0) {
         this.$message({ message: "無此成員", type: "error" });
-        return
-      } else{
+        return;
+      } else {
         this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
-        if(this.device === "moblie"){
+        if (this.device === "moblie") {
           this.$router.push({ name: "ContactPage" });
-        }else{
+        } else {
           this.carteContact[0].type = "address";
           this.setInfoMsg({
             infoMsgShow: true,
             infoMsgChat: true,
             infoMsgNav: "ContactPage",
           });
-        }    
+        }
       }
-      
-      this.setChatUser(this.carteContact[0]); 
+
+      this.setChatUser(this.carteContact[0]);
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
@@ -217,7 +242,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {
-            return item.icon = this.noIcon;
+            return (item.icon = this.noIcon);
           }
           this.setContactListData(this.contactList);
         });
@@ -583,16 +608,29 @@ export default {
   span {
     margin-right: 5px;
   }
-  .message-touch-carte{
+  .message-touch-carte {
     color: #00a1ff;
     cursor: pointer;
   }
 }
-.hichat-moblie{
-  .message-box-content{
+.hichat-moblie {
+  .message-box-content {
     display: flex;
     flex-direction: column;
     line-height: 1.5em;
+  }
+}
+.goAnchor-box {
+  cursor: pointer;
+  .goAnchor {
+    color: #ababab;
+    text-decoration: none;
+  }
+  &:hover {
+    .goAnchor {
+      color: #5f5f5f;
+    }
+    border-radius: 8px;
   }
 }
 </style>

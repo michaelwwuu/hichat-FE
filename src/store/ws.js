@@ -27,6 +27,7 @@ export const state = {
     innerText:"",
     replyHistoryId:"",
   },
+  device: localStorage.getItem("device"),
 };
 export const actions = {};
 

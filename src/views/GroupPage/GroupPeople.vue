@@ -264,7 +264,7 @@ export default {
       });
     },
     addGroupPeople() {
-      this.setMsgInfoPage({ pageShow: false, type: "addGroupPeople" });
+      this.setMsgInfoPage({ pageShow: false, type: "AddGroupPeople" });
     },
     removeGroupMember() {
       let param = {

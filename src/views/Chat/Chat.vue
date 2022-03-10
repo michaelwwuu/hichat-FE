@@ -255,10 +255,7 @@ export default {
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
           });
-          this.readMsg = historyMsgList.filter((el) => {
-            return el.chat.toChatId === "u" + localStorage.getItem("id");
-          });
-          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":

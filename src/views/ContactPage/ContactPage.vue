@@ -14,18 +14,18 @@
         <div class="home-content">
           <div class="user-data">
             <el-image
-              v-if="userData.icon !== undefined"
-              :src="noIconShow(userData)"
-              :preview-src-list="[noIconShow(userData)]"
+              v-if="chatUser.icon !== undefined"
+              :src="noIconShow(chatUser)"
+              :preview-src-list="[noIconShow(chatUser)]"
             />
             <div>
-              <span>{{ userData.name }}</span>
+              <span>{{ chatUser.name }}</span>
               <span class="user-data-id">
                 ID :
                 <span
                   class="user-paste"
-                  @click="copyPaste(userData.username)"
-                  >{{ userData.username }}</span
+                  @click="copyPaste(chatUser.username)"
+                  >{{ chatUser.username }}</span
                 ></span
               >
             </div>
@@ -36,7 +36,7 @@
             :key="index"
             @click="developmentMessage(item.name)"
           >
-            <a @click="goChatRoom(userData, item.path)">
+            <a @click="goChatRoom(chatUser, item.path)">
               <div class="setting-button-left">
                 <img :src="item.icon" alt="" />
                 <span>{{ item.name }}</span>
@@ -63,31 +63,31 @@
           </div>
           <div
             class="setting-button"
-            @click="dialogShow(!userData.isBlock ? 'block' : 'unBlock')"
+            @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
           >
             <a>
               <div class="setting-button-left">
                 <img src="./../../../static/images/blockade.png" alt="" />
-                <span>{{ blockContent }}</span>
+                <span>{{ !chatUser.isBlock ? "封锁联络人" : "解除封锁" }}</span>
               </div>
             </a>
           </div>
           <div
             class="setting-button"
-            @click="dialogShow(!userData.isContact ? 'add' : 'delete')"
+            @click="dialogShow(!chatUser.isContact ? 'add' : 'delete')"
           >
             <a>
               <div class="setting-button-left">
                 <img
                   :src="
                     require(`./../../../static/images/${
-                      !userData.isContact ? 'add_user' : 'trash'
+                      !chatUser.isContact ? 'add_user' : 'trash'
                     }.png`)
                   "
                   alt=""
                 />
                 <span class="red-text">{{
-                  !userData.isContact ? "加入联络人" : "刪除联络人"
+                  !chatUser.isContact ? "加入联络人" : "刪除联络人"
                 }}</span>
               </div>
             </a>
@@ -150,8 +150,8 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
+import { mapState,mapMutations } from "vuex";
 import {
-  getSearchById,
   addContactUser,
   addBlockContactUser,
   unBlockContactUser,
@@ -180,7 +180,6 @@ export default {
           path: "",
         },
       ],
-      blockContent: "",
       dialogContent: "",
       noIcon: require("./../../../static/images/image_user_defult.png"),
       notification: true,
@@ -190,11 +189,19 @@ export default {
       developmentMessage: developmentMessage,
     };
   },
+  computed: {
+    ...mapState({
+      chatUser: (state) => state.ws.chatUser,
+    }),
+  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.getUserId();
+    this.setChatUser(this.userData);
   },
   methods: {
+    ...mapMutations({
+      setChatUser: "ws/setChatUser",
+    }),
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -222,17 +229,6 @@ export default {
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
-    getUserId() {
-      let id = this.userData.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-        this.userData.username = res.data.username;
-        this.userData.name = res.data.name;
-        this.userData.isBlock = res.data.isBlock;
-        this.userData.isContact = res.data.isContact;
-        localStorage.setItem("userData", JSON.stringify(this.userData));
-      });
-    },
     back() {
       this.$router.back(-1);
     },
@@ -243,38 +239,38 @@ export default {
         case "unBlock":
           this.dialogContent = `确认是否${
             type === "block" ? "封锁" : "解除封锁"
-          }好友${this.userData.name}？`;
+          }好友${this.chatUser.name}？`;
           break;
         case "delete":
           this.dialogContent = `确认是否${type === "delete" ? "删除" : ""}好友${
-            this.userData.name
+            this.chatUser.name
           }？`;
           break;
         case "add":
-          this.dialogContent = `确认是否将${this.userData.name}加入联络人`;
+          this.dialogContent = `确认是否将${this.chatUser.name}加入联络人`;
           break;
       }
     },
     submitBtn(dialogContent) {
       switch (dialogContent) {
-        case `确认是否封锁好友${this.userData.name}？`:
-          let blockId = this.userData.toChatId.replace("u", "");
+        case `确认是否封锁好友${this.chatUser.name}？`:
+          let blockId = this.chatUser.toChatId.replace("u", "");
           addBlockContactUser({ blockId }).then((res) => {
             if (res.code === 200) {
               this.successDialogShow = true;
-              this.userData.isBlock = true;
-              localStorage.setItem("userData", JSON.stringify(this.userData));
+              this.chatUser.isBlock = true;
+              this.setChatUser(this.chatUser)
             }
           });
           break;
-        case `确认是否解除封锁好友${this.userData.name}？`:
-          let blockIdList = [this.userData.toChatId.replace("u", "")];
+        case `确认是否解除封锁好友${this.chatUser.name}？`:
+          let blockIdList = [this.chatUser.toChatId.replace("u", "")];
           unBlockContactUser({ blockIdList })
             .then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
-                this.userData.isBlock = false;
-                localStorage.setItem("userData", JSON.stringify(this.userData));
+                this.chatUser.isBlock = false;
+                this.setChatUser(this.chatUser)
               }
             })
             .catch((err) => {
@@ -282,14 +278,14 @@ export default {
               return false;
             });
           break;
-        case `确认是否删除好友${this.userData.name}？`:
-          let contactId = this.userData.toChatId.replace("u", "");
+        case `确认是否删除好友${this.chatUser.name}？`:
+          let contactId = this.chatUser.toChatId.replace("u", "");
           deleteContactUser(contactId)
             .then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
-                this.userData.isContact = false;
-                localStorage.setItem("userData", JSON.stringify(this.userData));
+                this.chatUser.isContact = false;
+                this.setChatUser(this.chatUser)
               }
             })
             .catch((err) => {
@@ -297,17 +293,17 @@ export default {
               return false;
             });
           break;
-        case `确认是否将${this.userData.name}加入联络人`:
+        case `确认是否将${this.chatUser.name}加入联络人`:
           let parmas = {
-            contactId: this.userData.memberId,
-            name: this.userData.username,
+            contactId: this.chatUser.memberId,
+            name: this.chatUser.username,
           };
           addContactUser(parmas).then((res) => {
             if (res.code === 200) {
               this.settingDialogShow = false;
-              this.userData.isContact = true;
+              this.chatUser.isContact = true;
               this.addContactDialogShow = true;
-              localStorage.setItem("userData", JSON.stringify(this.userData));
+              this.setChatUser(this.chatUser)
             }
           });
       }

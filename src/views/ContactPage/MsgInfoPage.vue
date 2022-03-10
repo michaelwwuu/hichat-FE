@@ -40,22 +40,18 @@
               <div class="user-data">
                 <el-image
                   v-if="chatUser.icon !== undefined"
-                  :src="
-                    noIconShow(
-                      JSON.stringify(chatUser) === '{}' ? userData : chatUser,
-                      'user'
-                    )
-                  "
-                  :preview-src-list="[
-                    noIconShow(
-                      JSON.stringify(chatUser) === '{}' ? userData : chatUser,
-                      'user'
-                    ),
-                  ]"
+                  :src="noIconShow(chatUser,'user')"
+                  :preview-src-list="[noIconShow(chatUser,'user')]"
                 />
-                <span>{{
-                  chatUser.name === null ? userData.name : chatUser.name
-                }}</span>
+                <span>{{chatUser.name}}</span>
+                <span class="user-data-id">
+                  ID :
+                  <span
+                    class="user-paste"
+                    @click="copyPaste(chatUser.username)"
+                    >{{ chatUser.username }}</span
+                  ></span
+                >
               </div>
               <div
                 class="setting-notification"
@@ -91,22 +87,8 @@
               <div class="user-data">
                 <el-image
                   v-if="groupUser.icon !== undefined"
-                  :src="
-                    noIconShow(
-                      JSON.stringify(groupUser) === '{}'
-                        ? groupData
-                        : groupUser,
-                      'group'
-                    )
-                  "
-                  :preview-src-list="[
-                    noIconShow(
-                      JSON.stringify(groupUser) === '{}'
-                        ? groupData
-                        : groupUser,
-                      'group'
-                    ),
-                  ]"
+                  :src="noIconShow(groupUser,'group')"
+                  :preview-src-list="[noIconShow(groupUser,'group')]"
                 />
                 <span>{{
                   groupUser.groupName === null
@@ -149,10 +131,10 @@
       </el-container>
     </div>
     <edit-contact v-if="msgInfoPage.type === 'ContactPage'" />
-    <group-admin-change v-else-if="msgInfoPage.type === 'AdminChange'" />
-    <group-people v-else-if="msgInfoPage.type === 'GroupPeople'" />
-    <group-add-people v-else-if="msgInfoPage.type === 'AddGroupPeople'" />
-    <edit-group v-else-if="msgInfoPage.type === 'GroupPage'" />
+    <group-admin-change v-if="msgInfoPage.type === 'AdminChange'" />
+    <group-people v-if="msgInfoPage.type === 'GroupPeople'" />
+    <group-add-people v-if="msgInfoPage.type === 'AddGroupPeople'" />
+    <edit-group v-if="msgInfoPage.type === 'GroupPage'" />
   </div>
 </template>
 
@@ -160,6 +142,7 @@
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
+import { getSearchById } from "@/api";
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
 import GroupPeople from "../GroupPage/GroupPeople.vue";
@@ -226,6 +209,7 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.infoMsgSettingData();
+    this.getUserId();
   },
   methods: {
     ...mapMutations({
@@ -235,6 +219,30 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
+    copyPaste(data) {
+      let url = document.createElement("input");
+      document.body.appendChild(url);
+      url.value = data;
+      url.select();
+      document.execCommand("copy");
+      document.body.removeChild(url);
+      this.$message({
+        message: `ID : ${data} 复制成功`,
+        type: "success",
+        duration: 1000,
+      });
+    },   
+    getUserId() {
+      let id = this.chatUser.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
+        this.chatUser.username = res.data.username;
+        this.chatUser.name = res.data.name;
+        this.chatUser.isBlock = res.data.isBlock;
+        this.chatUser.isContact = res.data.isContact;
+        this.setChatUser(this.chatUser);
+      });
+    },     
     editShowBtn(data) {
       this.setMsgInfoPage({ pageShow: false, type: data });
     },
@@ -294,7 +302,6 @@ export default {
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },
-
     back() {
       this.$router.back(-1);
     },

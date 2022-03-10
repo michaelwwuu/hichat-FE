@@ -19,25 +19,11 @@
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
-                <span
-                  v-if="item.lastChat.chatType === 'SRV_USER_SEND'"
-                  class="content-text"
-                >
-                  <span>{{ item.lastChat.text }}</span>
+                <span class="content-text">
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ item.lastChat.text }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
                 </span>
-
-                <span
-                  v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
-                  class="content-text"
-                >
-                  传送了语音</span
-                >
-                <span
-                  v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
-                  class="content-text"
-                >
-                  传送了图片</span
-                >
               </div>
               <div class="time">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
@@ -72,22 +58,11 @@
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
-                <span
-                  v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'"
-                  class="content-text"
-                >
-                  <span>{{ item.lastChat.text }}</span>
+                <span class="content-text">
+                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{ item.lastChat.text }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'">传送了语音</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'">传送了图片</span>
                 </span>
-                <span
-                  v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
-                  class="content-text"
-                  >传送了语音</span
-                >
-                <span
-                  v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
-                  class="content-text"
-                  >传送了图片</span
-                >
               </div>
               <div class="time">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
@@ -134,25 +109,11 @@
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
-                <span
-                  v-if="item.lastChat.chatType === 'SRV_USER_SEND'"
-                  class="content-text"
-                >
-                  <span>{{ item.lastChat.text }}</span>
+                <span class="content-text">
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ item.lastChat.text }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
                 </span>
-
-                <span
-                  v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
-                  class="content-text"
-                >
-                  传送了语音</span
-                >
-                <span
-                  v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
-                  class="content-text"
-                >
-                  传送了图片</span
-                >
               </div>
               <div class="time">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
@@ -372,6 +333,7 @@ export default {
       this.getHistoryMessage.id = Math.random();
       Socket.send(this.getHistoryMessage);
     },
+    
   },
 };
 </script>
@@ -437,5 +399,20 @@ export default {
 .contact-badge {
   vertical-align: initial;
   padding-left: 5px;
+}
+.hichat-pc{
+  .address-box {
+    .contont-box {
+      .msg-box {
+        .content-text {
+          span {
+            &:nth-child(1) {
+              width: 120px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>

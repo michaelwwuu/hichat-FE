@@ -286,7 +286,9 @@ export default {
     },
     editSubmit() {
       let memberList = []
-      this.checkList.forEach(res => memberList.push(res.contactId));
+      this.checkList.forEach((res) => {
+        memberList.push(res.contactId);
+      });
       let params = {
         groupName: this.groupForm.name,
         icon:this.groupIcon,
@@ -302,8 +304,7 @@ export default {
             isAdmin: true,
             memberId: JSON.parse(localStorage.getItem("id")),
           }
-          localStorage.setItem("groupData", JSON.stringify(groupData))
-          this.setChatGroup(this.groupData)
+          this.setChatGroup(groupData)
           this.$router.push({ path: this.device === 'moblie' ? "/ChatGroupMsg" : "home" });
         }
       })

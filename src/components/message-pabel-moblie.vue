@@ -20,25 +20,33 @@
             >
               <template v-if="el.isRplay !== null">
                 <div style="color: #00a1ff">{{ el.nickName }}</div>
-                <div
-                  class="goAnchor-box"
-                  v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
-                >
-                  <a href="#" @click="goAnchor(el.isRplay.historyId)" class="goAnchor">{{ el.isRplay.text }}</a>
-                </div>
-                <div v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'">
-                  <img :src="el.isRplay.text" style="border-radius: 5px" />
-                </div>
-                <div v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
-                  <audio
-                    class="message-audio"
-                    controls
-                    :src="el.isRplay.text"
-                    type="mp3"
-                  ></audio>
+                <div @click="goAnchor(el.isRplay.historyId)">
+                  <div class="goAnchor-box">
+                    <span
+                      v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+                      class="goAnchor"
+                      >{{ el.isRplay.text }}</span
+                    >
+                    <img
+                      v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
+                      :src="el.isRplay.text"
+                      style="border-radius: 5px"
+                    />
+                    <audio
+                      v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'"
+                      class="message-audio"
+                      controls
+                      :src="el.isRplay.text"
+                      type="mp3"
+                    ></audio>
+                  </div>
                 </div>
               </template>
-               <div :id="el.historyId" v-html="el.message.content" v-linkified></div>
+              <div
+                :id="el.historyId"
+                v-html="el.message.content"
+                v-linkified
+              ></div>
             </span>
 
             <audio
@@ -46,7 +54,10 @@
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               controls
               :src="el.message.content"
+              :id="el.historyId"
               type="mp3"
+              @contextmenu.prevent="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             ></audio>
 
             <span
@@ -56,6 +67,7 @@
               @dblclick="dblclick(el)"
             >
               <el-image
+                :id="el.historyId"
                 :src="el.message.content"
                 :preview-src-list="[el.message.content]"
               >
@@ -119,7 +131,8 @@ export default {
             this.$root.formatTimeDay(el.message.time)
           );
         });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = newData;
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+          newData;
       });
     },
   },
@@ -195,7 +208,7 @@ export default {
           label: "在所有人的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            this.deleteRecent(data,'all')
+            this.deleteRecent(data, "all");
           },
         },
         {
@@ -203,7 +216,7 @@ export default {
           label: "只在我的對話紀錄中刪除",
           divided: true,
           onClick: () => {
-            this.deleteRecent(data,'only')
+            this.deleteRecent(data, "only");
           },
         },
       ];
@@ -241,7 +254,7 @@ export default {
         duration: 1000,
       });
     },
-    deleteRecent(data,type) {
+    deleteRecent(data, type) {
       let parmas = {
         fullDelete: type === "all",
         historyId: data.historyId,
@@ -250,7 +263,9 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.message = this.message.filter( item => item.historyId !== parmas.historyId )
+            this.message = this.message.filter(
+              (item) => item.historyId !== parmas.historyId
+            );
             this.getHiChatDataList();
           }
         })
@@ -492,19 +507,17 @@ export default {
     }
   }
 }
-.goAnchor-box{
+.goAnchor-box {
   cursor: pointer;
-  .goAnchor{
+  .goAnchor {
     color: #ababab;
     text-decoration: none;
   }
-  &:hover{
-    .goAnchor{
+  &:hover {
+    .goAnchor {
       color: #5f5f5f;
     }
-    background-color: #85d2ff56;
     border-radius: 8px;
   }
 }
-
 </style>
