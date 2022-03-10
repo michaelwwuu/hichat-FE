@@ -512,7 +512,7 @@ export default {
         this.calloutShow = true
       } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
         this.calloutShow = false
-      } else if(event.shiftKey && keyCode === 13) {
+      } else if(event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){

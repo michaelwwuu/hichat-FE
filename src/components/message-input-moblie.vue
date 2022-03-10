@@ -489,7 +489,7 @@ export default {
         this.setCalloutShow(true)
       } else if(event.code === "Backspace" || event.code === "Space"){
         this.setCalloutShow(false)
-      } else if(event.shiftKey && keyCode === 13) {
+      } else if(event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
@@ -499,6 +499,8 @@ export default {
         }
       }
     },
+
+
     // 關閉回復訊息
     closeReplyMessage() {
       this.setReplyMsg({
@@ -521,7 +523,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
