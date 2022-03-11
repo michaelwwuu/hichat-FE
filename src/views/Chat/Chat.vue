@@ -205,6 +205,7 @@ export default {
         });
         this.setContactListData(this.contactList);
       });
+      
     },
     // 訊息統一格式
     messageList(data) {
@@ -222,6 +223,18 @@ export default {
         toChatId: data.chat.toChatId,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
+      this.contactList.forEach((item) => {
+        if (this.chatRoomMsg.userChatId === "u" + item.memberId) {
+          this.chatRoomMsg.icon = item.icon;
+          this.chatRoomMsg.name = item.name;
+        } 
+        if (
+          this.chatRoomMsg.isRplay !== null &&
+          this.chatRoomMsg.isRplay.fromChatId === "u" + item.memberId
+        ) {
+          this.chatRoomMsg.isRplay.nickName = item.name;
+        }
+      })
     },
     // 已讀
     readMsgShow(data) {
@@ -242,20 +255,24 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            this.messageList(userInfo);
-            this.messageData.push(this.chatRoomMsg);
-            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            setTimeout(() => {
+              this.messageList(userInfo);
+              this.messageData.push(this.chatRoomMsg);
+              if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            }, 1200);
           }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.messageData = [];
-          let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
-            this.messageList(el);
-            this.messageData.unshift(this.chatRoomMsg);
-          });
-          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+          setTimeout(() => {
+            this.messageData = [];
+            let historyMsgList = userInfo.historyMessage.list;
+            historyMsgList.forEach((el) => {
+              this.messageList(el);
+              this.messageData.unshift(this.chatRoomMsg);
+            });
+            if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+          }, 1200);
           break;
         // 已讀
         case "SRV_MSG_READ":

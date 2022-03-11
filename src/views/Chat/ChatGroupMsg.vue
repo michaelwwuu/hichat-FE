@@ -196,7 +196,6 @@ export default {
         toChatId: data.chat.toChatId,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
-      console.log(data)
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {

@@ -48,26 +48,27 @@
                 v-linkified
               ></div>
             </span>
-
-            <audio
-              class="message-audio"
-              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-              controls
-              :src="el.message.content"
+            <span
               :id="el.historyId"
-              type="mp3"
+              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent="onContextmenu(el)"
               @dblclick="dblclick(el)"
-            ></audio>
-
+            >
+              <audio
+                class="message-audio"
+                :src="el.message.content"
+                controls
+                type="mp3"
+              ></audio>
+            </span>
             <span
+              :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
               @contextmenu.prevent="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <el-image
-                :id="el.historyId"
                 :src="el.message.content"
                 :preview-src-list="[el.message.content]"
               >
@@ -171,6 +172,7 @@ export default {
       });
     },
     onContextmenu(data) {
+      console.log(data);
       let item = [
         {
           name: "edit",
@@ -184,6 +186,7 @@ export default {
             });
           },
         },
+
         {
           name: "copy",
           label: "複製",
@@ -203,6 +206,7 @@ export default {
             });
           },
         },
+        { name: "download", label: "下载圖片", onClick: () => {} },
         {
           name: "deleteAllChat",
           label: "在所有人的對話紀錄中刪除",
@@ -220,9 +224,28 @@ export default {
           },
         },
       ];
-      if (data.userChatId !== "u" + localStorage.getItem("id")) {
+      if (
+        data.userChatId !== "u" + localStorage.getItem("id") &&
+        (data.chatType === "SRV_USER_IMAGE" ||
+          data.chatType === "SRV_USER_AUDIO")
+      ) {
+        this.newItem = item.filter((list) => {
+          return (
+            list.name !== "deleteAllChat" &&
+            list.name !== "edit" &&
+            list.name !== "copy"
+          );
+        });
+      } else if (data.userChatId !== "u" + localStorage.getItem("id")) {
         this.newItem = item.filter((list) => {
           return list.name !== "deleteAllChat" && list.name !== "edit";
+        });
+      } else if (
+        data.chatType === "SRV_USER_IMAGE" ||
+        data.chatType === "SRV_USER_AUDIO"
+      ) {
+        this.newItem = item.filter((list) => {
+          return list.name !== "edit" && list.name !== "copy";
         });
       } else {
         this.newItem = item;
@@ -241,7 +264,7 @@ export default {
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content;
+      url.value = data.message.content.replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);

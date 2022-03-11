@@ -66,6 +66,7 @@
               </div>
             </span>
             <span
+              :id="el.historyId"
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent="onContextmenu(el)"
@@ -77,12 +78,12 @@
                   controls
                   :src="el.message.content"
                   type="mp3"
-                  :id="el.historyId"
                 ></audio>
               </div>
             </span>
 
             <span
+              :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
               @contextmenu.prevent="onContextmenu(el)"
@@ -91,7 +92,6 @@
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
                 <el-image
-                  :id="el.historyId"
                   :src="el.message.content"
                   :preview-src-list="[el.message.content]"
                 />
@@ -146,13 +146,12 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.getGroupListMember();
+    // this.getGroupListMember();
   },
   watch: {
     contactListData(val) {
       val.forEach((res) => {
         this.message.forEach((el) => {
-          console.log(el)
           if (el.userChatId === "u" + res.memberId) {
             el.icon = res.icon;
             el.name = res.name;
@@ -237,18 +236,18 @@ export default {
 
       this.setChatUser(this.carteContact[0]);
     },
-    getGroupListMember() {
-      let groupId = this.groupData.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((item) => {
-          if (item.icon === undefined) {
-            return (item.icon = this.noIcon);
-          }
-          this.setContactListData(this.contactList);
-        });
-      });
-    },
+    // getGroupListMember() {
+    //   let groupId = this.groupData.toChatId.replace("g", "");
+    //   groupListMember({ groupId }).then((res) => {
+    //     this.contactList = res.data.list;
+    //     this.contactList.forEach((item) => {
+    //       if (item.icon === undefined) {
+    //         return (item.icon = this.noIcon);
+    //       }
+    //       this.setContactListData(this.contactList);
+    //     });
+    //   });
+    // },
     dblclick(event) {
       this.setReplyMsg({
         chatType: event.chatType,
@@ -334,7 +333,7 @@ export default {
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content;
+      url.value = data.message.content.replace(/(\s*$)/g,"");;
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);
