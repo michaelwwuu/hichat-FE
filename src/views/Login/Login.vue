@@ -75,7 +75,17 @@
         </div>
         <div class="read-check-box">
           <el-checkbox v-model="readChecked">
-            已閱讀並同意 <a href="https://www.hichat.info/pub/userAgreement.html" target="_blank">服務條款</a>、<a href="https://www.hichat.info/pub/privacyPolicy.html" target="_blank">隱私權政策</a>。</el-checkbox>
+            已阅读并同意
+            <a
+              href="https://www.hichat.info/pub/userAgreement.html"
+              target="_blank"
+              >服务条款</a
+            >、<a
+              href="https://www.hichat.info/pub/privacyPolicy.html"
+              target="_blank"
+              >隐私权政策</a
+            >。</el-checkbox
+          >
         </div>
         <div>
           <el-button
@@ -139,7 +149,11 @@
             "
           >
           </el-input>
-          <span class="show-pwd" :class="{'eye-off':passwordType === 'password'}" @click="showPwd">
+          <span
+            class="show-pwd"
+            :class="{ 'eye-off': passwordType === 'password' }"
+            @click="showPwd"
+          >
             <img
               :src="
                 passwordType === 'password'
@@ -164,7 +178,17 @@
         </div>
         <div class="read-check-box">
           <el-checkbox v-model="readChecked">
-            已閱讀並同意 <a href="https://www.hichat.info/pub/userAgreement.html" target="_blank">服務條款</a>、<a href="https://www.hichat.info/pub/privacyPolicy.html" target="_blank">隱私權政策</a>。</el-checkbox>
+            已阅读并同意
+            <a
+              href="https://www.hichat.info/pub/userAgreement.html"
+              target="_blank"
+              >服务条款</a
+            >、<a
+              href="https://www.hichat.info/pub/privacyPolicy.html"
+              target="_blank"
+              >隐私权政策</a
+            >。</el-checkbox
+          >
         </div>
         <div>
           <el-button
@@ -189,7 +213,7 @@
       </el-form>
     </template>
     <el-dialog
-      :title="device === 'pc'?'帳號已鎖定':''"
+      :title="device === 'pc' ? '帐号已锁定' : ''"
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -197,13 +221,21 @@
       center
     >
       <div class="loginOut-box">
-        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
-        <div style="margin-bottom:10px;"><span >帐号已锁定。</span></div>
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <div style="margin-bottom: 10px"><span>帐号已锁定。</span></div>
         <div><span>请至邮箱取得验证码以解锁帐号。</span></div>
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link :to="'/ResetPassword'">
-          <el-button :class="device === 'moblie' ?'background-orange':'background-red'" @click="dialogShow = false">确认</el-button>
+          <el-button
+            :class="
+              device === 'moblie' ? 'background-orange' : 'background-red'
+            "
+            @click="dialogShow = false"
+            >确认</el-button
+          >
         </router-link>
       </span>
     </el-dialog>
@@ -291,7 +323,7 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
-      if(!this.readChecked){
+      if (!this.readChecked) {
         this.$message({
           message: "尚未勾選同意條款",
           type: "warning",
@@ -311,7 +343,10 @@ export default {
           .then((res) => {
             //登录成功
             if (res.code === 200) {
-              localStorage.setItem("token",res.data.tokenHead + res.data.token);
+              localStorage.setItem(
+                "token",
+                res.data.tokenHead + res.data.token
+              );
               this.$router.push({ path: "/Home" });
             } else if (res.code === 10009) {
               //登录失敗
@@ -325,7 +360,7 @@ export default {
             });
             localStorage.clear();
             setTimeout(() => {
-              window.location.reload()
+              window.location.reload();
             }, 1000);
             return false;
           });
@@ -428,7 +463,7 @@ $light_gray: #eee;
         height: 1.2em;
       }
     }
-    .eye-off{
+    .eye-off {
       img {
         height: 1.5em;
       }
@@ -447,7 +482,7 @@ $light_gray: #eee;
         color: #fd5f3f;
       }
     }
-    .read-check-box{
+    .read-check-box {
       margin-bottom: 3em;
     }
     .el-button {
@@ -496,7 +531,7 @@ $light_gray: #eee;
         .dialog-footer {
           display: flex;
           justify-content: space-between;
-          a{
+          a {
             width: 100vw;
           }
           .el-button {
@@ -520,20 +555,20 @@ $light_gray: #eee;
     }
   }
 }
-.login-container-pc{
+.login-container-pc {
   display: flex;
   align-items: center;
-  .login-form{
+  .login-form {
     width: 450px;
-    .show-pwd{
+    .show-pwd {
       cursor: pointer;
     }
     .remember-style {
       margin: 1em 0 2em 0;
       display: flex;
       justify-content: space-between;
-      /deep/.el-switch__label{
-        span{
+      /deep/.el-switch__label {
+        span {
           font-weight: 600;
         }
       }
@@ -548,31 +583,31 @@ $light_gray: #eee;
         font-weight: 600;
       }
     }
-    .read-check-box{
+    .read-check-box {
       margin-bottom: 3em;
     }
   }
-  .title-container{
+  .title-container {
     display: flex;
     flex-direction: column;
     margin: 0 auto 40px auto;
-    img{
+    img {
       margin: 0px auto;
     }
-    .header-title{
+    .header-title {
       margin: 1em auto 0 auto;
       font-size: 1.2em;
       font-weight: 600;
       color: #474747;
     }
   }
-  .svg-container{
+  .svg-container {
     font-size: 14px;
     width: 15%;
     vertical-align: inherit;
     color: #454545;
   }
-  .el-input{
+  .el-input {
     width: 70%;
   }
 }
