@@ -73,6 +73,10 @@
             <span>忘记密码</span>
           </router-link>
         </div>
+        <div class="read-check-box">
+          <el-checkbox v-model="readChecked">
+            已閱讀並同意 <a href="https://www.hichat.info/pub/userAgreement.html" target="_blank">服務條款</a>、<a href="https://www.hichat.info/pub/privacyPolicy.html" target="_blank">隱私權政策</a>。</el-checkbox>
+        </div>
         <div>
           <el-button
             style="width: 100%; margin-bottom: 30px"
@@ -158,6 +162,10 @@
           >
           </el-switch>
         </div>
+        <div class="read-check-box">
+          <el-checkbox v-model="readChecked">
+            已閱讀並同意 <a href="https://www.hichat.info/pub/userAgreement.html" target="_blank">服務條款</a>、<a href="https://www.hichat.info/pub/privacyPolicy.html" target="_blank">隱私權政策</a>。</el-checkbox>
+        </div>
         <div>
           <el-button
             style="width: 100%; margin-bottom: 30px"
@@ -217,6 +225,7 @@ export default {
       passwordType: "password",
       remember: true,
       disabled: true,
+      readChecked: false,
       dialogShow: false,
     };
   },
@@ -282,6 +291,13 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
+      if(!this.readChecked){
+        this.$message({
+          message: "尚未勾選同意條款",
+          type: "warning",
+        });
+        return;
+      }
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {
@@ -418,7 +434,7 @@ $light_gray: #eee;
       }
     }
     .remember-style {
-      margin: 1em 0 5em 0;
+      margin: 1em 0 2em 0;
       display: flex;
       justify-content: space-between;
       /deep/.is-checked {
@@ -430,6 +446,9 @@ $light_gray: #eee;
         font-size: 14px;
         color: #fd5f3f;
       }
+    }
+    .read-check-box{
+      margin-bottom: 3em;
     }
     .el-button {
       background-color: #fd5f3f;
@@ -510,7 +529,7 @@ $light_gray: #eee;
       cursor: pointer;
     }
     .remember-style {
-      margin: 1em 0 5em 0;
+      margin: 1em 0 2em 0;
       display: flex;
       justify-content: space-between;
       /deep/.el-switch__label{
@@ -528,6 +547,9 @@ $light_gray: #eee;
         color: #10686e;
         font-weight: 600;
       }
+    }
+    .read-check-box{
+      margin-bottom: 3em;
     }
   }
   .title-container{
