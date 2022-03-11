@@ -10,7 +10,7 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <img class="message-avatar" :src="el.icon" />
+          <img class="message-avatar" :src="el.icon === undefined ? noIcon : el.icon" />
           <p>
             <span
               class="message-classic"
@@ -20,7 +20,7 @@
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name }}</span>
+                <span class="message-name">{{ el.name === undefined ? '無此人員' : el.name}}</span>
                 <template v-if="el.isRplay !== null">
                   <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                   <div @click="goAnchor(el.isRplay.historyId)">
@@ -152,10 +152,11 @@ export default {
     contactListData(val) {
       val.forEach((res) => {
         this.message.forEach((el) => {
+          console.log(el)
           if (el.userChatId === "u" + res.memberId) {
             el.icon = res.icon;
             el.name = res.name;
-          }
+          } 
           if (
             el.isRplay !== null &&
             el.isRplay.fromChatId === "u" + res.memberId
