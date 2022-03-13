@@ -3,128 +3,97 @@
     class="message-input-box"
     :style="device !== 'moblie' ? 'height:59px' : ''"
   >
-    <template v-if="device === 'moblie'">
-      <div class="input-tools-right">
+    <div class="input-tools-right" v-if="device === 'moblie'">
+      <div>
+        <!-- <img src="./../../static/images/plus.png" alt=""> -->
+        <img
+          src="./../../static/images/image.png"
+          alt=""
+          @click="uploadImgShow = true"
+        />
+        <!-- <img src="./../../static/images/camera.png" alt=""> -->
+      </div>
+    </div>
+    <div class="text-send-box">
+      <el-input
+        v-if="device === 'moblie'"
+        type="textarea"
+        resize="none"
+        :autosize="{ minRows: 1, maxRows: 1 }"
+        placeholder="Aa"
+        maxlength="500"
+        v-model="textArea"
+      >
+      </el-input>
+      <el-input
+        v-else
+        type="textarea"
+        resize="none"
+        :autosize="{ minRows: 1, maxRows: 1 }"
+        placeholder="Aa"
+        maxlength="500"
+        v-model="textArea"
+        @keyup.native="keyUp"
+      >
+      </el-input>
+      <div class="footer-tools">
+        <emoji-picker @emoji="insert" :search="search">
+          <div
+            slot="emoji-invoker"
+            slot-scope="{ events: { click: clickEvent } }"
+            @click.stop="clickEvent"
+          >
+            <div class="face-other-btn">
+              <img src="./../../static/images/emoji.png" alt="" />
+            </div>
+          </div>
+          <div
+            slot="emoji-picker"
+            slot-scope="{ emojis, insert }"
+            class="face-icon"
+          >
+            <div class="face-icon-box">
+              <div>
+                <div
+                  v-for="(emojiGroup, category) in emojis"
+                  :key="category"
+                  class="face-box"
+                >
+                  <h5>{{ emojiChine(category) }}</h5>
+                  <div>
+                    <span
+                      v-for="(emoji, emojiName) in emojiGroup"
+                      :key="emojiName"
+                      @click="insert(emoji)"
+                      >{{ emoji }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </emoji-picker>
+      </div>
+    </div>
+
+    <div class="input-tools-left">
+      <template v-if="device === 'moblie'">
         <div>
-          <!-- <img src="./../../static/images/plus.png" alt=""> -->
           <img
-            src="./../../static/images/image.png"
+            v-if="textArea === ''"
+            src="./../../static/images/audio.png"
             alt=""
-            @click="uploadImgShow = true"
+            @click="sendAduio"
           />
-          <!-- <img src="./../../static/images/camera.png" alt=""> -->
+          <img
+            v-else
+            src="./../../static/images/send.png"
+            alt=""
+            @click="sendMessage"
+          />
         </div>
-      </div>
-      <div class="text-send-box">
-        <el-input
-          type="textarea"
-          resize="none"
-          :autosize="{ minRows: 1, maxRows: 1 }"
-          placeholder="Aa"
-          v-model="textArea"
-          maxlength="500"
-        >
-        </el-input>
-        <div class="footer-tools">
-          <emoji-picker @emoji="insert" :search="search">
-            <div
-              slot="emoji-invoker"
-              slot-scope="{ events: { click: clickEvent } }"
-              @click.stop="clickEvent"
-            >
-              <div class="face-other-btn">
-                <img src="./../../static/images/emoji.png" alt="" />
-              </div>
-            </div>
-            <div
-              slot="emoji-picker"
-              slot-scope="{ emojis, insert }"
-              class="face-icon"
-            >
-              <div class="face-icon-box">
-                <div>
-                  <div
-                    v-for="(emojiGroup, category) in emojis"
-                    :key="category"
-                    class="face-box"
-                  >
-                    <h5>{{ emojiChine(category) }}</h5>
-                    <div>
-                      <span
-                        v-for="(emoji, emojiName) in emojiGroup"
-                        :key="emojiName"
-                        @click="insert(emoji)"
-                        >{{ emoji }}</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </emoji-picker>
-        </div>
-      </div>
-      <div class="input-tools-left">
-        <div v-if="textArea === ''" @click="sendAduio">
-          <img src="./../../static/images/audio.png" alt="" />
-        </div>
-        <div v-else @click="sendMessage">
-          <img src="./../../static/images/send.png" alt="" />
-        </div>
-      </div>
-    </template>
-    <template v-else>
-      <div class="text-send-box">
-        <el-input
-          type="textarea"
-          resize="none"
-          :autosize="{ minRows: 1, maxRows: 1 }"
-          placeholder="Aa"
-          maxlength="500"
-          v-model="textArea"
-          @keyup.native="keyUp"
-        >
-        </el-input>
-        <div class="footer-tools">
-          <emoji-picker @emoji="insert" :search="search">
-            <div
-              slot="emoji-invoker"
-              slot-scope="{ events: { click: clickEvent } }"
-              @click.stop="clickEvent"
-            >
-              <div class="face-other-btn">
-                <img src="./../../static/images/pc/smile.png" alt="" />
-              </div>
-            </div>
-            <div
-              slot="emoji-picker"
-              slot-scope="{ emojis, insert }"
-              class="face-icon"
-            >
-              <div class="face-icon-box">
-                <div>
-                  <div
-                    v-for="(emojiGroup, category) in emojis"
-                    :key="category"
-                    class="face-box"
-                  >
-                    <h5>{{ emojiChine(category) }}</h5>
-                    <div>
-                      <span
-                        v-for="(emoji, emojiName) in emojiGroup"
-                        :key="emojiName"
-                        @click="insert(emoji)"
-                        >{{ emoji }}</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </emoji-picker>
-        </div>
-      </div>
-      <div class="input-tools-left">
+      </template>
+      <template v-else>
         <div>
           <img
             src="./../../static/images/image.png"
@@ -137,8 +106,8 @@
             @click="takePictureShow = true"
           />
         </div>
-      </div>
-    </template>
+      </template>
+    </div>
     <el-dialog
       title="上传图片"
       :visible.sync="uploadImgShow"
@@ -279,7 +248,7 @@ export default {
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
-      setCalloutShow:"ws/setCalloutShow",
+      setCalloutShow: "ws/setCalloutShow",
     }),
     pictureShow(val) {
       this.takePictureShow = val;
@@ -485,17 +454,20 @@ export default {
     },
 
     keyUp(event) {
-      if(event.code === "Digit2" || event.target.value === "@"){
-        this.setCalloutShow(true)
-      } else if(event.code === "Backspace" || event.code === "Space"){
-        this.setCalloutShow(false)
-      } else if(event.shiftKey && keyCode === 13) {
+      if (event.code === "Digit2" || event.target.value === "@") {
+        this.setCalloutShow(true);
+      } else if (event.code === "Backspace" || event.code === "Space") {
+        this.setCalloutShow(false);
+      } else if (event.shiftKey && keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
-        if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
+        if (
+          this.replyMsg.clickType === "replyMsg" ||
+          this.replyMsg.clickType === ""
+        ) {
           this.sendMessage();
-        }else{
-          this.editMessage()
+        } else {
+          this.editMessage();
         }
       }
     },
@@ -535,7 +507,7 @@ export default {
     },
 
     editMessage() {
-      let editMessage ={
+      let editMessage = {
         chatType: "CLI_CHAT_EDIT",
         id: Math.random(),
         tokenType: 0,
@@ -545,15 +517,15 @@ export default {
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-      }
+      };
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(editMessage);
         this.closeReplyMessage();
         // 消息清空
         this.textArea = "";
-      } 
-    }
+      }
+    },
   },
   components: {
     EmojiPicker,

@@ -253,7 +253,6 @@ export default {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      console.log(downloadUrl)
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
