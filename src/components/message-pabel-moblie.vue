@@ -96,8 +96,8 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { deleteRecentChat } from "@/api";
 import { mapState,mapMutations } from "vuex";
+import { deleteRecentChat } from "@/api";
 export default {
   name: "MessagePabel",
   props: {
@@ -117,7 +117,6 @@ export default {
   },
   watch: {
     messageData(val) {
-      console.log(val)
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>

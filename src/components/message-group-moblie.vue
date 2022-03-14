@@ -121,7 +121,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState,mapMutations } from "vuex";
-import { groupListMember, deleteRecentChat } from "@/api";
+import { deleteRecentChat } from "@/api";
 
 export default {
   name: "MessagePabel",
