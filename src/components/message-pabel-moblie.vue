@@ -117,6 +117,7 @@ export default {
   },
   watch: {
     messageData(val) {
+      console.log(val)
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>
@@ -293,6 +294,7 @@ export default {
       return false;
     },
     downloadImages(data){
+      // const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]));
       const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]));
       const link = document.createElement('a');
       link.href = downloadUrl;
