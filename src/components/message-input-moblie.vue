@@ -248,7 +248,6 @@ export default {
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
-      setCalloutShow: "ws/setCalloutShow",
     }),
     pictureShow(val) {
       this.takePictureShow = val;
@@ -376,7 +375,6 @@ export default {
         success: (res) => {
           this.isVoice = false;
           //此处可以获取音频源文件(res)，用于上传等操作
-          // this.audio = document.getElementById("audioVoice");
           this.audio = document.getElementById("audioVoice-box");
           this.recorder.play(this.audio);
           // console.log("音频源文件", res);
@@ -454,11 +452,7 @@ export default {
     },
 
     keyUp(event) {
-      if (event.code === "Digit2" || event.target.value === "@") {
-        this.setCalloutShow(true);
-      } else if (event.code === "Backspace" || event.code === "Space") {
-        this.setCalloutShow(false);
-      } else if (event.shiftKey && keyCode === 13) {
+      if (event.shiftKey && keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if (
