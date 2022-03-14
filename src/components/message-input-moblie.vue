@@ -465,6 +465,8 @@ export default {
         }
       }
     },
+
+
     // 關閉回復訊息
     closeReplyMessage() {
       this.setReplyMsg({
@@ -487,7 +489,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
@@ -507,7 +509,7 @@ export default {
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),

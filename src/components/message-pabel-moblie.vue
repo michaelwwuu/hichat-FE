@@ -14,7 +14,7 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
               @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -48,26 +48,29 @@
                 v-linkified
               ></div>
             </span>
-
-            <audio
-              class="message-audio"
-              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-              controls
-              :src="el.message.content"
-              :id="el.historyId"
-              type="mp3"
-              @contextmenu.prevent="onContextmenu(el)"
-              @dblclick="dblclick(el)"
-            ></audio>
-
             <span
+              :id="el.historyId"
+              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
+              @dblclick="dblclick(el)"
+            >
+              <audio
+                class="message-audio"
+                :src="el.message.content"
+                controls
+                type="mp3"
+              ></audio>
+            </span>
+            <span
+              :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <el-image
-                :id="el.historyId"
                 :src="el.message.content"
                 :preview-src-list="[el.message.content]"
               >
@@ -114,6 +117,7 @@ export default {
   },
   watch: {
     messageData(val) {
+      console.log(val)
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>
@@ -190,6 +194,7 @@ export default {
             });
           },
         },
+
         {
           name: "copy",
           label: "複製",
@@ -233,18 +238,61 @@ export default {
           },
         },
       ];
-      if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "deleteAllChat" && list.name !== "edit";
-        });
-      } else {
-        this.newItem = item;
+      if(data.userChatId !== "u" + localStorage.getItem("id")){
+        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
+          if(data.chatType === "SRV_USER_AUDIO"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy" &&
+                list.name !== "download"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }
+        }
+        else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+          });
+        }
+      } else{
+        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
+          if(data.chatType === "SRV_USER_IMAGE"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy" && 
+                list.name !== "download"
+              );
+            });
+          }
+        }else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "download";
+          });
+        }
       }
       this.$contextmenu({
         items: this.newItem,
-        event,
-        //x: event.clientX,
-        //y: event.clientY,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
         customClass: "custom-class",
         zIndex: 3,
         minWidth: 230,
@@ -252,6 +300,7 @@ export default {
       return false;
     },
     downloadImages(data){
+      // const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]));
       const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]));
       const link = document.createElement('a');
       link.href = downloadUrl;
@@ -263,7 +312,7 @@ export default {
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content;
+      url.value = data.message.content.replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);

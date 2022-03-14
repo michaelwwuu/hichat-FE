@@ -57,9 +57,8 @@
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
-          :contactListData="contactListData"
         />
-                <div
+        <div
           class="reply-message"
           v-if="
             replyMsg.clickType === 'replyMsg' ||
@@ -196,7 +195,7 @@ export default {
         toChatId: data.chat.toChatId,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
-      console.log(data)
+      
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {

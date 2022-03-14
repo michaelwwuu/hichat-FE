@@ -49,7 +49,6 @@
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
-          :contactListData="contactListData"
         />
         <div
           class="reply-message"
@@ -126,6 +125,7 @@ export default {
     return {
       concats: [],
       messageData: [],
+      newMessageData:[],
       userInfoData: {
         token: getToken("token"),
         deviceId: getLocal("UUID"),
@@ -175,7 +175,6 @@ export default {
         return iconData.icon;
       }
     },
-
     closeReplyMessage() {
       this.setReplyMsg({
         chatType: "",
@@ -201,7 +200,9 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          if(item.icon === undefined) return item.icon = this.noIcon
+          if(item.icon === undefined) {
+            return item.icon = this.noIcon
+          }
         });
         this.setContactListData(this.contactList);
       });
@@ -242,9 +243,9 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            this.messageList(userInfo);
-            this.messageData.push(this.chatRoomMsg);
-            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+              this.messageList(userInfo);
+              this.messageData.push(this.chatRoomMsg);
+              if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
           break;
         // 历史讯息

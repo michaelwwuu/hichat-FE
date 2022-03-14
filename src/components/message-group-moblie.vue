@@ -10,17 +10,17 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <img class="message-avatar" :src="el.icon === undefined ? noIcon : el.icon" />
+          <img class="message-avatar" :src="el.icon" />
           <p>
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
               @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name === undefined ? '無此人員' : el.name}}</span>
+                <span class="message-name">{{ el.name}}</span>
                 <template v-if="el.isRplay !== null">
                   <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                   <div @click="goAnchor(el.isRplay.historyId)">
@@ -66,9 +66,11 @@
               </div>
             </span>
             <span
+              :id="el.historyId"
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -77,21 +79,21 @@
                   controls
                   :src="el.message.content"
                   type="mp3"
-                  :id="el.historyId"
                 ></audio>
               </div>
             </span>
 
             <span
+              :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
                 <el-image
-                  :id="el.historyId"
                   :src="el.message.content"
                   :preview-src-list="[el.message.content]"
                 />
@@ -130,9 +132,6 @@ export default {
     messageData: {
       type: Array,
     },
-    contactListData: {
-      type: Array,
-    },
   },
   data() {
     return {
@@ -146,7 +145,11 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.getGroupListMember();
+  },
+    computed: {
+    ...mapState({
+      contactListData: (state) => state.ws.contactListData,
+    }),
   },
   watch: {
     contactListData(val) {
@@ -241,18 +244,6 @@ export default {
 
       this.setChatUser(this.carteContact[0]);
     },
-    getGroupListMember() {
-      let groupId = this.groupData.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((item) => {
-          if (item.icon === undefined) {
-            return (item.icon = this.noIcon);
-          }
-          this.setContactListData(this.contactList);
-        });
-      });
-    },
     dblclick(event) {
       this.setReplyMsg({
         chatType: event.chatType,
@@ -324,18 +315,61 @@ export default {
           },
         },
       ];
-      if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "deleteAllChat" && list.name !== "edit";
-        });
-      } else {
-        this.newItem = item;
+      if(data.userChatId !== "u" + localStorage.getItem("id")){
+        if(data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_AUDIO"){
+          if(data.chatType === "SRV_GROUP_AUDIO"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy" &&
+                list.name !== "download"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }
+        }
+        else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+          });
+        }
+      } else{
+        if(data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_AUDIO"){
+          if(data.chatType === "SRV_GROUP_IMAGE"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy" && 
+                list.name !== "download"
+              );
+            });
+          }
+        }else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "download";
+          });
+        }
       }
       this.$contextmenu({
         items: this.newItem,
-        event,
-        //x: event.clientX,
-        //y: event.clientY,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
         customClass: "custom-class",
         zIndex: 3,
         minWidth: 230,
@@ -354,7 +388,7 @@ export default {
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content;
+      url.value = data.message.content.replace(/(\s*$)/g,"");;
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);

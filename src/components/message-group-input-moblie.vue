@@ -514,7 +514,7 @@ export default {
         this.calloutShow = true
       } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
         this.calloutShow = false
-      } else if(event.shiftKey && keyCode === 13) {
+      } else if(event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
@@ -550,7 +550,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: this.targetArray,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 0,
@@ -572,7 +572,7 @@ export default {
         tokenType: 0,
         fromChatId: this.groupData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea,
+        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
         toChatId: this.groupData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
