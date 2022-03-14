@@ -146,13 +146,15 @@ export default {
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
   },
-    computed: {
+  computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
   watch: {
     contactListData(val) {
+      console.log(val)
       val.forEach((res) => {
         this.message.forEach((el) => {
           if (el.userChatId === "u" + res.memberId) {
@@ -197,11 +199,6 @@ export default {
     //     }, 500);
     //   });
     // },
-  },
-  computed: {
-    ...mapState({
-      groupUser: (state) => state.ws.groupUser,
-    }),
   },
   methods: {
     ...mapMutations({
