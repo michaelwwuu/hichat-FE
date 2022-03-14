@@ -118,7 +118,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { mapMutations } from "vuex";
+import { mapState,mapMutations } from "vuex";
 import { groupListMember, deleteRecentChat } from "@/api";
 
 export default {
@@ -152,7 +152,6 @@ export default {
     contactListData(val) {
       val.forEach((res) => {
         this.message.forEach((el) => {
-          console.log(el)
           if (el.userChatId === "u" + res.memberId) {
             el.icon = res.icon;
             el.name = res.name;
@@ -173,28 +172,33 @@ export default {
       this.message = val.filter((item) =>
         !set.has(item.historyId) ? set.add(item.historyId) : false
       );
+      this.newMessageData = {};
+      this.message.forEach((el) => {
+        el.newContent = el.message.content.split(" ");
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
+        let newData = this.message.filter((res) => {
+          return (
+            this.$root.formatTimeDay(res.message.time) ===
+            this.$root.formatTimeDay(el.message.time)
+          );
+        });
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+          newData;
+      });
       this.$root.gotoBottom();
     },
-    message(val) {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.newMessageData = {};
-          val.forEach((el) => {
-            el.newContent = el.message.content.split(" ");
-            this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-            let newData = this.message.filter((res) => {
-              return (
-                this.$root.formatTimeDay(res.message.time) ===
-                this.$root.formatTimeDay(el.message.time)
-              );
-            });
-            this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-              newData;
-            this.$root.gotoBottom();
-          });
-        }, 500);
-      });
-    },
+    // message(val) {
+    //   this.$nextTick(() => {
+    //     setTimeout(() => {
+    //       val
+    //     }, 500);
+    //   });
+    // },
+  },
+  computed: {
+    ...mapState({
+      groupUser: (state) => state.ws.groupUser,
+    }),
   },
   methods: {
     ...mapMutations({
@@ -372,10 +376,8 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.message = this.message.filter(
-              (item) => item.historyId !== parmas.historyId
-            );
-            this.getHiChatDataList();
+            this.getHiChatDataList()
+            this.getHistory();
           }
         })
         .catch((err) => {
@@ -391,6 +393,18 @@ export default {
         token: localStorage.getItem("token"),
       };
       Socket.send(chatMsgKey);
+    },
+    getHistory() {
+      let getHistoryMessage= {
+        chatType: "CLI_GROUP_HISTORY_REQ",
+        toChatId: this.groupUser.toChatId,
+        id: Math.random(),
+        tokenType: 0,
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
+      Socket.send(getHistoryMessage);
     },
   },
 };

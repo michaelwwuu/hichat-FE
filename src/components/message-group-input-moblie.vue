@@ -292,6 +292,9 @@ export default {
           });
         });
       }
+    },
+    replyMsg(val){
+      this.textArea = val.innerText
     }
   },
   methods: {
@@ -422,7 +425,6 @@ export default {
         success: (res) => {
           this.isVoice = false;
           //此处可以获取音频源文件(res)，用于上传等操作
-          // this.audio = document.getElementById("audioVoice");
           this.audio = document.getElementById("audioVoice-box");
           this.recorder.play(this.audio);
           // console.log("音频源文件", res);
@@ -500,7 +502,7 @@ export default {
     },
 
     callout(event){
-      if(event.code === "Digit2"){
+      if(event.code === "@"){
         this.calloutShow = true
       } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
         this.calloutShow = false
@@ -508,7 +510,7 @@ export default {
     },
 
     keyUp(event) {
-      if(event.code === "Digit2"){
+      if(event.target.value === "@"){
         this.calloutShow = true
       } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
         this.calloutShow = false

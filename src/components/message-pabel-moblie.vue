@@ -94,7 +94,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { deleteRecentChat } from "@/api";
-import { mapMutations } from "vuex";
+import { mapState,mapMutations } from "vuex";
 export default {
   name: "MessagePabel",
   props: {
@@ -119,11 +119,8 @@ export default {
       this.message = val.filter((item) =>
         !set.has(item.historyId) ? set.add(item.historyId) : false
       );
-      this.$root.gotoBottom();
-    },
-    message(val) {
       this.newMessageData = {};
-      val.forEach((el) => {
+      this.message.forEach((el) => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
@@ -134,7 +131,16 @@ export default {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
           newData;
       });
+      this.$root.gotoBottom();
     },
+    // message(val) {
+    //   val
+    // },
+  },
+  computed: {
+    ...mapState({
+      chatUser: (state) => state.ws.chatUser,
+    }),
   },
   methods: {
     ...mapMutations({
@@ -279,10 +285,8 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.message = this.message.filter(
-              (item) => item.historyId !== parmas.historyId
-            );
-            this.getHiChatDataList();
+            this.getHiChatDataList()
+            this.getHistory();
           }
         })
         .catch((err) => {
@@ -298,6 +302,18 @@ export default {
         token: localStorage.getItem("token"),
       };
       Socket.send(chatMsgKey);
+    },
+    getHistory() {
+      let getHistoryMessage= {
+        chatType: "CLI_HISTORY_REQ",
+        toChatId: this.chatUser.toChatId,
+        id: Math.random(),
+        tokenType: 0,
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
+      Socket.send(getHistoryMessage);
     },
   },
 };
