@@ -296,6 +296,13 @@ export default {
           },
         },
         {
+          name: "download",
+          label: "下載",
+          onClick: () => {
+            this.downloadImages(data);
+          },
+        },
+        {
           name: "deleteAllChat",
           label: "在所有人的對話紀錄中刪除",
           divided: true,
@@ -329,6 +336,15 @@ export default {
         minWidth: 230,
       });
       return false;
+    },
+    downloadImages(data){
+      const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]));
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', data.message.content);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
