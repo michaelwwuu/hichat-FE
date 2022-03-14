@@ -14,7 +14,7 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
               @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -51,7 +51,8 @@
             <span
               :id="el.historyId"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <audio
@@ -65,7 +66,8 @@
               :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <el-image
@@ -172,7 +174,6 @@ export default {
       });
     },
     onContextmenu(data) {
-      console.log(data);
       let item = [
         {
           name: "edit",
@@ -206,7 +207,6 @@ export default {
             });
           },
         },
-        { name: "download", label: "下载圖片", onClick: () => {} },
         {
           name: "download",
           label: "下載",
@@ -231,37 +231,61 @@ export default {
           },
         },
       ];
-      if (
-        data.userChatId !== "u" + localStorage.getItem("id") &&
-        (data.chatType === "SRV_USER_IMAGE" ||
-          data.chatType === "SRV_USER_AUDIO")
-      ) {
-        this.newItem = item.filter((list) => {
-          return (
-            list.name !== "deleteAllChat" &&
-            list.name !== "edit" &&
-            list.name !== "copy"
-          );
-        });
-      } else if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "deleteAllChat" && list.name !== "edit";
-        });
-      } else if (
-        data.chatType === "SRV_USER_IMAGE" ||
-        data.chatType === "SRV_USER_AUDIO"
-      ) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "edit" && list.name !== "copy";
-        });
-      } else {
-        this.newItem = item;
+      if(data.userChatId !== "u" + localStorage.getItem("id")){
+        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
+          if(data.chatType === "SRV_USER_AUDIO"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy" &&
+                list.name !== "download"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }
+        }
+        else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+          });
+        }
+      } else{
+        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
+          if(data.chatType === "SRV_USER_IMAGE"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy" && 
+                list.name !== "download"
+              );
+            });
+          }
+        }else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "download";
+          });
+        }
       }
       this.$contextmenu({
         items: this.newItem,
-        event,
-        //x: event.clientX,
-        //y: event.clientY,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
         customClass: "custom-class",
         zIndex: 3,
         minWidth: 230,
