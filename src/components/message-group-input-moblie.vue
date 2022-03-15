@@ -164,7 +164,7 @@
         :file-list="fileList"
         list-type="picture"
       >
-        <el-button type="primary">点击上传</el-button>
+        <el-button type="primary" :class="{'hidden':fileList.length > 0}">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
           只能上传 jpg / png 图片，且不超过500kb
         </div>
@@ -730,6 +730,9 @@ export default {
           .el-upload-list__item {
             margin-top: -72px;
           }
+        }
+        .hidden{
+          visibility: hidden;
         }
       }
       .record-play {
