@@ -209,7 +209,12 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.infoMsgSettingData();
-    this.getUserId();
+    setTimeout(() => {
+      this.getUserId();
+    }, 500); 
+  },
+  mounted() {
+    
   },
   methods: {
     ...mapMutations({
@@ -232,7 +237,7 @@ export default {
         duration: 1000,
       });
     },   
-    getUserId() {
+    getUserId() { 
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";

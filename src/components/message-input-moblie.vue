@@ -458,7 +458,7 @@ export default {
     },
 
     keyUp(event) {
-      if (event.shiftKey && keyCode === 13) {
+      if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if (
