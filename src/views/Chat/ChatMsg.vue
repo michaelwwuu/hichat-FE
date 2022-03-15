@@ -329,6 +329,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
@@ -353,6 +354,7 @@ export default {
         innerText:"",
         replyHistoryId:"",
       });
+      this.setEditMsg({ innerText:""});
     },
     // 訊息統一格式
     messageList(data) {

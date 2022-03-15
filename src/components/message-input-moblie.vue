@@ -240,9 +240,15 @@ export default {
       type: Object,
     },
   },
+  watch:{
+    editMsg(val){
+      this.textArea = val.innerText
+    }
+  },
   computed: {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
+      editMsg: (state) => state.ws.editMsg,
     }),
   },
   methods: {

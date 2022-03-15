@@ -27,11 +27,17 @@ export const state = {
     innerText:"",
     replyHistoryId:"",
   },
+  editMsg:{
+    innerText:"",
+  },
   device: localStorage.getItem("device"),
 };
 export const actions = {};
 
 export const mutations = {
+  setEditMsg(state, payload) {
+    state.editMsg = payload;
+  },
   setWsRes(state, payload) {
     state.wsRes = payload;
   },

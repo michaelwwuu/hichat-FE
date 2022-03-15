@@ -257,8 +257,9 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setChatUser: "ws/setChatUser",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
+      setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
       setContactUser: "ws/setContactUser",
       setMsgInfoPage: "ws/setMsgInfoPage",
@@ -276,11 +277,12 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
+      this.setEditMsg({ innerText:""});
     },
     // 訊息統一格式
     messageList(data) {

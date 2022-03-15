@@ -278,6 +278,7 @@ export default {
   computed: {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
+      editMsg: (state) => state.ws.editMsg,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -293,7 +294,7 @@ export default {
         });
       }
     },
-    replyMsg(val){
+    editMsg(val){
       this.textArea = val.innerText
     }
   },

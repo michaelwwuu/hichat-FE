@@ -146,8 +146,9 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setChatGroup: "ws/setChatGroup",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
+      setChatGroup: "ws/setChatGroup",
       setContactListData: "ws/setContactListData",
     }),
     formatMessageData(){
@@ -185,6 +186,7 @@ export default {
         innerText: "",
         replyHistoryId: "",
       });
+      this.setEditMsg({ innerText:""});
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");

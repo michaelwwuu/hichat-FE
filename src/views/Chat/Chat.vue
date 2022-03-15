@@ -158,6 +158,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
@@ -182,6 +183,7 @@ export default {
         innerText: "",
         replyHistoryId: "",
       });
+      this.setEditMsg({ innerText:""});
     },
     changeGroupAdminShow() {
       this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });

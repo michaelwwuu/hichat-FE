@@ -148,6 +148,7 @@ export default {
   },
     computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -170,7 +171,10 @@ export default {
               if (el.userChatId === "u" + item.memberId) {
                 el.icon = item.icon;
                 el.name = item.name;
-              } 
+              } else if(el.icon === undefined && el.icon === undefined){
+                el.icon = this.noIcon;
+                el.name = "无此成员";
+              }
               if (
                 el.isRplay !== null &&
                 el.isRplay.fromChatId === "u" + item.memberId
@@ -197,6 +201,7 @@ export default {
   methods: {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
+      setEditMsg:"ws/setEditMsg",
       setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
     }),
@@ -258,6 +263,7 @@ export default {
               name: data.name,
               icon: data.icon,
             });
+            this.setEditMsg({ innerText: data.message.content})
           },
         },
         {
@@ -686,6 +692,11 @@ export default {
       color: #5f5f5f;
     }
     border-radius: 8px;
+  }
+  .message-audio{
+    height: 2.5em !important;
+    padding:0 !important;
+    border: none !important;
   }
 }
 </style>
