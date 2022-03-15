@@ -14,7 +14,7 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
               @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -51,7 +51,8 @@
             <span
               :id="el.historyId"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <audio
@@ -65,7 +66,8 @@
               :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <el-image
@@ -94,8 +96,8 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { mapState,mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
-import { mapMutations } from "vuex";
 export default {
   name: "MessagePabel",
   props: {
@@ -120,11 +122,8 @@ export default {
       this.message = val.filter((item) =>
         !set.has(item.historyId) ? set.add(item.historyId) : false
       );
-      this.$root.gotoBottom();
-    },
-    message(val) {
       this.newMessageData = {};
-      val.forEach((el) => {
+      this.message.forEach((el) => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
         let newData = this.message.filter((res) => {
           return (
@@ -135,7 +134,16 @@ export default {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
           newData;
       });
+      this.$root.gotoBottom();
     },
+    // message(val) {
+    //   val
+    // },
+  },
+  computed: {
+    ...mapState({
+      chatUser: (state) => state.ws.chatUser,
+    }),
   },
   methods: {
     ...mapMutations({
@@ -307,9 +315,9 @@ export default {
       // }
       this.$contextmenu({
         items: this.newItem,
-        event,
-        //x: event.clientX,
-        //y: event.clientY,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
         customClass: "custom-class",
         zIndex: 3,
         minWidth: 230,
@@ -350,10 +358,8 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.message = this.message.filter(
-              (item) => item.historyId !== parmas.historyId
-            );
-            this.getHiChatDataList();
+            this.getHiChatDataList()
+            this.getHistory();
           }
         })
         .catch((err) => {
@@ -369,6 +375,18 @@ export default {
         token: localStorage.getItem("token"),
       };
       Socket.send(chatMsgKey);
+    },
+    getHistory() {
+      let getHistoryMessage= {
+        chatType: "CLI_HISTORY_REQ",
+        toChatId: this.chatUser.toChatId,
+        id: Math.random(),
+        tokenType: 0,
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
+      Socket.send(getHistoryMessage);
     },
   },
 };

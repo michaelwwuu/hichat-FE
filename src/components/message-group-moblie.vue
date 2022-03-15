@@ -15,7 +15,7 @@
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
               @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -69,7 +69,8 @@
               :id="el.historyId"
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -86,7 +87,8 @@
               :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
-              @contextmenu.prevent="onContextmenu(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @touchmove="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -189,6 +191,7 @@ export default {
           });
         }, 500);
       });
+      this.$root.gotoBottom();
     },
   },
   methods: {
@@ -354,9 +357,9 @@ export default {
       }
       this.$contextmenu({
         items: this.newItem,
-        event,
-        //x: event.clientX,
-        //y: event.clientY,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
         customClass: "custom-class",
         zIndex: 3,
         minWidth: 230,
@@ -397,10 +400,8 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.message = this.message.filter(
-              (item) => item.historyId !== parmas.historyId
-            );
-            this.getHiChatDataList();
+            this.getHiChatDataList()
+            this.getHistory();
           }
         })
         .catch((err) => {
@@ -416,6 +417,18 @@ export default {
         token: localStorage.getItem("token"),
       };
       Socket.send(chatMsgKey);
+    },
+    getHistory() {
+      let getHistoryMessage= {
+        chatType: "CLI_GROUP_HISTORY_REQ",
+        toChatId: this.groupUser.toChatId,
+        id: Math.random(),
+        tokenType: 0,
+        pageSize: 1000,
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
+      }
+      Socket.send(getHistoryMessage);
     },
   },
 };

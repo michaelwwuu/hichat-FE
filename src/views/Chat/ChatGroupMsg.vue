@@ -58,7 +58,7 @@
           :messageData="formatMessageData()"
           :userInfoData="userInfoData"
         />
-                <div
+        <div
           class="reply-message"
           v-if="
             replyMsg.clickType === 'replyMsg' ||
