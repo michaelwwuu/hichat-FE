@@ -10,7 +10,7 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <img class="message-avatar" :src="el.icon === undefined ? noIcon : el.icon" />
+          <img class="message-avatar" :src="el.icon" />
           <p>
             <span
               class="message-classic"
@@ -20,7 +20,7 @@
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name === undefined ? '無此人員' : el.name}}</span>
+                <span class="message-name">{{ el.name}}</span>
                 <template v-if="el.isRplay !== null">
                   <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                   <div @click="goAnchor(el.isRplay.historyId)">
@@ -118,8 +118,8 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { mapMutations } from "vuex";
-import { groupListMember, deleteRecentChat } from "@/api";
+import { mapState,mapMutations } from "vuex";
+import { deleteRecentChat } from "@/api";
 
 export default {
   name: "MessagePabel",
@@ -128,9 +128,6 @@ export default {
       type: Object,
     },
     messageData: {
-      type: Array,
-    },
-    contactListData: {
       type: Array,
     },
   },
@@ -146,26 +143,13 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    // this.getGroupListMember();
+  },
+    computed: {
+    ...mapState({
+      contactListData: (state) => state.ws.contactListData,
+    }),
   },
   watch: {
-    contactListData(val) {
-      val.forEach((res) => {
-        this.message.forEach((el) => {
-          if (el.userChatId === "u" + res.memberId) {
-            el.icon = res.icon;
-            el.name = res.name;
-          } 
-          if (
-            el.isRplay !== null &&
-            el.isRplay.fromChatId === "u" + res.memberId
-          ) {
-            el.isRplay.nickName = res.name;
-          }
-        });
-      });
-      this.$root.gotoBottom();
-    },
     messageData(val) {
       //去除重复
       const set = new Set();
@@ -180,6 +164,18 @@ export default {
           this.newMessageData = {};
           val.forEach((el) => {
             el.newContent = el.message.content.split(" ");
+            this.contactListData.forEach((item)=>{
+              if (el.userChatId === "u" + item.memberId) {
+                el.icon = item.icon;
+                el.name = item.name;
+              } 
+              if (
+                el.isRplay !== null &&
+                el.isRplay.fromChatId === "u" + item.memberId
+              ) {
+                el.isRplay.nickName = item.name;
+              }
+            })
             this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
             let newData = this.message.filter((res) => {
               return (
@@ -200,7 +196,6 @@ export default {
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
-      setContactListData: "ws/setContactListData",
     }),
     goAnchor(data) {
       document.getElementById(data).scrollIntoView(true);
@@ -236,18 +231,6 @@ export default {
 
       this.setChatUser(this.carteContact[0]);
     },
-    // getGroupListMember() {
-    //   let groupId = this.groupData.toChatId.replace("g", "");
-    //   groupListMember({ groupId }).then((res) => {
-    //     this.contactList = res.data.list;
-    //     this.contactList.forEach((item) => {
-    //       if (item.icon === undefined) {
-    //         return (item.icon = this.noIcon);
-    //       }
-    //       this.setContactListData(this.contactList);
-    //     });
-    //   });
-    // },
     dblclick(event) {
       this.setReplyMsg({
         chatType: event.chatType,
@@ -319,12 +302,55 @@ export default {
           },
         },
       ];
-      if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "deleteAllChat" && list.name !== "edit";
-        });
-      } else {
-        this.newItem = item;
+      if(data.userChatId !== "u" + localStorage.getItem("id")){
+        if(data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_AUDIO"){
+          if(data.chatType === "SRV_GROUP_AUDIO"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy" &&
+                list.name !== "download"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }
+        }
+        else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+          });
+        }
+      } else{
+        if(data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_AUDIO"){
+          if(data.chatType === "SRV_GROUP_IMAGE"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy" && 
+                list.name !== "download"
+              );
+            });
+          }
+        }else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "download";
+          });
+        }
       }
       this.$contextmenu({
         items: this.newItem,

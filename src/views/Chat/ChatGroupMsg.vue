@@ -55,9 +55,8 @@
           </template>
         </el-header>
         <message-pabel
-          :messageData="messageData"
+          :messageData="formatMessageData()"
           :userInfoData="userInfoData"
-          :contactListData="contactListData"
         />
                 <div
           class="reply-message"
@@ -151,6 +150,23 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setContactListData: "ws/setContactListData",
     }),
+    formatMessageData(){
+      this.messageData.forEach((res)=>{
+        this.contactList.forEach((item)=>{
+          if (res.userChatId === "u" + item.memberId) {
+            res.icon = item.icon;
+            res.name = item.name;
+          } 
+          if (
+            res.isRplay !== null &&
+            res.isRplay.fromChatId === "u" + item.memberId
+          ) {
+            res.isRplay.nickName = item.name;
+          }
+        })
+      })
+      return this.messageData     
+    },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -196,6 +212,7 @@ export default {
         toChatId: data.chat.toChatId,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
+      
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {

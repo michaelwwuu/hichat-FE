@@ -172,7 +172,6 @@ export default {
       });
     },
     onContextmenu(data) {
-      console.log(data);
       let item = [
         {
           name: "edit",
@@ -206,7 +205,6 @@ export default {
             });
           },
         },
-        { name: "download", label: "下载圖片", onClick: () => {} },
         {
           name: "download",
           label: "下載",
@@ -231,32 +229,82 @@ export default {
           },
         },
       ];
-      if (
-        data.userChatId !== "u" + localStorage.getItem("id") &&
-        (data.chatType === "SRV_USER_IMAGE" ||
-          data.chatType === "SRV_USER_AUDIO")
-      ) {
-        this.newItem = item.filter((list) => {
-          return (
-            list.name !== "deleteAllChat" &&
-            list.name !== "edit" &&
-            list.name !== "copy"
-          );
-        });
-      } else if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "deleteAllChat" && list.name !== "edit";
-        });
-      } else if (
-        data.chatType === "SRV_USER_IMAGE" ||
-        data.chatType === "SRV_USER_AUDIO"
-      ) {
-        this.newItem = item.filter((list) => {
-          return list.name !== "edit" && list.name !== "copy";
-        });
-      } else {
-        this.newItem = item;
+      if(data.userChatId !== "u" + localStorage.getItem("id")){
+        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
+          if(data.chatType === "SRV_USER_AUDIO"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy" &&
+                list.name !== "download"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "deleteAllChat" &&
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }
+        }
+        else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+          });
+        }
+      } else{
+        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
+          if(data.chatType === "SRV_USER_IMAGE"){
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy"
+              );
+            });
+          }else{
+            this.newItem = item.filter((list) => {
+              return (
+                list.name !== "edit" &&
+                list.name !== "copy" && 
+                list.name !== "download"
+              );
+            });
+          }
+        }else{
+          this.newItem = item.filter((list) => {
+            return list.name !== "download";
+          });
+        }
       }
+      // if (
+      //   data.userChatId !== "u" + localStorage.getItem("id") &&
+      //   (data.chatType === "SRV_USER_IMAGE" ||
+      //     data.chatType === "SRV_USER_AUDIO")
+      // ) {
+      //   this.newItem = item.filter((list) => {
+      //     return (
+      //       list.name !== "deleteAllChat" &&
+      //       list.name !== "edit" &&
+      //       list.name !== "copy"
+      //     );
+      //   });
+      // } else if (data.userChatId !== "u" + localStorage.getItem("id")) {
+      //   this.newItem = item.filter((list) => {
+      //     return list.name !== "deleteAllChat" && list.name !== "edit";
+      //   });
+      // }else if (
+      //   data.chatType === "SRV_USER_IMAGE" ||
+      //   data.chatType === "SRV_USER_AUDIO"
+      // ) {
+      //   this.newItem = item.filter((list) => {
+      //     return list.name !== "edit" && list.name !== "copy";
+      //   });
+      // } else {
+      //   this.newItem = item;
+      // }
       this.$contextmenu({
         items: this.newItem,
         event,
