@@ -325,13 +325,42 @@ export default {
       return false;
     },
     downloadImages(data){
-      const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]));
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', data.message.content);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      // console.log(data)
+      // const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]), {type: "image/png"});
+      // const link = document.createElement('a');
+      // link.href = downloadUrl;
+      // link.setAttribute('download', 'image.jpg');
+      // document.body.appendChild(link);
+      // link.click();
+      // link.remove();
+      let hreLocal="";
+      hreLocal = data.message.content;
+      this.downloadByBlob(hreLocal,"images")
+    },
+    downloadByBlob(url,name) {
+      let image = new Image()
+      image.setAttribute('crossOrigin', 'anonymous')
+      image.src = url
+      image.onload = () => {
+        let canvas = document.createElement('canvas')
+        canvas.width = image.width
+        canvas.height = image.height
+        let ctx = canvas.getContext('2d')
+        ctx.drawImage(image, 0, 0, image.width, image.height)
+        canvas.toBlob((blob) => {
+          let url = URL.createObjectURL(blob)
+          this.download(url,name)
+          // 用完释放URL对象
+          URL.revokeObjectURL(url)
+        })
+      }
+    },
+    download(href, name) {
+      let link = document.createElement('a')
+      link.download = name
+      link.href = href
+      link.click()
+      link.remove()
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
