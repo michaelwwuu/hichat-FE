@@ -147,6 +147,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setEditMsg:"ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
     goAnchor(data) {
@@ -191,6 +192,7 @@ export default {
               innerText: data.message.content,
               replyHistoryId: data.historyId,
             });
+            this.setEditMsg({ innerText: data.message.content})
           },
         },
 

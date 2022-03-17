@@ -1,5 +1,8 @@
 <template>
-  <div class="message-input-box" :style="device !== 'moblie' ? 'height:59px':''">
+  <div
+    class="message-input-box"
+    :style="device !== 'moblie' ? 'height:59px' : ''"
+  >
     <template v-if="device === 'moblie'">
       <div class="input-tools-right">
         <div>
@@ -20,7 +23,7 @@
           placeholder="Aa"
           v-model="textArea"
           maxlength="500"
-          @keyup.native="callout" 
+          @keyup.native="callout"
         >
         </el-input>
         <div class="footer-tools">
@@ -66,7 +69,7 @@
         <div v-if="textArea === ''" @click="sendAduio">
           <img src="./../../static/images/audio.png" alt="" />
         </div>
-        <div v-else @click="sendMessage">
+        <div v-else @click="editMsg === '' ? sendMessage() : editMessage()">
           <img src="./../../static/images/send.png" alt="" />
         </div>
       </div>
@@ -80,7 +83,7 @@
           placeholder="Aa"
           v-model="textArea"
           maxlength="500"
-          @keyup.native="keyUp" 
+          @keyup.native="keyUp"
         >
         </el-input>
         <div class="footer-tools">
@@ -121,7 +124,6 @@
             </div>
           </emoji-picker>
         </div>
-
       </div>
       <div class="input-tools-left">
         <div>
@@ -130,29 +132,36 @@
             alt=""
             @click="uploadImgShow = true"
           />
-          <img src="./../../static/images/camera.png" alt="" @click="takePictureShow = true">
+          <img
+            src="./../../static/images/camera.png"
+            alt=""
+            @click="takePictureShow = true"
+          />
         </div>
-      </div>      
+      </div>
     </template>
-    <div class="callout-message" v-show="calloutShow && searchContactData.length > 0">
+    <div
+      class="callout-message"
+      v-show="calloutShow && searchContactData.length > 0"
+    >
       <ul>
-        <li v-for="(item,index) in searchContactData" :key="index" @click="checkCallout(item)">
-          <el-avatar
-            shape="square"
-            size="small"
-            :src="item.icon"
-          ></el-avatar>
+        <li
+          v-for="(item, index) in searchContactData"
+          :key="index"
+          @click="checkCallout(item)"
+        >
+          <el-avatar shape="square" size="small" :src="item.icon"></el-avatar>
           <div class="callout-message-box">
-              <span>{{ item.name }}</span>
+            <span>{{ item.name }}</span>
           </div>
         </li>
       </ul>
-    </div>    
+    </div>
     <el-dialog
       title="上传图片"
       :visible.sync="uploadImgShow"
-      :append-to-body="device !=='pc'"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
+      :append-to-body="device !== 'pc'"
+      :class="{ 'el-dialog-loginOut': device === 'pc' }"
       width="100%"
       center
     >
@@ -164,22 +173,28 @@
         :file-list="fileList"
         list-type="picture"
       >
-        <el-button type="primary" :class="{'hidden':fileList.length > 0}">点击上传</el-button>
+        <el-button type="primary" :class="{ hidden: fileList.length > 0 }"
+          >点击上传</el-button
+        >
         <div slot="tip" class="el-upload__tip">
           只能上传 jpg / png 图片，且不超过500kb
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <template v-if="device ==='moblie'">
+        <template v-if="device === 'moblie'">
           <el-button type="success" @click="submitAvatarUpload">确认</el-button>
           <el-button @click="uploadImgShow = false">取消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
-          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
+          <el-button class="background-gray" @click="uploadImgShow = false"
+            >取消</el-button
+          >
+          <el-button class="background-orange" @click="submitAvatarUpload"
+            >确认</el-button
+          >
         </template>
       </span>
-    </el-dialog>    
+    </el-dialog>
     <el-dialog
       title="录音"
       :visible.sync="sendAduioShow"
@@ -216,8 +231,11 @@
       class="el-dialog-takePicture"
       center
     >
-      <Photo :chatType="'CLI_GROUP_IMAGE'" v-on:closePictureShow="pictureShow"></Photo>
-    </el-dialog>   
+      <Photo
+        :chatType="'CLI_GROUP_IMAGE'"
+        v-on:closePictureShow="pictureShow"
+      ></Photo>
+    </el-dialog>
   </div>
 </template>
 
@@ -226,7 +244,7 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
-import Photo from "./Photo.vue"
+import Photo from "./Photo.vue";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 
@@ -236,14 +254,14 @@ export default {
     return {
       textArea: "",
       search: "",
-      calloutShow:false,
+      calloutShow: false,
       sendAduioShow: false,
       uploadImgShow: false,
-      takePictureShow:false,
-      checkName:[],
+      takePictureShow: false,
+      checkName: [],
       fileList: [],
-      targetArray:[],
-      searchContactData:[],
+      targetArray: [],
+      searchContactData: [],
       device: localStorage.getItem("device"),
       //錄音
       isVoice: false,
@@ -282,28 +300,28 @@ export default {
       contactListData: (state) => state.ws.contactListData,
     }),
   },
-  watch:{
-    textArea:{
-      immediate:true,
-      handler(val){
-        let textAreaSearchData = val.split(" ")
-        textAreaSearchData.forEach(el => {
+  watch: {
+    textArea: {
+      immediate: true,
+      handler(val) {
+        let textAreaSearchData = val.split(" ");
+        textAreaSearchData.forEach((el) => {
           this.searchContactData = this.contactListData.filter((item) => {
-            return item.name.indexOf(el.replace("@","")) !==-1
+            return item.name.indexOf(el.replace("@", "")) !== -1;
           });
         });
-      }
+      },
     },
-    editMsg(val){
-      this.textArea = val.innerText
-    }
+    editMsg(val) {
+      this.textArea = val.innerText;
+    },
   },
   methods: {
     ...mapMutations({
       setReplyMsg: "ws/setReplyMsg",
-    }), 
-    pictureShow(val){
-      this.takePictureShow = val
+    }),
+    pictureShow(val) {
+      this.takePictureShow = val;
     },
     // 取得圖片
     uploadImg(file, fileList) {
@@ -318,8 +336,8 @@ export default {
           let message = this.userInfoData;
           message.chatType = "CLI_GROUP_IMAGE";
           message.id = Math.random();
-          message.fromChatId = 'u' + localStorage.getItem('id');
-          message.toChatId = 'g' + this.groupData.groupId;
+          message.fromChatId = "u" + localStorage.getItem("id");
+          message.toChatId = "g" + this.groupData.groupId;
           message.text = res.data;
           Socket.send(message);
           this.fileList = [];
@@ -458,9 +476,9 @@ export default {
           let message = this.userInfoData;
           message.chatType = "CLI_GROUP_AUDIO";
           message.id = Math.random();
-          message.fromChatId = 'u' + localStorage.getItem('id');
-          message.toChatId = 'g' + this.groupData.groupId,
-          message.text = res.data;
+          message.fromChatId = "u" + localStorage.getItem("id");
+          (message.toChatId = "g" + this.groupData.groupId),
+            (message.text = res.data);
           Socket.send(message);
           this.sendAduioShow = false;
           this.audioMessageData = {};
@@ -495,41 +513,52 @@ export default {
       if (this.textArea.replace(/\s+/g, "") === "") {
         this.$alert("不能发送空白消息", "提示", {
           confirmButtonText: "确定",
-          customClass: 'winClass',//弹窗样式
+          customClass: "winClass", //弹窗样式
         });
         return false;
       }
       return true;
     },
 
-    callout(event){
-      if(event.code === "@"){
-        this.calloutShow = true
-      } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
-        this.calloutShow = false
+    callout(event) {
+      if (event.code === "@") {
+        this.calloutShow = true;
+      } else if (
+        this.textArea === "" ||
+        event.code === "Space" ||
+        event.code === "Digit1"
+      ) {
+        this.calloutShow = false;
       }
     },
 
     keyUp(event) {
-      if(event.target.value === "@"){
-        this.calloutShow = true
-      } else if(this.textArea === "" || event.code === "Space" || event.code === "Digit1"){
-        this.calloutShow = false
-      } else if(event.shiftKey && event.keyCode === 13) {
+      if (event.target.value === "@") {
+        this.calloutShow = true;
+      } else if (
+        this.textArea === "" ||
+        event.code === "Space" ||
+        event.code === "Digit1"
+      ) {
+        this.calloutShow = false;
+      } else if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
-        if(this.replyMsg.clickType === "replyMsg" || this.replyMsg.clickType === ""){
+        if (
+          this.replyMsg.clickType === "replyMsg" ||
+          this.replyMsg.clickType === ""
+        ) {
           this.sendMessage();
-        }else{
-          this.editMessage()
+        } else {
+          this.editMessage();
         }
       }
     },
 
-    checkCallout(data){
-      this.calloutShow = false
-      this.targetArray.push("u" + data.memberId)
-      this.textArea = this.textArea + data.username
+    checkCallout(data) {
+      this.calloutShow = false;
+      this.targetArray.push("u" + data.memberId);
+      this.textArea = this.textArea + data.username;
     },
 
     closeReplyMessage() {
@@ -542,50 +571,50 @@ export default {
     },
     // 发送消息
     sendMessage() {
-      let message = { 
+      let message = {
         chatType: "CLI_GROUP_SEND",
         id: Math.random(),
-        toChatId:this.groupData.toChatId,
+        toChatId: this.groupData.toChatId,
         replyHistoryId:
           this.replyMsg.replyHistoryId !== ""
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: this.targetArray,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
-        deviceId: localStorage.getItem('UUID'),
-        token: localStorage.getItem('token'),
+        text: this.textArea.replace(/(\s*$)/g, ""),
+        deviceId: localStorage.getItem("UUID"),
+        token: localStorage.getItem("token"),
         tokenType: 0,
-      }
+      };
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);
         this.closeReplyMessage();
         // 消息清空
-        this.targetArray = []
-        this.checkName = []
+        this.targetArray = [];
+        this.checkName = [];
         this.textArea = "";
       }
     },
     editMessage() {
-      let editMessage ={
+      let editMessage = {
         chatType: "CLI_CHAT_EDIT",
         id: Math.random(),
         tokenType: 0,
         fromChatId: this.groupData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
+        text: this.textArea.replace(/(\s*$)/g, ""),
         toChatId: this.groupData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-      }
+      };
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(editMessage);
         this.closeReplyMessage();
         // 消息清空
         this.textArea = "";
-      } 
-    }
+      }
+    },
   },
   components: {
     EmojiPicker,
@@ -603,7 +632,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
-  .input-tools-left,.input-tools-right {
+  .input-tools-left,
+  .input-tools-right {
     padding: 15px 0;
     img {
       height: 1.1em;
@@ -731,7 +761,7 @@ export default {
             margin-top: -72px;
           }
         }
-        .hidden{
+        .hidden {
           visibility: hidden;
         }
       }
@@ -753,7 +783,7 @@ export default {
       .dialog-footer {
         display: flex;
         justify-content: space-between;
-        .el-button{
+        .el-button {
           width: 90%;
         }
         img {
@@ -763,34 +793,34 @@ export default {
     }
   }
 }
-.winClass{
+.winClass {
   width: 90%;
 }
-.hichat-pc{
-  .el-dialog__wrapper.el-dialog-takePicture{
-    .el-dialog{
+.hichat-pc {
+  .el-dialog__wrapper.el-dialog-takePicture {
+    .el-dialog {
       width: 880px !important;
       margin-top: 3em !important;
-      .el-dialog__footer{
-        padding: 0 !important;  
-        .el-button{
+      .el-dialog__footer {
+        padding: 0 !important;
+        .el-button {
           padding: 20px !important;
-          border-radius:0 !important;
-          
-          &:nth-child(2){
-            border-left:1px solid #efefef;
+          border-radius: 0 !important;
+
+          &:nth-child(2) {
+            border-left: 1px solid #efefef;
           }
         }
       }
     }
   }
 }
-.hichat-moblie{
+.hichat-moblie {
   .callout-message {
     bottom: 55px;
     overflow: scroll;
-    ul{
-      li{
+    ul {
+      li {
         .callout-message-box {
           span {
             line-height: 20px;
@@ -806,17 +836,17 @@ export default {
   background-color: rgba(225, 225, 225, 0.95);
   border-top: 1px solid #dddddd;
   color: #959393;
-  position:absolute;
+  position: absolute;
   left: 0;
   bottom: 60px;
   width: 100%;
-  ul{
-    max-height:200px; 
+  ul {
+    max-height: 200px;
     overflow-x: none;
     overflow-y: auto;
-    li{
+    li {
       display: flex;
-      padding:11px 8px;
+      padding: 11px 8px;
       cursor: pointer;
       .el-avatar {
         overflow: initial;
@@ -825,8 +855,8 @@ export default {
           width: -webkit-fill-available;
         }
       }
-      &:hover{
-        background:#ecf5ff;
+      &:hover {
+        background: #ecf5ff;
       }
       .callout-message-box {
         display: flex;

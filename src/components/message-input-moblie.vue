@@ -78,19 +78,11 @@
 
     <div class="input-tools-left">
       <template v-if="device === 'moblie'">
-        <div>
-          <img
-            v-if="textArea === ''"
-            src="./../../static/images/audio.png"
-            alt=""
-            @click="sendAduio"
-          />
-          <img
-            v-else
-            src="./../../static/images/send.png"
-            alt=""
-            @click="sendMessage"
-          />
+        <div v-if="textArea === ''" @click="sendAduio">
+          <img src="./../../static/images/audio.png" alt="" />
+        </div>
+        <div v-else @click="editMsg === '' ? sendMessage() : editMessage()">
+          <img src="./../../static/images/send.png" alt="" />
         </div>
       </template>
       <template v-else>
@@ -495,7 +487,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
+        text: this.textArea.replace(/(\s*$)/g,""),
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
@@ -515,7 +507,7 @@ export default {
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.device === "moblie" ? this.textAreaTran() : this.textArea.replace(/(\s*$)/g,""),
+        text: this.textArea.replace(/(\s*$)/g,""),
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
