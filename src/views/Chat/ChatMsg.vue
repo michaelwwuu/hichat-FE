@@ -279,6 +279,7 @@ import {
   unBlockContactUser,
   deleteRecentChat,
   deleteContactUser,
+  getSearchById,
 } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
@@ -309,6 +310,7 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setChatUser(this.userData);
+    this.getUserId(this.userData)
     Socket.$on("message", this.handleGetMessage);
   },
   // beforeDestroy() {
@@ -336,6 +338,13 @@ export default {
       setChatMsgData:"ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
+    getUserId(data) {
+      let id = data.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        this.chatUser.username = res.data.username;
+        this.setChatUser(this.chatUser);
+      });
+    },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||

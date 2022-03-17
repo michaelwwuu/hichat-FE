@@ -310,6 +310,9 @@ export default {
       this.passwordType = this.passwordType === "password" ? "" : "password";
       this.$nextTick(() => this.$refs.password.focus());
     },
+    // loginFormBlur(){
+    //   this.loginForm.email = this.loginForm.email.trim();
+    // },
     getUUID() {
       let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
         /[xy]/g,
@@ -330,6 +333,7 @@ export default {
         });
         return;
       }
+
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {
@@ -339,6 +343,7 @@ export default {
           });
           return;
         }
+        this.loginForm.email = this.loginForm.email.trim();
         login(this.loginForm)
           .then((res) => {
             //登录成功
