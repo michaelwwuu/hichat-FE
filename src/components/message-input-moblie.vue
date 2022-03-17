@@ -81,7 +81,10 @@
         <div v-if="textArea === ''" @click="sendAduio">
           <img src="./../../static/images/audio.png" alt="" />
         </div>
-        <div v-else @click="editMsg.innerText === '' ? sendMessage() : editMessage()">
+        <div
+          v-else
+          @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
+        >
           <img src="./../../static/images/send.png" alt="" />
         </div>
       </template>
@@ -116,7 +119,7 @@
         :file-list="fileList"
         list-type="picture"
       >
-        <el-button type="primary" :class="{'hidden':fileList.length > 0}">点击上传</el-button>
+        <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
           只能上传 jpg / png 图片，且不超过500kb
         </div>
@@ -232,10 +235,10 @@ export default {
       type: Object,
     },
   },
-  watch:{
-    editMsg(val){
-      this.textArea = val.innerText
-    }
+  watch: {
+    editMsg(val) {
+      this.textArea = val.innerText;
+    },
   },
   computed: {
     ...mapState({
@@ -464,7 +467,6 @@ export default {
       }
     },
 
-
     // 關閉回復訊息
     closeReplyMessage() {
       this.setReplyMsg({
@@ -487,7 +489,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        text: this.textArea.replace(/(\s*$)/g,""),
+        text: this.textArea.replace(/(\s*$)/g, ""),
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
@@ -507,7 +509,7 @@ export default {
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.textArea.replace(/(\s*$)/g,""),
+        text: this.textArea.replace(/(\s*$)/g, ""),
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
@@ -666,7 +668,7 @@ export default {
             margin-top: -72px;
           }
         }
-        .hidden{
+        .hidden {
           visibility: hidden;
         }
       }

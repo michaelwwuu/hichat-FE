@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <el-container>
-      <el-main>
+      <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header height="70px" class="PC-header">
           <template>
             <div class="home-header-pc">
@@ -786,6 +786,46 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 10px;
+}
+.reply-message {
+  height: 50px;
+  background-color: rgba(225, 225, 225, 0.85);
+  border-top: 1px solid #dddddd;
+  display: flex;
+  color: #959393;
+  // justify-content: center;
+  align-items: center;
+  padding: 10px;
+  .reply-message-box {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    span {
+      line-height: 20px;
+      color: #363636;
+      width: 90em;
+      word-wrap: break-word;
+    }
+    .replyMsg-Img {
+      img {
+        height: 2em;
+        border-radius: 5px;
+      }
+    }
+  }
+  .reply-close-btn {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  /deep/.el-avatar {
+    overflow: initial;
+    img {
+      border-radius: 4px;
+      width: -webkit-fill-available;
+    }
+  }
 }
 .hichat-pc {
   .disabled-user {

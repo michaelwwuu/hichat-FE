@@ -403,6 +403,7 @@ export default {
       color: #ee5253 !important;
     }
   }
+  
   /deep/.el-dialog-loginOut {
     overflow: auto;
     .el-dialog {
@@ -454,4 +455,5 @@ export default {
     }
   }
 }
+
 </style>
