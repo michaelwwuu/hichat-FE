@@ -69,7 +69,7 @@
         <div v-if="textArea === ''" @click="sendAduio">
           <img src="./../../static/images/audio.png" alt="" />
         </div>
-        <div v-else @click="editMsg === '' ? sendMessage() : editMessage()">
+        <div v-else @click="editMsg.innerText === '' ? sendMessage() : editMessage()">
           <img src="./../../static/images/send.png" alt="" />
         </div>
       </div>

@@ -10,7 +10,7 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <p>
+          <p :class="{'reply-aduio':el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO'}">
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
@@ -32,13 +32,15 @@
                       :src="el.isRplay.text"
                       style="border-radius: 5px"
                     />
-                    <audio
-                      v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'"
-                      class="message-audio"
-                      controls
-                      :src="el.isRplay.text"
-                      type="mp3"
-                    ></audio>
+                    <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                      <div class="reply-audio-box"></div>
+                      <audio
+                        class="message-audio"
+                        controls
+                        :src="el.isRplay.text"
+                        type="mp3"
+                      ></audio>
+                    </span>
                   </div>
                 </div>
               </template>
@@ -643,11 +645,27 @@ export default {
     }
   }
 }
+.reply-aduio{
+  .message-classic{
+    padding: 9px 35px 9px 12px!important;
+  }
+}
 .goAnchor-box {
   cursor: pointer;
   .goAnchor {
     color: #ababab;
     text-decoration: none;
+  }
+  .reply-audio-box{
+    display: block;
+    // background-color: #000000;
+    width: 14em;
+    height: 55px;
+    position: absolute;
+    z-index: 9;
+  }
+  .message-audio{
+    width: 180px !important; 
   }
   &:hover {
     .goAnchor {
