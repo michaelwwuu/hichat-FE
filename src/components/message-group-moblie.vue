@@ -16,7 +16,7 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @touchmove="onContextmenu(el)"
+              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -70,7 +70,7 @@
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @touchmove="onContextmenu(el)"
+              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -88,7 +88,7 @@
               class="message-image"
               v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @touchmove="onContextmenu(el)"
+              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">

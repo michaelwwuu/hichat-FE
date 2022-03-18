@@ -1,6 +1,5 @@
 <template>
-  <div class="home-wrapper">
-    
+  <div class="home-wrapper">  
     <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header :style="num === 2 ? 'height:55px' : 'height:120px'">

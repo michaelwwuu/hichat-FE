@@ -15,7 +15,7 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @touchmove="onContextmenu(el)"
+              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <template v-if="el.isRplay !== null">
@@ -54,7 +54,7 @@
               :id="el.historyId"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @touchmove="onContextmenu(el)"
+              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <audio
@@ -69,7 +69,7 @@
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @touchmove="onContextmenu(el)"
+              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <el-image
@@ -344,6 +344,7 @@ export default {
     downloadByBlob(url,name) {
       let image = new Image()
       image.setAttribute('crossOrigin', 'anonymous')
+      console.log(image)
       image.src = url
       image.onload = () => {
         let canvas = document.createElement('canvas')
