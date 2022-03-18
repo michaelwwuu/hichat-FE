@@ -318,6 +318,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setEditMsg:"ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
     pictureShow(val) {
@@ -568,6 +569,7 @@ export default {
         innerText: "",
         replyHistoryId: "",
       });
+      this.setEditMsg({ innerText:""});
     },
     // 发送消息
     sendMessage() {
