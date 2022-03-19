@@ -211,7 +211,7 @@ export default {
     this.infoMsgSettingData();
     setTimeout(() => {
       this.getUserId();
-    }, 500); 
+    }, 1000); 
   },
   mounted() {
     

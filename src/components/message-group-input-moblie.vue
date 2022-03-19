@@ -163,6 +163,8 @@
       :append-to-body="device !== 'pc'"
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
       width="100%"
+      v-loading.fullscreen.lock="fullscreenLoading"
+      element-loading-text="圖片上传中"
       center
     >
       <el-upload
@@ -202,6 +204,8 @@
       append-to-body
       :before-close="closeAduioShow"
       center
+      v-loading.fullscreen.lock="fullscreenLoading"
+      element-loading-text="录音上传中"          
     >
       <div class="record-play">
         <div class="record-time">
@@ -258,6 +262,7 @@ export default {
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
+      fullscreenLoading:false,      
       checkName: [],
       fileList: [],
       targetArray: [],
@@ -332,6 +337,7 @@ export default {
     submitAvatarUpload() {
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
+      this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
@@ -343,6 +349,7 @@ export default {
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
+          this.fullscreenLoading = false;          
         }
       });
     },
@@ -472,16 +479,18 @@ export default {
       let formData = new FormData();
       formData.append("file", this.audioMessageData, `${Date.now()}.mp3`);
       formData.append("type", "AUDIO");
+      this.fullscreenLoading = true;      
       uploadMessageFile(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
           message.chatType = "CLI_GROUP_AUDIO";
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
-          (message.toChatId = "g" + this.groupData.groupId),
-            (message.text = res.data);
+          message.toChatId = "g" + this.groupData.groupId,
+          message.text = res.data;
           Socket.send(message);
           this.sendAduioShow = false;
+          this.fullscreenLoading = false;          
           this.audioMessageData = {};
         }
       });

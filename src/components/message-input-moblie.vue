@@ -110,6 +110,8 @@
       width="100%"
       :append-to-body="device !== 'pc'"
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
+      v-loading.fullscreen.lock="fullscreenLoading"
+      element-loading-text="圖片上传中"      
       center
     >
       <el-upload
@@ -147,6 +149,8 @@
       append-to-body
       :before-close="closeAduioShow"
       center
+      v-loading.fullscreen.lock="fullscreenLoading"
+      element-loading-text="录音上传中"           
     >
       <div class="record-play">
         <div class="record-time">
@@ -202,6 +206,7 @@ export default {
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
+      fullscreenLoading:false,
       fileList: [],
       device: localStorage.getItem("device"),
       //錄音
@@ -224,6 +229,7 @@ export default {
       cde: 0, // 分的計數
       efg: 0, // 時的計數
       scrollTop: 0,
+      
     };
   },
   props: {
@@ -263,6 +269,7 @@ export default {
     submitAvatarUpload() {
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
+      this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
@@ -274,6 +281,7 @@ export default {
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
+          this.fullscreenLoading = false;
         }
       });
     },
@@ -405,6 +413,7 @@ export default {
       let formData = new FormData();
       formData.append("file", this.audioMessageData, `${Date.now()}.mp3`);
       formData.append("type", "AUDIO");
+      this.fullscreenLoading = true;
       uploadMessageFile(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
@@ -415,6 +424,7 @@ export default {
           message.text = res.data;
           Socket.send(message);
           this.sendAduioShow = false;
+          this.fullscreenLoading = false;
           this.audioMessageData = {};
         }
       });

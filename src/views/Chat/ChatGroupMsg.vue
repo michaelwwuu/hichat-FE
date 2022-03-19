@@ -18,13 +18,7 @@
               <span class="home-photo-link">
                 <router-link :to="'/GroupPage'">
                   <div class="home-user-photo">
-                    <img
-                      :src="
-                        groupData.icon === undefined || groupData.icon === ''
-                          ? require('./../../../static/images/image_group_defult.png')
-                          : groupData.icon
-                      "
-                    />
+                    <img :src="noIconShow(groupData)" />
                   </div>
                 </router-link>
               </span>
@@ -55,7 +49,7 @@
           </template>
         </el-header>
         <message-pabel
-          :messageData="formatMessageData()"
+          :messageData="messageData"
           :userInfoData="userInfoData"
         />
         <div
@@ -116,7 +110,7 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      noIcon: require("./../../../static/images/image_user_defult.png"),
+      noIcon: require("./../../../static/images/image_group_defult.png"),
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -151,23 +145,23 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setContactListData: "ws/setContactListData",
     }),
-    formatMessageData(){
-      this.messageData.forEach((res)=>{
-        this.contactList.forEach((item)=>{
-          if (res.userChatId === "u" + item.memberId) {
-            res.icon = item.icon;
-            res.name = item.name;
-          } 
-          if (
-            res.isRplay !== null &&
-            res.isRplay.fromChatId === "u" + item.memberId
-          ) {
-            res.isRplay.nickName = item.name;
-          }
-        })
-      })
-      return this.messageData     
-    },
+    // formatMessageData(){
+    //   this.messageData.forEach((res)=>{
+    //     this.contactList.forEach((item)=>{
+    //       if (res.userChatId === "u" + item.memberId) {
+    //         res.icon = item.icon;
+    //         res.name = item.name;
+    //       } 
+    //       if (
+    //         res.isRplay !== null &&
+    //         res.isRplay.fromChatId === "u" + item.memberId
+    //       ) {
+    //         res.isRplay.nickName = item.name;
+    //       }
+    //     })
+    //   })
+    //   return this.messageData     
+    // },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||

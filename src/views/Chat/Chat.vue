@@ -45,7 +45,6 @@
             </el-dropdown>
           </div>
         </el-header>
-
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"

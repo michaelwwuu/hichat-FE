@@ -2,19 +2,17 @@
   <div class="home-content" @touchmove="$root.handleTouch">
     <el-tabs v-model="hichatNav.type" @tab-click="handleClick">
       <el-tab-pane label="联络人" name="address">
+        <span slot="label" v-if="hiChatDataList.length > 0">
+          <span>联络人</span>
+          <el-badge v-if="userNumberBadge" is-dot class="contact-badge"></el-badge>
+        </span>
         <div
           v-for="(item, index) in hiChatDataList"
           :key="index"
           class="address-box"
           @click="goChatRoom(item, 'ChatMsg')"
         >
-          <el-image
-            :src="
-              item.icon === undefined || item.icon === null || item.icon === ''
-                ? require('./../../../../static/images/image_user_defult.png')
-                : item.icon
-            "
-          />
+          <el-image :src="noIconShow(item,'user')" />
           <div class="contont-box">
             <div class="msg-box">
               <div>
@@ -41,19 +39,17 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
+        <span slot="label" v-if="groupDataList.length > 0">
+          <span>联络人</span>
+          <el-badge v-if="groupNumberBadge" is-dot class="contact-badge"></el-badge>
+        </span>
         <div
           v-for="(item, index) in groupDataList"
           :key="index"
           class="address-box"
           @click="goChatRoom(item, 'ChatGroupMsg')"
         >
-          <el-image
-            :src="
-              item.icon === undefined || item.icon === null || item.icon === ''
-                ? require('./../../../../static/images/image_group_defult.png')
-                : item.icon
-            "
-          />
+          <el-image :src="noIconShow(item,'group')" />
           <div class="contont-box">
             <div class="msg-box">
               <div>
@@ -86,7 +82,7 @@
       >
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>
-          <el-badge v-if="messageNum" is-dot class="contact-badge"></el-badge>
+          <el-badge v-if="contactNumberBadge" is-dot class="contact-badge"></el-badge>
         </span>
         <div
           v-for="(item, index) in contactDataList"
@@ -98,13 +94,7 @@
               : goChatRoom(item, 'ChatContact')
           "
         >
-          <el-image
-            :src="
-              item.icon === undefined || item.icon === null || item.icon === ''
-                ? require('./../../../../static/images/image_user_defult.png')
-                : item.icon
-            "
-          />
+          <el-image :src="noIconShow(item,'user')" />
           <div class="contont-box">
             <div class="msg-box">
               <div>
@@ -149,7 +139,9 @@ export default {
       hiChatDataList: [],
       newMsgDataList: [],
       contactDataList: [],
-      messageNum: false,
+      userNumberBadge:false,
+      groupNumberBadge:false,
+      contactNumberBadge: false,
       getHistoryMessage: {
         chatType: "",
         toChatId: "",
@@ -201,6 +193,17 @@ export default {
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
     }),
+    noIconShow(iconData,key) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return require(`./../../../../static/images/image_${key}_defult.png`);
+      } else {
+        return iconData.icon;
+      }
+    },
     handleClick(tab) {
       if (tab.name === "address" || tab.name === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
@@ -241,7 +244,13 @@ export default {
           this.contactDataList = userInfo.recentChat.filter(
             (item) => !item.isContact && item.isContact !== null && item.lastChat !== null
           );
-          this.messageNum = this.contactDataList.some(
+          this.userNumberBadge = this.hiChatDataList.some(
+            (item) => item.unreadCount > 0
+          );
+          this.groupNumberBadge = this.groupDataList.some(
+            (item) => item.unreadCount > 0
+          );
+          this.contactNumberBadge = this.contactDataList.some(
             (item) => item.unreadCount > 0
           );
 

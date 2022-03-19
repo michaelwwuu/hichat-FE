@@ -52,8 +52,15 @@
             @click="changeImg(index)"
           >
             <router-link :to="item.path">
-              <span
-                ><img :src="index !== num ? item.icon : item.active"
+              <span>
+                <div class="el-badge-box" v-if="index === 1">
+                  <el-badge
+                    :value="badgeNum"
+                    class="item"
+                    v-if="badgeNum !== 0"
+                  ></el-badge>
+                </div>
+                <img :src="index !== num ? item.icon : item.active"
               /></span>
               <span>{{ item.name }}</span>
             </router-link>
@@ -279,16 +286,9 @@ export default {
     };
   },
   created() {
-    this.num =
-      this.$route.fullPath === "/Address"
-        ? 0
-        : this.$route.fullPath === "/HiChat"
-        ? 1
-        : 2;
-    if (this.device === "pc") {
-      Socket.$on("message", this.handleGetMessage);
-      this.getGroupDataList();
-    }
+    this.num = this.$route.fullPath === "/Address" ? 0 : this.$route.fullPath === "/HiChat" ? 1 : 2;
+    Socket.$on("message", this.handleGetMessage);
+    this.getGroupDataList();
   },
   watch: {
     hichatNav(val) {
@@ -323,7 +323,6 @@ export default {
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
       if(this.num === 1 ) this.getHistory(this.hichatNav.type);
       this.getHistorySetTimeout()
-
     },
     getHistorySetTimeout(){
       setTimeout(() => this.getHiChatDataList(), 2000);
@@ -400,6 +399,11 @@ export default {
               this.setHichatNav({ type: "address", num: 1 });
               this.setChatGroup({});
             });
+          }
+          break;
+        case "SRV_CHAT_DEL":
+          if(this.device === "moblie") {
+            this.getHiChatDataList();
           }
       }
     },

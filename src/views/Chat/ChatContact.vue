@@ -67,7 +67,7 @@
           <el-avatar
             shape="square"
             size="large"
-            :src="contactUser.icon"
+            :src="noIconShow(contactUser)"
           ></el-avatar>
           <div class="reply-message-box">
             <span>{{ contactUser.name }}</span>

@@ -737,5 +737,13 @@ export default {
     border: 0 !important;
     right: 0.5em;
   }
+  /deep/.el-dialog-loginOut {
+    overflow: auto;
+    .el-dialog {
+      .el-dialog__footer {
+        padding: 0 !important;
+      }
+    }
+  }  
 }
 </style>

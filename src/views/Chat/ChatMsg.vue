@@ -137,7 +137,7 @@
           <el-avatar
             shape="square"
             size="large"
-            :src="chatUser.icon"
+            :src="noIconShow(chatUser)"
           ></el-avatar>
           <div class="reply-message-box">
             <span>{{ chatUser.name }}</span>
@@ -452,10 +452,10 @@ export default {
         case "SRV_CHAT_EDIT":
           this.messageData.forEach((res) =>{
             if(res.historyId === userInfo.historyId){
-              res.message.content = userInfo.chat.text
+              return res.message.content = userInfo.chat.text
             }
           })
-          this.getHiChatDataList()
+          // this.getHiChatDataList()
           break;
         // 刪除訊息
         case "SRV_CHAT_DEL":

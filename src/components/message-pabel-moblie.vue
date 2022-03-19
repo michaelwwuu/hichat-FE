@@ -15,7 +15,6 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <template v-if="el.isRplay !== null">
@@ -54,7 +53,6 @@
               :id="el.historyId"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <audio
@@ -69,7 +67,6 @@
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @mousedown="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
               <el-image
@@ -495,7 +492,7 @@ export default {
           width: 10em !important;
           height: 10em !important;
           /deep/.el-image__inner {
-            height: 100%;
+            height: initial;
           }
         }
       }
@@ -559,7 +556,7 @@ export default {
           width: 10em !important;
           height: 10em !important;
           /deep/.el-image__inner {
-            height: 100%;
+            height: initial;
           }
         }
       }
