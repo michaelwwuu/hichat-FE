@@ -238,14 +238,14 @@ export default {
       });
     },   
     getUserId() { 
-      let id = this.chatUser.toChatId.replace("u", "");
+      let id = this.userData.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-        this.chatUser.username = res.data.username;
-        this.chatUser.name = res.data.name;
-        this.chatUser.isBlock = res.data.isBlock;
-        this.chatUser.isContact = res.data.isContact;
-        this.setChatUser(this.chatUser);
+        this.userData.username = res.data.username;
+        this.userData.name = res.data.name;
+        this.userData.isBlock = res.data.isBlock;
+        this.userData.isContact = res.data.isContact;
+        this.setChatUser(this.userData);
       });
     },     
     editShowBtn(data) {

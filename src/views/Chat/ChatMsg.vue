@@ -455,7 +455,7 @@ export default {
               return res.message.content = userInfo.chat.text
             }
           })
-          // this.getHiChatDataList()
+          this.getHiChatDataList()
           break;
         // 刪除訊息
         case "SRV_CHAT_DEL":

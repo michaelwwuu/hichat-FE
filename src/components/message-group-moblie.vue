@@ -19,7 +19,7 @@
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name}}</span>
+                <span class="message-name">{{ el.name }}</span>
                 <template v-if="el.isRplay !== null">
                   <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                   <div @click="goAnchor(el.isRplay.historyId)">
@@ -45,11 +45,10 @@
                   </div>
                 </template>
                 <div class="message-box-content">
-                  <span
+                  <div
                     v-for="(item, index) in el.newContent"
                     :key="index"
                     :id="el.historyId"
-                    v-linkified
                     :class="{
                       'message-touch-carte':
                         item.startsWith('@') && item.length > 1,
@@ -59,8 +58,8 @@
                         ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                         : false
                     "
-                    >{{ item }}</span
-                  >
+                    ><span v-html="item" v-linkified></span
+                  ></div>
                 </div>
               </div>
             </span>
@@ -73,11 +72,7 @@
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
-                <audio
-                  controls
-                  :src="el.message.content"
-                  type="mp3"
-                ></audio>
+                <audio controls :src="el.message.content" type="mp3"></audio>
               </div>
             </span>
 
@@ -117,7 +112,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { mapState,mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
 
 export default {
@@ -135,7 +130,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      contactList: [],
+      // contactList: [],
       noIcon: require("./../../static/images/image_user_defult.png"),
       device: localStorage.getItem("device"),
     };
@@ -143,7 +138,7 @@ export default {
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
   },
-    computed: {
+  computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
       contactListData: (state) => state.ws.contactListData,
@@ -156,49 +151,92 @@ export default {
       this.message = val.filter((item) =>
         !set.has(item.historyId) ? set.add(item.historyId) : false
       );
-      this.$root.gotoBottom();
-    },
-    message(val) {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.newMessageData = {};
-          val.forEach((el) => {
-            el.newContent = el.message.content.split(" ");
-            this.contactListData.forEach((item)=>{
-              if (el.userChatId === "u" + item.memberId) {
-                el.icon = item.icon;
-                el.name = item.name;
-              } else if(el.icon === undefined && el.icon === undefined){
-                el.icon = this.noIcon;
-                el.name = "无此成员";
-              }
-              if (
-                el.isRplay !== null &&
-                el.isRplay.fromChatId === "u" + item.memberId
-              ) {
-                el.isRplay.nickName = item.name;
-              }
-            })
-            this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-            let newData = this.message.filter((res) => {
-              return (
-                this.$root.formatTimeDay(res.message.time) ===
-                this.$root.formatTimeDay(el.message.time)
-              );
-            });
-            this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-              newData;
-            this.$root.gotoBottom();
-          });
-        }, 500);
+      this.newMessageData = {};
+      this.message.forEach((el) => {
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
+        let newData = this.message.filter((res) => {
+          return (
+            this.$root.formatTimeDay(res.message.time) ===
+            this.$root.formatTimeDay(el.message.time)
+          );
+        });
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+          newData;
       });
       this.$root.gotoBottom();
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //     this.newMessageData = {};
+      //     this.message.forEach((el) => {
+      //       // el.newContent = el.message.content.split(" ");
+      //       // this.contactListData.forEach((item)=>{
+      //       //   if (el.userChatId === "u" + item.memberId) {
+      //       //     el.icon = item.icon;
+      //       //     el.name = item.name;
+      //       //   } else if(el.icon === undefined && el.name === undefined){
+      //       //     el.icon = this.noIcon;
+      //       //     el.name = "无此成员";
+      //       //   } else if(el.isRplay !== null && el.isRplay.fromChatId === "u" + item.memberId){
+      //       //     el.isRplay.nickName = item.name;
+      //       //   }
+      //       // })
+      //       this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
+      //       let newData = this.message.filter((res) => {
+      //         return (
+      //           this.$root.formatTimeDay(res.message.time) ===
+      //           this.$root.formatTimeDay(el.message.time)
+      //         );
+      //       });
+      //       this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+      //         newData;
+      //       this.$root.gotoBottom();
+      //     });
+      //   }, 700);
+      // });
+      // this.$root.gotoBottom();
     },
+
+    // message(val) {
+    //   this.$nextTick(() => {
+    //     setTimeout(() => {
+    //       this.newMessageData = {};
+    //       val.forEach((el) => {
+    //         el.newContent = el.message.content.split(" ");
+    //         this.contactListData.forEach((item)=>{
+    //           if (el.userChatId === "u" + item.memberId) {
+    //             el.icon = item.icon;
+    //             el.name = item.name;
+    //           } else if(el.icon === undefined && el.icon === undefined){
+    //             el.icon = this.noIcon;
+    //             el.name = "无此成员";
+    //           }
+    //           if (
+    //             el.isRplay !== null &&
+    //             el.isRplay.fromChatId === "u" + item.memberId
+    //           ) {
+    //             el.isRplay.nickName = item.name;
+    //           }
+    //         })
+    //         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
+    //         let newData = this.message.filter((res) => {
+    //           return (
+    //             this.$root.formatTimeDay(res.message.time) ===
+    //             this.$root.formatTimeDay(el.message.time)
+    //           );
+    //         });
+    //         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+    //           newData;
+    //         this.$root.gotoBottom();
+    //       });
+    //     }, 500);
+    //   });
+    //   this.$root.gotoBottom();
+    // },
   },
   methods: {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
-      setEditMsg:"ws/setEditMsg",
+      setEditMsg: "ws/setEditMsg",
       setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
     }),
@@ -214,7 +252,7 @@ export default {
       }
     },
     carteMsgShow(data) {
-      this.carteContact = this.contactList.filter((el) => {
+      this.carteContact = this.contactListData.filter((el) => {
         return el.username === data;
       });
       if (this.carteContact.length === 0) {
@@ -260,7 +298,7 @@ export default {
               name: data.name,
               icon: data.icon,
             });
-            this.setEditMsg({ innerText: data.message.content})
+            this.setEditMsg({ innerText: data.message.content });
           },
         },
         {
@@ -308,9 +346,12 @@ export default {
           },
         },
       ];
-      if(data.userChatId !== "u" + localStorage.getItem("id")){
-        if(data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_AUDIO"){
-          if(data.chatType === "SRV_GROUP_AUDIO"){
+      if (data.userChatId !== "u" + localStorage.getItem("id")) {
+        if (
+          data.chatType === "SRV_GROUP_IMAGE" ||
+          data.chatType === "SRV_GROUP_AUDIO"
+        ) {
+          if (data.chatType === "SRV_GROUP_AUDIO") {
             this.newItem = item.filter((list) => {
               return (
                 list.name !== "deleteAllChat" &&
@@ -319,7 +360,7 @@ export default {
                 list.name !== "download"
               );
             });
-          }else{
+          } else {
             this.newItem = item.filter((list) => {
               return (
                 list.name !== "deleteAllChat" &&
@@ -328,31 +369,34 @@ export default {
               );
             });
           }
-        }
-        else{
+        } else {
           this.newItem = item.filter((list) => {
-            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+            return (
+              list.name !== "deleteAllChat" &&
+              list.name !== "edit" &&
+              list.name !== "download"
+            );
           });
         }
-      } else{
-        if(data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_AUDIO"){
-          if(data.chatType === "SRV_GROUP_IMAGE"){
+      } else {
+        if (
+          data.chatType === "SRV_GROUP_IMAGE" ||
+          data.chatType === "SRV_GROUP_AUDIO"
+        ) {
+          if (data.chatType === "SRV_GROUP_IMAGE") {
             this.newItem = item.filter((list) => {
-              return (
-                list.name !== "edit" &&
-                list.name !== "copy"
-              );
+              return list.name !== "edit" && list.name !== "copy";
             });
-          }else{
+          } else {
             this.newItem = item.filter((list) => {
               return (
                 list.name !== "edit" &&
-                list.name !== "copy" && 
+                list.name !== "copy" &&
                 list.name !== "download"
               );
             });
           }
-        }else{
+        } else {
           this.newItem = item.filter((list) => {
             return list.name !== "download";
           });
@@ -369,7 +413,7 @@ export default {
       });
       return false;
     },
-    downloadImages(data){
+    downloadImages(data) {
       // console.log(data)
       // const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]), {type: "image/png"});
       // const link = document.createElement('a');
@@ -378,39 +422,39 @@ export default {
       // document.body.appendChild(link);
       // link.click();
       // link.remove();
-      let downloadUrl="";
+      let downloadUrl = "";
       downloadUrl = data.message.content;
-      this.downloadByBlob(downloadUrl,"images")
+      this.downloadByBlob(downloadUrl, "images");
     },
-    downloadByBlob(url,name) {
-      let image = new Image()
-      image.setAttribute('crossOrigin', 'anonymous')
-      image.src = url
+    downloadByBlob(url, name) {
+      let image = new Image();
+      image.setAttribute("crossOrigin", "anonymous");
+      image.src = url;
       image.onload = () => {
-        let canvas = document.createElement('canvas')
-        canvas.width = image.width
-        canvas.height = image.height
-        let ctx = canvas.getContext('2d')
-        ctx.drawImage(image, 0, 0, image.width, image.height)
+        let canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
         canvas.toBlob((blob) => {
-          let url = URL.createObjectURL(blob)
-          this.download(url,name)
+          let url = URL.createObjectURL(blob);
+          this.download(url, name);
           // 用完释放URL对象
-          URL.revokeObjectURL(url)
-        })
-      }
+          URL.revokeObjectURL(url);
+        });
+      };
     },
     download(href, name) {
-      let link = document.createElement('a')
-      link.download = name
-      link.href = href
-      link.click()
-      link.remove()
+      let link = document.createElement("a");
+      link.download = name;
+      link.href = href;
+      link.click();
+      link.remove();
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content.replace(/(\s*$)/g,"");;
+      url.value = data.message.content.replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);
@@ -432,7 +476,7 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.getHiChatDataList()
+            this.getHiChatDataList();
             this.getHistory();
           }
         })
@@ -451,7 +495,7 @@ export default {
       Socket.send(chatMsgKey);
     },
     getHistory() {
-      let getHistoryMessage= {
+      let getHistoryMessage = {
         chatType: "CLI_GROUP_HISTORY_REQ",
         toChatId: this.groupUser.toChatId,
         id: Math.random(),
@@ -459,7 +503,7 @@ export default {
         pageSize: 1000,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-      }
+      };
       Socket.send(getHistoryMessage);
     },
   },
@@ -719,9 +763,9 @@ export default {
     }
     border-radius: 8px;
   }
-  .message-audio{
+  .message-audio {
     height: 2.5em !important;
-    padding:0 !important;
+    padding: 0 !important;
     border: none !important;
   }
 }

@@ -135,9 +135,6 @@ export default {
       });
       this.$root.gotoBottom();
     },
-    // message(val) {
-    //   val
-    // },
   },
   computed: {
     ...mapState({
@@ -341,7 +338,6 @@ export default {
     downloadByBlob(url,name) {
       let image = new Image()
       image.setAttribute('crossOrigin', 'anonymous')
-      console.log(image)
       image.src = url
       image.onload = () => {
         let canvas = document.createElement('canvas')

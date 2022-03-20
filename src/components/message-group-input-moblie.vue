@@ -530,20 +530,18 @@ export default {
       return true;
     },
 
-    callout(event) {
-      if (event.code === "@") {
-        this.calloutShow = true;
-      } else if (
-        this.textArea === "" ||
-        event.code === "Space" ||
-        event.code === "Digit1"
-      ) {
-        this.calloutShow = false;
-      }
+    callout() {
+      this.textArea.split(" ").forEach((res)=>{
+        if(res.startsWith('@')){
+          this.calloutShow = true;
+        } else{
+          this.calloutShow = false;
+        }
+      })
     },
 
     keyUp(event) {
-      if (event.target.value === "@") {
+      if (event.key === "@" && event.shiftKey) {
         this.calloutShow = true;
       } else if (
         this.textArea === "" ||
