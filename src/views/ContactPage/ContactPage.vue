@@ -197,7 +197,6 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setChatUser(this.userData);
-    this.getUserId(this.chatUser)
   },
   methods: {
     ...mapMutations({

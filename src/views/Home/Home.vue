@@ -322,7 +322,7 @@ export default {
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
       if(this.num === 1 ) this.getHistory(this.hichatNav.type);
-      this.getHistorySetTimeout()
+      if(this.device === "pc") this.getHistorySetTimeout()
     },
     getHistorySetTimeout(){
       setTimeout(() => this.getHiChatDataList(), 2000);
@@ -367,6 +367,7 @@ export default {
             this.numNumber += item.unreadCount;
             this.setBadgeNum(this.numNumber)
             if(item.toChatId === this.chatUser.toChatId){
+              item.username = this.chatUser.username
               this.setChatUser(item)
             }
           });

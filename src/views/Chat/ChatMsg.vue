@@ -341,8 +341,8 @@ export default {
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        this.chatUser.username = res.data.username;
-        this.setChatUser(this.chatUser);
+        this.userData.username = res.data.username;
+        this.setChatUser(this.userData);
       });
     },
     noIconShow(iconData) {
