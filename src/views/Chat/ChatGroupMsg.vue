@@ -258,7 +258,8 @@ export default {
               } else if(el.chat.icon === undefined && el.chat.name === undefined){
                 el.chat.icon = require("./../../../static/images/image_user_defult.png");
                 el.chat.name = "无此成员";
-              } else if(el.replyChat !== null && (el.replyChat.fromChatId === "u" + item.memberId)){
+              } 
+              if(el.replyChat !== null && (el.replyChat.fromChatId === "u" + item.memberId)){
                 el.replyChat.nickName = item.name;
               }
             });

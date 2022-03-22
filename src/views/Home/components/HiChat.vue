@@ -287,7 +287,6 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          item.fromChatId = "u" + item.memberId
           if (item.icon === undefined){
             return item.icon = require("./../../../../static/images/image_user_defult.png");
           }

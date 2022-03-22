@@ -256,9 +256,10 @@ export default {
               } else if(userInfo.chat.icon === undefined && userInfo.chat.name === undefined){
                 userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
                 userInfo.chat.name = "无此成员";
-              } else if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
-                userInfo.replyChat.nickName = item.name;
-              }
+              } 
+              // if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
+              //   userInfo.replyChat.nickName = item.name;
+              // }
             });
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
@@ -280,12 +281,10 @@ export default {
               } else if(el.chat.icon === undefined && el.chat.name === undefined){
                 el.chat.icon = require("./../../../static/images/image_user_defult.png");
                 el.chat.name = "无此成员";
-              } else if(el.replyChat !== null  ){
-                console.log(el.replyChat)
-                console.log(item.fromChatId)
+              } 
+              if(el.replyChat !== null && (el.replyChat.fromChatId === "u" + item.memberId)){
                 el.replyChat.nickName = item.name;
               }
-  
             });
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);
