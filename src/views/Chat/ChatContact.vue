@@ -239,9 +239,6 @@ export default {
     this.setContactUser(this.userData);
     Socket.$on("message", this.handleGetMessage);
   },
-  // beforeDestroy() {
-  //   Socket.$off("message", this.handleGetMessage);
-  // },
   mounted() {
     this.getChatHistoryMessage();
   },

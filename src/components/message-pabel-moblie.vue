@@ -10,7 +10,12 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <p :class="{'reply-aduio':el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO'}">
+          <p
+            :class="{
+              'reply-aduio': device ==='moblie' &&
+                el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO' ,
+            }"
+          >
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
@@ -47,12 +52,18 @@
                 :id="el.historyId"
                 v-html="el.message.content"
                 v-linkified
+                @click.prevent.stop="
+                  device === 'moblie' ? onContextmenu(el) : false
+                "
               ></div>
             </span>
             <span
               :id="el.historyId"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
+              @click.prevent.stop="
+                device === 'moblie' ? onContextmenu(el) : false
+              "
               @dblclick="dblclick(el)"
             >
               <audio
@@ -72,8 +83,19 @@
               <el-image
                 :src="el.message.content"
                 :preview-src-list="[el.message.content]"
-              >
-              </el-image>
+              />
+              <div
+                style="
+                  position: absolute;
+                  bottom: 0px;
+                  width: 100%;
+                  height: 16px;
+                  left: 0px;
+                "
+                @click.prevent.stop="
+                  device === 'moblie' ? onContextmenu(el) : false
+                "
+              ></div>
             </span>
             <span class="nickname-time">{{
               $root.formatTimeSecound(el.message.time)
@@ -95,7 +117,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { mapState,mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
 export default {
   name: "MessagePabel",
@@ -112,6 +134,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
+      device: localStorage.getItem("device"),
     };
   },
   watch: {
@@ -143,7 +166,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setEditMsg:"ws/setEditMsg",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
     goAnchor(data) {
@@ -188,7 +211,7 @@ export default {
               innerText: data.message.content,
               replyHistoryId: data.historyId,
             });
-            this.setEditMsg({ innerText: data.message.content})
+            this.setEditMsg({ innerText: data.message.content });
           },
         },
 
@@ -235,9 +258,12 @@ export default {
           },
         },
       ];
-      if(data.userChatId !== "u" + localStorage.getItem("id")){
-        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
-          if(data.chatType === "SRV_USER_AUDIO"){
+      if (data.userChatId !== "u" + localStorage.getItem("id")) {
+        if (
+          data.chatType === "SRV_USER_IMAGE" ||
+          data.chatType === "SRV_USER_AUDIO"
+        ) {
+          if (data.chatType === "SRV_USER_AUDIO") {
             this.newItem = item.filter((list) => {
               return (
                 list.name !== "deleteAllChat" &&
@@ -246,7 +272,7 @@ export default {
                 list.name !== "download"
               );
             });
-          }else{
+          } else {
             this.newItem = item.filter((list) => {
               return (
                 list.name !== "deleteAllChat" &&
@@ -255,31 +281,34 @@ export default {
               );
             });
           }
-        }
-        else{
+        } else {
           this.newItem = item.filter((list) => {
-            return list.name !== "deleteAllChat" && list.name !== "edit" && list.name !== "download";
+            return (
+              list.name !== "deleteAllChat" &&
+              list.name !== "edit" &&
+              list.name !== "download"
+            );
           });
         }
-      } else{
-        if(data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_AUDIO"){
-          if(data.chatType === "SRV_USER_IMAGE"){
+      } else {
+        if (
+          data.chatType === "SRV_USER_IMAGE" ||
+          data.chatType === "SRV_USER_AUDIO"
+        ) {
+          if (data.chatType === "SRV_USER_IMAGE") {
             this.newItem = item.filter((list) => {
-              return (
-                list.name !== "edit" &&
-                list.name !== "copy"
-              );
+              return list.name !== "edit" && list.name !== "copy";
             });
-          }else{
+          } else {
             this.newItem = item.filter((list) => {
               return (
                 list.name !== "edit" &&
-                list.name !== "copy" && 
+                list.name !== "copy" &&
                 list.name !== "download"
               );
             });
           }
-        }else{
+        } else {
           this.newItem = item.filter((list) => {
             return list.name !== "download";
           });
@@ -322,43 +351,35 @@ export default {
       });
       return false;
     },
-    downloadImages(data){
-      // console.log(data)
-      // const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]), {type: "image/png"});
-      // const link = document.createElement('a');
-      // link.href = downloadUrl;
-      // link.setAttribute('download', 'image.jpg');
-      // document.body.appendChild(link);
-      // link.click();
-      // link.remove();
-      let hreLocal="";
+    downloadImages(data) {
+      let hreLocal = "";
       hreLocal = data.message.content;
-      this.downloadByBlob(hreLocal,"images")
+      this.downloadByBlob(hreLocal, "images");
     },
-    downloadByBlob(url,name) {
-      let image = new Image()
-      image.setAttribute('crossOrigin', 'anonymous')
-      image.src = url
+    downloadByBlob(url, name) {
+      let image = new Image();
+      image.setAttribute("crossOrigin", "anonymous");
+      image.src = url;
       image.onload = () => {
-        let canvas = document.createElement('canvas')
-        canvas.width = image.width
-        canvas.height = image.height
-        let ctx = canvas.getContext('2d')
-        ctx.drawImage(image, 0, 0, image.width, image.height)
+        let canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
         canvas.toBlob((blob) => {
-          let url = URL.createObjectURL(blob)
-          this.download(url,name)
+          let url = URL.createObjectURL(blob);
+          this.download(url, name);
           // 用完释放URL对象
-          URL.revokeObjectURL(url)
-        })
-      }
+          URL.revokeObjectURL(url);
+        });
+      };
     },
     download(href, name) {
-      let link = document.createElement('a')
-      link.download = name
-      link.href = href
-      link.click()
-      link.remove()
+      let link = document.createElement("a");
+      link.download = name;
+      link.href = href;
+      link.click();
+      link.remove();
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
@@ -385,8 +406,10 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.getHiChatDataList()
-            this.getHistory();
+            this.messageData = this.messageData.filter((item) => {
+              return item.historyId !== data.historyId;
+            });
+            this.getHiChatDataList();
           }
         })
         .catch((err) => {
@@ -404,7 +427,7 @@ export default {
       Socket.send(chatMsgKey);
     },
     getHistory() {
-      let getHistoryMessage= {
+      let getHistoryMessage = {
         chatType: "CLI_HISTORY_REQ",
         toChatId: this.chatUser.toChatId,
         id: Math.random(),
@@ -412,7 +435,7 @@ export default {
         pageSize: 1000,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
-      }
+      };
       Socket.send(getHistoryMessage);
     },
   },
@@ -486,7 +509,8 @@ export default {
         }
         .el-image {
           width: 10em !important;
-          height: 10em !important;
+          height: auto !important;
+
           /deep/.el-image__inner {
             height: initial;
           }
@@ -639,9 +663,9 @@ export default {
     }
   }
 }
-.reply-aduio{
-  .message-classic{
-    padding: 9px 35px 9px 12px!important;
+.reply-aduio {
+  .message-classic {
+    padding: 9px 60px 9px 12px !important;
   }
 }
 .goAnchor-box {
@@ -650,7 +674,7 @@ export default {
     color: #ababab;
     text-decoration: none;
   }
-  .reply-audio-box{
+  .reply-audio-box {
     display: block;
     // background-color: #000000;
     width: 14em;
@@ -658,8 +682,8 @@ export default {
     position: absolute;
     z-index: 9;
   }
-  .message-audio{
-    width: 180px !important; 
+  .message-audio {
+    width: 180px !important;
   }
   &:hover {
     .goAnchor {

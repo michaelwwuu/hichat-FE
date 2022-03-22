@@ -40,7 +40,7 @@
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
         <span slot="label" v-if="groupDataList.length > 0">
-          <span>联络人</span>
+          <span>群组</span>
           <el-badge v-if="groupNumberBadge" is-dot class="contact-badge"></el-badge>
         </span>
         <div
@@ -165,14 +165,20 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
-      hichatNav: (state) => state.ws.hichatNav,
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
+      hichatNav: (state) => state.ws.hichatNav,
       contactUser: (state) => state.ws.contactUser,
     }),
   },
   mounted() {
     this.getHiChatDataList();
+    if(JSON.parse(localStorage.getItem('groupListMember')) === null ){
+      setTimeout(() => {
+        this.getGroupListMember()
+      }, 700);
+    }
+    
   },
   watch: {
     contactDataList(val) {
@@ -253,7 +259,6 @@ export default {
           this.contactNumberBadge = this.contactDataList.some(
             (item) => item.unreadCount > 0
           );
-
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -273,12 +278,19 @@ export default {
       });
     },
     getGroupListMember() {
-      let groupId = this.groupUser.toChatId.replace("g", "");
+      let groupId = ""
+      if(JSON.parse(localStorage.getItem('groupListMember')) !== null ){
+        groupId = this.groupUser.toChatId.replace("g", "");
+      } else{
+        groupId = this.groupDataList[0].toChatId.replace("g", "");
+      }
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined)
-            res.icon = require("./../../../../static/images/image_user_defult.png");
+        this.contactList.forEach((item) => {
+          item.fromChatId = "u" + item.memberId
+          if (item.icon === undefined){
+            return item.icon = require("./../../../../static/images/image_user_defult.png");
+          }
         });
         this.setContactListData(this.contactList);
       });

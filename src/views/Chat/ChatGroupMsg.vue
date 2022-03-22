@@ -120,11 +120,11 @@ export default {
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
-    Socket.$on("message", this.handleGetMessage);
+    Socket.$on("message", this.handleGetMessage);   
   },
   mounted() {
-    if(this.device === "moblie") this.getGroupListMember();
     this.getChatHistoryMessage();
+    this.getGroupListMember();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -195,7 +195,6 @@ export default {
         newContent:data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
-      
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {
@@ -220,6 +219,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
+      this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         case "SRV_GROUP_IMAGE":
@@ -227,9 +227,8 @@ export default {
         case "SRV_GROUP_SEND":
         if (this.groupUser.toChatId === userInfo.toChatId) {
           userInfo.chat.newContent = userInfo.chat.text.split(" ");
-          this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
           this.groupListData.forEach(item => {
-            if(userInfo.chat.fromChatId === 'u' + item.memberId ){
+          if(userInfo.chat.fromChatId === 'u' + item.memberId ){
               userInfo.chat.icon = item.icon
               userInfo.chat.name = item.name
               userInfo.chat.username = item.username
@@ -251,9 +250,8 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             el.chat.newContent = el.chat.text.split(" ");
-            this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
             this.groupListData.forEach(item => {
-              if(el.chat.fromChatId === 'u' + item.memberId ){
+            if(el.chat.fromChatId === 'u' + item.memberId ){
                 el.chat.icon = item.icon
                 el.chat.name = item.name
                 el.chat.username = item.username

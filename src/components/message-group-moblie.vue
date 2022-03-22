@@ -11,7 +11,12 @@
           :class="judgeClass(item[index])"
         >
           <img class="message-avatar" :src="el.icon" />
-          <p>
+          <p
+            :class="{
+              'reply-aduio': device ==='moblie' &&
+                el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO' ,
+            }"
+          >
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
@@ -58,7 +63,7 @@
                         ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                         : false
                     "
-                    ><span v-html="item" v-linkified></span
+                    ><span v-html="item" v-linkified @click.prevent.stop="device === 'moblie'? onContextmenu(el):false"></span
                   ></div>
                 </div>
               </div>
@@ -68,6 +73,7 @@
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
+              @click.prevent.stop="device === 'moblie'? onContextmenu(el):false"
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -89,6 +95,18 @@
                   :src="el.message.content"
                   :preview-src-list="[el.message.content]"
                 />
+                <div
+                  style="
+                    position: absolute;
+                    bottom: 0px;
+                    width: 100%;
+                    height: 16px;
+                    left: 0px;
+                  "
+                  @click.prevent.stop="
+                    device === 'moblie' ? onContextmenu(el) : false
+                  "
+                ></div>
               </div>
             </span>
 
@@ -130,7 +148,6 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      // contactList: [],
       noIcon: require("./../../static/images/image_user_defult.png"),
       device: localStorage.getItem("device"),
     };
@@ -168,18 +185,18 @@ export default {
       //   setTimeout(() => {
       //     this.newMessageData = {};
       //     this.message.forEach((el) => {
-      //       // el.newContent = el.message.content.split(" ");
-      //       // this.contactListData.forEach((item)=>{
-      //       //   if (el.userChatId === "u" + item.memberId) {
-      //       //     el.icon = item.icon;
-      //       //     el.name = item.name;
-      //       //   } else if(el.icon === undefined && el.name === undefined){
-      //       //     el.icon = this.noIcon;
-      //       //     el.name = "无此成员";
-      //       //   } else if(el.isRplay !== null && el.isRplay.fromChatId === "u" + item.memberId){
-      //       //     el.isRplay.nickName = item.name;
-      //       //   }
-      //       // })
+      //       el.newContent = el.message.content.split(" ");
+      //       this.contactListData.forEach((item)=>{
+      //         if (el.userChatId === "u" + item.memberId) {
+      //           el.icon = item.icon;
+      //           el.name = item.name;
+      //         } else if(el.icon === undefined && el.name === undefined){
+      //           el.icon = this.noIcon;
+      //           el.name = "无此成员";
+      //         } else if(el.isRplay !== null && el.isRplay.fromChatId === "u" + item.memberId){
+      //           el.isRplay.nickName = item.name;
+      //         }
+      //       })
       //       this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
       //       let newData = this.message.filter((res) => {
       //         return (
@@ -190,8 +207,8 @@ export default {
       //       this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
       //         newData;
       //       this.$root.gotoBottom();
-      //     });
-      //   }, 700);
+      //     },200);
+      //   });
       // });
       // this.$root.gotoBottom();
     },
@@ -414,14 +431,6 @@ export default {
       return false;
     },
     downloadImages(data) {
-      // console.log(data)
-      // const downloadUrl = window.URL.createObjectURL(new Blob([data.message.content]), {type: "image/png"});
-      // const link = document.createElement('a');
-      // link.href = downloadUrl;
-      // link.setAttribute('download', 'image.jpg');
-      // document.body.appendChild(link);
-      // link.click();
-      // link.remove();
       let downloadUrl = "";
       downloadUrl = data.message.content;
       this.downloadByBlob(downloadUrl, "images");
@@ -476,8 +485,10 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
+            this.messageData = this.messageData.filter((item)=>{
+              return item.historyId !== data.historyId
+            })
             this.getHiChatDataList();
-            this.getHistory();
           }
         })
         .catch((err) => {
@@ -494,18 +505,18 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
-    getHistory() {
-      let getHistoryMessage = {
-        chatType: "CLI_GROUP_HISTORY_REQ",
-        toChatId: this.groupUser.toChatId,
-        id: Math.random(),
-        tokenType: 0,
-        pageSize: 1000,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-      };
-      Socket.send(getHistoryMessage);
-    },
+    // getHistory() {
+    //   let getHistoryMessage = {
+    //     chatType: "CLI_GROUP_HISTORY_REQ",
+    //     toChatId: this.groupUser.toChatId,
+    //     id: Math.random(),
+    //     tokenType: 0,
+    //     pageSize: 1000,
+    //     deviceId: localStorage.getItem("UUID"),
+    //     token: localStorage.getItem("token"),
+    //   };
+    //   Socket.send(getHistoryMessage);
+    // },
   },
 };
 </script>
@@ -749,6 +760,11 @@ export default {
     display: flex;
     flex-direction: column;
     line-height: 1.5em;
+  }
+}
+.reply-aduio {
+  .message-classic {
+    padding: 9px 60px 9px 12px !important;
   }
 }
 .goAnchor-box {
