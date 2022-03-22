@@ -48,6 +48,7 @@
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
+          @deleteMsgHistoryData="deleteMsgData"
         />
         <div
           class="reply-message"
@@ -164,6 +165,12 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
     }),
+    deleteMsgData(data){
+      this.messageData = this.messageData.filter((item)=>{
+        return item.historyId !== data.historyId
+      })
+      this.getHiChatDataList();
+    },    
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -257,9 +264,9 @@ export default {
                 userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
                 userInfo.chat.name = "无此成员";
               } 
-              // if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
-              //   userInfo.replyChat.nickName = item.name;
-              // }
+              if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
+                userInfo.replyChat.nickName = item.name;
+              }
             });
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
@@ -318,6 +325,7 @@ export default {
           break;   
       }
     },
+
     submitBtn() {
       let groupId = this.groupUser.groupId;
       leaveGroup({ groupId })

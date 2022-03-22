@@ -314,32 +314,6 @@ export default {
           });
         }
       }
-      // if (
-      //   data.userChatId !== "u" + localStorage.getItem("id") &&
-      //   (data.chatType === "SRV_USER_IMAGE" ||
-      //     data.chatType === "SRV_USER_AUDIO")
-      // ) {
-      //   this.newItem = item.filter((list) => {
-      //     return (
-      //       list.name !== "deleteAllChat" &&
-      //       list.name !== "edit" &&
-      //       list.name !== "copy"
-      //     );
-      //   });
-      // } else if (data.userChatId !== "u" + localStorage.getItem("id")) {
-      //   this.newItem = item.filter((list) => {
-      //     return list.name !== "deleteAllChat" && list.name !== "edit";
-      //   });
-      // }else if (
-      //   data.chatType === "SRV_USER_IMAGE" ||
-      //   data.chatType === "SRV_USER_AUDIO"
-      // ) {
-      //   this.newItem = item.filter((list) => {
-      //     return list.name !== "edit" && list.name !== "copy";
-      //   });
-      // } else {
-      //   this.newItem = item;
-      // }
       this.$contextmenu({
         items: this.newItem,
         // event,
@@ -406,10 +380,7 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.messageData = this.messageData.filter((item) => {
-              return item.historyId !== data.historyId;
-            });
-            this.getHiChatDataList();
+            this.$emit('deleteMsgHistoryData',data)
           }
         })
         .catch((err) => {

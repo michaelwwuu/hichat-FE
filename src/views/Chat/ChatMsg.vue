@@ -126,6 +126,7 @@
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
+          @deleteMsgHistoryData="deleteMsgData"
         />
         <div
           class="reply-message"
@@ -338,6 +339,12 @@ export default {
       setChatMsgData:"ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
+    deleteMsgData(data){
+      this.messageData = this.messageData.filter((item)=>{
+        return item.historyId !== data.historyId
+      })
+      this.getHiChatDataList();
+    },      
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {

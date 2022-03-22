@@ -51,6 +51,7 @@
         <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
+          @deleteMsgHistoryData="deleteMsgData"          
         />
         <div
           class="reply-message"
@@ -145,6 +146,12 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setContactListData: "ws/setContactListData",
     }),
+    deleteMsgData(data){
+      this.messageData = this.messageData.filter((item)=>{
+        return item.historyId !== data.historyId
+      })
+      this.getHiChatDataList();
+    },        
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||

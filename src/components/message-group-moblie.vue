@@ -163,6 +163,7 @@ export default {
   },
   watch: {
     messageData(val) {
+      console.log(val)
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>
@@ -181,74 +182,7 @@ export default {
           newData;
       });
       this.$root.gotoBottom();
-      // this.$nextTick(() => {
-      //   setTimeout(() => {
-      //     this.newMessageData = {};
-      //     this.message.forEach((el) => {
-      //       el.newContent = el.message.content.split(" ");
-      //       this.contactListData.forEach((item)=>{
-      //         if (el.userChatId === "u" + item.memberId) {
-      //           el.icon = item.icon;
-      //           el.name = item.name;
-      //         } else if(el.icon === undefined && el.name === undefined){
-      //           el.icon = this.noIcon;
-      //           el.name = "无此成员";
-      //         } else if(el.isRplay !== null && el.isRplay.fromChatId === "u" + item.memberId){
-      //           el.isRplay.nickName = item.name;
-      //         }
-      //       })
-      //       this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-      //       let newData = this.message.filter((res) => {
-      //         return (
-      //           this.$root.formatTimeDay(res.message.time) ===
-      //           this.$root.formatTimeDay(el.message.time)
-      //         );
-      //       });
-      //       this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-      //         newData;
-      //       this.$root.gotoBottom();
-      //     },200);
-      //   });
-      // });
-      // this.$root.gotoBottom();
     },
-
-    // message(val) {
-    //   this.$nextTick(() => {
-    //     setTimeout(() => {
-    //       this.newMessageData = {};
-    //       val.forEach((el) => {
-    //         el.newContent = el.message.content.split(" ");
-    //         this.contactListData.forEach((item)=>{
-    //           if (el.userChatId === "u" + item.memberId) {
-    //             el.icon = item.icon;
-    //             el.name = item.name;
-    //           } else if(el.icon === undefined && el.icon === undefined){
-    //             el.icon = this.noIcon;
-    //             el.name = "无此成员";
-    //           }
-    //           if (
-    //             el.isRplay !== null &&
-    //             el.isRplay.fromChatId === "u" + item.memberId
-    //           ) {
-    //             el.isRplay.nickName = item.name;
-    //           }
-    //         })
-    //         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-    //         let newData = this.message.filter((res) => {
-    //           return (
-    //             this.$root.formatTimeDay(res.message.time) ===
-    //             this.$root.formatTimeDay(el.message.time)
-    //           );
-    //         });
-    //         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-    //           newData;
-    //         this.$root.gotoBottom();
-    //       });
-    //     }, 500);
-    //   });
-    //   this.$root.gotoBottom();
-    // },
   },
   methods: {
     ...mapMutations({
@@ -485,10 +419,7 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.messageData = this.messageData.filter((item)=>{
-              return item.historyId !== data.historyId
-            })
-            this.getHiChatDataList();
+            this.$emit('deleteMsgHistoryData',data)
           }
         })
         .catch((err) => {
