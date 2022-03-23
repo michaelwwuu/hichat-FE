@@ -135,13 +135,9 @@
             replyMsg.clickType === 'editMsg'
           "
         >
-          <el-avatar
-            shape="square"
-            size="large"
-            :src="noIconShow(chatUser)"
-          ></el-avatar>
+          <img :src="noIconShow(replyMsg)" alt="" style="height:2.5em; border-radius: 5px;">
           <div class="reply-message-box">
-            <span>{{ chatUser.name }}</span>
+            <span>{{ replyMsg.name }}</span>
             <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
               replyMsg.innerText.length > 110
                 ? replyMsg.innerText.substr(0, 110) + " ..."
@@ -365,6 +361,8 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
+        name:"",
+        icon:"",
         chatType:"",
         clickType:"",
         innerText:"",
@@ -384,7 +382,9 @@ export default {
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
         toChatId: data.toChatId,
-        nickName: data.nickName,
+        icon: data.chat.icon,
+        name: data.chat.name,        
+        nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },
@@ -428,20 +428,52 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          if (this.chatUser.toChatId === userInfo.toChatId) {
-            userInfo.nickName = this.chatUser.name;
-            this.messageList(userInfo);
-            this.messageData.push(this.chatRoomMsg);
-            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+          if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
+            userInfo.chat.name = this.chatUser.name
+            userInfo.chat.icon = this.chatUser.icon
+            userInfo.chat.nickName = this.chatUser.name;  
+          }else if(userInfo.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+            userInfo.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
+            userInfo.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
           }
+          if(userInfo.replyChat !==null){
+            if(userInfo.replyChat.fromChatId === this.chatUser.toChatId){
+              userInfo.replyChat.name = this.chatUser.name
+              userInfo.replyChat.icon = this.chatUser.icon
+              userInfo.replyChat.nickName = this.chatUser.name;
+            } else if(userInfo.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+              userInfo.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
+              userInfo.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+              userInfo.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
+            }
+          }
+          this.messageList(userInfo);
+          this.messageData.push(this.chatRoomMsg);
+          if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (this.chatUser.toChatId === el.toChatId) {
-              el.nickName = this.chatUser.name;
+            if (el.chat.fromChatId === this.chatUser.toChatId) {
+              el.chat.name = this.chatUser.name
+              el.chat.icon = this.chatUser.icon
+              el.chat.nickName = this.chatUser.name;
+            } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+              el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
+              el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+            }
+            if(el.replyChat !==null){
+              if(el.replyChat.fromChatId === this.chatUser.toChatId){
+                el.replyChat.name = this.chatUser.name
+                el.replyChat.icon = this.chatUser.icon
+                el.replyChat.nickName = this.chatUser.name;
+              } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+                el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
+                el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+                el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
+              }
             }
             this.messageList(el);
             this.messageData.unshift(this.chatRoomMsg);

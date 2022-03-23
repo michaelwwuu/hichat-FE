@@ -228,7 +228,7 @@ import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { getGroupList, groupListMember } from "@/api";
+import { getGroupList, groupListMember,getUserInfo } from "@/api";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
@@ -289,6 +289,7 @@ export default {
     this.num = this.$route.fullPath === "/Address" ? 0 : this.$route.fullPath === "/HiChat" ? 1 : 2;
     Socket.$on("message", this.handleGetMessage);
     this.getGroupDataList();
+    this.getUserData();
   },
   watch: {
     hichatNav(val) {
@@ -315,8 +316,17 @@ export default {
       setContactUser:"ws/setContactUser",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
+      setMyUserInfo:"ws/setMyUserInfo",
       setContactListData: "ws/setContactListData",
     }),
+    getUserData() {
+      getUserInfo().then((res) => {
+        if (res.data.icon === undefined) {
+          res.data.icon = require("./../../../static/images/image_user_defult.png");
+        }
+        this.setMyUserInfo(res.data)
+      });
+    },
     changeImg(index) {
       this.num = index;
       this.setInfoMsg({ infoMsgShow: false });

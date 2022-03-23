@@ -309,6 +309,7 @@ export default {
     textArea: {
       immediate: true,
       handler(val) {
+        if(val === '') this.calloutShow = false;
         let textAreaSearchData = val.split(" ");
         textAreaSearchData.forEach((el) => {
           this.searchContactData = this.contactListData.filter((item) => {
@@ -541,15 +542,14 @@ export default {
     },
 
     keyUp(event) {
-      if (event.key === "@" && event.shiftKey) {
-        this.calloutShow = true;
-      } else if (
-        this.textArea === "" ||
-        event.code === "Space" ||
-        event.code === "Digit1"
-      ) {
-        this.calloutShow = false;
-      } else if (event.shiftKey && event.keyCode === 13) {
+      this.textArea.split(" ").forEach((res)=>{
+        if(res.startsWith('@')){
+          this.calloutShow = true;
+        } else {
+          this.calloutShow = false;
+        }
+      })
+      if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
         if (
@@ -571,10 +571,12 @@ export default {
 
     closeReplyMessage() {
       this.setReplyMsg({
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
+        name:"",
+        icon:"",
+        chatType:"",
+        clickType:"",
+        innerText:"",
+        replyHistoryId:"",
       });
       this.setEditMsg({ innerText:""});
     },

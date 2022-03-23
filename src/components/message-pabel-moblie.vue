@@ -23,7 +23,7 @@
               @dblclick="dblclick(el)"
             >
               <template v-if="el.isRplay !== null">
-                <div style="color: #00a1ff">{{ el.nickName }}</div>
+                <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                 <div @click="goAnchor(el.isRplay.historyId)">
                   <div class="goAnchor-box">
                     <span
@@ -80,22 +80,17 @@
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
-              <el-image
-                :src="el.message.content"
-                :preview-src-list="[el.message.content]"
-              />
               <div
-                style="
-                  position: absolute;
-                  bottom: 0px;
-                  width: 100%;
-                  height: 16px;
-                  left: 0px;
-                "
+                v-if="device === 'moblie'"
+                class="images-more-btn"
                 @click.prevent.stop="
                   device === 'moblie' ? onContextmenu(el) : false
                 "
               ></div>
+              <el-image
+                :src="el.message.content"
+                :preview-src-list="[el.message.content]"
+              />
             </span>
             <span class="nickname-time">{{
               $root.formatTimeSecound(el.message.time)
@@ -210,6 +205,8 @@ export default {
               clickType: "editMsg",
               innerText: data.message.content,
               replyHistoryId: data.historyId,
+              name: data.name,
+              icon: data.icon,
             });
             this.setEditMsg({ innerText: data.message.content });
           },
@@ -231,6 +228,8 @@ export default {
               clickType: "replyMsg",
               innerText: data.message.content,
               replyHistoryId: data.historyId,
+              name: data.name,
+              icon: data.icon,
             });
           },
         },
@@ -479,11 +478,10 @@ export default {
           width: 190px;
         }
         .el-image {
-          width: 10em !important;
-          height: auto !important;
-
+          width: auto !important;
+          height: 10em !important;
           /deep/.el-image__inner {
-            height: initial;
+            height: 15em;
           }
         }
       }
@@ -544,10 +542,10 @@ export default {
           }
         }
         .el-image {
-          width: 10em !important;
+          width: auto !important;
           height: 10em !important;
           /deep/.el-image__inner {
-            height: initial;
+            height: 15em;
           }
         }
       }
@@ -636,8 +634,23 @@ export default {
 }
 .reply-aduio {
   .message-classic {
-    padding: 9px 60px 9px 12px !important;
+    padding: 9px 40px 9px 12px !important;
   }
+}
+.images-more-btn{
+  width: 2em;
+  height: 2em;
+  background-image: url('./../../static/images/pc/more.png');
+  cursor: pointer;
+  border-radius: 5px;
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color:#f7f7f794;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 9;
 }
 .goAnchor-box {
   cursor: pointer;
@@ -654,7 +667,8 @@ export default {
     z-index: 9;
   }
   .message-audio {
-    width: 180px !important;
+    width: 190px !important;
+    border: 0 !important;
   }
   &:hover {
     .goAnchor {

@@ -161,12 +161,10 @@ export default {
         if (el.name === "密码管理") el.path = "/PasswordEdit";
       });
     }
-    this.getUserData();
+   
   },
   methods: {
-    ...mapMutations({
-      setMyUserInfo: "ws/setMyUserInfo",
-    }),
+
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
@@ -180,14 +178,7 @@ export default {
         duration: 1000,
       });
     },
-    getUserData() {
-      getUserInfo().then((res) => {
-        if (res.data.icon === undefined) {
-          res.data.icon = require("./../../../../static/images/image_user_defult.png");
-        }
-        this.setMyUserInfo(res.data)
-      });
-    },
+
     loginOut() {
       this.$router.push({ path: "/login" });
       localStorage.removeItem("token");
