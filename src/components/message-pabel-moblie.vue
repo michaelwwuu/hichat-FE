@@ -636,7 +636,7 @@ export default {
 }
 .reply-aduio {
   .message-classic {
-    padding: 9px 60px 9px 12px !important;
+    max-width: 100% !important;
   }
 }
 .goAnchor-box {

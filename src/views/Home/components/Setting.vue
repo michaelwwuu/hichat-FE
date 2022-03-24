@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getUserInfo } from "@/api";
+// import { getUserInfo } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 
@@ -161,7 +161,7 @@ export default {
         if (el.name === "密码管理") el.path = "/PasswordEdit";
       });
     }
-    this.getUserData();
+    // this.getUserData();
   },
   methods: {
     ...mapMutations({
@@ -180,14 +180,14 @@ export default {
         duration: 1000,
       });
     },
-    getUserData() {
-      getUserInfo().then((res) => {
-        if (res.data.icon === undefined) {
-          res.data.icon = require("./../../../../static/images/image_user_defult.png");
-        }
-        this.setMyUserInfo(res.data)
-      });
-    },
+    // getUserData() {
+    //   getUserInfo().then((res) => {
+    //     if (res.data.icon === undefined) {
+    //       res.data.icon = require("./../../../../static/images/image_user_defult.png");
+    //     }
+    //     this.setMyUserInfo(res.data)
+    //   });
+    // },
     loginOut() {
       this.$router.push({ path: "/login" });
       localStorage.removeItem("token");

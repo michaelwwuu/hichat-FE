@@ -14,7 +14,7 @@
           <p
             :class="{
               'reply-aduio': device ==='moblie' &&
-                el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO' ,
+                el.isRplay !== null && el.isRplay.chatType === 'SRV_GROUP_AUDIO' ,
             }"
           >
             <span
@@ -695,7 +695,7 @@ export default {
 }
 .reply-aduio {
   .message-classic {
-    padding: 9px 60px 9px 12px !important;
+    max-width: 100% !important;
   }
 }
 .goAnchor-box {
