@@ -20,12 +20,11 @@
 </template>
 
 <script>
-import { login } from "_api/index.js";
+import Socket from "@/utils/socket";
+import { userinfo } from "_api/index.js";
 import { mapState, mapMutations } from "vuex";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
-import Socket from "@/utils/socket";
-
 import { getLocal } from "_util/utils.js";
 export default {
   name: "Chat",
@@ -53,7 +52,8 @@ export default {
     };
   },
   created() {
-    this.userLogin()
+    // this.userLogin()
+    this.getUserInfo()
   },
   mounted() {
     Socket.$on("message", this.handleGetMessage);
@@ -111,19 +111,28 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    userLogin(){
-      let params = this.loginForm
-      login(params).then((res) => {
-        if (res.code === 200) {
-          this.userInfoData.deviceId = this.getUUID()
-          this.userInfoData.token = res.data.tokenHead + res.data.token
-          this.userInfoData.toChatId = this.$route.query.chatRoomId
-          localStorage.setItem('username', res.data.username)
-          localStorage.setItem('token',res.data.tokenHead + res.data.token);
-          Socket.connect()
-        }
-      })
+    getUserInfo(){
+      const search_url = location.search;
+      console.log(search_url)
+      // userinfo(params).then((res) => {
+      //   if (res.code === 200) {
+      //     console.log(res)
+      //   }
+      // })
     },
+    // userLogin(){
+    //   let params = this.loginForm
+    //   login(params).then((res) => {
+    //     if (res.code === 200) {
+    //       this.userInfoData.deviceId = this.getUUID()
+    //       this.userInfoData.token = res.data.tokenHead + res.data.token
+    //       this.userInfoData.toChatId = this.$route.query.chatRoomId
+    //       localStorage.setItem('username', res.data.username)
+    //       localStorage.setItem('token',res.data.tokenHead + res.data.token);
+    //       Socket.connect()
+    //     }
+    //   })
+    // },
 
     // 訊息統一格式
     messageList(data) {
