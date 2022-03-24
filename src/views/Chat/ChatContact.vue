@@ -363,9 +363,11 @@ export default {
               userInfo.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
             }
           }
-          this.messageList(userInfo);
-          this.messageData.push(this.chatRoomMsg);
-          if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+          if(userInfo.toChatId === this.contactUser.toChatId){
+            this.messageList(userInfo);
+            this.messageData.push(this.chatRoomMsg);
+            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+          }
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
