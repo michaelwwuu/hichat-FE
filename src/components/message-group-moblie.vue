@@ -91,22 +91,17 @@
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
-                <el-image
-                  :src="el.message.content"
-                  :preview-src-list="[el.message.content]"
-                />
                 <div
-                  style="
-                    position: absolute;
-                    bottom: 0px;
-                    width: 100%;
-                    height: 16px;
-                    left: 0px;
-                  "
+                  v-if="device === 'moblie'"
+                  class="images-more-btn"
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                ></div>
+                ></div> 
+                <el-image
+                  :src="el.message.content"
+                  :preview-src-list="[el.message.content]"
+                ></el-image>
               </div>
             </span>
 
@@ -163,7 +158,6 @@ export default {
   },
   watch: {
     messageData(val) {
-      console.log(val)
       //去除重复
       const set = new Set();
       this.message = val.filter((item) =>
@@ -539,10 +533,10 @@ export default {
             padding-bottom: 5px;
           }
           .el-image {
-            width: 10em !important;
+            width: auto !important;
             height: 10em !important;
             /deep/.el-image__inner {
-              height: 100%;
+              height: 15em;
             }
           }
         }
@@ -605,10 +599,10 @@ export default {
         background-color: #e5e4e4;
         border-radius: 10px;
         .el-image {
-          width: 10em !important;
+          width: auto !important;
           height: 10em !important;
           /deep/.el-image__inner {
-            height: 100%;
+            height: 15em;
           }
         }
       }
@@ -697,6 +691,21 @@ export default {
   .message-classic {
     max-width: 100% !important;
   }
+}
+.images-more-btn{
+  width: 2em;
+  height: 2em;
+  background-image: url('./../../static/images/pc/more.png');
+  cursor: pointer;
+  border-radius: 5px;
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color:#f7f7f794;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 9;
 }
 .goAnchor-box {
   cursor: pointer;

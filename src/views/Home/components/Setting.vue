@@ -164,9 +164,7 @@ export default {
     // this.getUserData();
   },
   methods: {
-    ...mapMutations({
-      setMyUserInfo: "ws/setMyUserInfo",
-    }),
+
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);

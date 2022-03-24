@@ -191,6 +191,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
+      setEditMsg:"ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
@@ -337,11 +338,14 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
+        name:"",
+        icon:"",
+        chatType:"",
+        clickType:"",
+        innerText:"",
+        replyHistoryId:"",
       });
+      this.setEditMsg({ innerText:""});
     },
     getHistory(data, path) {
       if (path === "ChatMsg" || path === "ChatContact") {

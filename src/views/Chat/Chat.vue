@@ -57,11 +57,7 @@
             replyMsg.clickType === 'editMsg'
           "
         >
-          <el-avatar
-            shape="square"
-            size="large"
-            :src="replyMsg.icon"
-          ></el-avatar>
+          <img :src="noIconShow(replyMsg)" alt="" style="height:2.5em; border-radius: 5px;">
           <div class="reply-message-box">
             <span>{{ replyMsg.name }}</span>
             <span v-if="replyMsg.chatType === 'SRV_GROUP_SEND'">{{
@@ -184,10 +180,12 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
+        name:"",
+        icon:"",
+        chatType:"",
+        clickType:"",
+        innerText:"",
+        replyHistoryId:"",
       });
       this.setEditMsg({ innerText:""});
     },

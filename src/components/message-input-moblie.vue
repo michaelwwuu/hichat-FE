@@ -482,14 +482,15 @@ export default {
     // 關閉回復訊息
     closeReplyMessage() {
       this.setReplyMsg({
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
+        name:"",
+        icon:"",
+        chatType:"",
+        clickType:"",
+        innerText:"",
+        replyHistoryId:"",
       });
       this.setEditMsg({ innerText:""});
     },
-
     // 发送消息
     sendMessage() {
       let message = {

@@ -22,6 +22,8 @@ export const state = {
     type:"",
   },
   replyMsg:{
+    name:"",
+    icon:"",
     chatType:"",
     clickType:"",
     innerText:"",
