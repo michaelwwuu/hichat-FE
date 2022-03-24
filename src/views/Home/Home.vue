@@ -321,7 +321,6 @@ export default {
     }),
     getUserData() {
       getUserInfo().then((res) => {
-        console.log(res)
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../static/images/image_user_defult.png");
         }

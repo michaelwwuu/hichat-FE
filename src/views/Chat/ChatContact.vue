@@ -344,19 +344,19 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
-            userInfo.chat.name = this.chatUser.name
-            userInfo.chat.icon = this.chatUser.icon
-            userInfo.chat.nickName = this.chatUser.name;  
+          if (userInfo.chat.fromChatId === this.contactUser.toChatId) {
+            userInfo.chat.name = this.contactUser.name
+            userInfo.chat.icon = this.contactUser.icon
+            userInfo.chat.nickName = this.contactUser.name;  
           }else if(userInfo.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
             userInfo.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
             userInfo.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
           }
           if(userInfo.replyChat !==null){
-            if(userInfo.replyChat.fromChatId === this.chatUser.toChatId){
-              userInfo.replyChat.name = this.chatUser.name
-              userInfo.replyChat.icon = this.chatUser.icon
-              userInfo.replyChat.nickName = this.chatUser.name;
+            if(userInfo.replyChat.fromChatId === this.contactUser.toChatId){
+              userInfo.replyChat.name = this.contactUser.name
+              userInfo.replyChat.icon = this.contactUser.icon
+              userInfo.replyChat.nickName = this.contactUser.name;
             } else if(userInfo.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
               userInfo.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
               userInfo.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
@@ -372,19 +372,19 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
-            if (el.chat.fromChatId === this.chatUser.toChatId) {
-              el.chat.name = this.chatUser.name
-              el.chat.icon = this.chatUser.icon
-              el.chat.nickName = this.chatUser.name;
+            if (el.chat.fromChatId === this.contactUser.toChatId) {
+              el.chat.name = this.contactUser.name
+              el.chat.icon = this.contactUser.icon
+              el.chat.nickName = this.contactUser.name;
             } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
               el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
               el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
             }
             if(el.replyChat !==null){
-              if(el.replyChat.fromChatId === this.chatUser.toChatId){
-                el.replyChat.name = this.chatUser.name
-                el.replyChat.icon = this.chatUser.icon
-                el.replyChat.nickName = this.chatUser.name;
+              if(el.replyChat.fromChatId === this.contactUser.toChatId){
+                el.replyChat.name = this.contactUser.name
+                el.replyChat.icon = this.contactUser.icon
+                el.replyChat.nickName = this.contactUser.name;
               } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
                 el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
                 el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
