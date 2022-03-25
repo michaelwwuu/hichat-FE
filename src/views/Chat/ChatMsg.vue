@@ -119,7 +119,8 @@
             <li @click="isBlockDialogShow = true">
               {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
             </li>
-            <li @click="deleteRecent(chatUser)">删除</li>
+            <!-- <li @click="deleteRecent(chatUser)">删除</li> -->
+            <li @click="deleteDialogShow = true">删除</li>
             <li @click="addUser(chatUser)">加入联络人</li>
           </ul>
         </div>
@@ -241,7 +242,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button
           class="background-orange"
-          @click="$router.push({ path: '/Address' })"
+          @click="deleteRecent(chatUser)"
           >確認</el-button
         >
       </span>
@@ -556,10 +557,12 @@ export default {
           if (res.code === 200) {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
-            this.setHichatNav({ type: "address", num: 1 });
             if (this.device === "pc") {
+              this.setHichatNav({ type: "address", num: 1 });
               this.setChatUser({});
               this.getHiChatDataList();
+            }else if(this.device === "moblie"){
+              this.$router.push({ path: "/Address" });
             }
           }
         })

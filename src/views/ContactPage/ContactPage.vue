@@ -155,6 +155,7 @@
 import { developmentMessage } from "@/assets/tools";
 import { mapState,mapMutations } from "vuex";
 import {
+  getSearchById,
   addContactUser,
   addBlockContactUser,
   unBlockContactUser,
@@ -184,7 +185,6 @@ export default {
         },
       ],
       dialogContent: "",
-      noIcon: require("./../../../static/images/image_user_defult.png"),
       notification: true,
       successDialogShow: false,
       settingDialogShow: false,
@@ -199,19 +199,30 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.setChatUser(this.userData);
+    this.getUserId();     
   },
   methods: {
     ...mapMutations({
       setChatUser: "ws/setChatUser",
     }),
+    getUserId() { 
+      let id = this.userData.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
+        this.userData.username = res.data.username;
+        this.userData.name = res.data.name;
+        this.userData.isBlock = res.data.isBlock;
+        this.userData.isContact = res.data.isContact;
+        this.setChatUser(this.userData);
+      });
+    },       
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
         iconData.icon === null ||
         iconData.icon === ""
       ) {
-        return this.noIcon;
+        return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
       }

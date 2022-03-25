@@ -13,8 +13,10 @@
           <img class="message-avatar" :src="el.icon" />
           <p
             :class="{
-              'reply-aduio': device ==='moblie' &&
-                el.isRplay !== null && el.isRplay.chatType === 'SRV_GROUP_AUDIO' ,
+              'reply-aduio':
+                device === 'moblie' &&
+                el.isRplay !== null &&
+                el.isRplay.chatType === 'SRV_GROUP_AUDIO',
             }"
           >
             <span
@@ -58,13 +60,22 @@
                       'message-touch-carte':
                         item.startsWith('@') && item.length > 1,
                     }"
-                    @click="
-                      item.startsWith('@')
-                        ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                    @click.prevent.stop="
+                      device === 'moblie' && !item.startsWith('@')
+                        ? onContextmenu(el)
                         : false
                     "
-                    ><span v-html="item" v-linkified @click.prevent.stop="device === 'moblie'? onContextmenu(el):false"></span
-                  ></div>
+                  >
+                    <span
+                      v-html="item"
+                      v-linkified
+                      @click="
+                        item.startsWith('@')
+                          ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                          : false
+                      "
+                    ></span>
+                  </div>
                 </div>
               </div>
             </span>
@@ -73,7 +84,9 @@
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @click.prevent.stop="device === 'moblie'? onContextmenu(el):false"
+              @click.prevent.stop="
+                device === 'moblie' ? onContextmenu(el) : false
+              "
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
@@ -97,7 +110,7 @@
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                ></div> 
+                ></div>
                 <el-image
                   :src="el.message.content"
                   :preview-src-list="[el.message.content]"
@@ -413,7 +426,7 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.$emit('deleteMsgHistoryData',data)
+            this.$emit("deleteMsgHistoryData", data);
           }
         })
         .catch((err) => {
@@ -692,16 +705,16 @@ export default {
     max-width: 100% !important;
   }
 }
-.images-more-btn{
+.images-more-btn {
   width: 2em;
   height: 2em;
-  background-image: url('./../../static/images/pc/more.png');
+  background-image: url("./../../static/images/pc/more.png");
   cursor: pointer;
   border-radius: 5px;
   background-size: 70%;
   background-position: center;
   background-repeat: no-repeat;
-  background-color:#f7f7f794;
+  background-color: #f7f7f794;
   position: absolute;
   top: 10px;
   right: 10px;
