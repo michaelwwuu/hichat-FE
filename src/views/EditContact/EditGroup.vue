@@ -75,6 +75,7 @@
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
       width="100%"
       center
+      :close-on-click-modal="false"      
     >
       <el-upload
         class="upload-demo"

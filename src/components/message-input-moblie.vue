@@ -109,6 +109,7 @@
       :visible.sync="uploadImgShow"
       width="100%"
       :append-to-body="device !== 'pc'"
+      :close-on-click-modal="false"      
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
       v-loading.fullscreen.lock="fullscreenLoading"
       element-loading-text="圖片上传中"      
@@ -148,6 +149,7 @@
       width="100%"
       append-to-body
       :before-close="closeAduioShow"
+      :close-on-click-modal="false"      
       center
       v-loading.fullscreen.lock="fullscreenLoading"
       element-loading-text="录音上传中"           
@@ -179,6 +181,7 @@
       width="100%"
       class="el-dialog-takePicture"
       center
+      :close-on-click-modal="false"      
     >
       <Photo
         :chatType="'CLI_USER_IMAGE'"

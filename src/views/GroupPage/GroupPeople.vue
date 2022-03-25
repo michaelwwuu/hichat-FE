@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container>
       <el-main>
         <template v-if="device === 'moblie'">
@@ -159,6 +159,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -183,6 +184,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">

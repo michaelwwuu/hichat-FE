@@ -72,6 +72,7 @@
       class="el-dialog-loginOut"
       width="75%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -97,6 +98,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">

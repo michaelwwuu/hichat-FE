@@ -357,6 +357,7 @@
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       :show-close="false"
+      :close-on-click-modal="false"      
       width="70%"
       center
     >

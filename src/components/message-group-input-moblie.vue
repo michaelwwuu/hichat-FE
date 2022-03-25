@@ -231,6 +231,7 @@
     <el-dialog
       title="照相"
       :visible.sync="takePictureShow"
+      :close-on-click-modal="false"      
       width="100%"
       class="el-dialog-takePicture"
       center

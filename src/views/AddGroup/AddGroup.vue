@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header :height="groupEditShow?'125px':'60px'">
@@ -187,6 +187,7 @@
       :class="{'el-dialog-loginOut':device ==='pc'}"
       width="100%"
       center
+      :close-on-click-modal="false"      
     >
       <el-upload
         class="upload-demo"

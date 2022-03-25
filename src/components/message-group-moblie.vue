@@ -420,16 +420,16 @@ export default {
           this.$message({ message: err, type: "error" });
         });
     },
-    getHiChatDataList() {
-      let chatMsgKey = {
-        chatType: "CLI_RECENT_CHAT",
-        id: Math.random(),
-        tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-      };
-      Socket.send(chatMsgKey);
-    },
+    // getHiChatDataList() {
+    //   let chatMsgKey = {
+    //     chatType: "CLI_RECENT_CHAT",
+    //     id: Math.random(),
+    //     tokenType: 0,
+    //     deviceId: localStorage.getItem("UUID"),
+    //     token: localStorage.getItem("token"),
+    //   };
+    //   Socket.send(chatMsgKey);
+    // },
     // getHistory() {
     //   let getHistoryMessage = {
     //     chatType: "CLI_GROUP_HISTORY_REQ",

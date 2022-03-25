@@ -175,6 +175,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -207,6 +208,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -227,6 +229,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -249,6 +252,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -452,7 +456,6 @@ export default {
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
           }
- 
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
@@ -478,17 +481,21 @@ export default {
                 el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
               }
             }
-            this.messageList(el);
-            this.messageData.unshift(this.chatRoomMsg);
+            if(el.toChatId === this.chatUser.toChatId){
+              this.messageList(el);
+              this.messageData.unshift(this.chatRoomMsg);
+            }
           });
           this.readMsg = historyMsgList.filter((el) => {
             return el.chat.toChatId === "u" + localStorage.getItem("id");
           });
-          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+          if (historyMsgList.length > 0 && this.readMsg.length > 0 ) this.readMsgShow(this.readMsg[0]);
           break;
         // 已讀
         case "SRV_MSG_READ":
-          this.messageData.forEach((res) => (res.isRead = true));
+          if(userInfo.toChatId === this.chatUser.toChatId){
+            this.messageData.forEach((res) => (res.isRead = true));
+          }
           break;
         // 編輯訊息
         case "SRV_CHAT_EDIT":

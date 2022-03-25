@@ -218,6 +218,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">

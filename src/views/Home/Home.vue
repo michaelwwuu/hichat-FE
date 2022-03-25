@@ -166,6 +166,7 @@
     <el-dialog
       title="我的帐号"
       :visible.sync="centerDialogVisible"
+      :close-on-click-modal="false"      
       width="100%"
       center
     >
@@ -205,6 +206,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
+      :close-on-click-modal="false"      
       center
     >
       <div class="loginOut-box">
@@ -389,11 +391,6 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
-            // let filterList = this.chatDataList.some((list) => {
-            //   return list.toChatId === msgInfo.toChatId;
-            // });
-            this.getHiChatDataList();
-            // if (!filterList) this.getHiChatDataList();
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
           break;
