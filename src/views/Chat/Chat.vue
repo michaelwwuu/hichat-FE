@@ -32,8 +32,6 @@ export default {
     return {
       // 登入資訊
       loginForm: {
-        isGuest:this.$route.query.isGuest,
-        username: this.$route.query.username,
         sign:"",
         platformCode:"dcw", 
       },
@@ -112,28 +110,13 @@ export default {
       return "hiWeb" + number
     },
     getUserInfo(){
-      const search_url = location.search;
-      console.log(search_url)
-      // userinfo(params).then((res) => {
-      //   if (res.code === 200) {
-      //     console.log(res)
-      //   }
-      // })
+      const search_url = location.pathname.replace("/","");
+      userinfo(search_url).then((res) => {
+        if (res.code === 200) {
+          console.log(res)
+        }
+      })
     },
-    // userLogin(){
-    //   let params = this.loginForm
-    //   login(params).then((res) => {
-    //     if (res.code === 200) {
-    //       this.userInfoData.deviceId = this.getUUID()
-    //       this.userInfoData.token = res.data.tokenHead + res.data.token
-    //       this.userInfoData.toChatId = this.$route.query.chatRoomId
-    //       localStorage.setItem('username', res.data.username)
-    //       localStorage.setItem('token',res.data.tokenHead + res.data.token);
-    //       Socket.connect()
-    //     }
-    //   })
-    // },
-
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {

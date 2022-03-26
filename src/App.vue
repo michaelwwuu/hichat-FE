@@ -1,12 +1,16 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <sport-chat-room></sport-chat-room>
   </div>
 </template>
 
 <script>
+import sportChatRoom from "./views/Chat/Chat.vue";
 export default {
   name: "App",
+  components: {
+    sportChatRoom,
+  },
 };
 </script>
 

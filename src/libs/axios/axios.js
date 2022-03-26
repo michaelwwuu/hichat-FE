@@ -24,15 +24,15 @@ class HttpRequest {
       if (config.method === 'get') {
         config.params = {
           ...config.params,
-          // _t: new Date().getTime()
+          _t: new Date().getTime()
         }
       }
       if (config.method === 'post') {
         config.headers.post['Content-Type'] = "'Content-Type': 'multipart/form-data'";
       }
       if (getToken) {
-        // config.headers.Authorization = `${localStorage.token}`
-        config.headers.Api_Key = "a87ff679a2f3e71d9181a67b7542122c"//協定api Key值
+        config.headers.Authorization = `${localStorage.token}`
+        config.headers.get['Api-Key'] = "a87ff679a2f3e71d9181a67b7542122c";
       }
       if (config.isForm) {
         config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
