@@ -5,8 +5,8 @@ function resolve(dir) {
 module.exports = {
   publicPath: '',
   devServer: {
-    // open: true,
-    // https: false,
+    open: true,
+    https: false,
     // 以上的ip和埠号是我们本机的;下面为需要跨域的
     proxy: {    //配置跨域
       '/api': {
