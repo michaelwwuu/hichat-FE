@@ -21,7 +21,7 @@
         class="setting-button"
         v-for="(item, index) in settingData"
         :key="index"
-        :class="{ mt10: item.name === '提醒' || item.name === '关于HiChat' }"
+        :class="{ mt10: item.name === '相片和影片' || item.name === '关于HiChat' }"
         @click="developmentMessage(item.name)"
       >
         <router-link :to="item.path">
@@ -161,6 +161,10 @@ export default {
       this.settingData.forEach((el) => {
         if (el.name === "密码管理") el.path = "/PasswordEdit";
       });
+    }else {
+      this.settingData = this.settingData.filter((el)=>{
+        return el.name !== "提醒"
+      })
     }
     // this.getUserData();
   },

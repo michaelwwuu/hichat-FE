@@ -45,7 +45,7 @@
             </a>
           </div>
 
-          <div
+          <!-- <div
             class="setting-notification"
             @click="developmentMessage('提醒通知')"
           >
@@ -61,8 +61,10 @@
             >
             </el-switch>
           </div>
+           -->
+
           <div
-            class="setting-button"
+            class="setting-button mt10"
             @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
           >
             <a>
@@ -414,6 +416,9 @@ export default {
     }
     .red-text {
       color: #ee5253 !important;
+    }
+    .mt10 {
+      margin-top: 1em;
     }
   }
   
