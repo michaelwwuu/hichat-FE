@@ -119,12 +119,12 @@
             <li @click="isBlockDialogShow = true">
               {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
             </li>
-            <!-- <li @click="deleteRecent(chatUser)">删除</li> -->
             <li @click="deleteDialogShow = true">删除</li>
             <li @click="addUser(chatUser)">加入联络人</li>
           </ul>
         </div>
         <message-pabel
+          v-loading="loading"
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
@@ -302,6 +302,7 @@ export default {
       userData: {},
       readMsgData: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
+      loading:false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
@@ -311,7 +312,7 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.setChatUser(this.userData);
+    if(this.userData !== null) this.setChatUser(this.userData);
     this.getUserId(this.userData)
     Socket.$on("message", this.handleGetMessage);
   },
@@ -460,37 +461,44 @@ export default {
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
-          this.messageData = [];
-          let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
-            if (el.chat.fromChatId === this.chatUser.toChatId) {
-              el.chat.name = this.chatUser.name
-              el.chat.icon = this.chatUser.icon
-              el.chat.nickName = this.chatUser.name;
-            } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-              el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
-              el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
-            }
-            if(el.replyChat !==null){
-              if(el.replyChat.fromChatId === this.chatUser.toChatId){
-                el.replyChat.name = this.chatUser.name
-                el.replyChat.icon = this.chatUser.icon
-                el.replyChat.nickName = this.chatUser.name;
-              } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-                el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
-                el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
-                el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
-              }
-            }
-            if(el.toChatId === this.chatUser.toChatId){
-              this.messageList(el);
-              this.messageData.unshift(this.chatRoomMsg);
-            }
-          });
-          this.readMsg = historyMsgList.filter((el) => {
-            return el.chat.toChatId === "u" + localStorage.getItem("id");
-          });
-          if (historyMsgList.length > 0 && this.readMsg.length > 0 ) this.readMsgShow(this.readMsg[0]);
+          this.loading = true
+          this.$nextTick(()=>{
+            setTimeout(() => {
+              this.messageData = [];
+              let historyMsgList = userInfo.historyMessage.list;
+              historyMsgList.forEach((el) => {
+                if (el.chat.fromChatId === this.chatUser.toChatId) {
+                  el.chat.name = this.chatUser.name
+                  el.chat.icon = this.chatUser.icon
+                  el.chat.nickName = this.chatUser.name;
+                } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+                  el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
+                  el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+                }
+                if(el.replyChat !==null){
+                  if(el.replyChat.fromChatId === this.chatUser.toChatId){
+                    el.replyChat.name = this.chatUser.name
+                    el.replyChat.icon = this.chatUser.icon
+                    el.replyChat.nickName = this.chatUser.name;
+                  } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+                    el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
+                    el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+                    el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
+                  }
+                }
+                if(el.toChatId === this.chatUser.toChatId){
+                  this.messageList(el);
+                  this.messageData.unshift(this.chatRoomMsg);
+                }
+              });
+              this.readMsg = historyMsgList.filter((el) => {
+                return el.chat.toChatId === "u" + localStorage.getItem("id");
+              });
+              if (historyMsgList.length > 0 && this.readMsg.length > 0 ) this.readMsgShow(this.readMsg[0]);
+              this.loading = false
+            }, 500);
+          })
+          
           break;
         // 已讀
         case "SRV_MSG_READ":

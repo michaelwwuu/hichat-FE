@@ -117,7 +117,7 @@
                 :key="index"
                 @click="developmentMessage(item.name)"
               >
-                <a @click="goChatRoom(userData, item.path, 'group')">
+                <a @click="goChatRoom(groupUser, item.path, 'group')">
                   <div class="setting-button-left">
                     <img :src="item.icon" alt="" />
                     <span>{{ item.name }}</span>
@@ -210,7 +210,9 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.infoMsgSettingData();
     setTimeout(() => {
-      this.getUserId();
+      if(this.infoMsg.infoMsgNav === "ContactPage"){
+        this.getUserId();
+      }
     }, 1000); 
   },
   methods: {
@@ -291,11 +293,11 @@ export default {
           infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
         });
         if (type === "address") {
-          delete this.chatUser.type;
-          this.setChatUser(this.chatUser);
+          delete data.type;
+          this.setChatUser(data);
         } else {
-          delete this.groupUser.type;
-          this.setChatGroup(this.groupUser);
+          delete data.type;
+          this.setChatGroup(data);
         }
         this.setHichatNav({ type: type, num: 1 });
         this.getHistory(type);

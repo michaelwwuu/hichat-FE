@@ -69,6 +69,7 @@ export const mutations = {
   //對話中對象
   setChatUser(state, payload) {
     state.chatUser = payload;
+    console.log(payload)
     if(payload.type !== "address"){
       localStorage.setItem("userData", JSON.stringify(payload));
     }

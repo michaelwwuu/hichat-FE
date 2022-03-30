@@ -191,8 +191,9 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.groupData.groupName = this.groupForm.name;
-            this.groupList.forEach((el) => {
-              if (el.groupId === params.groupId) {
+            this.groupList.forEach((el) => {              
+              if (el.groupId === Number(params.groupId)) {
+                el.icon = params.icon
                 el.groupName = params.groupName;
               }
             });

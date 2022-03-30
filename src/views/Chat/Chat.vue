@@ -45,7 +45,9 @@
             </el-dropdown>
           </div>
         </el-header>
+
         <message-pabel
+          v-loading="loading"
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
@@ -133,13 +135,14 @@ export default {
       readMsgData: [],
       contactList: [],
       leaveGroupDialogShow: false,
+      loading: false,
     };
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.setChatGroup(this.groupData);
+    if(this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-    // this.getGroupListMember();
+    
   },
   computed: {
     ...mapState({
@@ -270,7 +273,6 @@ export default {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            
           }
           break;
         // 历史讯息
@@ -279,21 +281,29 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           historyMsgList.forEach((el) => {
             el.chat.newContent = el.chat.text.split(" ");
-            this.groupListData.forEach(item => {
-              if(el.chat.fromChatId === 'u' + item.memberId ){
-                el.chat.icon = item.icon
-                el.chat.name = item.name
-                el.chat.username = item.username
-              } else if(el.chat.icon === undefined && el.chat.name === undefined){
-                el.chat.icon = require("./../../../static/images/image_user_defult.png");
-                el.chat.name = "无此成员";
-              } 
-              if(el.replyChat !== null && (el.replyChat.fromChatId === "u" + item.memberId)){
-                el.replyChat.nickName = item.name;
-              }
-            });
-            this.messageList(el);
-            this.messageData.unshift(this.chatRoomMsg);
+            this.loading = true;
+            this.$nextTick(()=>{
+              setTimeout(() => {
+                this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
+                this.groupListData.forEach(item => {
+                  if(el.chat.fromChatId === 'u' + item.memberId ){
+                    el.chat.icon = item.icon
+                    el.chat.name = item.name
+                    el.chat.username = item.username
+                  } else if(el.chat.icon === undefined && el.chat.name === undefined){
+                    el.chat.icon = require("./../../../static/images/image_user_defult.png");
+                    el.chat.name = "无此成员";
+                  } 
+                  if(el.replyChat !== null && (el.replyChat.fromChatId === "u" + item.memberId)){
+                    el.replyChat.nickName = item.name;
+                  }
+                });
+                this.messageList(el);
+                this.messageData.unshift(this.chatRoomMsg);
+                this.loading = false;
+
+              }, 700);
+            })
           });
           if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
           break;

@@ -230,25 +230,25 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        if (this.groupUser.toChatId === userInfo.toChatId) {
-          userInfo.chat.newContent = userInfo.chat.text.split(" ");
-          this.groupListData.forEach(item => {
-          if(userInfo.chat.fromChatId === 'u' + item.memberId ){
-              userInfo.chat.icon = item.icon
-              userInfo.chat.name = item.name
-              userInfo.chat.username = item.username
-            } else if(userInfo.chat.icon === undefined && userInfo.chat.name === undefined){
-              userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
-              userInfo.chat.name = "无此成员";
-            } 
-            if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
-              userInfo.replyChat.nickName = item.name;
-            }
-          });
-          this.messageList(userInfo);
-          this.messageData.push(this.chatRoomMsg);
-          this.readMsgShow(userInfo);
-        }
+          if (this.groupUser.toChatId === userInfo.toChatId) {
+            userInfo.chat.newContent = userInfo.chat.text.split(" ");
+            this.groupListData.forEach(item => {
+            if(userInfo.chat.fromChatId === 'u' + item.memberId ){
+                userInfo.chat.icon = item.icon
+                userInfo.chat.name = item.name
+                userInfo.chat.username = item.username
+              } else if(userInfo.chat.icon === undefined && userInfo.chat.name === undefined){
+                userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
+                userInfo.chat.name = "无此成员";
+              } 
+              if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
+                userInfo.replyChat.nickName = item.name;
+              }
+            });
+            this.messageList(userInfo);
+            this.messageData.push(this.chatRoomMsg);
+            this.readMsgShow(userInfo);
+          }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
