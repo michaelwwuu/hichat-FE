@@ -142,7 +142,7 @@
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { getSearchById } from "@/api";
+import { getSearchById,groupListMember } from "@/api";
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
 import GroupPeople from "../GroupPage/GroupPeople.vue";
@@ -192,6 +192,7 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       },
+      contactList:[],
       groupDataList: [],
       notification: true,
       developmentMessage: developmentMessage,
@@ -222,6 +223,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setContactListData:"ws/setContactListData",
     }),
     copyPaste(data) {
       let url = document.createElement("input");
@@ -293,11 +295,12 @@ export default {
           infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
         });
         if (type === "address") {
-          delete data.type;
-          this.setChatUser(data);
+          delete this.chatUser.type;
+          this.setChatUser(this.chatUser);
         } else {
-          delete data.type;
-          this.setChatGroup(data);
+          delete this.groupUser.type;
+          this.getGroupListMember(data);
+          this.setChatGroup(this.groupUser);
         }
         this.setHichatNav({ type: type, num: 1 });
         this.getHistory(type);
@@ -305,6 +308,18 @@ export default {
       } else if (path === "GroupPeople") {
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
+    },
+    getGroupListMember(data) {
+      let groupId = data.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((item) => {
+          if (item.icon === undefined){
+            return item.icon = require("./../../../static/images/image_user_defult.png");
+          }
+        });
+        this.setContactListData(this.contactList);
+      });
     },
     back() {
       this.$router.back(-1);

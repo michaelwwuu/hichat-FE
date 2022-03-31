@@ -54,6 +54,8 @@
           </template>
         </el-header>
         <message-pabel
+          v-loading="loading"
+          element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
@@ -228,6 +230,7 @@ export default {
       userData: {},
       readMsgData: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
+      loading:false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
@@ -375,35 +378,41 @@ export default {
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
-          this.messageData = [];
-          let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
-            if (el.chat.fromChatId === this.contactUser.toChatId) {
-              el.chat.name = this.contactUser.name
-              el.chat.icon = this.contactUser.icon
-              el.chat.nickName = this.contactUser.name;
-            } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-              el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
-              el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
-            }
-            if(el.replyChat !==null){
-              if(el.replyChat.fromChatId === this.contactUser.toChatId){
-                el.replyChat.name = this.contactUser.name
-                el.replyChat.icon = this.contactUser.icon
-                el.replyChat.nickName = this.contactUser.name;
-              } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-                el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
-                el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
-                el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
-              }
-            }   
-            this.messageList(el);
-            this.messageData.unshift(this.chatRoomMsg);
-          });
-          this.readMsg = historyMsgList.filter((el) => {
-            return el.chat.toChatId === "u" + localStorage.getItem("id");
-          });
-          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+          this.loading = true
+          this.$nextTick(()=>{
+            setTimeout(() => {
+              this.messageData = [];
+              let historyMsgList = userInfo.historyMessage.list;
+              historyMsgList.forEach((el) => {
+                if (el.chat.fromChatId === this.contactUser.toChatId) {
+                  el.chat.name = this.contactUser.name
+                  el.chat.icon = this.contactUser.icon
+                  el.chat.nickName = this.contactUser.name;
+                } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+                  el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
+                  el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+                }
+                if(el.replyChat !==null){
+                  if(el.replyChat.fromChatId === this.contactUser.toChatId){
+                    el.replyChat.name = this.contactUser.name
+                    el.replyChat.icon = this.contactUser.icon
+                    el.replyChat.nickName = this.contactUser.name;
+                  } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
+                    el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
+                    el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+                    el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
+                  }
+                }   
+                this.messageList(el);
+                this.messageData.unshift(this.chatRoomMsg);
+              });
+              this.readMsg = historyMsgList.filter((el) => {
+                return el.chat.toChatId === "u" + localStorage.getItem("id");
+              });
+              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+              this.loading = false
+            }, 500);
+          })
           break;
         // 已讀
         case "SRV_MSG_READ":

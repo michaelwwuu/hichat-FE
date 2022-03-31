@@ -173,11 +173,6 @@ export default {
   },
   mounted() {
     this.getHiChatDataList();
-    // if(JSON.parse(localStorage.getItem('groupListMember')) === null ){
-    //   setTimeout(() => {
-    //     this.getGroupListMember()
-    //   }, 700);
-    // }
   },
   watch: {
     contactDataList(val) {
@@ -278,14 +273,7 @@ export default {
       });
     },
     getGroupListMember(data) {
-      console.log(data)
       let groupId = data.toChatId.replace("g", "");
-      // if(JSON.parse(localStorage.getItem('groupListMember')) !== null ){
-      //   groupId = JSON.parse(localStorage.getItem('groupData')).toChatId.replace("g", "");
-      // } 
-      // else{
-      //   groupId = this.groupDataList[0].toChatId.replace("g", "");
-      // }
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
@@ -293,7 +281,6 @@ export default {
             return item.icon = require("./../../../../static/images/image_user_defult.png");
           }
         });
-        console.log(this.contactList)
         this.setContactListData(this.contactList);
       });
     },
@@ -312,7 +299,6 @@ export default {
             return (data.isAdmin = item.isAdmin);
           }
         });
-        console.log(data)
         this.setChatGroup(data);
         this.getGroupListMember(data);
       }

@@ -6,9 +6,11 @@
     "serve": "vue-cli-service serve",
     "serve:test": "vue-cli-service serve --mode test",
     "serve:pre": "vue-cli-service serve --mode pre",
+    "serve:ol": "vue-cli-service serve --mode ol",
     "build": "vue-cli-service build",
     "build:test": "vue-cli-service build --mode test",
-    "build:pre": "vue-cli-service build --mode pre"
+    "build:pre": "vue-cli-service build --mode pre",
+    "build:ol": "vue-cli-service build --mode ol"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",

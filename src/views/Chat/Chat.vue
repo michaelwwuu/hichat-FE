@@ -48,6 +48,7 @@
 
         <message-pabel
           v-loading="loading"
+          element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
@@ -301,7 +302,6 @@ export default {
                 this.messageList(el);
                 this.messageData.unshift(this.chatRoomMsg);
                 this.loading = false;
-
               }, 700);
             })
           });

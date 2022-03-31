@@ -125,6 +125,7 @@
         </div>
         <message-pabel
           v-loading="loading"
+          element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
@@ -498,7 +499,6 @@ export default {
               this.loading = false
             }, 500);
           })
-          
           break;
         // 已讀
         case "SRV_MSG_READ":
