@@ -190,7 +190,7 @@ router.beforeEach((to, from, next) => {
       setTimeout(() => {
         next({ path: '/login' });
       }, 2000);
-      alert("请注意:由于您过于频繁跳转页面，因此系统判定为恶意行为，即将导向登录页，谢谢。");
+      alert("请注意:由于跳转页面失败，即将导回登录页，谢谢。");
     })
 
   }
