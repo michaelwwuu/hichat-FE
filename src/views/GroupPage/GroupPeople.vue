@@ -299,7 +299,6 @@ export default {
         this.$message({ message: "此即为您的帐号", type: "warning" });
       } else {
         data.toChatId = "u" + data.memberId;
-        // localStorage.setItem("userData", JSON.stringify(data));
         if (this.device === "moblie") {
           this.$router.push({ name: "ContactPage" });
         } else {
@@ -309,9 +308,10 @@ export default {
           this.contactDataList.forEach((res) => {
             if (Number(res.contactId) === data.memberId) {
               data.isContact = true;
+            }else{
+              data.isContact = false;
             }
           });
-          this.setChatUser(data);
           this.setInfoMsg({
             infoMsgShow: true,
             infoMsgChat: true,
@@ -319,6 +319,7 @@ export default {
           });
           this.setMsgInfoPage({ pageShow: true, type: "ContactPage" });
         }
+        this.setChatUser(data);
       }
     },
   },

@@ -18,7 +18,7 @@
                   <span>資訊</span>
                 </div>
               </span>
-              <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
+              <template v-if="infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact">
                 <div
                   class="home-add-user"
                   @click="editShowBtn(infoMsg.infoMsgNav)"
@@ -204,6 +204,7 @@ export default {
       groupUser: (state) => state.ws.groupUser,
       infoMsg: (state) => state.ws.infoMsg,
       msgInfoPage: (state) => state.ws.msgInfoPage,
+      myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
   created() {

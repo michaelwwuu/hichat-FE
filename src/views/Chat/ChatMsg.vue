@@ -86,7 +86,7 @@
               <template v-else>
                 <div class="contact-box">
                   <ul>
-                    <li @click="deleteRecent(chatUser)">
+                    <li @click="deleteDialogShow = true">
                       <img
                         src="./.../../../../../static/images/pc/trash.png"
                         alt=""
@@ -313,15 +313,16 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    if(this.userData !== null) this.setChatUser(this.userData);
-    this.getUserId(this.userData)
+    if(this.userData !== null) {
+      this.setChatUser(this.userData);
+      this.getUserId(this.userData)
+      this.getChatHistoryMessage();
+
+    }
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
-  },
-  mounted() {
-    this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
@@ -566,6 +567,7 @@ export default {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
             if (this.device === "pc") {
+              console.log(123)
               this.setHichatNav({ type: "address", num: 1 });
               this.setChatUser({});
               this.getHiChatDataList();
@@ -904,7 +906,7 @@ export default {
         align-items: center;
         background-color: #fff;
         height: 3em;
-        width: 70%;
+        width: 500px;
         margin: 0 auto;
         font-weight: 550;
         li {

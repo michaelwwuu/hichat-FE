@@ -149,8 +149,7 @@
           />
           <chat-contact
             v-else-if="
-              hichatNav.type === 'contact' &&
-              JSON.stringify(contactUser) !== '{}'
+              hichatNav.type === 'contact' && JSON.stringify(contactUser) !== '{}'
             "
           />
         </template>

@@ -29,7 +29,7 @@
 
               <div class="contact-box">
                 <ul>
-                  <li @click="deleteRecent(contactUser)">
+                  <li @click="deleteDialogShow = true">
                     <img
                       src="./.../../../../../static/images/pc/trash.png"
                       alt=""
@@ -170,6 +170,13 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
+          v-if="device === 'pc'"
+          class="background-orange"
+          @click="deleteRecent(contactUser)"
+          >確認</el-button
+        >
+        <el-button
+          v-else
           class="background-orange"
           @click="$router.push({ path: '/Address' })"
           >確認</el-button
@@ -480,7 +487,8 @@ export default {
             localStorage.removeItem("userData");
             if (this.device === "pc") {
               this.setHichatNav({ type: "contact", num: 1 });
-              this.setContactUser({});
+              window.location.reload();
+              // this.setContactUser({});
               this.getHiChatDataList();
             }
           }

@@ -35,7 +35,7 @@
                   :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
                 />
               </span>            
-              <span>{{ addUser.username }}</span>
+              <span>{{ addUser.name }}</span>
             </div>
           </div>
           <div class="home-footer-btn">
@@ -76,7 +76,7 @@
                   :preview-src-list="[addUser.icon === undefined ? avatarImg : addUser.icon]"
                 />
               </span>            
-              <span>{{ addUser.username }}</span>
+              <span>{{ addUser.name }}</span>
             </div>
           </div>
           <div class="home-footer-btn">
@@ -158,13 +158,13 @@ export default {
           this.noData = true;
         } else if (res.data !== {}) {
           this.addUser = res.data;
+          console.log(this.addUser)
         }
       });
     },
     joinUserButtom(data) {
       let parmas = {
         contactId: data.id,
-        name: data.username,
       };
       this.disabled = true
       addContactUser(parmas).then((res) => {

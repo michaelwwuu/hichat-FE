@@ -361,9 +361,9 @@ export default {
               type: "error",
             });
             localStorage.clear();
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //   // window.location.reload();
+            // }, 1000);
             return false;
           });
       });

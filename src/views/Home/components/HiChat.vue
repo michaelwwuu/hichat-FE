@@ -176,7 +176,7 @@ export default {
   },
   watch: {
     contactDataList(val) {
-      if (this.hichatNav === "contact" && val.length === 0) {
+      if (this.hichatNav.type === "contact" && val.length === 0) {
         this.setHichatNav({ type: "address", num: 1 });
       }
     },
@@ -307,15 +307,12 @@ export default {
       } else {
         if (data.isContact) {
           this.type = "address";
-          this.contact = false;
         } else if (data.isGroup) {
           this.type = "group";
-          this.contact = false;
         } else if (!data.isBlock && !data.isContact && !data.isGroup) {
           this.type = "contact";
-          this.contact = true;
         }
-        this.setHichatNav({ type: this.type, num: 1, contact: this.contact });
+        this.setHichatNav({ type: this.type, num: 1,});
         this.setInfoMsg({
           infoMsgShow: false,
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
