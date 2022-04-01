@@ -52,7 +52,7 @@
                   </div>
                 </template>
                 <div class="message-box-content">
-                  <div>
+                  <div v-if="device === 'pc'">
                     <span
                       v-for="(item, index) in el.newContent"
                       :key="index"
@@ -61,11 +61,29 @@
                         'message-touch-carte':
                           item.startsWith('@') && item.length > 1,
                       }"
-                      @click.prevent.stop="
-                        device === 'moblie' && !item.startsWith('@')
-                          ? onContextmenu(el)
-                          : false
-                      "
+                    >
+                      <span
+                        class="chat-message-filter"
+                        v-html="item"
+                        v-linkified
+                        @click="
+                          item.startsWith('@')
+                            ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                            : false
+                        "
+                      ></span>
+                    </span>
+                  </div>
+                  <div v-else>
+                    <span
+                      v-for="(item, index) in el.newContent"
+                      :key="index"
+                      :id="el.historyId"
+                      :class="{
+                        'message-touch-carte':
+                          item.startsWith('@') && item.length > 1,
+                      }"
+                      @click.prevent.stop=" !item.startsWith('@') ? onContextmenu(el) : false"
                     >
                       <span
                         class="chat-message-filter"

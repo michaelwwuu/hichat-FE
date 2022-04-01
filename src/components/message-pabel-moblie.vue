@@ -49,12 +49,17 @@
                 </div>
               </template>
               <div
+                v-if="device === 'pc'"
                 :id="el.historyId"
                 v-html="el.message.content"
                 v-linkified
-                @click.prevent.stop="
-                  device === 'moblie' ? onContextmenu(el) : false
-                "
+              ></div>
+              <div
+                v-else
+                :id="el.historyId"
+                v-html="el.message.content"
+                v-linkified
+                @click.prevent.stop="onContextmenu(el)"
               ></div>
             </span>
             <span
@@ -62,8 +67,7 @@
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @click.prevent.stop="
-                device === 'moblie' ? onContextmenu(el) : false
-              "
+                device === 'moblie' ? onContextmenu(el) : false"
               @dblclick="dblclick(el)"
             >
               <audio
@@ -192,6 +196,8 @@ export default {
         clickType: "replyMsg",
         innerText: event.message.content,
         replyHistoryId: event.historyId,
+        name: event.name,
+        icon: event.icon,
       });
     },
     onContextmenu(data) {
