@@ -63,7 +63,6 @@
                       }"
                     >
                       <span
-                        class="chat-message-filter"
                         v-html="item"
                         v-linkified
                         @click="
@@ -86,7 +85,6 @@
                       @click.prevent.stop=" !item.startsWith('@') ? onContextmenu(el) : false"
                     >
                       <span
-                        class="chat-message-filter"
                         v-html="item"
                         v-linkified
                         @click="
