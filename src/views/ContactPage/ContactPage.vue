@@ -208,7 +208,6 @@ export default {
       setChatUser: "ws/setChatUser",
     }),
     getUserId() { 
-      console.log(this.chatUser)
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";

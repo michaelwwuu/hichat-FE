@@ -52,29 +52,32 @@
                   </div>
                 </template>
                 <div class="message-box-content">
-                  <div
-                    v-for="(item, index) in el.newContent"
-                    :key="index"
-                    :id="el.historyId"
-                    :class="{
-                      'message-touch-carte':
-                        item.startsWith('@') && item.length > 1,
-                    }"
-                    @click.prevent.stop="
-                      device === 'moblie' && !item.startsWith('@')
-                        ? onContextmenu(el)
-                        : false
-                    "
-                  >
+                  <div>
                     <span
-                      v-html="item"
-                      v-linkified
-                      @click="
-                        item.startsWith('@')
-                          ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                      v-for="(item, index) in el.newContent"
+                      :key="index"
+                      :id="el.historyId"
+                      :class="{
+                        'message-touch-carte':
+                          item.startsWith('@') && item.length > 1,
+                      }"
+                      @click.prevent.stop="
+                        device === 'moblie' && !item.startsWith('@')
+                          ? onContextmenu(el)
                           : false
                       "
-                    ></span>
+                    >
+                      <span
+                        class="chat-message-filter"
+                        v-html="item"
+                        v-linkified
+                        @click="
+                          item.startsWith('@')
+                            ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                            : false
+                        "
+                      ></span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -137,7 +140,6 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
 
@@ -511,9 +513,9 @@ export default {
         border-radius: 10px;
       }
       .message-box {
-        span {
-          display: block;
-        }
+        // span {
+        //   display: block;
+        // }
         .message-name {
           font-size: 13px;
           color: #919191;
@@ -686,7 +688,7 @@ export default {
 .message-box-content {
   display: flex;
   span {
-    margin-right: 5px;
+    margin-right: 3px;
   }
   .message-touch-carte {
     color: #00a1ff;

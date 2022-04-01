@@ -36,7 +36,7 @@
         @keyup.native="keyUp"
       >
       </el-input>
-      <div class="footer-tools">
+      <div class="footer-tools" @touchmove="$root.handleTouch">
         <emoji-picker @emoji="insert" :search="search">
           <div
             slot="emoji-invoker"
@@ -285,8 +285,11 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
+        }else if(res.code === 40001){
+          this.fileList = [];
+          this.fullscreenLoading = false;
         }
-      });
+      })
     },
 
     // 開始計時
