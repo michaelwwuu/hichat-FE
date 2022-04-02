@@ -702,9 +702,8 @@ export default {
         overflow: auto;
         line-height: 2em;
         .face-icon-box {
-          padding: 15px;
+          padding: 20px;
           .face-box {
-            font-size: 1.6em;
             word-break: break-word;
             margin-bottom: 20px;
             h5 {

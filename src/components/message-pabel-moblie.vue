@@ -23,44 +23,50 @@
               @dblclick="dblclick(el)"
             >
               <template v-if="el.isRplay !== null">
-                <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
-                <div @click="goAnchor(el.isRplay.historyId)">
-                  <div class="goAnchor-box">
-                    <span
-                      v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
-                      class="goAnchor"
-                      >{{ el.isRplay.text }}</span
-                    >
-                    <img
-                      v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
-                      :src="el.isRplay.text"
-                      style="border-radius: 5px"
-                    />
-                    <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
-                      <div class="reply-audio-box"></div>
-                      <audio
-                        class="message-audio"
-                        controls
-                        :src="el.isRplay.text"
-                        type="mp3"
-                      ></audio>
-                    </span>
+                <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">  
+                  <div class="reply-img"><img :src="noIconShow(el.isRplay)" alt=""></div>
+                  <div>
+                    <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
+                    <div>
+                      <div class="goAnchor-box">
+                        <span
+                          v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+                          class="goAnchor"
+                          >{{ el.isRplay.text }}</span
+                        >
+                        <img
+                          v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
+                          :src="el.isRplay.text"
+                          style="border-radius: 5px"
+                        />
+                        <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                          <div class="reply-audio-box"></div>
+                          <audio
+                            class="message-audio"
+                            controls
+                            :src="el.isRplay.text"
+                            type="mp3"
+                          ></audio>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </template>
-              <div
-                v-if="device === 'pc'"
+              
+              <span
+                v-if="el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/ig) === null"
+                @click.prevent.stop="onContextmenu(el)"
                 :id="el.historyId"
                 v-html="el.message.content"
                 v-linkified
-              ></div>
-              <div
+              ></span>
+              <span
                 v-else
                 :id="el.historyId"
                 v-html="el.message.content"
                 v-linkified
-                @click.prevent.stop="onContextmenu(el)"
-              ></div>
+              ></span>
             </span>
             <span
               :id="el.historyId"
@@ -170,6 +176,17 @@ export default {
     }),
     goAnchor(data) {
       document.getElementById(data).scrollIntoView(true);
+    },
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return require("./../../static/images/image_user_defult.png");
+      } else {
+        return iconData.icon;
+      }
     },
     // 判断讯息Class名称
     judgeClass(item) {
@@ -658,29 +675,41 @@ export default {
   right: 10px;
   z-index: 9;
 }
-.goAnchor-box {
+.reply-box{
+  display: flex;
+  border-bottom: 1px solid #c3c3c3;
   cursor: pointer;
-  .goAnchor {
-    color: #ababab;
-    text-decoration: none;
-  }
-  .reply-audio-box {
-    display: block;
-    // background-color: #000000;
-    width: 14em;
-    height: 55px;
-    position: absolute;
-    z-index: 9;
-  }
-  .message-audio {
-    width: 190px !important;
-    border: 0 !important;
-  }
-  &:hover {
-    .goAnchor {
-      color: #5f5f5f;
+  .reply-img{
+    margin-right: 5px;
+    img{
+      height: 3em !important;
     }
-    border-radius: 8px;
+  }
+  .goAnchor-box {
+    cursor: pointer;
+    .goAnchor {
+      color: #ababab;
+      text-decoration: none;
+    }
+    .reply-audio-box {
+      display: block;
+      // background-color: #000000;
+      width: 14em;
+      height: 55px;
+      position: absolute;
+      z-index: 9;
+    }
+    .message-audio {
+      width: 190px !important;
+      border: 0 !important;
+    }
+    &:hover {
+      .goAnchor {
+        color: #5f5f5f;
+      }
+      border-radius: 8px;
+    }
   }
 }
+
 </style>

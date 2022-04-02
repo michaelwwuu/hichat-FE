@@ -386,10 +386,10 @@ export default {
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.loading = true
+          this.messageData = [];
+          let historyMsgList = userInfo.historyMessage.list;          
           this.$nextTick(()=>{
             setTimeout(() => {
-              this.messageData = [];
-              let historyMsgList = userInfo.historyMessage.list;
               historyMsgList.forEach((el) => {
                 if (el.chat.fromChatId === this.contactUser.toChatId) {
                   el.chat.name = this.contactUser.name

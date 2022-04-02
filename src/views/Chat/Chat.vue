@@ -280,11 +280,13 @@ export default {
         case "SRV_GROUP_HISTORY_RSP":
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
-            el.chat.newContent = el.chat.text.split(" ");
-            this.loading = true;
-            this.$nextTick(()=>{
-              setTimeout(() => {
+          this.loading = true;
+          this.$nextTick(()=>{
+            setTimeout(() => {          
+              historyMsgList.forEach((el) => {
+                el.chat.newContent = el.chat.text.split(" ");
+                console.log(el.chat.newContent)
+                console.log(el.chat.text)
                 this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
                 this.groupListData.forEach(item => {
                   if(el.chat.fromChatId === 'u' + item.memberId ){
@@ -300,12 +302,12 @@ export default {
                   }
                 });
                 this.messageList(el);
-                this.messageData.unshift(this.chatRoomMsg);
-                this.loading = false;
-              }, 700);
-            })
-          });
-          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+                this.messageData.unshift(this.chatRoomMsg);   
+              });
+              if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+              this.loading = false;
+            }, 700);
+          })
           break;
         // 已讀
         case "SRV_MSG_READ":

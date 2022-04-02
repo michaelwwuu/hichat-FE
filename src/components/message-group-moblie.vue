@@ -28,28 +28,33 @@
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
                 <template v-if="el.isRplay !== null">
-                  <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
-                  <div @click="goAnchor(el.isRplay.historyId)">
-                    <div class="goAnchor-box">
-                      <span
-                        v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
-                        class="goAnchor"
-                        >{{ el.isRplay.text }}</span
-                      >
-                      <img
-                        v-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'"
-                        :src="el.isRplay.text"
-                        style="border-radius: 5px"
-                      />
-                      <audio
-                        v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
-                        class="message-audio"
-                        controls
-                        :src="el.isRplay.text"
-                        type="mp3"
-                      ></audio>
-                    </div>
-                  </div>
+                  <div class="reply-box"  @click="goAnchor(el.isRplay.historyId)">  
+                    <div class="reply-img"><img :src="noIconShow(el.isRplay)" alt=""></div>
+                    <div>
+                      <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
+                      <div>
+                        <div class="goAnchor-box">
+                          <span
+                            v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
+                            class="goAnchor"
+                            >{{ el.isRplay.text }}</span
+                          >
+                          <img
+                            v-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'"
+                            :src="el.isRplay.text"
+                            style="border-radius: 5px"
+                          />
+                          <audio
+                            v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
+                            class="message-audio"
+                            controls
+                            :src="el.isRplay.text"
+                            type="mp3"
+                          ></audio>
+                        </div>
+                      </div>
+                    </div>  
+                  </div>  
                 </template>
                 <div class="message-box-content">
                   <div v-if="device === 'pc'">
@@ -82,16 +87,27 @@
                         'message-touch-carte':
                           item.startsWith('@') && item.length > 1,
                       }"
-                      @click.prevent.stop=" !item.startsWith('@') ? onContextmenu(el) : false"
                     >
                       <span
+                        v-if="item.match(/(http|https):\/\/([\w.]+\/?)\S*/ig) === null"
+                        @click.prevent.stop="
+                          !item.startsWith('@') ? onContextmenu(el) : false
+                        "
+                      >
+                        <span
+                          v-html="item"
+                          v-linkified
+                          @click="
+                            item.startsWith('@')
+                              ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                              : false
+                          "
+                        ></span>
+                      </span>
+                      <span
+                        v-else
                         v-html="item"
                         v-linkified
-                        @click="
-                          item.startsWith('@')
-                            ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
-                            : false
-                        "
                       ></span>
                     </span>
                   </div>
@@ -219,6 +235,17 @@ export default {
     goAnchor(data) {
       document.getElementById(data).scrollIntoView(true);
     },
+    noIconShow(iconData) {
+      if (
+        iconData.icon === undefined ||
+        iconData.icon === null ||
+        iconData.icon === ""
+      ) {
+        return require("./../../static/images/image_user_defult.png");
+      } else {
+        return iconData.icon;
+      }
+    },    
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -738,22 +765,32 @@ export default {
   right: 10px;
   z-index: 9;
 }
-.goAnchor-box {
+.reply-box{
+  display: flex;
+  border-bottom: 1px solid #c3c3c3;
   cursor: pointer;
-  .goAnchor {
-    color: #ababab;
-    text-decoration: none;
-  }
-  &:hover {
-    .goAnchor {
-      color: #5f5f5f;
+  .reply-img{
+    margin-right: 5px;
+    img{
+      height: 3em !important;
     }
-    border-radius: 8px;
   }
-  .message-audio {
-    height: 2.5em !important;
-    padding: 0 !important;
-    border: none !important;
+  .goAnchor-box {
+    .goAnchor {
+      color: #ababab;
+      text-decoration: none;
+    }
+    &:hover {
+      .goAnchor {
+        color: #5f5f5f;
+      }
+      border-radius: 8px;
+    }
+    .message-audio {
+      height: 2.5em !important;
+      padding: 0 !important;
+      border: none !important;
+    }
   }
 }
 </style>
