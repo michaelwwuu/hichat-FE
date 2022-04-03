@@ -24,6 +24,7 @@ export default {
       navigator.userAgent.match(/BlackBerry/i) ||
       navigator.userAgent.match(/Windows Phone/i)
     ) {
+      console.log(navigator.userAgent)
       this.device = "moblie";
     } else {
       this.device = "pc";
@@ -36,6 +37,8 @@ export default {
     }, {
       passive: false
     })
+  },
+  watch:{
   },
   mounted() {
     if(this.device === "moblie") this.safariHacks();

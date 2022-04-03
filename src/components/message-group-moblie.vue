@@ -24,6 +24,7 @@
               v-if="el.chatType === 'SRV_GROUP_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
+              :id="el.historyId"
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
@@ -61,7 +62,6 @@
                     <span
                       v-for="(item, index) in el.newContent"
                       :key="index"
-                      :id="el.historyId"
                       :class="{
                         'message-touch-carte':
                           item.startsWith('@') && item.length > 1,
@@ -79,16 +79,15 @@
                     </span>
                   </div>
                   <div v-else>
-                    <span
+                    <div
                       v-for="(item, index) in el.newContent"
                       :key="index"
-                      :id="el.historyId"
                       :class="{
                         'message-touch-carte':
                           item.startsWith('@') && item.length > 1,
                       }"
                     >
-                      <span
+                      <div
                         v-if="item.match(/(http|https):\/\/([\w.]+\/?)\S*/ig) === null"
                         @click.prevent.stop="
                           !item.startsWith('@') ? onContextmenu(el) : false
@@ -103,13 +102,13 @@
                               : false
                           "
                         ></span>
-                      </span>
+                      </div>
                       <span
                         v-else
                         v-html="item"
                         v-linkified
                       ></span>
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -233,7 +232,11 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
     }),
     goAnchor(data) {
+      document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);
+      setTimeout(() => {
+        document.getElementById(data).classList.remove("blink");
+      }, 3000);
     },
     noIconShow(iconData) {
       if (
@@ -768,6 +771,7 @@ export default {
 .reply-box{
   display: flex;
   border-bottom: 1px solid #c3c3c3;
+  margin-bottom: 5px;
   cursor: pointer;
   .reply-img{
     margin-right: 5px;
@@ -780,17 +784,49 @@ export default {
       color: #ababab;
       text-decoration: none;
     }
-    &:hover {
-      .goAnchor {
-        color: #5f5f5f;
-      }
-      border-radius: 8px;
-    }
+    // &:hover {
+    //   .goAnchor {
+    //     color: #5f5f5f;
+    //   }
+    //   border-radius: 8px;
+    // }
     .message-audio {
       height: 2.5em !important;
       padding: 0 !important;
       border: none !important;
     }
   }
+}
+/* 定义keyframe动画，命名为blink */
+@keyframes blink{
+  0%{opacity: 1;}
+      
+  100%{opacity: 0;} 
+}
+/* 添加兼容性前缀 */
+@-webkit-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+    0% {opacity: 1; } 
+    100% { opacity: 0;}
+}
+@-o-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+.blink{
+    color: red;
+    animation: blink 1s linear infinite;  
+    /* 其它浏览器兼容性前缀 */
+    -webkit-animation: blink 1s linear infinite;
+    -moz-animation: blink 1s linear infinite;
+    -ms-animation: blink 1s linear infinite;
+    -o-animation: blink 1s linear infinite;
 }
 </style>

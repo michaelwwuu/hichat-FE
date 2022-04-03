@@ -21,6 +21,7 @@
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
+              :id="el.historyId"
             >
               <template v-if="el.isRplay !== null">
                 <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">  
@@ -56,14 +57,13 @@
               
               <span
                 v-if="el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/ig) === null"
-                @click.prevent.stop="onContextmenu(el)"
-                :id="el.historyId"
+                @click.prevent.stop="
+                  device === 'moblie' ? onContextmenu(el) : false"
                 v-html="el.message.content"
                 v-linkified
               ></span>
               <span
                 v-else
-                :id="el.historyId"
                 v-html="el.message.content"
                 v-linkified
               ></span>
@@ -175,7 +175,11 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
     }),
     goAnchor(data) {
+      document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);
+      setTimeout(() => {
+        document.getElementById(data).classList.remove("blink");
+      }, 3000);
     },
     noIconShow(iconData) {
       if (
@@ -345,6 +349,7 @@ export default {
         zIndex: 3,
         minWidth: 230,
       });
+        console.log(event.clientX)
       return false;
     },
     downloadImages(data) {
@@ -678,6 +683,7 @@ export default {
 .reply-box{
   display: flex;
   border-bottom: 1px solid #c3c3c3;
+  margin-bottom: 5px;
   cursor: pointer;
   .reply-img{
     margin-right: 5px;
@@ -703,13 +709,44 @@ export default {
       width: 190px !important;
       border: 0 !important;
     }
-    &:hover {
-      .goAnchor {
-        color: #5f5f5f;
-      }
-      border-radius: 8px;
-    }
+    // &:hover {
+    //   .goAnchor {
+    //     color: #5f5f5f;
+    //   }
+    //   border-radius: 8px;
+    // }
   }
 }
-
+/* 定义keyframe动画，命名为blink */
+@keyframes blink{
+  0%{opacity: 1;}
+      
+  100%{opacity: 0;} 
+}
+/* 添加兼容性前缀 */
+@-webkit-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+    0% {opacity: 1; } 
+    100% { opacity: 0;}
+}
+@-o-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+.blink{
+    color: red;
+    animation: blink 1s linear 3;  
+    /* 其它浏览器兼容性前缀 */
+    -webkit-animation: blink 1s linear 3;
+    -moz-animation: blink 1s linear 3;
+    -ms-animation: blink 1s linear 3;
+    -o-animation: blink 1s linear 3;
+}
 </style>
