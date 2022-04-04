@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import Push from 'push.js'
 export default {
   name: "App",
   created() {
@@ -51,19 +50,6 @@ export default {
           document.querySelector('.hichat-moblie').style.setProperty('--vh', windowsVH + 'px');
       });
     },
-    pushMessage(){
-      Push.Permission.request();
-      Push.create("Hello world!", {
-        body: "How's it hangin'?",
-        icon: '/icon.png',
-        timeout: 4000,
-        onClick: function (even) {
-          console.log(even)
-            window.focus();
-            this.close();
-        }
-      });
-    }
   },
 };
 </script>
