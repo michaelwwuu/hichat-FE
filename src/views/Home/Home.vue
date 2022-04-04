@@ -320,12 +320,30 @@ export default {
       setMyUserInfo:"ws/setMyUserInfo",
       setContactListData: "ws/setContactListData",
     }),
+    getGroupDataList() {
+      getGroupList().then((res) => {
+        this.groupList = res.data.list;
+        this.setGroupList(this.groupList);
+      });
+    },
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../static/images/image_user_defult.png");
         }
         this.setMyUserInfo(res.data)
+      });
+    },
+    getGroupListMember() {
+      let groupId = this.groupUser.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined){
+            res.icon = require("./../../../static/images/image_user_defult.png");
+          }
+        });
+        this.setContactListData(this.contactList);
       });
     },
     changeImg(index) {
@@ -350,37 +368,20 @@ export default {
       a.href = iconUrl;
       a.dispatchEvent(event);
     },
-    getGroupDataList() {
-      getGroupList().then((res) => {
-        this.groupList = res.data.list;
-        this.setGroupList(this.groupList);
-      });
-    },
-    getGroupListMember() {
-      let groupId = this.groupUser.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined)
-            res.icon = require("./../../../static/images/image_user_defult.png");
-        });
-        this.setContactListData(this.contactList);
-      });
-    },
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
-      this.numNumber = 0
+      let numNumber = 0
       switch (msgInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
           this.chatDataList = msgInfo.recentChat;
           this.chatDataList.forEach((item) => {
-            this.numNumber += item.unreadCount;
-            this.setBadgeNum(this.numNumber)
+            numNumber += item.unreadCount;
             if(item.toChatId === this.chatUser.toChatId){
               item.username = this.chatUser.username
               this.setChatUser(item)
             }
+            this.setBadgeNum(numNumber)
           });
           break;
         case "SRV_USER_IMAGE":
@@ -393,7 +394,6 @@ export default {
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
           break;
-
         case "SRV_ERROR_MSG":
           if (msgInfo.text === "30006") {
             this.$confirm("群組已解散, 是否继续?", "提示", {

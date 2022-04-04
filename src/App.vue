@@ -40,7 +40,6 @@ export default {
   },
   mounted() {
     if(this.device === "moblie") this.safariHacks();
-    this.pushMessage()
   },
   methods: {
     safariHacks() {

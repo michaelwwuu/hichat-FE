@@ -5,24 +5,25 @@
       { 'login-container-moblie': device === 'moblie' },
     ]"
   >
-    <template v-if="device === 'moblie'">
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        label-position="top"
-      >
-        <div class="title-container">
-          <img src="./../../../static/images/material_ic_logo.png" alt="" />
-        </div>
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      class="login-form"
+      label-position="top"
+    >
+      <div class="title-container">
+        <img src="./../../../static/images/material_ic_logo.png" alt="" />
+        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span>
+      </div>
+      <template v-if="device === 'moblie'">
         <el-form-item prop="email">
           <span class="svg-container">
             <img src="./../../../static/images/mail.png" alt="" />
           </span>
           <el-input
             ref="email"
-            placeholder="电子邮箱"
             v-model.trim="loginForm.email"
+            placeholder="电子邮箱"
             name="email"
             type="text"
             tabindex="1"
@@ -61,65 +62,8 @@
             />
           </span>
         </el-form-item>
-        <div class="remember-style">
-          <el-switch
-            v-model="remember"
-            active-color="#fd5f3f"
-            inactive-color="#666666"
-            active-text="记住帐号"
-          >
-          </el-switch>
-          <router-link :to="'/ForgetPassword'" style="text-decoration: none">
-            <span>忘记密码</span>
-          </router-link>
-        </div>
-        <div class="read-check-box">
-          <el-checkbox v-model="readChecked">
-            已阅读并同意
-            <a
-              href="https://www.hichat.info/pub/userAgreement.html"
-              target="_blank"
-              >服务条款</a
-            >、<a
-              href="https://www.hichat.info/pub/privacyPolicy.html"
-              target="_blank"
-              >隐私权政策</a
-            >。</el-checkbox
-          >
-        </div>
-        <div>
-          <el-button
-            style="width: 100%; margin-bottom: 30px"
-            @click="submitForm('loginForm')"
-            >登录</el-button
-          >
-        </div>
-        <div>
-          <router-link :to="'/Register'">
-            <el-button
-              style="
-                width: 100%;
-                background-color: #67c23a00;
-                border: 1px solid #fd5f3f;
-                color: #fd5f3f;
-              "
-              >注册</el-button
-            >
-          </router-link>
-        </div>
-      </el-form>
-    </template>
-    <template v-else>
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        label-position="top"
-      >
-        <div class="title-container">
-          <img src="./../../../static/images/material_ic_logo.png" alt="" />
-          <span class="header-title">登录 Hichat</span>
-        </div>
+      </template>
+      <template v-else>
         <el-form-item prop="email">
           <span class="svg-container">电子邮箱</span>
           <el-input
@@ -164,54 +108,54 @@
             />
           </span>
         </el-form-item>
-        <div class="remember-style">
-          <router-link :to="'/ForgetPassword'" style="text-decoration: none">
-            <span>忘记密码</span>
-          </router-link>
-          <el-switch
-            v-model="remember"
-            active-color="#fd5f3f"
-            inactive-color="#666666"
-            active-text="记住帐号"
-          >
-          </el-switch>
-        </div>
-        <div class="read-check-box">
-          <el-checkbox v-model="readChecked">
-            已阅读并同意
-            <a
-              href="https://www.hichat.info/pub/userAgreement.html"
-              target="_blank"
-              >服务条款</a
-            >、<a
-              href="https://www.hichat.info/pub/privacyPolicy.html"
-              target="_blank"
-              >隐私权政策</a
-            >。</el-checkbox
-          >
-        </div>
-        <div>
+      </template>
+      <div class="remember-style" :style="device === 'moblie' ? 'flex-direction: row-reverse':''">
+        <router-link :to="'/ForgetPassword'" style="text-decoration: none">
+          <span>忘记密码</span>
+        </router-link>
+        <el-switch
+          v-model="remember"
+          active-color="#fd5f3f"
+          inactive-color="#666666"
+          active-text="记住帐号"
+        >
+        </el-switch>
+      </div>
+      <div class="read-check-box">
+        <el-checkbox v-model="readChecked">
+          已阅读并同意
+          <a
+            href="https://www.hichat.info/pub/userAgreement.html"
+            target="_blank"
+            >服务条款</a
+          >、<a
+            href="https://www.hichat.info/pub/privacyPolicy.html"
+            target="_blank"
+            >隐私权政策</a
+          >。</el-checkbox
+        >
+      </div>
+      <div>
+        <el-button
+          style="width: 100%; margin-bottom: 30px"
+          @click="submitForm('loginForm')"
+          >登录</el-button
+        >
+      </div>
+      <div>
+        <router-link :to="'/Register'">
           <el-button
-            style="width: 100%; margin-bottom: 30px"
-            @click="submitForm('loginForm')"
-            >登录</el-button
+            style="
+              width: 100%;
+              background-color: #67c23a00;
+              border: none;
+              color: #fd5f3f;
+            "
+            >注册</el-button
           >
-        </div>
-        <div>
-          <router-link :to="'/Register'">
-            <el-button
-              style="
-                width: 100%;
-                background-color: #67c23a00;
-                border: none;
-                color: #fd5f3f;
-              "
-              >注册</el-button
-            >
-          </router-link>
-        </div>
-      </el-form>
-    </template>
+        </router-link>
+      </div>
+    </el-form>
     <el-dialog
       :title="device === 'pc' ? '帐号已锁定' : ''"
       :visible.sync="dialogShow"
@@ -284,11 +228,12 @@ export default {
     },
   },
   mounted() {
-    if (this.remember)
+    if (this.remember){
       this.loginForm.email =
         localStorage.getItem("email") !== null
           ? localStorage.getItem("email")
           : "";
+    } 
     this.getUUID();
   },
   methods: {
@@ -346,9 +291,7 @@ export default {
               type: "error",
             });
             localStorage.clear();
-            // setTimeout(() => {
-            //   // window.location.reload();
-            // }, 1000);
+            this.getUUID();
             return false;
           });
       });

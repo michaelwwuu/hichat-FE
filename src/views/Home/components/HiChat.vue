@@ -19,8 +19,8 @@
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ item.lastChat.text }}</span>
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
                 </span>
               </div>
               <div class="time">
@@ -56,8 +56,8 @@
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{ item.lastChat.text }}</span>
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'">传送了语音</span>
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'">传送了图片</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'">传送了语音</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'">传送了图片</span>
                 </span>
               </div>
               <div class="time">
@@ -101,8 +101,8 @@
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ item.lastChat.text }}</span>
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
                 </span>
               </div>
               <div class="time">
@@ -261,7 +261,6 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        // case "SRV_MSG_READ":
           this.getHiChatDataList();
           break;
       }
