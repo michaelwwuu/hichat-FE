@@ -24,7 +24,6 @@
                   !editBtnShow ? contactList.length : checkDataList.length
                 }})
               </span>
-
               <template v-if="groupData.isAdmin && !editBtnShow">
                 <router-link
                   :to="'GroupAddPeople'"
