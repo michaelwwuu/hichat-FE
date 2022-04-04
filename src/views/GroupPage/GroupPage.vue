@@ -171,7 +171,7 @@ export default {
           if (res.code === 200) this.$router.push({ path: "/Address" });
         })
         .catch((err) => {
-          // console.log(err);
+          return false;
         });
     },
     back() {

@@ -459,7 +459,6 @@ export default {
           //此处可以获取音频源文件(res)，用于上传等操作
           this.audio = document.getElementById("audioVoice-box");
           this.recorder.play(this.audio);
-          // console.log("音频源文件", res);
           this.audioMessageData = res;
         },
         error: (e) => {
