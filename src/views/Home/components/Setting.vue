@@ -168,7 +168,6 @@ export default {
     }
   },
   methods: {
-
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
