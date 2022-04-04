@@ -158,7 +158,6 @@ export default {
           this.noData = true;
         } else if (res.data !== {}) {
           this.addUser = res.data;
-          console.log(this.addUser)
         }
       });
     },

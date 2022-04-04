@@ -567,7 +567,6 @@ export default {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
             if (this.device === "pc") {
-              console.log(123)
               this.setHichatNav({ type: "address", num: 1 });
               this.setChatUser({});
               this.getHiChatDataList();
@@ -906,7 +905,7 @@ export default {
         align-items: center;
         background-color: #fff;
         height: 3em;
-        width: 500px;
+        width: 70vw;
         margin: 0 auto;
         font-weight: 550;
         li {

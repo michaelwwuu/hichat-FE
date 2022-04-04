@@ -349,7 +349,6 @@ export default {
         zIndex: 3,
         minWidth: 230,
       });
-        console.log(event.clientX)
       return false;
     },
     downloadImages(data) {

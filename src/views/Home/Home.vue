@@ -554,6 +554,7 @@ export default {
     loginOut() {
       this.$router.push({ path: "/login" });
       localStorage.removeItem("token");
+      localStorage.removeItem("myUserList");
       window.location.reload();
     },
   },

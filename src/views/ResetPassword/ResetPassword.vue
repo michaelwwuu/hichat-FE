@@ -151,12 +151,12 @@ export default {
         email: localStorage.getItem("email"),
         authCode: "",
       },
-      device: "",
       count: 60,
       timer: false,
       disabled: true,
       dialogShow: false,
       disabledTime: false,
+      device: localStorage.getItem("device"),
     };
   },
   watch: {
@@ -170,21 +170,6 @@ export default {
       },
       deep: true,
     },
-  },
-  created() {
-    if (
-      navigator.userAgent.match(/Android/i) ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match(/iPad/i) ||
-      navigator.userAgent.match(/iPod/i) ||
-      navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i)
-    ) {
-      this.device = "moblie";
-    } else {
-      this.device = "pc";
-    }
   },
   methods: {
     getAuthCodeData(email, key) {

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import Push from 'push.js'
 export default {
   name: "App",
   created() {
@@ -22,9 +23,9 @@ export default {
       navigator.userAgent.match(/iPad/i) ||
       navigator.userAgent.match(/iPod/i) ||
       navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i)
+      navigator.userAgent.match(/Windows Phone/i) || 
+      navigator.userAgent.match(/Macintosh/i)
     ) {
-      console.log(navigator.userAgent)
       this.device = "moblie";
     } else {
       this.device = "pc";
@@ -38,10 +39,9 @@ export default {
       passive: false
     })
   },
-  watch:{
-  },
   mounted() {
     if(this.device === "moblie") this.safariHacks();
+    this.pushMessage()
   },
   methods: {
     safariHacks() {
@@ -51,6 +51,19 @@ export default {
           document.querySelector('.hichat-moblie').style.setProperty('--vh', windowsVH + 'px');
       });
     },
+    pushMessage(){
+      Push.Permission.request();
+      Push.create("Hello world!", {
+        body: "How's it hangin'?",
+        icon: '/icon.png',
+        timeout: 4000,
+        onClick: function (even) {
+          console.log(even)
+            window.focus();
+            this.close();
+        }
+      });
+    }
   },
 };
 </script>

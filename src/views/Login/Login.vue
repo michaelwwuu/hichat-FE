@@ -253,29 +253,14 @@ export default {
         email: "",
         password: "",
       },
-      device: "",
-      token: localStorage.getItem("token"),
       passwordType: "password",
       remember: true,
       disabled: true,
       readChecked: false,
       dialogShow: false,
+      token: localStorage.getItem("token"),
+      device: localStorage.getItem("device"),
     };
-  },
-  created() {
-    if (
-      navigator.userAgent.match(/Android/i) ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match(/iPad/i) ||
-      navigator.userAgent.match(/iPod/i) ||
-      navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i)
-    ) {
-      this.device = "moblie";
-    } else {
-      this.device = "pc";
-    }
   },
   watch: {
     loginForm: {

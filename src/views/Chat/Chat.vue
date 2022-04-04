@@ -285,8 +285,6 @@ export default {
             setTimeout(() => {          
               historyMsgList.forEach((el) => {
                 el.chat.newContent = el.chat.text.split(" ");
-                console.log(el.chat.newContent)
-                console.log(el.chat.text)
                 this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
                 this.groupListData.forEach(item => {
                   if(el.chat.fromChatId === 'u' + item.memberId ){
