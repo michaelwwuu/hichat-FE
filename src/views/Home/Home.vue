@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">  
+  <div class="home-wrapper">
     <el-container v-if="device === 'moblie'">
       <el-main>
         <el-header :style="num === 2 ? 'height:55px' : 'height:120px'">
@@ -149,7 +149,8 @@
           />
           <chat-contact
             v-else-if="
-              hichatNav.type === 'contact' && JSON.stringify(contactUser) !== '{}'
+              hichatNav.type === 'contact' &&
+              JSON.stringify(contactUser) !== '{}'
             "
           />
         </template>
@@ -165,7 +166,7 @@
     <el-dialog
       title="我的帐号"
       :visible.sync="centerDialogVisible"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       width="100%"
       center
     >
@@ -205,7 +206,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -229,7 +230,12 @@ import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { getGroupList, groupListMember,getUserInfo } from "@/api";
+import {
+  getGroupList,
+  groupListMember,
+  getUserInfo,
+  getContactList,
+} from "@/api";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
@@ -268,7 +274,9 @@ export default {
       },
       num: 0,
       searchKey: "",
+      searchData: [],
       chatDataList: [],
+      addressDataList: [],
       downloadFilename: "",
       logoutDialogShow: false,
       infoMsgAsideShow: false,
@@ -287,38 +295,63 @@ export default {
     };
   },
   created() {
-    this.num = this.$route.fullPath === "/Address" ? 0 : this.$route.fullPath === "/HiChat" ? 1 : 2;
+    this.num =
+      this.$route.fullPath === "/Address"
+        ? 0
+        : this.$route.fullPath === "/HiChat"
+        ? 1
+        : 2;
     Socket.$on("message", this.handleGetMessage);
+    this.getContactDataList();
     this.getGroupDataList();
-    this.getUserData()
+    this.getUserData();
   },
   watch: {
     hichatNav(val) {
       this.num = val.num;
     },
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase =
+          this.activeName === "address" ? this.addressDataList : this.groupList;
+        this.searchData = searchCase.filter((item) => {
+          if (this.activeName === "address") {
+            return item.name.indexOf(el.replace("@", "")) !== -1;
+          } else {
+            return item.groupName.indexOf(el.replace("@", "")) !== -1;
+          }
+        });
+      });
+      this.activeName === "address"
+        ? this.setMyContactDataList(this.searchData)
+        : this.setGroupList(this.searchData);
+    },
   },
   computed: {
     ...mapState({
-      hichatNav: (state) => state.ws.hichatNav,
       infoMsg: (state) => state.ws.infoMsg,
       chatUser: (state) => state.ws.chatUser,
-      groupUser: (state) => state.ws.groupUser,
-      contactUser: (state) => state.ws.contactUser,
       badgeNum: (state) => state.ws.badgeNum,
+      groupUser: (state) => state.ws.groupUser,
+      hichatNav: (state) => state.ws.hichatNav,
+      activeName: (state) => state.ws.activeName,
+      contactUser: (state) => state.ws.contactUser,
     }),
   },
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setBadgeNum:"ws/setBadgeNum",
+      setBadgeNum: "ws/setBadgeNum",
       setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
-      setContactUser:"ws/setContactUser",
+      setContactUser: "ws/setContactUser",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
-      setMyUserInfo:"ws/setMyUserInfo",
+      setMyUserInfo: "ws/setMyUserInfo",
       setContactListData: "ws/setContactListData",
+      setMyContactDataList: "ws/setMyContactDataList",
     }),
     getGroupDataList() {
       getGroupList().then((res) => {
@@ -326,12 +359,21 @@ export default {
         this.setGroupList(this.groupList);
       });
     },
+    getContactDataList() {
+      getContactList().then((res) => {
+        this.addressDataList = res.data.list;
+        this.addressDataList.forEach((el) => {
+          if (el.icon === undefined)
+            el.icon = require("./../../../static/images/image_user_defult.png");
+        });
+      });
+    },
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../static/images/image_user_defult.png");
         }
-        this.setMyUserInfo(res.data)
+        this.setMyUserInfo(res.data);
       });
     },
     getGroupListMember() {
@@ -339,7 +381,7 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
-          if (res.icon === undefined){
+          if (res.icon === undefined) {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
@@ -350,10 +392,10 @@ export default {
       this.num = index;
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
-      if(this.num === 1 ) this.getHistory(this.hichatNav.type);
-      if(this.device === "pc") this.getHistorySetTimeout()
+      if (this.num === 1) this.getHistory(this.hichatNav.type);
+      if (this.device === "pc") this.getHistorySetTimeout();
     },
-    getHistorySetTimeout(){
+    getHistorySetTimeout() {
       setTimeout(() => this.getHiChatDataList(), 2000);
     },
     copyUrl() {
@@ -370,18 +412,18 @@ export default {
     },
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
-      let numNumber = 0
+      let numNumber = 0;
       switch (msgInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
           this.chatDataList = msgInfo.recentChat;
           this.chatDataList.forEach((item) => {
             numNumber += item.unreadCount;
-            if(item.toChatId === this.chatUser.toChatId){
-              item.username = this.chatUser.username
-              this.setChatUser(item)
+            if (item.toChatId === this.chatUser.toChatId) {
+              item.username = this.chatUser.username;
+              this.setChatUser(item);
             }
-            this.setBadgeNum(numNumber)
+            this.setBadgeNum(numNumber);
           });
           break;
         case "SRV_USER_IMAGE":
@@ -409,7 +451,7 @@ export default {
           }
           break;
         case "SRV_CHAT_DEL":
-          if(this.device === "moblie") {
+          if (this.device === "moblie") {
             this.getHiChatDataList();
           }
       }
@@ -513,7 +555,7 @@ export default {
             });
             if (notify.type === "address") {
               this.setChatUser(this.notifyData[0]);
-            }else if(notify.type === "contact"){
+            } else if (notify.type === "contact") {
               this.setContactUser(this.notifyData[0]);
             } else if (notify.type === "group") {
               this.notifyData[0].icon = this.notifyData[0].icon;
@@ -534,7 +576,7 @@ export default {
               this.getGroupListMember();
             }
             this.getHistory(notify.type);
-            this.getHistorySetTimeout()
+            this.getHistorySetTimeout();
           },
         }
       );

@@ -8,6 +8,7 @@ export const state = {
   groupList:[],
   contactListData:[],
   myContactDataList:[],
+  activeName:"address",
   infoMsg:{
     infoMsgShow:false,
     infoMsgNav:"ContactPage",
@@ -37,6 +38,9 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setActiveName(state, payload) {
+    state.activeName = payload;
+  },
   setEditMsg(state, payload) {
     state.editMsg = payload;
   },

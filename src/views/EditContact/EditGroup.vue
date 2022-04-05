@@ -177,7 +177,6 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.groupData.icon = res.data;
-          // this.setChatGroup(this.groupData)
         }
       });
     },

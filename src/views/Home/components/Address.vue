@@ -41,9 +41,9 @@ export default {
   data() {
     return {
       searchKey: "",
+      activeName:"address",
       groupData: [],
       contactList: [],
-      activeName: "address",
       device: localStorage.getItem("device"),
     };
   },
@@ -66,10 +66,12 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setActiveName:"ws/setActiveName",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
     handleClick(){
       this.setInfoMsg({ infoMsgShow: false });
+      this.setActiveName(this.activeName)
     },
     getDataList() {
       getContactList().then((res) => {
