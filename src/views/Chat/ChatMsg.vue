@@ -125,6 +125,7 @@
         </div>
         <message-pabel
           v-loading="loading"
+          element-loading-text="资料加载中"          
           element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"

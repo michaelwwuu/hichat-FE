@@ -48,6 +48,7 @@
 
         <message-pabel
           v-loading="loading"
+          element-loading-text="资料加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -291,6 +292,9 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
+          let timeOut = historyMsgList.length * 30
+
+          console.log(timeOut)
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -324,7 +328,7 @@ export default {
               if (historyMsgList.length > 0)
                 this.readMsgShow(historyMsgList[0]);
               this.loading = false;
-            }, 700);
+            }, timeOut);
           });
           break;
         // 已讀
@@ -380,18 +384,18 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
-    getHistory() {
-      let getHistoryMessage = {
-        chatType: "CLI_GROUP_HISTORY_REQ",
-        toChatId: this.groupUser.toChatId,
-        id: Math.random(),
-        tokenType: 0,
-        pageSize: 1000,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-      };
-      Socket.send(getHistoryMessage);
-    },
+    // getHistory() {
+    //   let getHistoryMessage = {
+    //     chatType: "CLI_GROUP_HISTORY_REQ",
+    //     toChatId: this.groupUser.toChatId,
+    //     id: Math.random(),
+    //     tokenType: 0,
+    //     pageSize: 2000,
+    //     deviceId: localStorage.getItem("UUID"),
+    //     token: localStorage.getItem("token"),
+    //   };
+    //   Socket.send(getHistoryMessage);
+    // },
   },
   components: {
     MessagePabel,
