@@ -13,7 +13,7 @@ import { axios } from '../libs/axios/api.request'
 // 用户信息
 export const userinfo = (params) => {
   let postData = {
-    url: `/ct/userinfo/${params}`,
+    url: `/manycai/getUserInfo?id=${params}`,
     method: 'get',
   }
   return axios.request(postData)
