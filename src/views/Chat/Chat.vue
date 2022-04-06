@@ -63,7 +63,7 @@
           <img
             :src="noIconShow(replyMsg)"
             alt=""
-            style="height: 2.5em; border-radius: 5px"
+            style="height: 2.5em; width: 2.5em; border-radius: 5px"
           />
           <div class="reply-message-box">
             <span>{{ replyMsg.name }}</span>
@@ -277,6 +277,7 @@ export default {
                 userInfo.replyChat !== null &&
                 userInfo.replyChat.fromChatId === "u" + item.memberId
               ) {
+                userInfo.replyChat.icon = item.icon
                 userInfo.replyChat.nickName = item.name;
               }
             });
@@ -313,6 +314,7 @@ export default {
                     el.replyChat !== null &&
                     el.replyChat.fromChatId === "u" + item.memberId
                   ) {
+                    el.replyChat.icon = item.icon
                     el.replyChat.nickName = item.name;
                   }
                 });

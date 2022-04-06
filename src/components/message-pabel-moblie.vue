@@ -664,6 +664,7 @@ export default {
     max-width: 100% !important;
   }
 }
+
 .images-more-btn{
   width: 2em;
   height: 2em;
@@ -687,7 +688,9 @@ export default {
   .reply-img{
     margin-right: 5px;
     img{
+      width: 3em !important;
       height: 3em !important;
+      border-radius:10px;
     }
   }
   .goAnchor-box {

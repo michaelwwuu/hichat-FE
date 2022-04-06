@@ -356,6 +356,11 @@ export default {
     getGroupDataList() {
       getGroupList().then((res) => {
         this.groupList = res.data.list;
+        this.groupList.forEach((el) => {
+          if (el.icon === ""){
+            return el.icon = require("./../../../static/images/image_group_defult.png");
+          }
+        });
         this.setGroupList(this.groupList);
       });
     },
@@ -363,8 +368,9 @@ export default {
       getContactList().then((res) => {
         this.addressDataList = res.data.list;
         this.addressDataList.forEach((el) => {
-          if (el.icon === undefined)
-            el.icon = require("./../../../static/images/image_user_defult.png");
+          if (el.icon === undefined){
+            return el.icon = require("./../../../static/images/image_user_defult.png");
+          }
         });
       });
     },
@@ -382,7 +388,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
           if (res.icon === undefined) {
-            res.icon = require("./../../../static/images/image_user_defult.png");
+            return res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
         this.setContactListData(this.contactList);

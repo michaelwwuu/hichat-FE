@@ -137,7 +137,11 @@
             replyMsg.clickType === 'editMsg'
           "
         >
-          <img :src="noIconShow(replyMsg)" alt="" style="height:2.5em; border-radius: 5px;">
+          <img
+            :src="noIconShow(replyMsg)"
+            alt=""
+            style="height: 2.5em; width: 2.5em; border-radius: 5px"
+          />
           <div class="reply-message-box">
             <span>{{ replyMsg.name }}</span>
             <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
@@ -177,7 +181,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -210,7 +214,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -231,7 +235,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -241,9 +245,7 @@
         <span>刪除成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          class="background-orange"
-          @click="deleteRecent(chatUser)"
+        <el-button class="background-orange" @click="deleteRecent(chatUser)"
           >確認</el-button
         >
       </span>
@@ -254,7 +256,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -303,7 +305,7 @@ export default {
       userData: {},
       readMsgData: [],
       noIcon: require("./../../../static/images/image_user_defult.png"),
-      loading:false,
+      loading: false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
@@ -313,11 +315,10 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    if(this.userData !== null) {
+    if (this.userData !== null) {
       this.setChatUser(this.userData);
-      this.getUserId(this.userData)
+      this.getUserId(this.userData);
       this.getChatHistoryMessage();
-
     }
     Socket.$on("message", this.handleGetMessage);
   },
@@ -340,15 +341,15 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
-      setChatMsgData:"ws/setChatMsgData",
+      setChatMsgData: "ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
-    deleteMsgData(data){
-      this.messageData = this.messageData.filter((item)=>{
-        return item.historyId !== data.historyId
-      })
+    deleteMsgData(data) {
+      this.messageData = this.messageData.filter((item) => {
+        return item.historyId !== data.historyId;
+      });
       this.getHiChatDataList();
-    },      
+    },
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
@@ -369,14 +370,14 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        name:"",
-        icon:"",
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        name: "",
+        icon: "",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
-      this.setEditMsg({ innerText:""});
+      this.setEditMsg({ innerText: "" });
     },
     // 訊息統一格式
     messageList(data) {
@@ -391,7 +392,7 @@ export default {
         userChatId: data.chat.fromChatId,
         toChatId: data.toChatId,
         icon: data.chat.icon,
-        name: data.chat.name,        
+        name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
@@ -437,25 +438,41 @@ export default {
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
           if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
-            userInfo.chat.name = this.chatUser.name
-            userInfo.chat.icon = this.chatUser.icon
-            userInfo.chat.nickName = this.chatUser.name;  
-          }else if(userInfo.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-            userInfo.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
-            userInfo.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+            userInfo.chat.name = this.chatUser.name;
+            userInfo.chat.icon = this.chatUser.icon;
+            userInfo.chat.nickName = this.chatUser.name;
+          } else if (
+            userInfo.chat.fromChatId ===
+            "u" + JSON.parse(localStorage.getItem("id"))
+          ) {
+            userInfo.chat.name = JSON.parse(
+              localStorage.getItem("myUserInfo")
+            ).nickname;
+            userInfo.chat.icon = JSON.parse(
+              localStorage.getItem("myUserInfo")
+            ).icon;
           }
-          if(userInfo.replyChat !==null){
-            if(userInfo.replyChat.fromChatId === this.chatUser.toChatId){
-              userInfo.replyChat.name = this.chatUser.name
-              userInfo.replyChat.icon = this.chatUser.icon
+          if (userInfo.replyChat !== null) {
+            if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
+              userInfo.replyChat.name = this.chatUser.name;
+              userInfo.replyChat.icon = this.chatUser.icon;
               userInfo.replyChat.nickName = this.chatUser.name;
-            } else if(userInfo.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-              userInfo.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
-              userInfo.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
-              userInfo.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
+            } else if (
+              userInfo.replyChat.fromChatId ===
+              "u" + JSON.parse(localStorage.getItem("id"))
+            ) {
+              userInfo.replyChat.name = JSON.parse(
+                localStorage.getItem("myUserInfo")
+              ).nickname;
+              userInfo.replyChat.icon = JSON.parse(
+                localStorage.getItem("myUserInfo")
+              ).icon;
+              userInfo.replyChat.nickName = JSON.parse(
+                localStorage.getItem("myUserInfo")
+              ).nickname;
             }
           }
-          if(userInfo.toChatId === this.chatUser.toChatId){
+          if (userInfo.toChatId === this.chatUser.toChatId) {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
@@ -463,32 +480,48 @@ export default {
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
-          this.loading = true
+          this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(()=>{
+          this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 if (el.chat.fromChatId === this.chatUser.toChatId) {
-                  el.chat.name = this.chatUser.name
-                  el.chat.icon = this.chatUser.icon
+                  el.chat.name = this.chatUser.name;
+                  el.chat.icon = this.chatUser.icon;
                   el.chat.nickName = this.chatUser.name;
-                } else if(el.chat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-                  el.chat.name =JSON.parse(localStorage.getItem("myUserInfo")).nickname
-                  el.chat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
+                } else if (
+                  el.chat.fromChatId ===
+                  "u" + JSON.parse(localStorage.getItem("id"))
+                ) {
+                  el.chat.name = JSON.parse(
+                    localStorage.getItem("myUserInfo")
+                  ).nickname;
+                  el.chat.icon = JSON.parse(
+                    localStorage.getItem("myUserInfo")
+                  ).icon;
                 }
-                if(el.replyChat !==null){
-                  if(el.replyChat.fromChatId === this.chatUser.toChatId){
-                    el.replyChat.name = this.chatUser.name
-                    el.replyChat.icon = this.chatUser.icon
+                if (el.replyChat !== null) {
+                  if (el.replyChat.fromChatId === this.chatUser.toChatId) {
+                    el.replyChat.name = this.chatUser.name;
+                    el.replyChat.icon = this.chatUser.icon;
                     el.replyChat.nickName = this.chatUser.name;
-                  } else if(el.replyChat.fromChatId === "u" + JSON.parse(localStorage.getItem("id"))){
-                    el.replyChat.name = JSON.parse(localStorage.getItem("myUserInfo")).nickname
-                    el.replyChat.icon = JSON.parse(localStorage.getItem("myUserInfo")).icon
-                    el.replyChat.nickName = JSON.parse(localStorage.getItem("myUserInfo")).nickname;
+                  } else if (
+                    el.replyChat.fromChatId ===
+                    "u" + JSON.parse(localStorage.getItem("id"))
+                  ) {
+                    el.replyChat.name = JSON.parse(
+                      localStorage.getItem("myUserInfo")
+                    ).nickname;
+                    el.replyChat.icon = JSON.parse(
+                      localStorage.getItem("myUserInfo")
+                    ).icon;
+                    el.replyChat.nickName = JSON.parse(
+                      localStorage.getItem("myUserInfo")
+                    ).nickname;
                   }
                 }
-                if(el.toChatId === this.chatUser.toChatId){
+                if (el.toChatId === this.chatUser.toChatId) {
                   this.messageList(el);
                   this.messageData.unshift(this.chatRoomMsg);
                 }
@@ -496,35 +529,36 @@ export default {
               this.readMsg = historyMsgList.filter((el) => {
                 return el.chat.toChatId === "u" + localStorage.getItem("id");
               });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0 ) this.readMsgShow(this.readMsg[0]);
-              this.loading = false
+              if (historyMsgList.length > 0 && this.readMsg.length > 0)
+                this.readMsgShow(this.readMsg[0]);
+              this.loading = false;
             }, 500);
-          })
+          });
           break;
         // 已讀
         case "SRV_MSG_READ":
-          if(userInfo.toChatId === this.chatUser.toChatId){
+          if (userInfo.toChatId === this.chatUser.toChatId) {
             this.messageData.forEach((res) => (res.isRead = true));
           }
           break;
         // 編輯訊息
         case "SRV_CHAT_EDIT":
-          this.messageData.forEach((res) =>{
-            if(res.historyId === userInfo.historyId){
-              return res.message.content = userInfo.chat.text
+          this.messageData.forEach((res) => {
+            if (res.historyId === userInfo.historyId) {
+              return (res.message.content = userInfo.chat.text);
             }
-          })
-          this.getHiChatDataList()
+          });
+          this.getHiChatDataList();
           break;
         // 刪除訊息
         case "SRV_CHAT_DEL":
-          this.messageData.forEach((res,index) =>{
-            if(res.historyId === userInfo.targetId){
-              this.messageData.splice(index,1)
+          this.messageData.forEach((res, index) => {
+            if (res.historyId === userInfo.targetId) {
+              this.messageData.splice(index, 1);
             }
-          })
-          this.getHiChatDataList()
-          break;   
+          });
+          this.getHiChatDataList();
+          break;
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
           if (this.device === "moblie") this.getChatHistoryMessage();
@@ -570,7 +604,7 @@ export default {
               this.setHichatNav({ type: "address", num: 1 });
               this.setChatUser({});
               this.getHiChatDataList();
-            }else if(this.device === "moblie"){
+            } else if (this.device === "moblie") {
               this.$router.push({ path: "/Address" });
             }
           }

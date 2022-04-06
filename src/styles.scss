@@ -105,7 +105,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         }
       }
     }
-
     .home-footer-btn {
       margin: 1em 0;
       display: flex;
@@ -431,6 +430,13 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     }
   }
 }
+.hichat-moblie{
+  .home-wrapper{
+    .home-footer-nav{
+      height: 70px !important;
+    }
+  }
+}
 .hichat-pc{
   overflow: auto !important;
   .home-wrapper{
@@ -643,6 +649,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
   }
+
   //彈出視窗樣式
   .el-dialog__wrapper {
     overflow: hidden;

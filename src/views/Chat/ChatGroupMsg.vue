@@ -53,7 +53,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
-          @deleteMsgHistoryData="deleteMsgData"          
+          @deleteMsgHistoryData="deleteMsgData"
         />
         <div
           class="reply-message"
@@ -62,7 +62,11 @@
             replyMsg.clickType === 'editMsg'
           "
         >
-          <img :src="noIconShow(replyMsg)" alt="" style="height:2.5em; border-radius: 5px;">
+          <img
+            :src="noIconShow(replyMsg)"
+            alt=""
+            style="height: 2.5em; width: 2.5em; border-radius: 5px"
+          />
           <div class="reply-message-box">
             <span>{{ replyMsg.name }}</span>
             <span v-if="replyMsg.chatType === 'SRV_GROUP_SEND'">{{
@@ -83,7 +87,7 @@
           <div class="reply-close-btn" @click="closeReplyMessage">
             <i class="el-icon-close"></i>
           </div>
-        </div>        
+        </div>
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
@@ -120,7 +124,7 @@ export default {
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
-    Socket.$on("message", this.handleGetMessage);   
+    Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
     this.getChatHistoryMessage();
@@ -145,12 +149,12 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setContactListData: "ws/setContactListData",
     }),
-    deleteMsgData(data){
-      this.messageData = this.messageData.filter((item)=>{
-        return item.historyId !== data.historyId
-      })
+    deleteMsgData(data) {
+      this.messageData = this.messageData.filter((item) => {
+        return item.historyId !== data.historyId;
+      });
       this.getHiChatDataList();
-    },        
+    },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -164,22 +168,22 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        name:"",
-        icon:"",
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        name: "",
+        icon: "",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
-      this.setEditMsg({ innerText:""});
+      this.setEditMsg({ innerText: "" });
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          if(item.icon === undefined) {
-            return item.icon = require("./../../../static/images/image_user_defult.png")
+          if (item.icon === undefined) {
+            return (item.icon = require("./../../../static/images/image_user_defult.png"));
           }
         });
         this.setContactListData(this.contactList);
@@ -200,7 +204,7 @@ export default {
         icon: data.chat.icon,
         name: data.chat.name,
         username: data.chat.username,
-        newContent:data.chat.newContent,
+        newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },
@@ -227,7 +231,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-      this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
+      this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         case "SRV_GROUP_IMAGE":
@@ -235,16 +239,23 @@ export default {
         case "SRV_GROUP_SEND":
           if (this.groupUser.toChatId === userInfo.toChatId) {
             userInfo.chat.newContent = userInfo.chat.text.split(" ");
-            this.groupListData.forEach(item => {
-            if(userInfo.chat.fromChatId === 'u' + item.memberId ){
-                userInfo.chat.icon = item.icon
-                userInfo.chat.name = item.name
-                userInfo.chat.username = item.username
-              } else if(userInfo.chat.icon === undefined && userInfo.chat.name === undefined){
+            this.groupListData.forEach((item) => {
+              if (userInfo.chat.fromChatId === "u" + item.memberId) {
+                userInfo.chat.icon = item.icon;
+                userInfo.chat.name = item.name;
+                userInfo.chat.username = item.username;
+              } else if (
+                userInfo.chat.icon === undefined &&
+                userInfo.chat.name === undefined
+              ) {
                 userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
                 userInfo.chat.name = "无此成员";
-              } 
-              if(userInfo.replyChat !== null && (userInfo.replyChat.fromChatId === "u" + item.memberId)){
+              }
+              if (
+                userInfo.replyChat !== null &&
+                userInfo.replyChat.fromChatId === "u" + item.memberId
+              ) {
+                userInfo.replyChat.icon = item.icon
                 userInfo.replyChat.nickName = item.name;
               }
             });
@@ -258,31 +269,41 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
-          this.$nextTick(()=>{
+          this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 el.chat.newContent = el.chat.text.split(" ");
-                this.groupListData = JSON.parse(localStorage.getItem('groupListMember'))
-                this.groupListData.forEach(item => {
-                  if(el.chat.fromChatId === 'u' + item.memberId ){
-                    el.chat.icon = item.icon
-                    el.chat.name = item.name
-                    el.chat.username = item.username
-                  } else if(el.chat.icon === undefined && el.chat.name === undefined){
+                this.groupListData = JSON.parse(
+                  localStorage.getItem("groupListMember")
+                );
+                this.groupListData.forEach((item) => {
+                  if (el.chat.fromChatId === "u" + item.memberId) {
+                    el.chat.icon = item.icon;
+                    el.chat.name = item.name;
+                    el.chat.username = item.username;
+                  } else if (
+                    el.chat.icon === undefined &&
+                    el.chat.name === undefined
+                  ) {
                     el.chat.icon = require("./../../../static/images/image_user_defult.png");
                     el.chat.name = "无此成员";
-                  } 
-                  if(el.replyChat !== null && (el.replyChat.fromChatId === "u" + item.memberId)){
+                  }
+                  if (
+                    el.replyChat !== null &&
+                    el.replyChat.fromChatId === "u" + item.memberId
+                  ) {
+                    el.replyChat.icon = item.icon
                     el.replyChat.nickName = item.name;
                   }
                 });
                 this.messageList(el);
                 this.messageData.unshift(this.chatRoomMsg);
               });
-              if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+              if (historyMsgList.length > 0)
+                this.readMsgShow(historyMsgList[0]);
               this.loading = false;
             }, 700);
-          })
+          });
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -292,23 +313,23 @@ export default {
           break;
         // 編輯訊息
         case "SRV_CHAT_EDIT":
-          this.messageData = this.messageData.forEach((res) =>{
-            if(res.historyId === userInfo.historyId){
-              res.message.content = userInfo.chat.text
+          this.messageData = this.messageData.forEach((res) => {
+            if (res.historyId === userInfo.historyId) {
+              res.message.content = userInfo.chat.text;
               res.newContent = userInfo.chat.text.split(" ");
             }
-          })
-          this.getHiChatDataList()
+          });
+          this.getHiChatDataList();
           break;
         // 刪除訊息
         case "SRV_CHAT_DEL":
-          this.messageData.forEach((res,index) =>{
-            if(res.historyId === userInfo.targetId){
-              this.messageData.splice(index,1)
+          this.messageData.forEach((res, index) => {
+            if (res.historyId === userInfo.targetId) {
+              this.messageData.splice(index, 1);
             }
-          })
-          this.getHiChatDataList()
-          break;         
+          });
+          this.getHiChatDataList();
+          break;
         // 撈取歷史訊息
         case "SRV_RECENT_CHAT":
           this.getChatHistoryMessage();

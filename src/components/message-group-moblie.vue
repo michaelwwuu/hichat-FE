@@ -137,7 +137,7 @@
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name }}</span>
+                <div class="message-name">{{ el.name }}</div>
                 <div
                   v-if="device === 'moblie'"
                   class="images-more-btn"
@@ -552,6 +552,9 @@ export default {
             }
           }
         }
+        .images-more-btn{
+          top: 30px;
+        }
       }
       .message-avatar {
         float: left;
@@ -663,7 +666,7 @@ export default {
           width: auto !important;
           height: 10em !important;
           /deep/.el-image__inner {
-            height: 15em;
+            height: 100%;
           }
         }
       }
@@ -679,7 +682,7 @@ export default {
     .message-classic,
     .message-disabled {
       position: relative;
-      max-width: 45%;
+      max-width: 100%;
       margin-top: 5px;
       display: inline-block;
       padding: 9px 12px;
@@ -710,7 +713,7 @@ export default {
         p {
           .el-image {
             width: auto !important;
-            height: 20em !important;
+            height: 10em !important;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -721,7 +724,7 @@ export default {
         p {
           .el-image {
             width: auto !important;
-            height: 20em !important;
+            height: 10em !important;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -776,7 +779,9 @@ export default {
   .reply-img{
     margin-right: 5px;
     img{
+      width: 3em !important;
       height: 3em !important;
+      border-radius:10px;
     }
   }
   .goAnchor-box {
