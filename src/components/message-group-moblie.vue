@@ -598,7 +598,7 @@ export default {
       }
       .message-image {
         position: relative;
-        margin-top: 1em;
+        // margin-top: 1em;
         display: inline-block;
         padding: 5px 6px 2px 6px;
         background-color: #f3f9ff;
@@ -667,7 +667,7 @@ export default {
       }
       .message-image {
         position: relative;
-        margin-top: 1em;
+        // margin-top: 1em;
         display: inline-block;
         padding: 5px 6px 2px 6px;
         color: #333333;

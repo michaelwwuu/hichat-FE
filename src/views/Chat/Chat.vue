@@ -298,7 +298,7 @@ export default {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            this.getHiChatDataList()
+            if (this.device ==="pc") this.getHiChatDataList()
           }
           break;
         // 历史讯息
@@ -307,7 +307,6 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           let timeOut = historyMsgList.length * 30
-
           console.log(timeOut)
           this.$nextTick(() => {
             setTimeout(() => {

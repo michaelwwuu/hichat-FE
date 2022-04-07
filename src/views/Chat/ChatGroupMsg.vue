@@ -276,7 +276,7 @@ export default {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             this.readMsgShow(userInfo);
-            this.getHiChatDataList()
+            if (this.device ==="pc") this.getHiChatDataList()
           }
           break;
         // 历史讯息
