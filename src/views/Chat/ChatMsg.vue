@@ -490,6 +490,7 @@ export default {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            this.getHiChatDataList()
           }
           break;
         // 历史讯息

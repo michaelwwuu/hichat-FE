@@ -298,6 +298,7 @@ export default {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            this.getHiChatDataList()
           }
           break;
         // 历史讯息
@@ -397,18 +398,6 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
-    // getHistory() {
-    //   let getHistoryMessage = {
-    //     chatType: "CLI_GROUP_HISTORY_REQ",
-    //     toChatId: this.groupUser.toChatId,
-    //     id: Math.random(),
-    //     tokenType: 0,
-    //     pageSize: 2000,
-    //     deviceId: localStorage.getItem("UUID"),
-    //     token: localStorage.getItem("token"),
-    //   };
-    //   Socket.send(getHistoryMessage);
-    // },
   },
   components: {
     MessagePabel,

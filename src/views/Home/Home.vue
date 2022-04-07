@@ -236,6 +236,7 @@ import {
   getUserInfo,
   getContactList,
 } from "@/api";
+import { Decrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
@@ -292,6 +293,10 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       },
+
+      //加解密 key iv
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   created() {
@@ -353,6 +358,14 @@ export default {
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
+    //判斷是否base64
+    isBase64(data) {
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
+    },
     getGroupDataList() {
       getGroupList().then((res) => {
         this.groupList = res.data.list;
@@ -399,7 +412,7 @@ export default {
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
       if (this.num === 1) this.getHistory(this.hichatNav.type);
-      if (this.device === "pc") this.getHistorySetTimeout();
+      this.getHistorySetTimeout();
     },
     getHistorySetTimeout() {
       setTimeout(() => this.getHiChatDataList(), 2000);
@@ -548,7 +561,7 @@ export default {
           lang: "zh", //指定通知中所使用的语言。这个字符串必须在 BCP 47 language tag 文档中是有效的。
           tag: msgInfo.toChatId, //赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
           icon: notify.icon, //提示时候的图标
-          body: this.bodyMsg, // 一个图片的URL，将被用于显示通知的图标。
+          body: this.isBase64(this.bodyMsg), // 一个图片的URL，将被用于显示通知的图标。
           data: msgInfo,
           renotify: true,
         },

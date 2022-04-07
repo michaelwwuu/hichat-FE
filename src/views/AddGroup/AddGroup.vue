@@ -303,6 +303,7 @@ export default {
             groupName: res.data.groupName,
             icon: this.groupIcon,
             isAdmin: true,
+            toChatId:"g" + res.data.id,
             memberId: JSON.parse(localStorage.getItem("id")),
           }
           this.setChatGroup(groupData)

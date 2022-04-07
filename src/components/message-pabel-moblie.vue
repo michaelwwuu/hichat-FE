@@ -34,11 +34,11 @@
                         <span
                           v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
                           class="goAnchor"
-                          >{{ el.isRplay.text }}</span
+                          >{{ isBase64(el.isRplay.text) }}</span
                         >
                         <img
                           v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
-                          :src="el.isRplay.text"
+                          :src="isBase64(el.isRplay.text)"
                           style="border-radius: 5px"
                         />
                         <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
@@ -46,7 +46,7 @@
                           <audio
                             class="message-audio"
                             controls
-                            :src="el.isRplay.text"
+                            :src="isBase64(el.isRplay.text)"
                             type="mp3"
                           ></audio>
                         </span>
@@ -123,6 +123,8 @@
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
+import { Decrypt } from "@/utils/AESUtils.js";
+
 export default {
   name: "MessagePabel",
   props: {
@@ -139,6 +141,10 @@ export default {
       message: [],
       newMessageData: {},
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey:"hichatisachatapp",
+      aesIv:"hichatisachatapp",     
     };
   },
   watch: {
@@ -180,6 +186,13 @@ export default {
         document.getElementById(data).classList.remove("blink");
       }, 3000);
     },
+    isBase64(data) {
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
+    },    
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -639,13 +652,13 @@ export default {
     .message-audio {
       width: 190px;
       height: 2.5em;
-      margin-top: 1em;
+      // margin-top: 1em;
       display: inline-block;
       border: 1px solid #eeeeee;
     }
     .message-image {
       position: relative;
-      margin-top: 1em;
+      // margin-top: 1em;
       display: inline-block;
       padding: 5px 6px 2px 6px;
       color: #333333;

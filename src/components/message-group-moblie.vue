@@ -1,6 +1,7 @@
 <template>
   <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
+
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
@@ -39,18 +40,18 @@
                           <span
                             v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
                             class="goAnchor"
-                            >{{ el.isRplay.text }}</span
+                            >{{ isBase64(el.isRplay.text) }}</span
                           >
                           <img
                             v-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'"
-                            :src="el.isRplay.text"
+                            :src="isBase64(el.isRplay.text)"
                             style="border-radius: 5px"
                           />
                           <audio
                             v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
                             class="message-audio"
                             controls
-                            :src="el.isRplay.text"
+                            :src="isBase64(el.isRplay.text)"
                             type="mp3"
                           ></audio>
                         </div>
@@ -69,7 +70,7 @@
                       }"
                     >
                       <span
-                        v-html="item"
+                        v-html="isBase64(item)"
                         v-linkified
                         @click="
                           item.startsWith('@')
@@ -95,7 +96,7 @@
                         "
                       >
                         <span
-                          v-html="item"
+                          v-html="isBase64(item)"
                           v-linkified
                           @click="
                             item.startsWith('@')
@@ -106,7 +107,7 @@
                       </div>
                       <span
                         v-else
-                        v-html="item"
+                        v-html="isBase64(item)"
                         v-linkified
                       ></span>
                     </div>
@@ -190,6 +191,10 @@ export default {
       newMessageData: {},
       noIcon: require("./../../static/images/image_user_defult.png"),
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey:"hichatisachatapp",
+      aesIv:"hichatisachatapp",   
     };
   },
   created() {
@@ -689,7 +694,7 @@ export default {
     .message-disabled {
       position: relative;
       max-width: 100%;
-      margin-top: 5px;
+      // margin-top: 5px;
       display: inline-block;
       padding: 9px 12px;
       font-size: 14px;
@@ -706,7 +711,7 @@ export default {
     .message-audio {
       width: 190px;
       height: 2.5em;
-      margin-top: 1em;
+      // margin-top: 1em;
       display: inline-block;
       border: 1px solid #eeeeee;
     }
