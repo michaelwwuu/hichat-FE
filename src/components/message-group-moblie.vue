@@ -18,6 +18,7 @@
                 el.isRplay !== null &&
                 el.isRplay.chatType === 'SRV_GROUP_AUDIO',
             }"
+            :id="el.historyId"
           >
             <span
               class="message-classic"
@@ -114,7 +115,6 @@
               </div>
             </span>
             <span
-              :id="el.historyId"
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
@@ -128,9 +128,7 @@
                 <audio controls :src="el.message.content" type="mp3"></audio>
               </div>
             </span>
-
             <span
-              :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
@@ -173,6 +171,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
+import { Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessagePabel",
@@ -238,6 +237,13 @@ export default {
         document.getElementById(data).classList.remove("blink");
       }, 3000);
     },
+   isBase64(data) {
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
+    },    
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -509,7 +515,7 @@ export default {
 
 <style lang="scss" scoped>
 .message-pabel-box {
-  padding: 0 15px 0 20px;
+  padding: 0 10px 0 20px;
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -827,11 +833,12 @@ export default {
 }
 .blink{
     color: red;
-    animation: blink 1s linear infinite;  
+    background:#0000000d;
+    animation: blink 2s linear 1;  
     /* 其它浏览器兼容性前缀 */
-    -webkit-animation: blink 1s linear infinite;
-    -moz-animation: blink 1s linear infinite;
-    -ms-animation: blink 1s linear infinite;
-    -o-animation: blink 1s linear infinite;
+    -webkit-animation: blink 2s linear 1;
+    -moz-animation: blink 2s linear 1;
+    -ms-animation: blink 2s linear 1;
+    -o-animation: blink 2s linear 1;
 }
 </style>

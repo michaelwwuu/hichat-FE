@@ -175,9 +175,7 @@
         :file-list="fileList"
         list-type="picture"
       >
-        <el-button type="primary"
-          >点击上传</el-button
-        >
+        <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
           只能上传 jpg / png 图片，且不超过500kb
         </div>
@@ -252,6 +250,7 @@ import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
+import { Encrypt} from '@/utils/AESUtils.js'
 
 export default {
   name: "MessageInput",
@@ -287,6 +286,10 @@ export default {
       abc: 0, // 秒的計數
       cde: 0, // 分的計數
       efg: 0, // 時的計數
+
+      //加解密 key iv
+      aesKey:"hichatisachatapp",
+      aesIv:"hichatisachatapp",      
     };
   },
   props: {
@@ -347,7 +350,7 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = "g" + this.groupData.groupId;
-          message.text = res.data;
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -491,7 +494,7 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = "g" + this.groupData.groupId,
-          message.text = res.data;
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
           Socket.send(message);
           this.sendAduioShow = false;
           this.fullscreenLoading = false;          
@@ -594,7 +597,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: this.targetArray,
-        text: this.textArea.replace(/(\s*$)/g, ""),
+        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
         tokenType: 0,
@@ -616,7 +619,7 @@ export default {
         tokenType: 0,
         fromChatId: this.groupData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.textArea.replace(/(\s*$)/g, ""),
+        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
         toChatId: this.groupData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),

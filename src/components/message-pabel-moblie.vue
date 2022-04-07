@@ -15,13 +15,14 @@
               'reply-aduio': device ==='moblie' &&
                 el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO' ,
             }"
+            :id="el.historyId"
           >
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
-              :id="el.historyId"
+              
             >
               <template v-if="el.isRplay !== null">
                 <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">  
@@ -69,7 +70,6 @@
               ></span>
             </span>
             <span
-              :id="el.historyId"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @click.prevent.stop="
@@ -84,7 +84,6 @@
               ></audio>
             </span>
             <span
-              :id="el.historyId"
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
@@ -469,7 +468,7 @@ export default {
   }
 }
 .message-pabel-box {
-  padding: 0 15px 0 20px;
+  padding: 0 10px 0 20px;
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -623,7 +622,7 @@ export default {
     .message-disabled {
       position: relative;
       max-width: 45%;
-      margin-top: 5px;
+      // margin-top: 5px;
       display: inline-block;
       padding: 9px 12px;
       font-size: 14px;
@@ -744,11 +743,12 @@ export default {
 }
 .blink{
     color: red;
-    animation: blink 1s linear 3;  
+    background:#0000000d;
+    animation: blink 2s linear 1;  
     /* 其它浏览器兼容性前缀 */
-    -webkit-animation: blink 1s linear 3;
-    -moz-animation: blink 1s linear 3;
-    -ms-animation: blink 1s linear 3;
-    -o-animation: blink 1s linear 3;
+    -webkit-animation: blink 2s linear 1;
+    -moz-animation: blink 2s linear 1;
+    -ms-animation: blink 2s linear 1;
+    -o-animation: blink 2s linear 1;
 }
 </style>

@@ -125,7 +125,7 @@
         </div>
         <message-pabel
           v-loading="loading"
-          element-loading-text="资料加载中"          
+          element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -287,6 +287,7 @@ import {
   deleteContactUser,
   getSearchById,
 } from "@/api";
+import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -312,6 +313,10 @@ export default {
       isBlockDialogShow: false,
       isDeleteContactDialogShow: false,
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   created() {
@@ -387,7 +392,7 @@ export default {
         historyId: data.chat.historyId,
         message: {
           time: data.chat.sendTime,
-          content: data.chat.text,
+          content: this.isBase64(data.chat.text),
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
@@ -397,6 +402,14 @@ export default {
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
+    },
+    //判斷是否base64
+    isBase64(data) {
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {

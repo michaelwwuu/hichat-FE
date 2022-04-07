@@ -199,6 +199,8 @@ import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
+import { Encrypt} from '@/utils/AESUtils.js'
+
 
 export default {
   name: "MessageInput",
@@ -233,6 +235,10 @@ export default {
       efg: 0, // 時的計數
       scrollTop: 0,
       
+      //加解密 key iv
+      aesKey:"hichatisachatapp",
+      aesIv:"hichatisachatapp",
+    
     };
   },
   props: {
@@ -280,7 +286,7 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
-          message.text = res.data;
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -426,7 +432,7 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
-          message.text = res.data;
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
           Socket.send(message);
           this.sendAduioShow = false;
           this.fullscreenLoading = false;
@@ -508,7 +514,7 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        text: this.textArea.replace(/(\s*$)/g, ""),
+        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
@@ -528,7 +534,7 @@ export default {
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: this.textArea.replace(/(\s*$)/g, ""),
+        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),

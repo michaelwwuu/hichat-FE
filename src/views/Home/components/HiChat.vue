@@ -18,7 +18,7 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ item.lastChat.text }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ isBase64(item.lastChat.text) }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
                 </span>
@@ -55,7 +55,7 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{ item.lastChat.text }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{ isBase64(item.lastChat.text) }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'">传送了语音</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'">传送了图片</span>
                 </span>
@@ -100,7 +100,7 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ item.lastChat.text }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ isBase64(item.lastChat.text) }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
                 </span>
@@ -126,6 +126,7 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getGroupList, groupListMember } from "@/api";
 
@@ -153,6 +154,10 @@ export default {
         token: localStorage.getItem("token"),
       },
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   created() {
@@ -218,6 +223,14 @@ export default {
       Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
       this.closeReplyMessage();
+    },
+    //判斷是否base64
+    isBase64(data) {
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
     },
     getHiChatDataList() {
       let chatMsgKey = {

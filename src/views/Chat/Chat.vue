@@ -48,7 +48,7 @@
 
         <message-pabel
           v-loading="loading"
-          element-loading-text="资料加载中"
+          element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
           :messageData="messageData"
           :userInfoData="userInfoData"
@@ -118,6 +118,7 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { Decrypt } from "@/utils/AESUtils.js";
 import { groupListMember, leaveGroup } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
@@ -142,6 +143,10 @@ export default {
       contactList: [],
       leaveGroupDialogShow: false,
       loading: false,
+
+      //加解密 key iv
+      aesKey:"hichatisachatapp",
+      aesIv:"hichatisachatapp",           
     };
   },
   created() {
@@ -229,7 +234,7 @@ export default {
         historyId: data.chat.historyId,
         message: {
           time: data.chat.sendTime,
-          content: data.chat.text,
+          content: this.isBase64(data.chat.text),
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
@@ -240,6 +245,14 @@ export default {
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
+    },
+    //判斷是否base64
+    isBase64(data) {
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
     },
     // 已讀
     readMsgShow(data) {
