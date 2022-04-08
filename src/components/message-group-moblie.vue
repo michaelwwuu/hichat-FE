@@ -96,7 +96,6 @@
                       >
                         <span
                           v-html="isBase64(item)"
-                          v-linkified
                           @click="
                             item.startsWith('@')
                               ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
@@ -104,10 +103,25 @@
                           "
                         ></span>
                       </div>
+                      <div
+                        v-if="item.match(/(http|https):\/\/([\w.]+\/?)\S*/ig)"
+                      >
+                        <div
+                          v-if="device === 'moblie'"
+                          class="images-more-btn"
+                          @click.prevent.stop="
+                            device === 'moblie' ? onContextmenu(el) : false
+                          "
+                        ></div>
+                        <div
+                          v-html="isBase64(item)"
+                          v-linkified
+                          class="link-style"
+                        ></div>
+                      </div>
                       <span
                         v-else
                         v-html="isBase64(item)"
-                        v-linkified
                       ></span>
                     </div>
                   </div>
@@ -573,9 +587,6 @@ export default {
         border-radius: 10px;
       }
       .message-box {
-        // span {
-        //   display: block;
-        // }
         .message-name {
           font-size: 13px;
           color: #919191;
@@ -781,6 +792,7 @@ export default {
   top: 10px;
   right: 10px;
   z-index: 9;
+  border: 1px solid #e9e9e9;
 }
 .reply-box{
   display: flex;
@@ -800,12 +812,6 @@ export default {
       color: #ababab;
       text-decoration: none;
     }
-    // &:hover {
-    //   .goAnchor {
-    //     color: #5f5f5f;
-    //   }
-    //   border-radius: 8px;
-    // }
     .message-audio {
       height: 2.5em !important;
       padding: 0 !important;
@@ -852,5 +858,8 @@ export default {
   bottom: 80px;
   border-radius: 50px;
   border:0;
+}
+.link-style {
+  padding: 20px 0 10px 0;
 }
 </style>

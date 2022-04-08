@@ -69,9 +69,26 @@
                   device === 'moblie' ? onContextmenu(el) : false
                 "
                 v-html="el.message.content"
-                v-linkified
               ></span>
-              <span v-else v-html="el.message.content" v-linkified></span>
+              <div
+                v-else-if="
+                  el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
+                "
+              >
+                <div
+                  v-if="device === 'moblie'"
+                  class="images-more-btn"
+                  @click.prevent.stop="
+                    device === 'moblie' ? onContextmenu(el) : false
+                  "
+                ></div>
+                <div
+                  v-html="el.message.content"
+                  v-linkified
+                  class="link-style"
+                ></div>
+              </div>
+              <span v-else v-html="el.message.content"></span>
             </span>
             <span
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
@@ -192,12 +209,15 @@ export default {
     window.addEventListener(
       "scroll",
       () => {
-        let scrollTopBox = document.getElementsByClassName('message-pabel-box')[0]
+        let scrollTopBox =
+          document.getElementsByClassName("message-pabel-box")[0];
         let scrollTop =
           document.documentElement.scrollTop ||
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
-          this.showScrollBar = (scrollTopBox.scrollHeight - scrollTop)/4 > 400 || (scrollTopBox.scrollHeight - scrollTop)/3 >300;
+        this.showScrollBar =
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
     );
@@ -452,28 +472,6 @@ export default {
         .catch((err) => {
           this.$message({ message: err, type: "error" });
         });
-    },
-    // getHiChatDataList() {
-    //   let chatMsgKey = {
-    //     chatType: "CLI_RECENT_CHAT",
-    //     id: Math.random(),
-    //     tokenType: 0,
-    //     deviceId: localStorage.getItem("UUID"),
-    //     token: localStorage.getItem("token"),
-    //   };
-    //   Socket.send(chatMsgKey);
-    // },
-    getHistory() {
-      let getHistoryMessage = {
-        chatType: "CLI_HISTORY_REQ",
-        toChatId: this.chatUser.toChatId,
-        id: Math.random(),
-        tokenType: 0,
-        pageSize: 1000,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-      };
-      Socket.send(getHistoryMessage);
     },
   },
 };
@@ -751,12 +749,6 @@ export default {
       width: 190px !important;
       border: 0 !important;
     }
-    // &:hover {
-    //   .goAnchor {
-    //     color: #5f5f5f;
-    //   }
-    //   border-radius: 8px;
-    // }
   }
 }
 /* 定义keyframe动画，命名为blink */
@@ -817,6 +809,9 @@ export default {
   right: 30px;
   bottom: 80px;
   border-radius: 50px;
-  border:0;
+  border: 0;
+}
+.link-style {
+  padding: 15px 0 10px 0;
 }
 </style>
