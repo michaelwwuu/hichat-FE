@@ -498,6 +498,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
+          let timeOut = historyMsgList.length * 40                    
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -547,7 +548,7 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)
                 this.readMsgShow(this.readMsg[0]);
               this.loading = false;
-            }, 500);
+            }, timeOut);
           });
           break;
         // 已讀

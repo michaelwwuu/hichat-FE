@@ -1,7 +1,6 @@
 <template>
   <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
-
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
@@ -166,6 +165,14 @@
         </li>
       </div>
     </ul>
+    <el-button
+      v-show="showScrollBar"
+      class="scroll-bottom-btn"
+      size="medium"
+      icon="el-icon-arrow-down"
+      circle
+      @click="$root.gotoBottom()"
+    ></el-button>
   </div>
 </template>
 
@@ -191,6 +198,7 @@ export default {
       newMessageData: {},
       noIcon: require("./../../static/images/image_user_defult.png"),
       device: localStorage.getItem("device"),
+      showScrollBar: false,
 
       //加解密 key iv
       aesKey:"hichatisachatapp",
@@ -227,6 +235,20 @@ export default {
       });
       this.$root.gotoBottom();
     },
+  },
+  mounted() {
+    window.addEventListener(
+      "scroll",
+      () => {
+        let scrollTopBox = document.getElementsByClassName('message-pabel-box')[0]
+        let scrollTop =
+          document.documentElement.scrollTop ||
+          document.body.scrollTop ||
+          document.querySelector(".message-pabel-box").scrollTop;
+          this.showScrollBar = (scrollTopBox.scrollHeight - scrollTop)/4 > 400 || (scrollTopBox.scrollHeight - scrollTop)/3 >300;
+      },
+      true
+    );
   },
   methods: {
     ...mapMutations({
@@ -492,28 +514,6 @@ export default {
           this.$message({ message: err, type: "error" });
         });
     },
-    // getHiChatDataList() {
-    //   let chatMsgKey = {
-    //     chatType: "CLI_RECENT_CHAT",
-    //     id: Math.random(),
-    //     tokenType: 0,
-    //     deviceId: localStorage.getItem("UUID"),
-    //     token: localStorage.getItem("token"),
-    //   };
-    //   Socket.send(chatMsgKey);
-    // },
-    // getHistory() {
-    //   let getHistoryMessage = {
-    //     chatType: "CLI_GROUP_HISTORY_REQ",
-    //     toChatId: this.groupUser.toChatId,
-    //     id: Math.random(),
-    //     tokenType: 0,
-    //     pageSize: 1000,
-    //     deviceId: localStorage.getItem("UUID"),
-    //     token: localStorage.getItem("token"),
-    //   };
-    //   Socket.send(getHistoryMessage);
-    // },
   },
 };
 </script>
@@ -845,5 +845,12 @@ export default {
     -moz-animation: blink 2s linear 1;
     -ms-animation: blink 2s linear 1;
     -o-animation: blink 2s linear 1;
+}
+.scroll-bottom-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 80px;
+  border-radius: 50px;
+  border:0;
 }
 </style>

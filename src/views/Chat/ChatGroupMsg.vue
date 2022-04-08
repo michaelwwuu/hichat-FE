@@ -245,7 +245,6 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-      this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         case "SRV_GROUP_IMAGE":
@@ -253,6 +252,8 @@ export default {
         case "SRV_GROUP_SEND":
           if (this.groupUser.toChatId === userInfo.toChatId) {
             userInfo.chat.newContent = userInfo.chat.text.split(" ");
+            this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
+
             this.groupListData.forEach((item) => {
               if (userInfo.chat.fromChatId === "u" + item.memberId) {
                 userInfo.chat.icon = item.icon;
@@ -281,16 +282,15 @@ export default {
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
+          this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.loading = true;
+          let timeOut = historyMsgList.length * 40    
           this.$nextTick(() => {
             setTimeout(() => {
+              this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
               historyMsgList.forEach((el) => {
                 el.chat.newContent = el.chat.text.split(" ");
-                this.groupListData = JSON.parse(
-                  localStorage.getItem("groupListMember")
-                );
                 this.groupListData.forEach((item) => {
                   if (el.chat.fromChatId === "u" + item.memberId) {
                     el.chat.icon = item.icon;
@@ -317,7 +317,7 @@ export default {
               if (historyMsgList.length > 0)
                 this.readMsgShow(historyMsgList[0]);
               this.loading = false;
-            }, 700);
+            }, timeOut);
           });
           break;
         // 已讀

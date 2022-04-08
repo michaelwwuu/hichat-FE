@@ -246,6 +246,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
+      
       switch (userInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":

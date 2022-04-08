@@ -12,8 +12,10 @@
         >
           <p
             :class="{
-              'reply-aduio': device ==='moblie' &&
-                el.isRplay !== null && el.isRplay.chatType === 'SRV_USER_AUDIO' ,
+              'reply-aduio':
+                device === 'moblie' &&
+                el.isRplay !== null &&
+                el.isRplay.chatType === 'SRV_USER_AUDIO',
             }"
             :id="el.historyId"
           >
@@ -22,11 +24,12 @@
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
-              
             >
               <template v-if="el.isRplay !== null">
-                <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">  
-                  <div class="reply-img"><img :src="noIconShow(el.isRplay)" alt=""></div>
+                <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">
+                  <div class="reply-img">
+                    <img :src="noIconShow(el.isRplay)" alt="" />
+                  </div>
                   <div>
                     <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
                     <div>
@@ -55,25 +58,27 @@
                   </div>
                 </div>
               </template>
-              
+
               <span
-                v-if="el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/ig) === null"
+                v-if="
+                  el.message.content.match(
+                    /(http|https):\/\/([\w.]+\/?)\S*/gi
+                  ) === null
+                "
                 @click.prevent.stop="
-                  device === 'moblie' ? onContextmenu(el) : false"
+                  device === 'moblie' ? onContextmenu(el) : false
+                "
                 v-html="el.message.content"
                 v-linkified
               ></span>
-              <span
-                v-else
-                v-html="el.message.content"
-                v-linkified
-              ></span>
+              <span v-else v-html="el.message.content" v-linkified></span>
             </span>
             <span
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @click.prevent.stop="
-                device === 'moblie' ? onContextmenu(el) : false"
+                device === 'moblie' ? onContextmenu(el) : false
+              "
               @dblclick="dblclick(el)"
             >
               <audio
@@ -116,6 +121,14 @@
         </li>
       </div>
     </ul>
+    <el-button
+      v-show="showScrollBar"
+      class="scroll-bottom-btn"
+      size="medium"
+      icon="el-icon-arrow-down"
+      circle
+      @click="$root.gotoBottom()"
+    ></el-button>
   </div>
 </template>
 
@@ -141,10 +154,11 @@ export default {
       message: [],
       newMessageData: {},
       device: localStorage.getItem("device"),
+      showScrollBar: false,
 
       //加解密 key iv
-      aesKey:"hichatisachatapp",
-      aesIv:"hichatisachatapp",     
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   watch: {
@@ -174,6 +188,20 @@ export default {
       chatUser: (state) => state.ws.chatUser,
     }),
   },
+  mounted() {
+    window.addEventListener(
+      "scroll",
+      () => {
+        let scrollTopBox = document.getElementsByClassName('message-pabel-box')[0]
+        let scrollTop =
+          document.documentElement.scrollTop ||
+          document.body.scrollTop ||
+          document.querySelector(".message-pabel-box").scrollTop;
+          this.showScrollBar = (scrollTopBox.scrollHeight - scrollTop)/4 > 400 || (scrollTopBox.scrollHeight - scrollTop)/3 >300;
+      },
+      true
+    );
+  },
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
@@ -192,7 +220,7 @@ export default {
       } catch (err) {
         return data;
       }
-    },    
+    },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -418,7 +446,7 @@ export default {
       deleteRecentChat(parmas)
         .then((res) => {
           if (res.code === 200) {
-            this.$emit('deleteMsgHistoryData',data)
+            this.$emit("deleteMsgHistoryData", data);
           }
         })
         .catch((err) => {
@@ -677,32 +705,32 @@ export default {
   }
 }
 
-.images-more-btn{
+.images-more-btn {
   width: 2em;
   height: 2em;
-  background-image: url('./../../static/images/pc/more.png');
+  background-image: url("./../../static/images/pc/more.png");
   cursor: pointer;
   border-radius: 5px;
   background-size: 70%;
   background-position: center;
   background-repeat: no-repeat;
-  background-color:#f7f7f794;
+  background-color: #f7f7f794;
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 9;
 }
-.reply-box{
+.reply-box {
   display: flex;
   border-bottom: 1px solid #c3c3c3;
   margin-bottom: 5px;
   cursor: pointer;
-  .reply-img{
+  .reply-img {
     margin-right: 5px;
-    img{
+    img {
       width: 3em !important;
       height: 3em !important;
-      border-radius:10px;
+      border-radius: 10px;
     }
   }
   .goAnchor-box {
@@ -732,36 +760,63 @@ export default {
   }
 }
 /* 定义keyframe动画，命名为blink */
-@keyframes blink{
-  0%{opacity: 1;}
-      
-  100%{opacity: 0;} 
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 /* 添加兼容性前缀 */
 @-webkit-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 @-moz-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 @-ms-keyframes blink {
-    0% {opacity: 1; } 
-    100% { opacity: 0;}
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 @-o-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
-.blink{
-    color: red;
-    background:#0000000d;
-    animation: blink 2s linear 1;  
-    /* 其它浏览器兼容性前缀 */
-    -webkit-animation: blink 2s linear 1;
-    -moz-animation: blink 2s linear 1;
-    -ms-animation: blink 2s linear 1;
-    -o-animation: blink 2s linear 1;
+.blink {
+  color: red;
+  background: #0000000d;
+  animation: blink 2s linear 1;
+  /* 其它浏览器兼容性前缀 */
+  -webkit-animation: blink 2s linear 1;
+  -moz-animation: blink 2s linear 1;
+  -ms-animation: blink 2s linear 1;
+  -o-animation: blink 2s linear 1;
+}
+.scroll-bottom-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 80px;
+  border-radius: 50px;
+  border:0;
 }
 </style>
