@@ -78,6 +78,7 @@
                 <div
                   v-if="device === 'moblie'"
                   class="images-more-btn"
+                  style="top: 5px"
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
@@ -85,7 +86,7 @@
                 <div
                   v-html="el.message.content"
                   v-linkified
-                  class="link-style"
+                  :class="device === 'moblie'?'link-style':''"
                 ></div>
               </div>
               <span v-else v-html="el.message.content"></span>
@@ -717,6 +718,7 @@ export default {
   top: 10px;
   right: 10px;
   z-index: 9;
+  border:1px solid #ebebeb
 }
 .reply-box {
   display: flex;
@@ -812,6 +814,6 @@ export default {
   border: 0;
 }
 .link-style {
-  padding: 15px 0 10px 0;
+  padding: 25px 0 10px 0;
 }
 </style>

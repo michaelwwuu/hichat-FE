@@ -29,11 +29,19 @@
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
+
                 <template v-if="el.isRplay !== null">
-                  <div class="reply-box"  @click="goAnchor(el.isRplay.historyId)">  
-                    <div class="reply-img"><img :src="noIconShow(el.isRplay)" alt=""></div>
+                  <div
+                    class="reply-box"
+                    @click="goAnchor(el.isRplay.historyId)"
+                  >
+                    <div class="reply-img">
+                      <img :src="noIconShow(el.isRplay)" alt="" />
+                    </div>
                     <div>
-                      <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
+                      <div style="color: #00a1ff">
+                        {{ el.isRplay.nickName }}
+                      </div>
                       <div>
                         <div class="goAnchor-box">
                           <span
@@ -55,9 +63,10 @@
                           ></audio>
                         </div>
                       </div>
-                    </div>  
-                  </div>  
+                    </div>
+                  </div>
                 </template>
+
                 <div class="message-box-content">
                   <div v-if="device === 'pc'">
                     <span
@@ -79,6 +88,7 @@
                       ></span>
                     </span>
                   </div>
+
                   <div v-else>
                     <div
                       v-for="(item, index) in el.newContent"
@@ -89,7 +99,10 @@
                       }"
                     >
                       <div
-                        v-if="item.match(/(http|https):\/\/([\w.]+\/?)\S*/ig) === null"
+                        v-if="
+                          isBase64(item).match(/(http|https):\/\/([\w.]+\/?)\S*/gi) ===
+                          null
+                        "
                         @click.prevent.stop="
                           !item.startsWith('@') ? onContextmenu(el) : false
                         "
@@ -104,11 +117,14 @@
                         ></span>
                       </div>
                       <div
-                        v-if="item.match(/(http|https):\/\/([\w.]+\/?)\S*/ig)"
-                      >
+                        v-else-if="
+                          isBase64(item).match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
+                        "
+                      > 
                         <div
                           v-if="device === 'moblie'"
                           class="images-more-btn"
+                          style="top: 10px"
                           @click.prevent.stop="
                             device === 'moblie' ? onContextmenu(el) : false
                           "
@@ -116,13 +132,10 @@
                         <div
                           v-html="isBase64(item)"
                           v-linkified
-                          class="link-style"
+                          :class="device === 'moblie' ? 'link-style' : ''"
                         ></div>
                       </div>
-                      <span
-                        v-else
-                        v-html="isBase64(item)"
-                      ></span>
+                      <span v-else v-html="isBase64(item)"></span>
                     </div>
                   </div>
                 </div>
@@ -215,8 +228,8 @@ export default {
       showScrollBar: false,
 
       //加解密 key iv
-      aesKey:"hichatisachatapp",
-      aesIv:"hichatisachatapp",   
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   created() {
@@ -254,12 +267,15 @@ export default {
     window.addEventListener(
       "scroll",
       () => {
-        let scrollTopBox = document.getElementsByClassName('message-pabel-box')[0]
+        let scrollTopBox =
+          document.getElementsByClassName("message-pabel-box")[0];
         let scrollTop =
           document.documentElement.scrollTop ||
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
-          this.showScrollBar = (scrollTopBox.scrollHeight - scrollTop)/4 > 400 || (scrollTopBox.scrollHeight - scrollTop)/3 >300;
+        this.showScrollBar =
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
     );
@@ -278,13 +294,13 @@ export default {
         document.getElementById(data).classList.remove("blink");
       }, 3000);
     },
-   isBase64(data) {
+    isBase64(data) {
       try {
         return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
-    },    
+    },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -295,7 +311,7 @@ export default {
       } else {
         return iconData.icon;
       }
-    },    
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -577,7 +593,7 @@ export default {
             }
           }
         }
-        .images-more-btn{
+        .images-more-btn {
           top: 30px;
         }
       }
@@ -794,17 +810,17 @@ export default {
   z-index: 9;
   border: 1px solid #e9e9e9;
 }
-.reply-box{
+.reply-box {
   display: flex;
   border-bottom: 1px solid #c3c3c3;
   margin-bottom: 5px;
   cursor: pointer;
-  .reply-img{
+  .reply-img {
     margin-right: 5px;
-    img{
+    img {
       width: 3em !important;
       height: 3em !important;
-      border-radius:10px;
+      border-radius: 10px;
     }
   }
   .goAnchor-box {
@@ -820,44 +836,64 @@ export default {
   }
 }
 /* 定义keyframe动画，命名为blink */
-@keyframes blink{
-  0%{opacity: 1;}
-      
-  100%{opacity: 0;} 
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 /* 添加兼容性前缀 */
 @-webkit-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 @-moz-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 @-ms-keyframes blink {
-    0% {opacity: 1; } 
-    100% { opacity: 0;}
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 @-o-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
-.blink{
-    color: red;
-    background:#0000000d;
-    animation: blink 2s linear 1;  
-    /* 其它浏览器兼容性前缀 */
-    -webkit-animation: blink 2s linear 1;
-    -moz-animation: blink 2s linear 1;
-    -ms-animation: blink 2s linear 1;
-    -o-animation: blink 2s linear 1;
+.blink {
+  color: red;
+  background: #0000000d;
+  animation: blink 2s linear 1;
+  /* 其它浏览器兼容性前缀 */
+  -webkit-animation: blink 2s linear 1;
+  -moz-animation: blink 2s linear 1;
+  -ms-animation: blink 2s linear 1;
+  -o-animation: blink 2s linear 1;
 }
 .scroll-bottom-btn {
   position: fixed;
   right: 30px;
   bottom: 80px;
   border-radius: 50px;
-  border:0;
+  border: 0;
 }
 .link-style {
   padding: 20px 0 10px 0;
