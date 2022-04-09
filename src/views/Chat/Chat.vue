@@ -7,11 +7,7 @@
             <span class="home-photo-link" @click="infoMsgShow">
               <div class="home-user-photo">
                 <img
-                  :src="
-                    noIconShow(
-                      JSON.stringify(groupUser) === '{}' ? groupData : groupUser
-                    )
-                  "
+                  :src="noIconShow(groupUser)"
                 />
               </div>
               <span>{{
@@ -137,7 +133,6 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
-      noIcon: require("./../../../static/images/image_group_defult.png"),
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -187,7 +182,7 @@ export default {
         iconData.icon === null ||
         iconData.icon === ""
       ) {
-        return this.noIcon;
+        return require("./../../../static/images/image_group_defult.png");
       } else {
         return iconData.icon;
       }

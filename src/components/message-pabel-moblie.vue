@@ -82,7 +82,7 @@
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                ></div>
+                ><i class="el-icon-more"></i></div>
                 <div
                   v-html="el.message.content"
                   v-linkified
@@ -118,7 +118,7 @@
                 @click.prevent.stop="
                   device === 'moblie' ? onContextmenu(el) : false
                 "
-              ></div>
+              ><i class="el-icon-more"></i></div>
               <el-image
                 :src="el.message.content"
                 :preview-src-list="[el.message.content]"
@@ -151,7 +151,6 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
@@ -706,19 +705,23 @@ export default {
 
 .images-more-btn {
   width: 2em;
-  height: 2em;
-  background-image: url("./../../static/images/pc/more.png");
+  // height: 2em;
   cursor: pointer;
   border-radius: 5px;
-  background-size: 70%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #f7f7f794;
+  // background-size: 70%;
+  // background-position: center;
+  // background-repeat: no-repeat;
+  // background-color: #f7f7f794;
+  // background-image: url("./../../static/images/pc/more.png");
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 9;
-  border:1px solid #ebebeb
+  // border:1px solid #ebebeb;
+  text-align: center;
+  .el-icon-more{
+    font-size: 20px;
+  }
 }
 .reply-box {
   display: flex;
@@ -814,6 +817,6 @@ export default {
   border: 0;
 }
 .link-style {
-  padding: 25px 0 10px 0;
+  padding: 10px 0;
 }
 </style>

@@ -29,13 +29,7 @@
               <span class="home-photo-link">
                 <div class="home-user-photo">
                   <img
-                    :src="
-                      noIconShow(
-                        JSON.stringify(groupUser) === '{}'
-                          ? groupData
-                          : groupUser
-                      )
-                    "
+                    :src="noIconShow(groupUser)"
                   />
                 </div>
                 <span>{{
@@ -253,7 +247,6 @@ export default {
           if (this.groupUser.toChatId === userInfo.toChatId) {
             userInfo.chat.newContent = userInfo.chat.text.split(" ");
             this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
-
             this.groupListData.forEach((item) => {
               if (userInfo.chat.fromChatId === "u" + item.memberId) {
                 userInfo.chat.icon = item.icon;

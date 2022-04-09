@@ -11,13 +11,7 @@
               >
                 <div class="home-user-photo">
                   <img
-                    :src="
-                      noIconShow(
-                        JSON.stringify(contactUser) === '{}'
-                          ? userData
-                          : contactUser
-                      )
-                    "
+                    :src="noIconShow(contactUser)"
                   />
                 </div>
                 <span>{{
