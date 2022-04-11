@@ -74,15 +74,15 @@
                       :key="index"
                       :class="{
                         'message-touch-carte':
-                          item.startsWith('@') && item.length > 1,
+                          isBase64(item).startsWith('@') && item.length > 1,
                       }"
                     >
                       <span
                         v-html="isBase64(item)"
                         v-linkified
                         @click="
-                          item.startsWith('@')
-                            ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                          isBase64(item).startsWith('@')
+                            ? carteMsgShow(isBase64(item).replace(/[\@|\s*]/g, ''))
                             : false
                         "
                       ></span>
@@ -95,7 +95,7 @@
                       :key="index"
                       :class="{
                         'message-touch-carte':
-                          item.startsWith('@') && item.length > 1,
+                          isBase64(item).startsWith('@') && isBase64(item).length > 1,
                       }"
                     >
                       <div
@@ -104,14 +104,14 @@
                           null
                         "
                         @click.prevent.stop="
-                          !item.startsWith('@') ? onContextmenu(el) : false
+                          !isBase64(item).startsWith('@') ? onContextmenu(el) : false
                         "
                       >
                         <span
                           v-html="isBase64(item)"
                           @click="
-                            item.startsWith('@')
-                              ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                            isBase64(item).startsWith('@')
+                              ? carteMsgShow(isBase64(item).replace(/[\@|\s*]/g, ''))
                               : false
                           "
                         ></span>
@@ -124,7 +124,7 @@
                         <div
                           v-if="device === 'moblie'"
                           class="images-more-btn"
-                          style="top: 10px"
+                          style="top: 5px"
                           @click.prevent.stop="
                             device === 'moblie' ? onContextmenu(el) : false
                           "
@@ -295,9 +295,10 @@ export default {
       }, 3000);
     },
     isBase64(data) {
-      try {
+      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
+      if(exg.test(data)){
         return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
+      }else{
         return data;
       }
     },

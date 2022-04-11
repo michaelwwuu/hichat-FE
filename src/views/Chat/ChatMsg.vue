@@ -404,9 +404,10 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      try {
+      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
+      if(exg.test(data)){
         return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
+      }else{
         return data;
       }
     },

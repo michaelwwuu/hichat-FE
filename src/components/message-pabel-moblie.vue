@@ -37,11 +37,11 @@
                         <span
                           v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
                           class="goAnchor"
-                          >{{ isBase64(el.isRplay.text) }}</span
+                          >{{ el.isRplay.text }}</span
                         >
                         <img
                           v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
-                          :src="isBase64(el.isRplay.text)"
+                          :src="el.isRplay.text"
                           style="border-radius: 5px"
                         />
                         <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
@@ -49,7 +49,7 @@
                           <audio
                             class="message-audio"
                             controls
-                            :src="isBase64(el.isRplay.text)"
+                            :src="el.isRplay.text"
                             type="mp3"
                           ></audio>
                         </span>
@@ -153,7 +153,6 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
-import { Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessagePabel",
@@ -233,13 +232,6 @@ export default {
       setTimeout(() => {
         document.getElementById(data).classList.remove("blink");
       }, 3000);
-    },
-    isBase64(data) {
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
     },
     noIconShow(iconData) {
       if (
