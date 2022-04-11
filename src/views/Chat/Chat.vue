@@ -45,6 +45,7 @@ export default {
         platformCode: "dcw",
         tokenType: 1,
       },
+      chatListData:[],
       hotNum:9999999999,
       userName: getLocal('username'),
     };
@@ -113,7 +114,8 @@ export default {
       const search_url = location.pathname.replace("/","");
       userinfo(search_url).then((res) => {
         if (res.code === 200) {
-          console.log(res)
+          this.chatListData = res.data
+          console.log(this.chatListData)
         }
       })
     },

@@ -24,7 +24,7 @@ class HttpRequest {
       if (config.method === 'get') {
         config.params = {
           ...config.params,
-          _t: new Date().getTime()
+          // _t: new Date().getTime()
         }
       }
       if (config.method === 'post') {
