@@ -1,14 +1,14 @@
 import { axios } from '../libs/axios/api.request'
 
-// //登录
-// export const login = data => {
-//   let postData = {
-//     url: '/sso/platformLogin',
-//     method: 'post',
-//     data
-//   }
-//   return axios.request(postData)
-// }
+//登录
+export const login = data => {
+  let postData = {
+    url: '/sso/platformLogin',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
 
 // 用户信息
 export const userinfo = (params) => {

@@ -21,7 +21,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { userinfo } from "_api/index.js";
+import { userinfo,login } from "_api/index.js";
 import { mapState, mapMutations } from "vuex";
 import MessagePabel from "@/components/message-pabel";
 import MessageInput from "@/components/message-input";
@@ -117,6 +117,26 @@ export default {
         }
       })
     },
+    userLogin(){
+      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
+      let params = this.loginForm
+      login(params).then((res) => {
+        if (res.code === 200) {
+          if(res.data.isGuest) {
+            this.isShowMoreMsg = false
+            this.banUserInputMask = true
+          }
+          this.userInfoData.deviceId = this.getUUID()
+          this.userInfoData.token = res.data.tokenHead + res.data.token
+          this.userInfoData.toChatId = this.$route.query.chatRoomId
+          localStorage.setItem('username', res.data.username)
+          localStorage.setItem('isGuest', res.data.isGuest);
+          localStorage.setItem('token',res.data.tokenHead + res.data.token);
+          localStorage.setItem('chatRoomId',this.$route.query.chatRoomId)
+          Socket.connect()
+        }
+      })
+    },    
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
