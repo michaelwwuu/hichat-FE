@@ -1,8 +1,4 @@
 import Vue from "vue";
-const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
-// const wsUrl = "ws://test.hichat.tools/ws/im/echo";//pre 環境
-var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
   methods: {
@@ -23,8 +19,9 @@ const emitter = new Vue({
     },
     // 初始化 websocket 
     connect() {
-      socket = new WebSocket(wsUrl);
-      let chatDataKey = {
+      const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
+      var socket = new WebSocket(wsUrl);
+      var chatDataKey = {
         chatType:"CLI_AUTH",
         id:Math.random(),
         deviceId: localStorage.getItem('UUID'),
