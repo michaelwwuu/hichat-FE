@@ -37,7 +37,7 @@ const emitter = new Vue({
         let chatType = messageData.chatType
         switch (chatType) {
           // 连线成功
-          case "SRV_SUCCESS_MSG":
+          case "SRV_NEED_AUTH":
             socket.send(JSON.stringify(chatDataKey));
             break;
           // 连线失敗
