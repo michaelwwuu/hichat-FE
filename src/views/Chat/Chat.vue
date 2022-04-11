@@ -32,6 +32,8 @@ export default {
     return {
       // 登入資訊
       loginForm: {
+        isGuest:this.$route.query.isGuest,
+        username: this.$route.query.username,
         sign:"",
         platformCode:"dcw", 
       },
@@ -45,13 +47,18 @@ export default {
         platformCode: "dcw",
         tokenType: 1,
       },
-      chatListData:[],
-      hotNum:9999999999,
+      isChecked: true,
+      isAdmin: false,
+      clearDialog: false,
+      isShowMoreMsg: true,
+      banUserInputMask: false,
+      redEnvelopeImg: require("./../../../static/images/envelope.svg"),
+      isGuest: getLocal('isGuest'),
       userName: getLocal('username'),
     };
   },
   created() {
-    // this.userLogin()
+    this.userLogin()
     this.getUserInfo()
   },
   mounted() {
@@ -111,8 +118,7 @@ export default {
       return "hiWeb" + number
     },
     getUserInfo(){
-      const search_url = location.pathname.replace("/","");
-      userinfo(search_url).then((res) => {
+      userinfo(params).then((res) => {
         if (res.code === 200) {
           this.chatListData = res.data
           console.log(this.chatListData)
