@@ -34,6 +34,7 @@ export default {
       loginForm: {
         isGuest:this.$route.query.isGuest,
         username: this.$route.query.username,
+        id: this.$route.query.id,
         sign:"",
         platformCode:"dcw", 
       },
@@ -47,12 +48,12 @@ export default {
         platformCode: "dcw",
         tokenType: 1,
       },
+      hotNum:99999999,
       isChecked: true,
       isAdmin: false,
       clearDialog: false,
       isShowMoreMsg: true,
       banUserInputMask: false,
-      redEnvelopeImg: require("./../../../static/images/envelope.svg"),
       isGuest: getLocal('isGuest'),
       userName: getLocal('username'),
     };
@@ -118,6 +119,7 @@ export default {
       return "hiWeb" + number
     },
     getUserInfo(){
+      let params = this.loginForm.id
       userinfo(params).then((res) => {
         if (res.code === 200) {
           this.chatListData = res.data
