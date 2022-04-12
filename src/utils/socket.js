@@ -1,5 +1,5 @@
 import Vue from "vue";
-const wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
+var wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
 // const wsUrl = 'ws://test.hichat.tools/ws/im/echo';//動態環境
 // const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
 var socket = new WebSocket(wsUrl);
@@ -28,7 +28,7 @@ const emitter = new Vue({
     },
     // 初始化 websocket 
     connect() {
-      socket = new WebSocket(wsUrl);
+      // socket = new WebSocket(wsUrl);
       let joinChatKey = this.chatDataKey
       socket.onmessage = function (msg) {
         let messageData = JSON.parse(msg.data)
