@@ -404,11 +404,12 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
-      if(exg.test(data)){
-        console.log(data)
+      if (data === "" || data.trim() === "") {
+        return data;
+      }
+      try {
         return Decrypt(data, this.aesKey, this.aesIv);
-      }else{
+      } catch (err) {
         return data;
       }
     },
@@ -491,7 +492,7 @@ export default {
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if (this.device ==="pc") this.getHiChatDataList()
+            if (this.device === "pc") this.getHiChatDataList();
           }
           break;
         // 历史讯息
@@ -499,7 +500,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 40                    
+          let timeOut = historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {

@@ -120,7 +120,7 @@
                         v-else-if="
                           item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
                         "
-                      > 
+                      >
                         <div
                           v-if="device === 'moblie'"
                           class="images-more-btn"
@@ -128,7 +128,9 @@
                           @click.prevent.stop="
                             device === 'moblie' ? onContextmenu(el) : false
                           "
-                        ><i class="el-icon-more"></i></div>
+                        >
+                          <i class="el-icon-more"></i>
+                        </div>
                         <div
                           v-html="item"
                           v-linkified
@@ -169,7 +171,9 @@
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                ><i class="el-icon-more"></i></div>
+                >
+                  <i class="el-icon-more"></i>
+                </div>
                 <el-image
                   :src="el.message.content"
                   :preview-src-list="[el.message.content]"
@@ -192,14 +196,14 @@
         </li>
       </div>
     </ul>
-    <el-button
+    <!-- <el-button
       v-show="showScrollBar"
       class="scroll-bottom-btn"
       size="medium"
       icon="el-icon-arrow-down"
       circle
       @click="$root.gotoBottom()"
-    ></el-button>
+    ></el-button> -->
   </div>
 </template>
 
@@ -295,10 +299,12 @@ export default {
       }, 3000);
     },
     isBase64(data) {
-      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
-      if(exg.test(data)){
+      if (data === "" || data.trim() === "") {
+        return data;
+      }
+      try {
         return Decrypt(data, this.aesKey, this.aesIv);
-      }else{
+      } catch (err) {
         return data;
       }
     },
@@ -811,7 +817,7 @@ export default {
   z-index: 9;
   // border:1px solid #ebebeb;
   text-align: center;
-  .el-icon-more{
+  .el-icon-more {
     font-size: 20px;
   }
 }

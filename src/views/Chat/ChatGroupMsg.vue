@@ -28,9 +28,7 @@
             <div class="home-header-pc">
               <span class="home-photo-link">
                 <div class="home-user-photo">
-                  <img
-                    :src="noIconShow(groupUser)"
-                  />
+                  <img :src="noIconShow(groupUser)" />
                 </div>
                 <span>{{
                   groupUser.groupName === undefined
@@ -117,8 +115,8 @@ export default {
       device: localStorage.getItem("device"),
 
       //加解密 key iv
-      aesKey:"hichatisachatapp",
-      aesIv:"hichatisachatapp",           
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   created() {
@@ -210,10 +208,12 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
-      if(exg.test(data)){
+      if (data === "" || data.trim() === "") {
+        return data;
+      }
+      try {
         return Decrypt(data, this.aesKey, this.aesIv);
-      }else{
+      } catch (err) {
         return data;
       }
     },
@@ -246,8 +246,11 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            userInfo.chat.newContent = userInfo.chat.text.split(" ");
-            this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
+            this.base64Msg = this.isBase64(userInfo.chat.text);
+            userInfo.chat.newContent = this.base64Msg.split(" ");
+            this.groupListData = JSON.parse(
+              localStorage.getItem("groupListMember")
+            );
             this.groupListData.forEach((item) => {
               if (userInfo.chat.fromChatId === "u" + item.memberId) {
                 userInfo.chat.icon = item.icon;
@@ -264,14 +267,14 @@ export default {
                 userInfo.replyChat !== null &&
                 userInfo.replyChat.fromChatId === "u" + item.memberId
               ) {
-                userInfo.replyChat.icon = item.icon
+                userInfo.replyChat.icon = item.icon;
                 userInfo.replyChat.nickName = item.name;
               }
             });
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             this.readMsgShow(userInfo);
-            if (this.device ==="pc") this.getHiChatDataList()
+            if (this.device === "pc") this.getHiChatDataList();
           }
           break;
         // 历史讯息
@@ -279,12 +282,15 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 40    
+          let timeOut = historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
-              this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
+              this.groupListData = JSON.parse(
+                localStorage.getItem("groupListMember")
+              );
               historyMsgList.forEach((el) => {
-                el.chat.newContent = el.chat.text.split(" ");
+                this.base64Msg = this.isBase64(el.chat.text);
+                el.chat.newContent = this.base64Msg.split(" ");
                 this.groupListData.forEach((item) => {
                   if (el.chat.fromChatId === "u" + item.memberId) {
                     el.chat.icon = item.icon;
@@ -301,7 +307,7 @@ export default {
                     el.replyChat !== null &&
                     el.replyChat.fromChatId === "u" + item.memberId
                   ) {
-                    el.replyChat.icon = item.icon
+                    el.replyChat.icon = item.icon;
                     el.replyChat.nickName = item.name;
                   }
                 });

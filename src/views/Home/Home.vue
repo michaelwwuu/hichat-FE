@@ -360,10 +360,12 @@ export default {
     }),
     //判斷是否base64
     isBase64(data) {
-      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
-      if(exg.test(data)){
+      if (data === "" || data.trim() === "") {
+        return data;
+      }
+      try {
         return Decrypt(data, this.aesKey, this.aesIv);
-      }else{
+      } catch (err) {
         return data;
       }
     },
@@ -371,8 +373,8 @@ export default {
       getGroupList().then((res) => {
         this.groupList = res.data.list;
         this.groupList.forEach((el) => {
-          if (el.icon === ""){
-            return el.icon = require("./../../../static/images/image_group_defult.png");
+          if (el.icon === "") {
+            return (el.icon = require("./../../../static/images/image_group_defult.png"));
           }
         });
         this.setGroupList(this.groupList);
@@ -382,8 +384,8 @@ export default {
       getContactList().then((res) => {
         this.addressDataList = res.data.list;
         this.addressDataList.forEach((el) => {
-          if (el.icon === undefined){
-            return el.icon = require("./../../../static/images/image_user_defult.png");
+          if (el.icon === undefined) {
+            return (el.icon = require("./../../../static/images/image_user_defult.png"));
           }
         });
       });
@@ -402,7 +404,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
           if (res.icon === undefined) {
-            return res.icon = require("./../../../static/images/image_user_defult.png");
+            return (res.icon = require("./../../../static/images/image_user_defult.png"));
           }
         });
         this.setContactListData(this.contactList);

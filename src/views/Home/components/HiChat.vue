@@ -4,7 +4,11 @@
       <el-tab-pane label="联络人" name="address">
         <span slot="label" v-if="hiChatDataList.length > 0">
           <span>联络人</span>
-          <el-badge v-if="userNumberBadge" is-dot class="contact-badge"></el-badge>
+          <el-badge
+            v-if="userNumberBadge"
+            is-dot
+            class="contact-badge"
+          ></el-badge>
         </span>
         <div
           v-for="(item, index) in hiChatDataList"
@@ -12,15 +16,21 @@
           class="address-box"
           @click="goChatRoom(item, 'ChatMsg')"
         >
-          <el-image :src="noIconShow(item,'user')" />
+          <el-image :src="noIconShow(item, 'user')" />
           <div class="contont-box">
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ isBase64(item.lastChat.text) }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+                    isBase64(item.lastChat.text)
+                  }}</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+                    >传送了语音</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+                    >传送了图片</span
+                  >
                 </span>
               </div>
               <div class="time">
@@ -41,7 +51,11 @@
       <el-tab-pane label="群组" name="group">
         <span slot="label" v-if="groupDataList.length > 0">
           <span>群组</span>
-          <el-badge v-if="groupNumberBadge" is-dot class="contact-badge"></el-badge>
+          <el-badge
+            v-if="groupNumberBadge"
+            is-dot
+            class="contact-badge"
+          ></el-badge>
         </span>
         <div
           v-for="(item, index) in groupDataList"
@@ -49,15 +63,21 @@
           class="address-box"
           @click="goChatRoom(item, 'ChatGroupMsg')"
         >
-          <el-image :src="noIconShow(item,'group')" />
+          <el-image :src="noIconShow(item, 'group')" />
           <div class="contont-box">
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{ isBase64(item.lastChat.text) }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'">传送了语音</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'">传送了图片</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{
+                    isBase64(item.lastChat.text)
+                  }}</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
+                    >传送了语音</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
+                    >传送了图片</span
+                  >
                 </span>
               </div>
               <div class="time">
@@ -82,7 +102,11 @@
       >
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>
-          <el-badge v-if="contactNumberBadge" is-dot class="contact-badge"></el-badge>
+          <el-badge
+            v-if="contactNumberBadge"
+            is-dot
+            class="contact-badge"
+          ></el-badge>
         </span>
         <div
           v-for="(item, index) in contactDataList"
@@ -94,15 +118,21 @@
               : goChatRoom(item, 'ChatContact')
           "
         >
-          <el-image :src="noIconShow(item,'user')" />
+          <el-image :src="noIconShow(item, 'user')" />
           <div class="contont-box">
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{ isBase64(item.lastChat.text) }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'">传送了语音</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'">传送了图片</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+                    isBase64(item.lastChat.text)
+                  }}</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
+                    >传送了语音</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_IMAGE'"
+                    >传送了图片</span
+                  >
                 </span>
               </div>
               <div class="time">
@@ -140,8 +170,8 @@ export default {
       hiChatDataList: [],
       newMsgDataList: [],
       contactDataList: [],
-      userNumberBadge:false,
-      groupNumberBadge:false,
+      userNumberBadge: false,
+      groupNumberBadge: false,
       contactNumberBadge: false,
       getHistoryMessage: {
         chatType: "",
@@ -190,7 +220,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setEditMsg:"ws/setEditMsg",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
@@ -199,7 +229,7 @@ export default {
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
     }),
-    noIconShow(iconData,key) {
+    noIconShow(iconData, key) {
       if (
         iconData.icon === undefined ||
         iconData.icon === null ||
@@ -226,10 +256,12 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
-      if(exg.test(data)){
-        return Decrypt(data, this.aesKey, this.aesIv);
-      }else{
+      if (data === "" || data.trim() === "") {
+        return data;
+      }
+      try {
+        return btoa(atob(data)) == Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
         return data;
       }
     },
@@ -247,7 +279,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-      
+
       switch (userInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
@@ -258,7 +290,10 @@ export default {
             (item) => item.isGroup && item.lastChat !== null
           );
           this.contactDataList = userInfo.recentChat.filter(
-            (item) => !item.isContact && item.isContact !== null && item.lastChat !== null
+            (item) =>
+              !item.isContact &&
+              item.isContact !== null &&
+              item.lastChat !== null
           );
           this.userNumberBadge = this.hiChatDataList.some(
             (item) => item.unreadCount > 0
@@ -291,8 +326,8 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          if (item.icon === undefined){
-            return item.icon = require("./../../../../static/images/image_user_defult.png");
+          if (item.icon === undefined) {
+            return (item.icon = require("./../../../../static/images/image_user_defult.png"));
           }
         });
         this.setContactListData(this.contactList);
@@ -326,7 +361,7 @@ export default {
         } else if (!data.isBlock && !data.isContact && !data.isGroup) {
           this.type = "contact";
         }
-        this.setHichatNav({ type: this.type, num: 1,});
+        this.setHichatNav({ type: this.type, num: 1 });
         this.setInfoMsg({
           infoMsgShow: false,
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
@@ -338,14 +373,14 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        name:"",
-        icon:"",
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        name: "",
+        icon: "",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
-      this.setEditMsg({ innerText:""});
+      this.setEditMsg({ innerText: "" });
     },
     getHistory(data, path) {
       if (path === "ChatMsg" || path === "ChatContact") {
@@ -357,7 +392,6 @@ export default {
       this.getHistoryMessage.id = Math.random();
       Socket.send(this.getHistoryMessage);
     },
-    
   },
 };
 </script>
@@ -424,7 +458,7 @@ export default {
   vertical-align: initial;
   padding-left: 5px;
 }
-.hichat-pc{
+.hichat-pc {
   .address-box {
     .contont-box {
       .msg-box {
