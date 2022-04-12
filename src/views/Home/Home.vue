@@ -34,6 +34,7 @@
             <el-input
               placeholder="搜索"
               prefix-icon="el-icon-search"
+              clearable
               v-model="searchKey"
             >
             </el-input>
@@ -92,6 +93,7 @@
               placeholder="搜索"
               prefix-icon="el-icon-search"
               v-model="searchKey"
+              clearable
             >
             </el-input>
             <template v-if="num === 0">
@@ -685,6 +687,13 @@ export default {
       padding: 20px !important;
       border-radius: 0 !important;
     }
+  }
+}
+::v-deep .el-input__suffix{
+  .el-icon-circle-close:before{
+    content: "\e6db";
+    font-size:18px;
+    color:#10686e;
   }
 }
 .el-badge-box {
