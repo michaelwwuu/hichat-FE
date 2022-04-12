@@ -74,15 +74,15 @@
                       :key="index"
                       :class="{
                         'message-touch-carte':
-                          isBase64(item).startsWith('@') && item.length > 1,
+                          item.startsWith('@') && item.length > 1,
                       }"
                     >
                       <span
-                        v-html="isBase64(item)"
+                        v-html="item"
                         v-linkified
                         @click="
-                          isBase64(item).startsWith('@')
-                            ? carteMsgShow(isBase64(item).replace(/[\@|\s*]/g, ''))
+                          item.startsWith('@')
+                            ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                             : false
                         "
                       ></span>
@@ -95,30 +95,30 @@
                       :key="index"
                       :class="{
                         'message-touch-carte':
-                          isBase64(item).startsWith('@') && isBase64(item).length > 1,
+                          item.startsWith('@') && item.length > 1,
                       }"
                     >
                       <div
                         v-if="
-                          isBase64(item).match(/(http|https):\/\/([\w.]+\/?)\S*/gi) ===
+                          item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi) ===
                           null
                         "
                         @click.prevent.stop="
-                          !isBase64(item).startsWith('@') ? onContextmenu(el) : false
+                          !item.startsWith('@') ? onContextmenu(el) : false
                         "
                       >
                         <span
-                          v-html="isBase64(item)"
+                          v-html="item"
                           @click="
-                            isBase64(item).startsWith('@')
-                              ? carteMsgShow(isBase64(item).replace(/[\@|\s*]/g, ''))
+                            item.startsWith('@')
+                              ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                               : false
                           "
                         ></span>
                       </div>
                       <div
                         v-else-if="
-                          isBase64(item).match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
+                          item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
                         "
                       > 
                         <div
@@ -130,12 +130,12 @@
                           "
                         ><i class="el-icon-more"></i></div>
                         <div
-                          v-html="isBase64(item)"
+                          v-html="item"
                           v-linkified
                           :class="device === 'moblie' ? 'link-style' : ''"
                         ></div>
                       </div>
-                      <span v-else v-html="isBase64(item)"></span>
+                      <span v-else v-html="item"></span>
                     </div>
                   </div>
                 </div>

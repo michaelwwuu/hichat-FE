@@ -37,11 +37,11 @@
                         <span
                           v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
                           class="goAnchor"
-                          >{{ el.isRplay.text }}</span
+                          >{{ isBase64(el.isRplay.text) }}</span
                         >
                         <img
                           v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
-                          :src="el.isRplay.text"
+                          :src="isBase64(el.isRplay.text)"
                           style="border-radius: 5px"
                         />
                         <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
@@ -49,7 +49,7 @@
                           <audio
                             class="message-audio"
                             controls
-                            :src="el.isRplay.text"
+                            :src="isBase64(el.isRplay.text)"
                             type="mp3"
                           ></audio>
                         </span>
@@ -153,6 +153,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from "@/api";
+import { Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessagePabel",
@@ -233,6 +234,14 @@ export default {
         document.getElementById(data).classList.remove("blink");
       }, 3000);
     },
+    isBase64(data) {
+      var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
+      if(exg.test(data)){
+        return Decrypt(data, this.aesKey, this.aesIv);
+      }else{
+        return data;
+      }
+    },    
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -529,10 +538,10 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f3f9ff;
+          background-color: #f1f3f4;
         }
         audio {
-          width: 190px;
+          width: 210px;
         }
         .el-image {
           width: auto !important;
@@ -743,7 +752,7 @@ export default {
       z-index: 9;
     }
     .message-audio {
-      width: 190px !important;
+      width: 200px !important;
       border: 0 !important;
     }
   }

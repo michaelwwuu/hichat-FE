@@ -406,6 +406,7 @@ export default {
     isBase64(data) {
       var exg = new RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$');
       if(exg.test(data)){
+        console.log(data)
         return Decrypt(data, this.aesKey, this.aesIv);
       }else{
         return data;

@@ -28,7 +28,7 @@ const emitter = new Vue({
     },
     // 初始化 websocket 
     connect() {
-      // socket = new WebSocket(wsUrl);
+      socket = new WebSocket(wsUrl);
       let joinChatKey = this.chatDataKey
       socket.onmessage = function (msg) {
         let messageData = JSON.parse(msg.data)

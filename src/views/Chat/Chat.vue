@@ -270,7 +270,8 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            userInfo.chat.newContent = userInfo.chat.text.split(" ");
+            this.base64Msg = this.isBase64(userInfo.chat.text)
+            userInfo.chat.newContent = this.base64Msg.split(" ");
             this.groupListData.forEach((item) => {
               if (userInfo.chat.fromChatId === "u" + item.memberId) {
                 userInfo.chat.icon = item.icon;
@@ -306,7 +307,8 @@ export default {
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
-                el.chat.newContent = el.chat.text.split(" ");
+                this.base64Msg = this.isBase64(el.chat.text)
+                el.chat.newContent = this.base64Msg.split(" ");
                 this.groupListData = JSON.parse(
                   localStorage.getItem("groupListMember")
                 );
