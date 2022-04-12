@@ -33,8 +33,8 @@ export default {
       // 登入資訊
       loginForm: {
         isGuest:this.$route.query.isGuest,
-        username: this.$route.query.username,
-        id: this.$route.query.id,
+        room: this.$route.query.room,
+        userName: this.$route.query.id,
         sign:"",
         platformCode:"dcw", 
       },
@@ -128,7 +128,7 @@ export default {
       })
     },
     userLogin(){
-      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.username }&key=59493d81f1e08daf2a4752225751ef31`)
+      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.room }&key=59493d81f1e08daf2a4752225751ef31`)
       let params = this.loginForm
       login(params).then((res) => {
         if (res.code === 200) {
