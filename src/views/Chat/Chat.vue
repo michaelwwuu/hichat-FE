@@ -14,7 +14,7 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
-        <message-input :userInfoData="userInfoData" />
+        <message-input :userInfoData="userInfoData" :isGuest="isGuest"/>
       </el-main>
     </el-container>
   </div>
@@ -56,7 +56,7 @@ export default {
       clearDialog: false,
       isShowMoreMsg: true,
       banUserInputMask: false,
-      isGuest: getLocal('isGuest'),
+      isGuest: true,
       userName: getLocal('username'),
     };
   },
@@ -91,8 +91,8 @@ export default {
               this.concats.forEach((el) => {
                 this.userMemberList.push(el.username);
               });
-              // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
-              this.userMemberList = Array.from(new Set(this.userMemberList))
+              // // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
+              // this.userMemberList = Array.from(new Set(this.userMemberList))
             });
           });  
           break;
@@ -139,6 +139,7 @@ export default {
           }
           this.userInfoData.deviceId = this.getUUID()
           this.userInfoData.token = res.data.tokenHead + res.data.token
+          this.isGuest = res.data.isGuest
           localStorage.setItem('username', res.data.username)
           localStorage.setItem('isGuest', res.data.isGuest);
           localStorage.setItem('token',res.data.tokenHead + res.data.token);
@@ -149,18 +150,27 @@ export default {
     },    
     // 訊息統一格式
     messageList(data) {
+      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
       this.chatRoomMsg = {
         chatType: data.chatType,
-        chatRoomId: data.toChatId,
+        chatRoomId: data.toChatId = data.chatType === "SRV_JOIN_ROOM" ? data.chatRoomId : data.toChatId,
         platformCode: data.platformCode,
-        historyId: data.historyId,
+        historyId: data.historyId = data.chatType === "SRV_JOIN_ROOM" ? number: data.historyId ,
         message: {
-          time: data.sendTime,
-          content: data.text
+          time: data.sendTime = data.chatType === "SRV_JOIN_ROOM" ? new Date(): data.sendTime,
+          content: data.text = data.chatType === "SRV_JOIN_ROOM" ? "進入聊天室": data.text
         },
-        fromChatId:data.fromChatId,
+        fromChatId:data.fromChatId = data.chatType === "SRV_JOIN_ROOM" ? data.chatRoomId : data.toChatId,
         username: data.username,
       };
+      console.log(this.chatRoomMsg)
     },
 
     // 收取 socket 回来讯息 (全局讯息)

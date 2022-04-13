@@ -12,22 +12,13 @@
         v-for="(item, index) in message"
         :key="index"
         class="message-layout-left"
-      > 
-      
-        <template v-if="item.chatType === 'SRV_JOIN_ROOM'">
-           <span class="message-nickname"><span>{{item.username}}：</span><span style="color:#F00">進入聊天室</span></span>
-        </template>
-        <template v-else>
-          <span class="message-nickname"><span :class="{'userIdStyle':item.fromChatId === userId}">{{item.username}}：</span>{{item.message.content}}</span>
-
-          <!-- <p class="message-nickname" :class="{'userIdStyle':item.fromChatId === userId}">
-          {{ item.username }}
-          </p>
-          <p
-            class="message-classic"
-            v-html="item.message.content"
-          ></p> -->
-        </template>
+      >
+        <span class="message-nickname"
+          ><span :class="{ 'userIdStyle': item.fromChatId === userId }"
+            >{{ item.username }}：</span
+          >
+          <span :style="item.chatType === 'SRV_JOIN_ROOM' ? 'color: #f00' :'color: #afafaf;'">{{ item.message.content }}</span>
+        </span>
       </li>
     </ul>
   </div>
@@ -47,22 +38,26 @@ export default {
     },
     isShowMoreMsg: {
       type: Boolean,
-    },    
+    },
   },
   data() {
     return {
       message: [],
-      userId: localStorage.getItem('username'),
+      userId: localStorage.getItem("username"),
       gotoBottom: gotoBottom,
     };
   },
   watch: {
     messageData(val) {
-      this.message = val
+      console.log(val)
+      // this.message = val
+      console.log()
       // this.historyId = val.length > 0 ? val[0].historyId : "";
       //去除重复
       // const set = new Set();
-      // this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
+      // this.message = val.filter((item) =>
+      //   !set.has(item.historyId) ? set.add(item.historyId) : false
+      // );
       this.gotoBottom();
     },
   },
@@ -117,14 +112,14 @@ export default {
     .message-nickname {
       color: #777777;
       font-size: 12px;
-      span{
+      span {
         color: #0079fe;
       }
     }
-    .userIdStyle{
-      color:rgb(255, 0, 0)!important;
+    .userIdStyle {
+      color: rgb(255, 0, 0) !important;
     }
-    .message-classic{
+    .message-classic {
       position: relative;
       max-width: 45%;
       margin-top: 5px;
@@ -142,9 +137,9 @@ export default {
   }
 }
 .message-pabel-box .eye-more {
-    width: 100%;
-    padding: 25px 0 15px 0;
-    font-size: 12px;
-    text-align: center;
+  width: 100%;
+  padding: 25px 0 15px 0;
+  font-size: 12px;
+  text-align: center;
 }
 </style>

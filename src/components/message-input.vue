@@ -1,9 +1,8 @@
 <template>
   <div class="message-input-box">
-    <div class="no-login" v-if="isLogin === null">
+    <div class="no-login" v-if="isGuest">
       <span>登入后加入讨论</span>
     </div>
-    
     <div class="text-send-box" v-else> 
       <el-input
         type="textarea"
@@ -29,7 +28,6 @@ export default {
   data() {
     return {
       textArea: "",
-      isLogin:localStorage.getItem("token")
     };
   },
   props: {
@@ -37,6 +35,9 @@ export default {
     userInfoData: {
       type: Object,
     },
+    isGuest: {
+      type: Boolean,
+    },  
   },
   methods: {
     // 消息过滤
