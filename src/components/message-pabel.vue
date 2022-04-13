@@ -50,7 +50,6 @@ export default {
   watch: {
     messageData(val) {
       val.forEach((data)=>{
-
         console.log(data)
       })
       // this.message = val
