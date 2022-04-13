@@ -19,7 +19,7 @@ const emitter = new Vue({
     },
     // 初始化 websocket 
     connect() {
-      const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
+      const wsUrl = "ws://test.hichat3rd.tools/im/echo";//模擬環境
       var socket = new WebSocket(wsUrl);
       var chatDataKey = {
         chatType:"CLI_AUTH",

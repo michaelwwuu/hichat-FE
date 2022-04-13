@@ -33,8 +33,7 @@ export default {
       // 登入資訊
       loginForm: {
         isGuest:this.$route.query.isGuest,
-        room: this.$route.query.room,
-        userName: this.$route.query.id,
+        username: this.$route.query.id,
         sign:"",
         platformCode:"dcw", 
       },
