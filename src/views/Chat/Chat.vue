@@ -11,7 +11,6 @@
         </el-header>
         <message-pabel
           :isShowMoreMsg="isShowMoreMsg"
-          @isShowMoreBtn="isShowMoreBtn"
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
@@ -168,10 +167,10 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
+      let userId = []
       switch (userInfo.chatType) {
         // 加入房间成功
         case "SRV_JOIN_ROOM":
-          let userId = []
           this.userInfoData.toChatId = userInfo.chatRoomId
           userInfo.roomMemberList.forEach((list)=>{
             userId.push(list.username)
@@ -222,6 +221,12 @@ export default {
           let historyPageSize = userInfo.pageSize;
           if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
+            userId.push(el.fromChatId)
+            this.chatListData.forEach((userList)=>{
+              if(el.fromChatId === JSON.stringify(userList.id)){
+                return el.username = userList.nickname
+              }
+            })
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });

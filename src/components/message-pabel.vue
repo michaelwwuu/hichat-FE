@@ -141,4 +141,10 @@ export default {
     }
   }
 }
+.message-pabel-box .eye-more {
+    width: 100%;
+    padding: 25px 0 15px 0;
+    font-size: 12px;
+    text-align: center;
+}
 </style>
