@@ -8,10 +8,10 @@
       > 
       
         <template v-if="item.chatType === 'SRV_JOIN_ROOM'">
-           <span class="message-nickname">{{item.username}}：<span style="color:#F00">進入聊天室</span></span>
+           <span class="message-nickname"><span>{{item.username}}：</span><span style="color:#F00">進入聊天室</span></span>
         </template>
         <template v-else>
-          <span class="message-nickname"><span :class="{'userIdStyle':item.fromChatId === userId}">{{item.username}}</span>：{{item.message.content}}</span>
+          <span class="message-nickname"><span :class="{'userIdStyle':item.fromChatId === userId}">{{item.username}}：</span>{{item.message.content}}</span>
 
           <!-- <p class="message-nickname" :class="{'userIdStyle':item.fromChatId === userId}">
           {{ item.username }}
@@ -107,9 +107,12 @@ export default {
     .message-nickname {
       color: #777777;
       font-size: 12px;
+      span{
+        color: #0079fe;
+      }
     }
     .userIdStyle{
-      color:rgb(255, 0, 0)
+      color:rgb(255, 0, 0)!important;
     }
     .message-classic{
       position: relative;
