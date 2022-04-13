@@ -1,5 +1,12 @@
 <template>
   <div class="message-pabel-box">
+    <el-button
+      v-if="isShowMoreMsg"
+      class="eye-more"
+      @click="seeMoreHistoryMsgData()"
+      type="text"
+      >加载更多历史讯息</el-button
+    >
     <ul class="message-styles-box">
       <li
         v-for="(item, index) in message"
