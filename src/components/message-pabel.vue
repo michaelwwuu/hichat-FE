@@ -49,7 +49,10 @@ export default {
   },
   watch: {
     messageData(val) {
-      console.log(val)
+      val.forEach((data)=>{
+
+        console.log(data)
+      })
       // this.message = val
       console.log()
       // this.historyId = val.length > 0 ? val[0].historyId : "";

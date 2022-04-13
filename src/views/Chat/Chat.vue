@@ -170,9 +170,7 @@ export default {
         fromChatId:data.fromChatId = data.chatType === "SRV_JOIN_ROOM" ? data.chatRoomId : data.toChatId,
         username: data.username,
       };
-      console.log(this.chatRoomMsg)
     },
-
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
