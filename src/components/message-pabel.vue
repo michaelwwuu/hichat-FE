@@ -45,6 +45,9 @@ export default {
     messageData: {
       type: Array,
     },
+    isShowMoreMsg: {
+      type: Boolean,
+    },    
   },
   data() {
     return {
