@@ -6,7 +6,7 @@
           <span class="title">聊天室</span>
           <span>
             <font-awesome-icon icon="fire" style="color:#F00"/>
-            <span style="color:#d3d3d3;margin-left:5px;">{{hotNum > 99999 ?'9999++':hotNum}}</span>
+            <span style="color:#d3d3d3;margin-left:5px;">{{messageData.length > 99999 ?'9999++':messageData.length}}</span>
           </span>
         </el-header>
         <message-pabel
@@ -34,9 +34,11 @@ export default {
       loginForm: {
         isGuest:this.$route.query.isGuest,
         username: this.$route.query.id,
+        chatRoomId: this.$route.query.chatRoomId,
         sign:"",
-        platformCode:"dcw", 
+        platformCode:"manycaiSport", 
       },
+      chatListData:[],
       concats: [],
       messageData: [],
       userMemberList: [],
@@ -44,7 +46,7 @@ export default {
         toChatId: '',
         token: '',
         deviceId: '',
-        platformCode: "dcw",
+        platformCode: "manycaiSport",
         tokenType: 1,
       },
       hotNum:99999999,
@@ -59,7 +61,7 @@ export default {
   },
   created() {
     this.userLogin()
-    this.getUserInfo()
+    // this.getUserInfo()
   },
   mounted() {
     Socket.$on("message", this.handleGetMessage);
@@ -117,17 +119,16 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    getUserInfo(){
-      let params = this.loginForm.id
+    getUserInfo(userId){
+      let params = userId
       userinfo(params).then((res) => {
         if (res.code === 200) {
-          this.chatListData = res.data
-          console.log(this.chatListData)
+          this.chatListData = res.data      
         }
       })
     },
     userLogin(){
-      this.loginForm.sign = this.$md5(`code=dcw&username=${ this.loginForm.room }&key=59493d81f1e08daf2a4752225751ef31`)
+      this.loginForm.sign = this.$md5(`code=manycaiSport&username=${ this.loginForm.username }&key=3b6a4512ba3b42f0a1cd2e8b71c06a59`)
       let params = this.loginForm
       login(params).then((res) => {
         if (res.code === 200) {
@@ -137,11 +138,10 @@ export default {
           }
           this.userInfoData.deviceId = this.getUUID()
           this.userInfoData.token = res.data.tokenHead + res.data.token
-          this.userInfoData.toChatId = this.$route.query.chatRoomId
           localStorage.setItem('username', res.data.username)
           localStorage.setItem('isGuest', res.data.isGuest);
           localStorage.setItem('token',res.data.tokenHead + res.data.token);
-          localStorage.setItem('chatRoomId',this.$route.query.chatRoomId)
+          localStorage.setItem('chatRoomId',this.loginForm.chatRoomId);
           Socket.connect()
         }
       })
@@ -149,16 +149,16 @@ export default {
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
-        banRemainTime: data.banRemainTime,
         chatType: data.chatType,
         chatRoomId: data.toChatId,
         platformCode: data.platformCode,
         historyId: data.historyId,
         message: {
           time: data.sendTime,
-          content: this.redEnvelopeIcon(data)
+          content: data.text
         },
-        username: data.fromChatId,
+        fromChatId:data.fromChatId,
+        username: data.username,
       };
     },
 
@@ -169,6 +169,28 @@ export default {
       switch (userInfo.chatType) {
         // 加入房间成功
         case "SRV_JOIN_ROOM":
+          let userId = []
+          this.userInfoData.toChatId = userInfo.chatRoomId
+          userInfo.roomMemberList.forEach((list)=>{
+            userId.push(list.username)
+            this.chatListData.forEach((userList)=>{
+              if(list.username === JSON.stringify(userList.id)){
+                return list.username = userList.nickname
+              }
+            })
+          })
+          this.getUserInfo(userId)
+          this.$nextTick(()=>{
+            setTimeout(() => {
+              this.chatListData.forEach((userList)=>{
+                if(userInfo.username === JSON.stringify(userList.id)){
+                  return userInfo.username = userList.nickname
+                }
+              })
+              this.messageList(userInfo)
+              this.messageData.push(this.chatRoomMsg);
+            }, 1000);
+          })
         // 离开房间成功
         case "SRV_LEAVE_ROOM": 
           // 房主排序第一
@@ -177,17 +199,18 @@ export default {
             setTimeout(() => {
               if(this.isGuest !== false) {
                 this.chatAdminUser = this.concats.filter(el => el.username === this.userName)
-                this.isAdmin = true && this.chatAdminUser[0].isAdmin;
+                // this.isAdmin = true && this.chatAdminUser[0].isAdmin;
               }
             })
           })
           break
         // 发送讯息成功
         case "SRV_ROOM_SEND":
-        // 发送红包成功 目前只有事件 没有功能
-          this.concats.forEach((res) => {
-            if (userInfo.fromChatId === res.username) return (userInfo.banRemainTime = res.banRemainTime);
-          });
+          this.chatListData.forEach((userList)=>{
+            if(userInfo.fromChatId === JSON.stringify(userList.id)){
+              return userInfo.username = userList.nickname
+            }
+          })
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
           break;
@@ -197,9 +220,6 @@ export default {
           let historyPageSize = userInfo.pageSize;
           if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
-            this.concats.forEach((res) => {
-              if (el.fromChatId === res.username) return (el.banRemainTime = res.banRemainTime);
-            });
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });

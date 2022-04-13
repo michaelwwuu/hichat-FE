@@ -5,14 +5,22 @@
         v-for="(item, index) in message"
         :key="index"
         class="message-layout-left"
-      >
-        <p class="message-nickname">
+      > 
+      
+        <template v-if="item.chatType === 'SRV_JOIN_ROOM'">
+           <span class="message-nickname">{{item.username}}：<span style="color:#F00">進入聊天室</span></span>
+        </template>
+        <template v-else>
+          <span class="message-nickname"><span :class="{'userIdStyle':item.fromChatId === userId}">{{item.username}}</span>：{{item.message.content}}</span>
+
+          <!-- <p class="message-nickname" :class="{'userIdStyle':item.fromChatId === userId}">
           {{ item.username }}
-        </p>
-        <p
-          class="message-classic"
-          v-html="item.message.content"
-        ></p>
+          </p>
+          <p
+            class="message-classic"
+            v-html="item.message.content"
+          ></p> -->
+        </template>
       </li>
     </ul>
   </div>
@@ -34,15 +42,17 @@ export default {
   data() {
     return {
       message: [],
+      userId: localStorage.getItem('username'),
       gotoBottom: gotoBottom,
     };
   },
   watch: {
     messageData(val) {
-      this.historyId = val.length > 0 ? val[0].historyId : "";
+      this.message = val
+      // this.historyId = val.length > 0 ? val[0].historyId : "";
       //去除重复
-      const set = new Set();
-      this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
+      // const set = new Set();
+      // this.message = val.filter(item => !set.has(item.historyId) ? set.add(item.historyId) : false);
       this.gotoBottom();
     },
   },
@@ -97,6 +107,9 @@ export default {
     .message-nickname {
       color: #777777;
       font-size: 12px;
+    }
+    .userIdStyle{
+      color:rgb(255, 0, 0)
     }
     .message-classic{
       position: relative;

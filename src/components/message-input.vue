@@ -1,6 +1,6 @@
 <template>
   <div class="message-input-box">
-    <div class="no-login" v-if="!isLogin">
+    <div class="no-login" v-if="isLogin === null">
       <span>登入后加入讨论</span>
     </div>
     
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       textArea: "",
-      isLogin:localStorage.getItem("isLogin")
+      isLogin:localStorage.getItem("token")
     };
   },
   props: {
