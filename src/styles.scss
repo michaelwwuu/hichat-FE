@@ -134,12 +134,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       z-index: 8;
       .el-tabs__header{
         position: fixed;
+        top:105px;
         width: 100vw;
         z-index: 9;
-        // background-color: #e2e0e0;
+        background-color: #eaf5fa;
         display: flex;
         justify-content: space-evenly;
         margin: 0;
+        padding: 5px 0;
         .el-tabs__nav-wrap {
           &:after {
             content: "";
