@@ -10,6 +10,8 @@
           </span>
         </el-header>
         <message-pabel
+          :isShowMoreMsg="isShowMoreMsg"
+          @isShowMoreBtn="isShowMoreBtn"
           :messageData="messageData"
           :userInfoData="userInfoData"
         />
