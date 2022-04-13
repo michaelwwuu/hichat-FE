@@ -514,9 +514,11 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-tabs{
       width: 100%;
       .el-tabs__header{
+        top: 60px;
         width: 299px;
         position: absolute;
         background-color: #FFFFFF !important;
+        padding: 3px 0;
         .el-tabs__nav-wrap{
           .el-tabs__nav{
             width:100%;

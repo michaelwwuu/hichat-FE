@@ -260,7 +260,7 @@ export default {
         return data;
       }
       try {
-        return btoa(atob(data)) == Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }

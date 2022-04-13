@@ -404,7 +404,6 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      console.log(data)
       if (data === "" || data.trim() === "") {
         return data;
       }
