@@ -92,6 +92,7 @@ export default {
         border-radius: 0;
         border: 0;
         background-color: transparent;
+        font-size: 16px;
       }
     }
     .footer-tools {
@@ -101,6 +102,7 @@ export default {
       }
       .send-button {
         width: 90px;
+      
         padding: 7px 10px;
         margin-right: 20px;
         color: #ffffff;
@@ -109,6 +111,9 @@ export default {
           rgba(67, 141, 255, 0.8),
           rgba(19, 99, 255, 0.8)
         );
+        span{
+          font-size: 16px;
+        }
       }
     }
   }

@@ -6,12 +6,12 @@
           <span class="title">聊天室</span>
           <span>
             <font-awesome-icon icon="fire" style="color:#F00"/>
-            <span style="color:#d3d3d3;margin-left:5px;">{{messageData.length > 99999 ?'9999++':messageData.length}}</span>
+            <span style="color:#d3d3d3;margin-left:5px; font-size:16px;">{{messageData.length > 99999 ?'9999++':messageData.length}}</span>
           </span>
         </el-header>
         <message-pabel
           :isShowMoreMsg="isShowMoreMsg"
-          :messageData="messageData"
+          :messageData="newDataArr"
           :userInfoData="userInfoData"
         />
         <message-input :userInfoData="userInfoData" :isGuest="isGuest"/>
@@ -39,10 +39,9 @@ export default {
         sign:"",
         platformCode:"manycaiSport", 
       },
+      newDataArr:[],
       chatListData:[],
-      concats: [],
       messageData: [],
-      userMemberList: [],
       userInfoData: {
         toChatId: '',
         token: '',
@@ -50,19 +49,13 @@ export default {
         platformCode: "manycaiSport",
         tokenType: 1,
       },
-      hotNum:99999999,
-      isChecked: true,
-      isAdmin: false,
-      clearDialog: false,
       isShowMoreMsg: true,
-      banUserInputMask: false,
       isGuest: true,
       userName: getLocal('username'),
     };
   },
   created() {
     this.userLogin()
-    // this.getUserInfo()
   },
   mounted() {
     Socket.$on("message", this.handleGetMessage);
@@ -85,20 +78,8 @@ export default {
       let chatType = val.chatType;
       switch (chatType) {
         case "SRV_JOIN_ROOM":
-          this.$nextTick(() => {
-            setTimeout(() => {
-              // 過濾 socket 斷線不重新Show提示
-              this.concats.forEach((el) => {
-                this.userMemberList.push(el.username);
-              });
-              // // 新陣列 統計自己進入次數 長度大於一就不 Show 提示
-              // this.userMemberList = Array.from(new Set(this.userMemberList))
-            });
-          });  
           break;
         case "SRV_LEAVE_ROOM":
-          // 斷線移除此人
-          this.userMemberList = this.userMemberList.filter(el => el !== val.username);
           break;
       }
     }, 
@@ -125,6 +106,7 @@ export default {
       userinfo(params).then((res) => {
         if (res.code === 200) {
           this.chatListData = res.data      
+          this.messageDataList()
         }
       })
     },
@@ -133,10 +115,6 @@ export default {
       let params = this.loginForm
       login(params).then((res) => {
         if (res.code === 200) {
-          if(res.data.isGuest) {
-            this.isShowMoreMsg = false
-            this.banUserInputMask = true
-          }
           this.userInfoData.deviceId = this.getUUID()
           this.userInfoData.token = res.data.tokenHead + res.data.token
           this.isGuest = res.data.isGuest
@@ -148,26 +126,42 @@ export default {
         }
       })
     },    
+    messageDataList(){
+      this.messageData.forEach((res)=>{
+        this.chatListData.forEach((name)=>{
+          if(res.username === JSON.stringify(name.id)){
+            return res.nickname = name.nickname
+          }          
+        })
+      })
+      this.newDataArr = this.messageData
+      console.log(this.newDataArr)
+    },
     // 訊息統一格式
     messageList(data) {
-      let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-        /[xy]/g,
-        function (c) {
-          var r = (Math.random() * 16) | 0,
-            v = c == "x" ? r : (r & 0x3) | 0x8;
-          return v.toString(16);
-        }
-      );
+      // if(data.chatType === "SRV_JOIN_ROOM"){
+      //   this.chatListData.forEach((name)=>{
+      //     if(data.username === JSON.stringify(name.id)){
+      //       return data.username = name.nickname
+      //     }          
+      //   })
+      // }else{
+      //   this.chatListData.forEach((name)=>{
+      //     if(data.fromChatId === JSON.stringify(name.id)){
+      //       return data.username = name.nickname
+      //     }          
+      //   })
+      // }
       this.chatRoomMsg = {
         chatType: data.chatType,
-        chatRoomId: data.toChatId = data.chatType === "SRV_JOIN_ROOM" ? data.chatRoomId : data.toChatId,
+        chatRoomId: data.toChatId,
         platformCode: data.platformCode,
-        historyId: data.historyId = data.chatType === "SRV_JOIN_ROOM" ? number: data.historyId ,
+        historyId: data.historyId,
         message: {
-          time: data.sendTime = data.chatType === "SRV_JOIN_ROOM" ? new Date(): data.sendTime,
+          time: data.sendTime,
           content: data.text = data.chatType === "SRV_JOIN_ROOM" ? "進入聊天室": data.text
         },
-        fromChatId:data.fromChatId = data.chatType === "SRV_JOIN_ROOM" ? data.chatRoomId : data.toChatId,
+        fromChatId:data.fromChatId,
         username: data.username,
       };
     },
@@ -182,62 +176,40 @@ export default {
           this.userInfoData.toChatId = userInfo.chatRoomId
           userInfo.roomMemberList.forEach((list)=>{
             userId.push(list.username)
-            this.chatListData.forEach((userList)=>{
-              if(list.username === JSON.stringify(userList.id)){
-                return list.username = userList.nickname
-              }
-            })
           })
           this.getUserInfo(userId)
-          this.$nextTick(()=>{
-            setTimeout(() => {
-              this.chatListData.forEach((userList)=>{
-                if(userInfo.username === JSON.stringify(userList.id)){
-                  return userInfo.username = userList.nickname
-                }
-              })
-              this.messageList(userInfo)
-              this.messageData.push(this.chatRoomMsg);
-            }, 1000);
-          })
+          this.messageList(userInfo)
+          this.messageData.push(this.chatRoomMsg);
         // 离开房间成功
         case "SRV_LEAVE_ROOM": 
           // 房主排序第一
-          this.concats = userInfo.roomMemberList.sort((a, b) => b.isAdmin - a.isAdmin);
-          this.$nextTick(() => {
-            setTimeout(() => {
-              if(this.isGuest !== false) {
-                this.chatAdminUser = this.concats.filter(el => el.username === this.userName)
-                // this.isAdmin = true && this.chatAdminUser[0].isAdmin;
-              }
-            })
-          })
           break
         // 发送讯息成功
         case "SRV_ROOM_SEND":
-          this.chatListData.forEach((userList)=>{
-            if(userInfo.fromChatId === JSON.stringify(userList.id)){
-              return userInfo.username = userList.nickname
-            }
-          })
+          // this.chatListData.forEach((userList)=>{
+          //   if(userInfo.fromChatId === JSON.stringify(userList.id)){
+          //     return userInfo.username = userList.nickname
+          //   }
+          // })
+          this.messageDataList()
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
           break;
         // 历史讯息
         case "SRV_ROOM_HISTORY_RSP":
+          this.messageData=[]
           let historyMsgList = userInfo.historyMessage;
           let historyPageSize = userInfo.pageSize;
-          if (historyMsgList.length !== historyPageSize) this.isShowMoreMsg = false;
+          console.log(historyPageSize)
+          console.log(historyMsgList.length)
+          if (historyMsgList.length === historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
             userId.push(el.fromChatId)
-            this.chatListData.forEach((userList)=>{
-              if(el.fromChatId === JSON.stringify(userList.id)){
-                return el.username = userList.nickname
-              }
-            })
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });
+          var userIdArr = [...new Set(userId)]
+          this.getUserInfo(userIdArr)
           break;  
       }
     },
@@ -319,7 +291,7 @@ export default {
       }
       .title {
         display: inline-block;
-        font-size: 16px;
+        font-size: 18px;
         letter-spacing: 1px;
         color: #FF0000;
       }

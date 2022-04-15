@@ -14,8 +14,9 @@
         class="message-layout-left"
       >
         <span class="message-nickname"
+          v-if="item.nickname !== 'guest'"
           ><span :class="{ 'userIdStyle': item.fromChatId === userId }"
-            >{{ item.username }}：</span
+            >{{ item.nickname }}：</span
           >
           <span :style="item.chatType === 'SRV_JOIN_ROOM' ? 'color: #f00' :'color: #afafaf;'">{{ item.message.content }}</span>
         </span>
@@ -49,11 +50,7 @@ export default {
   },
   watch: {
     messageData(val) {
-      val.forEach((data)=>{
-        console.log(data)
-      })
-      // this.message = val
-      console.log()
+      this.message = val
       // this.historyId = val.length > 0 ? val[0].historyId : "";
       //去除重复
       // const set = new Set();
@@ -69,9 +66,8 @@ export default {
       let historyMsgList = this.userInfoData;
       historyMsgList.chatType = "CLI_ROOM_HISTORY_REQ";
       historyMsgList.id = Math.random();
-      historyMsgList.minute = 10; //分鐘
       historyMsgList.targetId = this.historyId;
-      historyMsgList.pageSize = 50;
+      historyMsgList.pageSize = 100;
       Socket.send(historyMsgList);
     },
   },
@@ -113,7 +109,7 @@ export default {
     }
     .message-nickname {
       color: #777777;
-      font-size: 12px;
+      font-size: 15px;
       span {
         color: #0079fe;
       }
@@ -141,7 +137,7 @@ export default {
 .message-pabel-box .eye-more {
   width: 100%;
   padding: 25px 0 15px 0;
-  font-size: 12px;
+  font-size: 15px;
   text-align: center;
 }
 </style>
