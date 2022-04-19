@@ -22,6 +22,7 @@
         </span>
       </li>
     </ul>
+    <el-button v-show="showBottomBtn" class="bottom-btn" icon="el-icon-arrow-down" circle></el-button>
   </div>
 </template>
 
@@ -46,6 +47,7 @@ export default {
       message: [],
       userId: localStorage.getItem("username"),
       gotoBottom: gotoBottom,
+      showBottomBtn:false,
     };
   },
   watch: {
@@ -59,10 +61,14 @@ export default {
       // );
       this.gotoBottom();
     },
+    showBottomBtn(val){
+      if(!val) this.gotoBottom();
+    }
   },
   methods: {
     // 查看历史讯息
     seeMoreHistoryMsgData() {
+      this.showBottomBtn = true
       let historyMsgList = this.userInfoData;
       historyMsgList.chatType = "CLI_ROOM_HISTORY_REQ";
       historyMsgList.id = Math.random();
@@ -143,5 +149,10 @@ export default {
   padding: 25px 0 15px 0;
   font-size: 15px;
   text-align: center;
+}
+.bottom-btn{
+  position: fixed;
+  bottom: 200px;
+  right: 270px;
 }
 </style>
