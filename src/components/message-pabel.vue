@@ -22,7 +22,7 @@
         </span>
       </li>
     </ul>
-    <el-button v-show="showBottomBtn" class="bottom-btn" icon="el-icon-arrow-down" circle></el-button>
+    <el-button v-show="showBottomBtn" class="bottom-btn" icon="el-icon-arrow-down" circle @click="goDown"></el-button>
   </div>
 </template>
 
@@ -59,13 +59,19 @@ export default {
       // this.message = val.filter((item) =>
       //   !set.has(item.historyId) ? set.add(item.historyId) : false
       // );
-      this.gotoBottom();
+      if (!this.showBottomBtn) {
+        this.gotoBottom();
+      }
+      console.log(this.showBottomBtn)
     },
     showBottomBtn(val){
       if(!val) this.gotoBottom();
     }
   },
   methods: {
+    goDown(){
+      this.showBottomBtn = false;
+    },
     // 查看历史讯息
     seeMoreHistoryMsgData() {
       this.showBottomBtn = true
