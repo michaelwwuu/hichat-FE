@@ -48,6 +48,7 @@ export default {
         deviceId: '',
         platformCode: "manycaiSport",
         tokenType: 1,
+        username: '',
       },
       isShowMoreMsg: true,
       isGuest: true,
@@ -106,8 +107,15 @@ export default {
       userinfo(params).then((res) => {
         if (res.code === 200) {
           this.chatListData = res.data      
-          this.messageDataList()
-        }
+          this.messageData.forEach((res)=>{
+            this.chatListData.forEach((name)=>{
+              if(res.username === JSON.stringify(name.id)){
+                return res.nickname = name.nickname
+              }       
+            })
+          })
+          this.newDataArr = this.messageData
+        } 
       })
     },
     userLogin(){
@@ -118,40 +126,17 @@ export default {
           this.userInfoData.deviceId = this.getUUID()
           this.userInfoData.token = res.data.tokenHead + res.data.token
           this.isGuest = res.data.isGuest
+          this.userInfoData.username = res.data.username
           localStorage.setItem('username', res.data.username)
-          localStorage.setItem('isGuest', res.data.isGuest);
+          localStorage.setItem('isGuest', res.data.username);
           localStorage.setItem('token',res.data.tokenHead + res.data.token);
           localStorage.setItem('chatRoomId',this.loginForm.chatRoomId);
           Socket.connect()
         }
       })
     },    
-    messageDataList(){
-      this.messageData.forEach((res)=>{
-        this.chatListData.forEach((name)=>{
-          if(res.username === JSON.stringify(name.id)){
-            return res.nickname = name.nickname
-          }          
-        })
-      })
-      this.newDataArr = this.messageData
-      console.log(this.newDataArr)
-    },
     // 訊息統一格式
     messageList(data) {
-      // if(data.chatType === "SRV_JOIN_ROOM"){
-      //   this.chatListData.forEach((name)=>{
-      //     if(data.username === JSON.stringify(name.id)){
-      //       return data.username = name.nickname
-      //     }          
-      //   })
-      // }else{
-      //   this.chatListData.forEach((name)=>{
-      //     if(data.fromChatId === JSON.stringify(name.id)){
-      //       return data.username = name.nickname
-      //     }          
-      //   })
-      // }
       this.chatRoomMsg = {
         chatType: data.chatType,
         chatRoomId: data.toChatId,
@@ -163,6 +148,7 @@ export default {
         },
         fromChatId:data.fromChatId,
         username: data.username,
+        nickname: data.nickname
       };
     },
     // 收取 socket 回来讯息 (全局讯息)
@@ -186,12 +172,12 @@ export default {
           break
         // 发送讯息成功
         case "SRV_ROOM_SEND":
-          // this.chatListData.forEach((userList)=>{
-          //   if(userInfo.fromChatId === JSON.stringify(userList.id)){
-          //     return userInfo.username = userList.nickname
-          //   }
-          // })
-          this.messageDataList()
+          this.chatListData.forEach((userList)=>{
+            if(userInfo.fromChatId === JSON.stringify(userList.id)){
+              userInfo.username = userInfo.fromChatId
+              userInfo.nickname = userList.nickname
+            }
+          })
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
           break;
@@ -200,11 +186,11 @@ export default {
           this.messageData=[]
           let historyMsgList = userInfo.historyMessage;
           let historyPageSize = userInfo.pageSize;
-          console.log(historyPageSize)
-          console.log(historyMsgList.length)
           if (historyMsgList.length === historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
             userId.push(el.fromChatId)
+            el.username = el.fromChatId
+            el.nickname = el.fromChatId
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });

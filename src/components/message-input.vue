@@ -66,6 +66,7 @@ export default {
       message.chatType = "CLI_ROOM_SEND"
       message.id = Math.random();
       message.text = this.textAreaTran();
+      delete message.username
       if (this.blankTesting()) {
         // 发送服务器
         Socket.send(message);

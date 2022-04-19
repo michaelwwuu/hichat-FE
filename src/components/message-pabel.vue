@@ -1,7 +1,7 @@
 <template>
   <div class="message-pabel-box">
     <el-button
-      v-if="isShowMoreMsg"
+      v-if="isShowMoreMsg && userInfoData.usernameCLI_ROOM_SEND !== 'guest'"
       class="eye-more"
       @click="seeMoreHistoryMsgData()"
       type="text"
@@ -14,7 +14,7 @@
         class="message-layout-left"
       >
         <span class="message-nickname"
-          v-if="item.nickname !== 'guest'"
+          v-if="item.username !== 'guest'"
           ><span :class="{ 'userIdStyle': item.fromChatId === userId }"
             >{{ item.nickname }}：</span
           >
@@ -68,6 +68,7 @@ export default {
       historyMsgList.id = Math.random();
       historyMsgList.targetId = this.historyId;
       historyMsgList.pageSize = 100;
+      delete historyMsgList.username
       Socket.send(historyMsgList);
     },
   },
