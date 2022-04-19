@@ -78,7 +78,8 @@ export default {
     wsRes(val) {
       let chatType = val.chatType;
       switch (chatType) {
-        case "SRV_JOIN_ROOM":
+        case "SRV_ROOM_SEND":
+
           break;
         case "SRV_LEAVE_ROOM":
           break;
@@ -102,7 +103,7 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    getUserInfo(userId,key){
+    getUserInfo(userId){
       let params = userId
       userinfo(params).then((res) => {
         if (res.code === 200) {
@@ -110,11 +111,14 @@ export default {
           this.messageData.forEach((res)=>{
             this.chatListData.forEach((name)=>{
               if(res.username === JSON.stringify(name.id)){
-                return res.nickname = name.nickname
+                res.nickname = name.nickname
+                res.username = name.username
               }       
             })
+            localStorage.setItem('chatListData',JSON.stringify(this.chatListData));
           })
           this.newDataArr = this.messageData
+
         } 
       })
     },
@@ -132,6 +136,7 @@ export default {
           localStorage.setItem('token',res.data.tokenHead + res.data.token);
           localStorage.setItem('chatRoomId',this.loginForm.chatRoomId);
           Socket.connect()
+          console.log(this.chatListData)
         }
       })
     },    
@@ -148,10 +153,10 @@ export default {
         },
         fromChatId:data.fromChatId,
         username: data.username,
-        nickname: data.nickname
+        nickname: data.nickname,
+        typeStyle:data.typeStyle
       };
-      console.log(this.chatRoomMsg)
-      console.log(data)
+
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
@@ -176,10 +181,12 @@ export default {
         case "SRV_ROOM_SEND":
           this.chatListData.forEach((userList)=>{
             if(userInfo.fromChatId === JSON.stringify(userList.id)){
-              userInfo.username = userInfo.fromChatId
               userInfo.nickname = userList.nickname
             }
           })
+          if(userInfo.fromChatId === localStorage.getItem("username")){
+            userInfo.typeStyle = "userIdStyle"
+          }
           this.messageList(userInfo)
           this.messageData.push(this.chatRoomMsg);
           break;
@@ -191,16 +198,17 @@ export default {
           historyMsgList.forEach((el) => {
             userId.push(el.fromChatId)
             el.username = el.fromChatId
-            el.nickname = el.fromChatId
+            if(el.fromChatId === localStorage.getItem("username")){
+              el.typeStyle = "userIdStyle"
+            }
             this.messageList(el)
             this.messageData.unshift(this.chatRoomMsg);
           });
-          var userIdArr = [...new Set(userId)]
+          let userIdArr = [...new Set(userId)]
           this.getUserInfo(userIdArr)
           break;  
       }
     },
-
     // 关闭socket
     closeWebsocket() {
       Socket.onClose();

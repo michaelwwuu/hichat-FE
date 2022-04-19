@@ -3,6 +3,7 @@
     <el-button
       v-if="isShowMoreMsg && userInfoData.usernameCLI_ROOM_SEND !== 'guest'"
       class="eye-more"
+      :disabled="disabled"
       @click="seeMoreHistoryMsgData()"
       type="text"
       >加载更多历史讯息</el-button
@@ -15,14 +16,16 @@
       >
         <span class="message-nickname"
           v-if="item.username !== 'guest'"
-          ><span :class="{ 'userIdStyle': item.fromChatId === userId }"
+          ><span :class="item.typeStyle"
             >{{ item.nickname }}：</span
           >
           <span :style="item.chatType === 'SRV_JOIN_ROOM' ? 'color: #f00' :'color: #afafaf;'">{{ item.message.content }}</span>
         </span>
       </li>
     </ul>
-    <el-button v-show="showBottomBtn" class="bottom-btn" icon="el-icon-arrow-down" circle @click="goDown"></el-button>
+    <div class="bottom-btn">
+      <el-button v-show="showBottomBtn" icon="el-icon-arrow-down" circle @click="goDown"></el-button>
+    </div> 
   </div>
 </template>
 
@@ -45,9 +48,10 @@ export default {
   data() {
     return {
       message: [],
-      userId: localStorage.getItem("username"),
       gotoBottom: gotoBottom,
       showBottomBtn:false,
+      disabled:false,
+      historyNum:0,
     };
   },
   watch: {
@@ -59,14 +63,28 @@ export default {
       // this.message = val.filter((item) =>
       //   !set.has(item.historyId) ? set.add(item.historyId) : false
       // );
-      if (!this.showBottomBtn) {
-        this.gotoBottom();
-      }
-      console.log(this.showBottomBtn)
+      if (!this.showBottomBtn)this.gotoBottom()
+
     },
     showBottomBtn(val){
       if(!val) this.gotoBottom();
     }
+  },
+  mounted() {
+    window.addEventListener(
+      "scroll",
+      () => {
+        let scrollTopBox =
+          document.getElementsByClassName("message-pabel-box")[0];
+        let scrollTop =
+          document.documentElement.scrollTop ||
+          document.body.scrollTop ||
+          document.querySelector(".message-pabel-box").scrollTop;
+        this.showBottomBtn =
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 450
+      },
+      true
+    );
   },
   methods: {
     goDown(){
@@ -75,6 +93,7 @@ export default {
     // 查看历史讯息
     seeMoreHistoryMsgData() {
       this.showBottomBtn = true
+      this.historyNum ++
       let historyMsgList = this.userInfoData;
       historyMsgList.chatType = "CLI_ROOM_HISTORY_REQ";
       historyMsgList.id = Math.random();
@@ -82,9 +101,16 @@ export default {
       historyMsgList.pageSize = 100;
       delete historyMsgList.username
       delete historyMsgList.text
+      this.disabled = true
       setTimeout(() => {
         Socket.send(historyMsgList);  
       }, 500);
+      setTimeout(() => {
+        this.disabled = false
+      },1500)
+      if(this.historyNum <1){
+        return false;
+      }
     },
   },
 };
@@ -157,8 +183,9 @@ export default {
   text-align: center;
 }
 .bottom-btn{
+  width: 450px;
   position: fixed;
-  bottom: 200px;
-  right: 270px;
+  bottom: 170px;
+  text-align: right;
 }
 </style>
