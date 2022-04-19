@@ -114,10 +114,11 @@ export default {
                 res.nickname = name.nickname
                 res.username = name.username
               }       
+
             })
-            localStorage.setItem('chatListData',JSON.stringify(this.chatListData));
           })
           this.newDataArr = this.messageData
+
 
         } 
       })
