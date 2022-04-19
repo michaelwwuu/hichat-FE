@@ -51,7 +51,7 @@ export default {
   watch: {
     messageData(val) {
       this.message = val
-      // this.historyId = val.length > 0 ? val[0].historyId : "";
+      this.historyId = val.length > 0 ? val[0].historyId : "";
       //去除重复
       // const set = new Set();
       // this.message = val.filter((item) =>
@@ -69,7 +69,10 @@ export default {
       historyMsgList.targetId = this.historyId;
       historyMsgList.pageSize = 100;
       delete historyMsgList.username
-      Socket.send(historyMsgList);
+      delete historyMsgList.text
+      setTimeout(() => {
+        Socket.send(historyMsgList);  
+      }, 500);
     },
   },
 };

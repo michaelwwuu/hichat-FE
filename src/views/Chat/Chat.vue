@@ -102,7 +102,7 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    getUserInfo(userId){
+    getUserInfo(userId,key){
       let params = userId
       userinfo(params).then((res) => {
         if (res.code === 200) {
@@ -183,10 +183,9 @@ export default {
           break;
         // 历史讯息
         case "SRV_ROOM_HISTORY_RSP":
-          this.messageData=[]
           let historyMsgList = userInfo.historyMessage;
           let historyPageSize = userInfo.pageSize;
-          if (historyMsgList.length === historyPageSize) this.isShowMoreMsg = false;
+          if (historyMsgList.length < historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
             userId.push(el.fromChatId)
             el.username = el.fromChatId
