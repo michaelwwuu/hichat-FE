@@ -150,6 +150,8 @@ export default {
         username: data.username,
         nickname: data.nickname
       };
+      console.log(this.chatRoomMsg)
+      console.log(data)
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
