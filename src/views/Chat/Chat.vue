@@ -39,6 +39,7 @@ export default {
         sign:"",
         platformCode:"manycaiSport", 
       },
+      userListId:[],
       newDataArr:[],
       chatListData:[],
       messageData: [],
@@ -104,22 +105,22 @@ export default {
       return "hiWeb" + number
     },
     getUserInfo(userId){
-      let params = userId
+      let params = [...new Set(userId)]
       userinfo(params).then((res) => {
         if (res.code === 200) {
-          this.chatListData = res.data      
+          this.chatListData = res.data  
           this.messageData.forEach((res)=>{
             this.chatListData.forEach((name)=>{
               if(res.username === JSON.stringify(name.id)){
                 res.nickname = name.nickname
                 res.username = name.username
-              }       
-
+              }
+              if(res.fromChatId === localStorage.getItem("username")){
+                res.typeStyle = "userIdStyle"
+              }    
             })
           })
           this.newDataArr = this.messageData
-
-
         } 
       })
     },
@@ -137,12 +138,11 @@ export default {
           localStorage.setItem('token',res.data.tokenHead + res.data.token);
           localStorage.setItem('chatRoomId',this.loginForm.chatRoomId);
           Socket.connect()
-          console.log(this.chatListData)
         }
       })
     },    
     // 訊息統一格式
-    messageList(data) {
+    messageList(data,chatType) {
       this.chatRoomMsg = {
         chatType: data.chatType,
         chatRoomId: data.toChatId,
@@ -153,27 +153,39 @@ export default {
           content: data.text = data.chatType === "SRV_JOIN_ROOM" ? "進入聊天室": data.text
         },
         fromChatId:data.fromChatId,
-        username: data.username,
+        username: data.fromChatId,
         nickname: data.nickname,
-        typeStyle:data.typeStyle
+        typeStyle:data.typeStyle = data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
-
+      if(data.chatType === "SRV_JOIN_ROOM"){
+        setTimeout(() => {
+          this.chatListData.forEach((el=>{
+            if(data.username === JSON.stringify(el.id)){
+              this.chatRoomMsg.nickname = el.nickname
+            }
+          }))
+          this.messageData.push(this.chatRoomMsg);
+        }, 500);
+      }
+      if(chatType === "SRV_ROOM_HISTORY_RSP"){
+        this.messageData.unshift(this.chatRoomMsg);
+      }else if (chatType === "SRV_ROOM_SEND"){
+        this.messageData.push(this.chatRoomMsg);
+      }
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-      let userId = []
       switch (userInfo.chatType) {
         // 加入房间成功
         case "SRV_JOIN_ROOM":
           this.userInfoData.toChatId = userInfo.chatRoomId
           userInfo.roomMemberList.forEach((list)=>{
-            userId.push(list.username)
+            this.userListId.push(list.username)
           })
-          this.getUserInfo(userId)
+          this.getUserInfo(this.userListId)
           this.messageList(userInfo)
-          this.messageData.push(this.chatRoomMsg);
         // 离开房间成功
         case "SRV_LEAVE_ROOM": 
           // 房主排序第一
@@ -185,11 +197,7 @@ export default {
               userInfo.nickname = userList.nickname
             }
           })
-          if(userInfo.fromChatId === localStorage.getItem("username")){
-            userInfo.typeStyle = "userIdStyle"
-          }
-          this.messageList(userInfo)
-          this.messageData.push(this.chatRoomMsg);
+          this.messageList(userInfo,"SRV_ROOM_SEND")
           break;
         // 历史讯息
         case "SRV_ROOM_HISTORY_RSP":
@@ -197,16 +205,14 @@ export default {
           let historyPageSize = userInfo.pageSize;
           if (historyMsgList.length < historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
-            userId.push(el.fromChatId)
-            el.username = el.fromChatId
-            if(el.fromChatId === localStorage.getItem("username")){
-              el.typeStyle = "userIdStyle"
-            }
-            this.messageList(el)
-            this.messageData.unshift(this.chatRoomMsg);
+            this.messageList(el,"SRV_ROOM_HISTORY_RSP")
           });
-          let userIdArr = [...new Set(userId)]
-          this.getUserInfo(userIdArr)
+          const set = new Set();
+          this.newList = historyMsgList.filter((item) =>
+            !set.has(item.fromChatId) ? set.add(item.fromChatId) : false
+          );
+          this.newList.forEach(num => this.userListId.push(num.fromChatId));
+          this.getUserInfo(this.userListId)
           break;  
       }
     },
