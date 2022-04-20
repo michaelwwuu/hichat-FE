@@ -6,7 +6,7 @@
           <span class="title">聊天室</span>
           <span>
             <font-awesome-icon icon="fire" style="color:#F00"/>
-            <span style="color:#d3d3d3;margin-left:5px; font-size:16px;">{{messageData.length > 99999 ?'9999++':messageData.length}}</span>
+            <span style="color:#d3d3d3;margin-left:5px; font-size:16px;">{{newDataArr.length > 99999 ?'9999++':newDataArr.length}}</span>
           </span>
         </el-header>
         <message-pabel
@@ -58,9 +58,12 @@ export default {
   },
   created() {
     this.userLogin()
+    this.getUserInfo(this.loginForm.username)
+
   },
   mounted() {
     Socket.$on("message", this.handleGetMessage);
+        
     window.addEventListener("beforeunload", this.closeWebsocket); 
   },
   beforeDestroy() {
@@ -104,7 +107,7 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    getUserInfo(userId){
+    getUserInfo(userId,type){
       let params = [...new Set(userId)]
       userinfo(params).then((res) => {
         if (res.code === 200) {
@@ -117,10 +120,9 @@ export default {
               }
               if(res.fromChatId === localStorage.getItem("username")){
                 res.typeStyle = "userIdStyle"
-              }    
+              }  
             })
-          })
-          this.newDataArr = this.messageData
+          })      
         } 
       })
     },
@@ -140,6 +142,7 @@ export default {
           Socket.connect()
         }
       })
+      
     },    
     // 訊息統一格式
     messageList(data,chatType) {
@@ -153,24 +156,20 @@ export default {
           content: data.text = data.chatType === "SRV_JOIN_ROOM" ? "進入聊天室": data.text
         },
         fromChatId:data.fromChatId,
-        username: data.fromChatId,
+        username: data.fromChatId = data.chatType === "SRV_JOIN_ROOM" ? data.username : data.fromChatId,
         nickname: data.nickname,
-        typeStyle:data.typeStyle = data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
+        typeStyle:data.typeStyle = data.chatType !== "SRV_JOIN_ROOM" && data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
-      if(data.chatType === "SRV_JOIN_ROOM"){
-        setTimeout(() => {
-          this.chatListData.forEach((el=>{
-            if(data.username === JSON.stringify(el.id)){
-              this.chatRoomMsg.nickname = el.nickname
-            }
-          }))
-          this.messageData.push(this.chatRoomMsg);
-        }, 500);
-      }
       if(chatType === "SRV_ROOM_HISTORY_RSP"){
+        this.newDataArr = this.messageData
         this.messageData.unshift(this.chatRoomMsg);
-      }else if (chatType === "SRV_ROOM_SEND"){
-        this.messageData.push(this.chatRoomMsg);
+      }else if (chatType === "SRV_JOIN_ROOM"){
+        setTimeout(() => {
+          this.newDataArr = this.messageData.filter((item) => !set.has(item.fromChatId) ? set.add(item.fromChatId) : false )
+          this.newDataArr.push(this.chatRoomMsg)
+        }, 800);
+      }else if(chatType === "SRV_ROOM_SEND"){
+        this.newDataArr.push(this.chatRoomMsg);
       }
     },
     // 收取 socket 回来讯息 (全局讯息)
@@ -185,11 +184,14 @@ export default {
             this.userListId.push(list.username)
           })
           this.getUserInfo(this.userListId)
-          this.messageList(userInfo)
-        // 离开房间成功
-        case "SRV_LEAVE_ROOM": 
-          // 房主排序第一
-          break
+          setTimeout(() => {
+            this.chatListData.forEach((list)=>{
+               if(userInfo.username === JSON.stringify(list.id)){
+                userInfo.nickname = list.nickname
+              }
+            })
+            this.messageList(userInfo,"SRV_JOIN_ROOM")
+          }, 800);
         // 发送讯息成功
         case "SRV_ROOM_SEND":
           this.chatListData.forEach((userList)=>{
@@ -207,12 +209,13 @@ export default {
           historyMsgList.forEach((el) => {
             this.messageList(el,"SRV_ROOM_HISTORY_RSP")
           });
+          
           const set = new Set();
           this.newList = historyMsgList.filter((item) =>
             !set.has(item.fromChatId) ? set.add(item.fromChatId) : false
           );
           this.newList.forEach(num => this.userListId.push(num.fromChatId));
-          this.getUserInfo(this.userListId)
+          this.getUserInfo(this.userListId,"SRV_ROOM_HISTORY_RSP")
           break;  
       }
     },

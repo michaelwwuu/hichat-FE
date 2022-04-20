@@ -36,6 +36,8 @@ const emitter = new Vue({
           // 连线成功
           case "SRV_NEED_AUTH":
             socket.send(JSON.stringify(chatDataKey));
+            let heartBeat ={ chatType: "CLI_HEARTBEAT"}
+            setInterval(()=> socket.send(JSON.stringify(heartBeat)),50000)
             break;
           // 连线失敗
           case "SRV_ERROR_MSG":
@@ -53,11 +55,6 @@ const emitter = new Vue({
             chatDataKey.toChatId = localStorage.getItem('chatRoomId');
             socket.send(JSON.stringify(chatDataKey));
             break;
-          // 加入房间  
-          case "SRV_JOIN_ROOM":
-            let heartBeat ={ chatType: "CLI_HEARTBEAT"}
-            setInterval(()=> socket.send(JSON.stringify(heartBeat)),25000)
-            break
         }
         emitter.$emit("message", msg.data);
       };
