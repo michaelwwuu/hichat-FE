@@ -107,7 +107,7 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    getUserInfo(userId){
+    getUserInfo(userId,type){
       let params = [...new Set(userId)]
       userinfo(params).then((res) => {
         if (res.code === 200) {
@@ -162,6 +162,7 @@ export default {
         typeStyle:data.typeStyle = data.chatType !== "SRV_JOIN_ROOM" && data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
       if(chatType === "SRV_ROOM_HISTORY_RSP"){
+        this.newDataArr = this.messageData
         this.messageData.unshift(this.chatRoomMsg);
       }else if (data.chatType === "SRV_JOIN_ROOM"){
         this.messageData.push(this.chatRoomMsg);
@@ -200,12 +201,13 @@ export default {
           historyMsgList.forEach((el) => {
             this.messageList(el,"SRV_ROOM_HISTORY_RSP")
           });
+          
           const set = new Set();
           this.newList = historyMsgList.filter((item) =>
             !set.has(item.fromChatId) ? set.add(item.fromChatId) : false
           );
           this.newList.forEach(num => this.userListId.push(num.fromChatId));
-          this.getUserInfo(this.userListId)
+          this.getUserInfo(this.userListId,"SRV_ROOM_HISTORY_RSP")
           break;  
       }
     },
