@@ -58,7 +58,11 @@ export default {
     },
     // 按Enter发送消息
     keyUp(event) {
-      if (event.key === "Enter") this.sendMessage();
+      if (event.shiftKey && event.keyCode === 13) {
+        return this.textArea;
+      } else if (event.key === "Enter") {
+        this.sendMessage();
+      }
     },
     // 发送消息
     sendMessage() {
