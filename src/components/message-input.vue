@@ -69,7 +69,7 @@ export default {
       let message = this.userInfoData;
       message.chatType = "CLI_ROOM_SEND"
       message.id = Math.random();
-      message.text = this.textAreaTran();
+      message.text = this.textArea;
       delete message.username
       if (this.blankTesting()) {
         // 发送服务器
