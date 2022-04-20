@@ -19,8 +19,12 @@
           ><span :class="item.typeStyle"
             >{{ item.nickname }}：</span
           >
-          <span :style="item.chatType === 'SRV_JOIN_ROOM' ? 'color: #f00' :'color: #afafaf;'">{{ item.message.content }}</span>
+         
         </span>
+        <span class="message-classic">
+           <span :style="item.chatType === 'SRV_JOIN_ROOM' ? 'color: #f00' :'color: #afafaf;'">{{ item.message.content }}</span>
+        </span>
+        
       </li>
     </ul>
     <div class="bottom-btn">
@@ -57,12 +61,17 @@ export default {
   watch: {
     messageData(val) {
       this.message = val
+      console.log(this.message)
       this.historyId = val.length > 0 ? val[0].historyId : "";
       //去除重复
-      // const set = new Set();
-      // this.message = val.filter((item) =>
-      //   !set.has(item.historyId) ? set.add(item.historyId) : false
-      // );
+      const set = new Set();
+      this.message = val.filter((item) =>{
+        if(item.chatType === "SRV_JOIN_ROOM"){
+          return !set.has(item.nickname) ? set.add(item.nickname) : false
+        }else{
+          return item
+        }
+      });
       if (!this.showBottomBtn)this.gotoBottom()
 
     },
@@ -129,29 +138,31 @@ export default {
     .message-layout-left {
       margin-top: 20px;
       width: 100%;
-      .message-classic::before {
-        content: "";
-        position: absolute;
-        border-width: 8px;
-        border-style: solid;
-      }
+      display: flex;
+      // .message-classic::before {
+      //   content: "";
+      //   position: absolute;
+      //   border-width: 8px;
+      //   border-style: solid;
+      // }
     }
 
     .message-layout-left {
       .message-classic {
-        background-color: rgb(243, 249, 255);
+        // background-color: rgb(243, 249, 255);
         line-height: 1.4rem;
         font-weight: 500;
         letter-spacing: 0.5px;
-        &::before {
-          left: -16px;
-          border-color: transparent rgb(243, 249, 255) transparent transparent;
-        }
+        // &::before {
+        //   left: -16px;
+        //   border-color: transparent rgb(243, 249, 255) transparent transparent;
+        // }
       }
     }
     .message-nickname {
       color: #777777;
       font-size: 15px;
+      line-height: 1.4rem;
       span {
         color: #0079fe;
       }
@@ -162,9 +173,7 @@ export default {
     .message-classic {
       position: relative;
       max-width: 45%;
-      margin-top: 5px;
       display: inline-block;
-      padding: 9px 12px;
       font-size: 14px;
       color: #333333;
       border-radius: 5px;

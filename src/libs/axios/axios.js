@@ -3,7 +3,7 @@ import qs from 'qs'
 import { getToken } from '../utils/utils.js'
 axios.defaults.headers.post['Content-Type'] = "'Content-Type': 'multipart/form-data'";
 //axios.defaults.headers.post['Content-Type'] = 'application/json'
-axios.defaults.timeout = 48000
+axios.defaults.timeout = 100000
 
 // 前端axios添加withCredentials属性
 axios.defaults.withCredentials = true
