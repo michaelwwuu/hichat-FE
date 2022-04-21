@@ -48,6 +48,9 @@ export default {
     isShowMoreMsg: {
       type: Boolean,
     },
+    chatListData:{
+      type: Array,
+    },
   },
   data() {
     return {
@@ -60,20 +63,24 @@ export default {
   },
   watch: {
     messageData(val) {
-      this.message = val
-      console.log(this.message)
       this.historyId = val.length > 0 ? val[0].historyId : "";
       //去除重复
       const set = new Set();
-      this.message = val.filter((item) =>{
-        if(item.chatType === "SRV_JOIN_ROOM"){
-          return !set.has(item.nickname) ? set.add(item.nickname) : false
-        }else{
-          return item
-        }
-      });
-      if (!this.showBottomBtn)this.gotoBottom()
-
+      setTimeout(() => {
+        this.message = val.filter((item) =>{
+          if(item.chatType === "SRV_JOIN_ROOM"){
+            this.chatListData.forEach((el)=>{
+              if(item.nickname === JSON.stringify(el.id)){
+                return item.nickname = el.nickname
+              } 
+            })
+            return !set.has(item.nickname) ? set.add(item.nickname) : false
+          }else{
+            return item
+          }
+        });
+        if (!this.showBottomBtn) this.gotoBottom()
+      }, 600);    
     },
     showBottomBtn(val){
       if(!val) this.gotoBottom();
@@ -172,7 +179,7 @@ export default {
     }
     .message-classic {
       position: relative;
-      max-width: 45%;
+      max-width: 95%;
       display: inline-block;
       font-size: 14px;
       color: #333333;

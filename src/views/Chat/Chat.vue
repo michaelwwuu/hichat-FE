@@ -6,13 +6,14 @@
           <span class="title">聊天室</span>
           <span>
             <font-awesome-icon icon="fire" style="color:#F00"/>
-            <span style="color:#d3d3d3;margin-left:5px; font-size:16px;">{{newDataArr.length > 99999 ?'9999++':newDataArr.length}}</span>
+            <span style="color:#d3d3d3;margin-left:5px; font-size:16px;">{{num.length > 99999 ?'9999++': num.length}}</span>
           </span>
         </el-header>
         <message-pabel
           :isShowMoreMsg="isShowMoreMsg"
           :messageData="messageData"
           :userInfoData="userInfoData"
+          :chatListData="chatListData"
         />
         <message-input :userInfoData="userInfoData" :isGuest="isGuest"/>
       </el-main>
@@ -39,8 +40,8 @@ export default {
         sign:"",
         platformCode:"manycaiSport", 
       },
+      num:[],
       userListId:[],
-      newDataArr:[],
       chatListData:[],
       messageData: [],
       userInfoData: {
@@ -89,6 +90,12 @@ export default {
           break;
       }
     }, 
+    messageData(val){
+      const set = new Set();
+      this.num = val.filter((item)=>{
+        return !set.has(item.historyId) ? set.add(item.historyId) : false
+      })
+    }
   },
   methods: {
     ...mapMutations({
@@ -157,12 +164,11 @@ export default {
           content: data.text = data.chatType === "SRV_JOIN_ROOM" ? "進入聊天室": data.text
         },
         fromChatId:data.fromChatId,
-        username: data.fromChatId = data.chatType === "SRV_JOIN_ROOM" ? data.username : data.fromChatId,
+        username: data.fromChatId,
         nickname: data.nickname = data.chatType === "SRV_JOIN_ROOM" ? data.username : data.nickname,
         typeStyle:data.typeStyle = data.chatType !== "SRV_JOIN_ROOM" && data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
       if(chatType === "SRV_ROOM_HISTORY_RSP"){
-        this.newDataArr = this.messageData
         this.messageData.unshift(this.chatRoomMsg);
       }else if (data.chatType === "SRV_JOIN_ROOM"){
         this.messageData.push(this.chatRoomMsg);
@@ -178,10 +184,10 @@ export default {
         // 加入房间成功
         case "SRV_JOIN_ROOM":
           this.userInfoData.toChatId = userInfo.chatRoomId
+          userInfo.username = userInfo.username
           userInfo.roomMemberList.forEach((list)=>{
             this.userListId.push(list.username)
           })
-          userInfo.username = userInfo.username
           this.getUserInfo(this.userListId)
           this.messageList(userInfo)
         // 发送讯息成功

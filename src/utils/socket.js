@@ -1,5 +1,5 @@
 import Vue from "vue";
-const wsUrl = "ws://test.hichat3rd.tools/ws/im/echo";//模擬環境
+const wsUrl = "wss://test.hichat3rd.tools/ws/im/echo";//模擬環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   methods: {

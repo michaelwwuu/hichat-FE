@@ -7,6 +7,7 @@
       <el-input
         type="textarea"
         resize="none"
+        maxlength="1000"
         placeholder="请输入文字..."
         :autosize="{ minRows: 3.5, maxRows: 3.5 }"
         v-model="textArea"
