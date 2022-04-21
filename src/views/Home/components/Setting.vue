@@ -215,7 +215,7 @@ export default {
     &::after {
       content: "";
       display: block;
-      border-bottom: 1px solid #b3b3b3;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       width: 100%;
       margin-left: 10px;
       position: relative;
@@ -287,7 +287,7 @@ export default {
   }
   .bor_mt10 {
     padding: 1em 0 0.5em 0.5em;
-    border-top: 3px solid #b3b3b377;
+    border-top: 3px solid rgba(0, 0, 0, 0.05);
   }
   .no_bor_mb10 {
     padding: 0.5em 0 1em 0.5em;

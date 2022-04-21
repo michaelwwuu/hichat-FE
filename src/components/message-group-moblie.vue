@@ -54,13 +54,17 @@
                             :src="isBase64(el.isRplay.text)"
                             style="border-radius: 5px"
                           />
-                          <audio
+                          <!-- <audio
                             v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
                             class="message-audio"
                             controls
                             :src="isBase64(el.isRplay.text)"
                             type="mp3"
-                          ></audio>
+                          ></audio> -->
+                          <mini-audio
+                            v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
+                            :audio-source="isBase64(el.isRplay.text)"
+                          ></mini-audio>
                         </div>
                       </div>
                     </div>
@@ -154,7 +158,9 @@
             >
               <div class="message-box">
                 <span class="message-name">{{ el.name }}</span>
-                <audio controls :src="el.message.content" type="mp3"></audio>
+                <mini-audio
+                  :audio-source="el.message.content"
+                ></mini-audio>
               </div>
             </span>
             <span
@@ -567,8 +573,8 @@ export default {
     text-align: center;
     margin: 1em 0;
     span {
-      background-color: #d3d3d3;
-      padding: 3px 8px;
+      background-color: rgba(0, 0, 0, 0.05);;
+      padding: 4px 15px;
       border-radius: 10px;
     }
   }
@@ -586,7 +592,7 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f3f9ff;
+          background-color: rgba(0, 0, 0, 0.05);
           height: auto;
           padding: 9px 12px;
           .message-box {
@@ -616,7 +622,7 @@ export default {
         }
       }
       .message-classic {
-        background-color: rgb(243, 249, 255);
+        background-color: rgba(0, 0, 0, 0.05);
         line-height: 1.4rem;
         font-weight: 500;
         letter-spacing: 0.5px;
@@ -634,12 +640,12 @@ export default {
         position: relative;
         // margin-top: 1em;
         display: inline-block;
-        padding: 5px 6px 2px 6px;
-        background-color: #f3f9ff;
+        padding: 5px 10px;
+        background-color: rgba(0, 0, 0, 0.05);
         border-radius: 10px;
         .message-box {
           .message-name {
-            padding-bottom: 5px;
+            padding: 10px 0;
           }
           .el-image {
             width: auto !important;
@@ -659,7 +665,7 @@ export default {
         flex-flow: row-reverse;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f1f3f4;
+          background-color: rgba(0, 0, 0, 0.05);
           audio {
             width: 190px;
           }
@@ -674,7 +680,7 @@ export default {
         color: #000000;
         line-height: 1.4rem;
         font-weight: 500;
-        background-color: #f1f3f4;
+        background-color: #FFFFFF;
         letter-spacing: 0.5px;
         border-radius: 8px 0 8px 8px;
       }
@@ -723,7 +729,18 @@ export default {
       border-radius: 2px;
       border: 1px solid #eeeeee;
     }
-
+    .vueAudioBetter{
+        margin:0;
+        box-shadow: none;
+        background-image: none;
+        /deep/.operate{
+          span{
+            &:nth-child(3){
+              color:rgba(0, 0, 0, 0.8) !important
+            }
+          } 
+        }
+      }
     .message-classic,
     .message-disabled {
       position: relative;
@@ -743,11 +760,11 @@ export default {
       }
     }
     .message-audio {
-      width: 190px;
+      // width: 190px;
       height: 2.5em;
       // margin-top: 1em;
       display: inline-block;
-      border: 1px solid #eeeeee;
+      // border: 1px solid #eeeeee;
     }
   }
 }
@@ -843,6 +860,10 @@ export default {
       height: 2.5em !important;
       padding: 0 !important;
       border: none !important;
+      background-color:none;
+    }
+    /deep/.vueAudioBetter{
+      margin:0 !important;
     }
   }
 }
@@ -908,5 +929,9 @@ export default {
 }
 .link-style {
   padding: 10px 0;
+}
+/deep/.linkified{
+  color:#10686e;
+  text-decoration: none;
 }
 </style>

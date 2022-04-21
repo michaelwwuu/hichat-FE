@@ -622,7 +622,7 @@ export default {
   // min-height: webkit-fill-available;
   overflow: hidden;
   width: 100%;
-  background-color: #eaf5fa;
+  background-color: #eef7fb;
   overflow: hidden;
   .el-container {
     position: fixed;
@@ -907,7 +907,7 @@ export default {
 .disabled-user {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   color: #959393;
   justify-content: center;
@@ -917,7 +917,7 @@ export default {
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   color: #959393;
   // justify-content: center;

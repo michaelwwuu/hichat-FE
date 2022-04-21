@@ -248,14 +248,14 @@ export default {
   .user-edit-form {
     /deep/.el-form {
       border-radius: 8px;
-      background-color: #eaeaea;
+      background-color: rgba(0, 0, 0, 0.05);
       .el-form-item {
         .el-form-item__label {
           font-size: 17px;
         }
         .el-input {
           .el-input__inner {
-            background-color: #eaeaea;
+            background:none;
           }
         }
       }

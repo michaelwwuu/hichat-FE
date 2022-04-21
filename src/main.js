@@ -42,6 +42,10 @@ Vue.use(ElementUI);
 import Contextmenu from "vue-contextmenujs"
 Vue.use(Contextmenu);
 
+import VueAudio from 'vue-audio-better'
+
+Vue.use(VueAudio)
+
 Vue.prototype.$md5 = md5;
 Vue.prototype.$moment = moment;
 Vue.config.productionTip = false

@@ -101,7 +101,7 @@
             <span class="home-header-title">创建群组</span>
           </div>
         </el-header>
-        <div v-if="groupEditShow" style="border-bottom: 1px solid #e1e1e1b0;">
+        <div v-if="groupEditShow" style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
           <div class="home-search" >
             <el-input
               placeholder="搜寻"
@@ -470,14 +470,14 @@ export default {
     .user-edit-form{
       /deep/.el-form{
         border-radius: 8px;
-        background-color: #eaeaea;
+        background-color: rgba(0, 0, 0, 0.05);
         .el-form-item{
           .el-form-item__label {
             font-size: 17px;
           }
           .el-input{
             .el-input__inner{
-              background-color: #eaeaea;
+              background:none;
             }
           }
         }

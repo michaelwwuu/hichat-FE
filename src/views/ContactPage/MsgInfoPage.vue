@@ -338,7 +338,7 @@ export default {
 
 <style lang="scss" scoped>
 .home-wrapper {
-  border-left: 1px solid #e1e1e1b0;
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
   .home-header {
     .home-add-user {
       background-color: #fff;
@@ -374,7 +374,7 @@ export default {
       &::after {
         content: "";
         display: block;
-        border-bottom: 1px solid #b3b3b3;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         width: 100%;
         margin-left: 10px;
         position: relative;

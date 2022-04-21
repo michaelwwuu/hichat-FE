@@ -125,7 +125,7 @@ export default {
 .address-box {
   cursor: pointer;
   &:hover {
-    background-color: #ebeaea81;
+    background-color: rgba(0, 0, 0, 0.05);
   }
   .contont-box {
     padding-left: 1em;
@@ -138,7 +138,7 @@ export default {
     }
     .contont-border-bottom {
       width: 100vw;
-      border-bottom: 0.02em solid #b3b3b3;
+      border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
       position: absolute;
     }
   }

@@ -38,7 +38,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .el-input {
         .el-input__inner {
           border: 0;
-          background-color: #e9e8e8;
+          background-color: rgba(0, 0, 0, 0.05);
           color: #666666;
         }
         .el-input__prefix {
@@ -81,7 +81,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
     .home-footer-nav {
       background-color: rgba(255, 255, 255, 0.85);
-      border-top: 1px solid #dddddd;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -493,7 +493,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       position: relative;
       height:100vh;
       .el-header{
-        border-bottom: 1px solid #e1e1e1b0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         img{
           top:0 !important;
           height: 1.5em;
@@ -503,7 +503,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         border-radius:0;
         box-shadow:none;
         background-color: #FFFFFF;
-        border-right: 1px solid #e1e1e1b0;
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
       }
       .el-main{
         min-width: 300px;
@@ -514,17 +514,15 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-tabs{
       width: 100%;
       .el-tabs__header{
-        top: 60px;
+        top: 70px;
         width: 299px;
         position: absolute;
         background-color: #FFFFFF !important;
-        padding: 3px 0;
+
         .el-tabs__nav-wrap{
           .el-tabs__nav{
             width:100%;
             .el-tabs__item{
-              height:55px;
-              line-height:55px;
               padding: 0 1em;
               font-family: 'NotoSansCJKsc, Regular';
               font-size: 18px;
@@ -538,7 +536,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
         }
       }
       .el-tabs__content{
-        border-top: 0.01em solid #e3e3e3;
+        border-top: 0.01em solid rgba(0, 0, 0, 0.05);
         overflow:hidden;
         top:3.4em;
       }

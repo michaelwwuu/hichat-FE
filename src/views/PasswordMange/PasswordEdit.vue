@@ -512,13 +512,13 @@ export default {
     /deep/.el-form {
       .el-form-item {
         border-radius: 8px;
-        background-color: #eaeaea;
+        background-color: rgba(0, 0, 0, 0.05);
         .el-form-item__label {
           font-size: 17px;
         }
         .el-input {
           .el-input__inner {
-            background-color: #eaeaea;
+            background:none;
           }
         }
       }

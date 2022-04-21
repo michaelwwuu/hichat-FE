@@ -46,12 +46,15 @@
                         />
                         <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
                           <div class="reply-audio-box"></div>
-                          <audio
+                           <mini-audio
+                              :audio-source="isBase64(el.isRplay.text)"
+                            ></mini-audio>
+                          <!-- <audio
                             class="message-audio"
                             controls
                             :src="isBase64(el.isRplay.text)"
                             type="mp3"
-                          ></audio>
+                          ></audio> -->
                         </span>
                       </div>
                     </div>
@@ -101,12 +104,16 @@
               "
               @dblclick="dblclick(el)"
             >
-              <audio
+              <!-- <audio
                 class="message-audio"
                 :src="el.message.content"
                 controls
                 type="mp3"
-              ></audio>
+              ></audio> -->
+              <mini-audio
+                class="message-audio"
+                :audio-source="el.message.content"
+              ></mini-audio>
             </span>
             <span
               class="message-image"
@@ -510,6 +517,22 @@ export default {
           }
         }
       }
+      .message-audio{
+        width:350px;
+        display: flex;
+      }
+      .vueAudioBetter{
+        margin: 14px 0;
+        box-shadow: none;
+        background-image: none;
+        /deep/.operate{
+          span{
+            &:nth-child(3){
+              color:rgba(0, 0, 0, 0.8) !important
+            }
+          } 
+        }
+      }
     }
   }
 }
@@ -524,8 +547,8 @@ export default {
     text-align: center;
     margin: 1em 0;
     span {
-      background-color: #d3d3d3;
-      padding: 3px 8px;
+      background-color: rgba(0, 0, 0, 0.05);;
+      padding: 4px 15px;
       border-radius: 10px;
     }
   }
@@ -544,7 +567,7 @@ export default {
         align-items: flex-end;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f1f3f4;
+          background-color: rgba(0, 0, 0, 0.05);
         }
         audio {
           width: 210px;
@@ -562,7 +585,7 @@ export default {
         margin-right: 10px;
       }
       .message-classic {
-        background-color: rgb(243, 249, 255);
+        background-color: rgba(0, 0, 0, 0.05);
         line-height: 1.4rem;
         font-weight: 500;
         letter-spacing: 0.5px;
@@ -608,7 +631,7 @@ export default {
         flex-flow: row-reverse;
         .message-audio {
           border-radius: 0 10px 10px 10px;
-          background-color: #f1f3f4;
+          background-color: rgba(0, 0, 0, 0.05);
           audio {
             width: 190px;
           }
@@ -630,7 +653,7 @@ export default {
         color: #000000;
         line-height: 1.4rem;
         font-weight: 500;
-        background-color: #f1f3f4;
+        background-color: #FFFFFF;
         letter-spacing: 0.5px;
         border-radius: 8px 0 8px 8px;
       }
@@ -687,7 +710,7 @@ export default {
       height: 2.5em;
       // margin-top: 1em;
       display: inline-block;
-      border: 1px solid #eeeeee;
+      // border: 1px solid #eeeeee;
     }
     .message-image {
       position: relative;
@@ -752,14 +775,18 @@ export default {
     .reply-audio-box {
       display: block;
       // background-color: #000000;
-      width: 14em;
-      height: 55px;
+      width: 24em;
+      height: 40px;
       position: absolute;
       z-index: 9;
+      
     }
     .message-audio {
       width: 200px !important;
       border: 0 !important;
+    }
+    /deep/.vueAudioBetter{
+      margin:0 !important;
     }
   }
 }
@@ -825,5 +852,9 @@ export default {
 }
 .link-style {
   padding: 10px 0;
+}
+/deep/.linkified{
+  color:#10686e;
+  text-decoration: none;
 }
 </style>

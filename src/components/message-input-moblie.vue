@@ -559,7 +559,7 @@ export default {
 .message-input-box {
   height: 55px;
   background-color: rgba(255, 255, 255, 0.85);
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;

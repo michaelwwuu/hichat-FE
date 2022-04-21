@@ -449,7 +449,7 @@ export default {
     }
     .contont-border-bottom {
       width: 100vw;
-      border-bottom: 0.02em solid #b3b3b3;
+      border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
       position: absolute;
     }
   }

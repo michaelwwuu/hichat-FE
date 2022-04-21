@@ -86,7 +86,7 @@
               </template>
             </div>
           </el-header>
-          <div style="border-bottom: 1px solid #e1e1e1b0">
+          <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
             <div class="home-search-pc">
               <el-input
                 placeholder="搜寻"
