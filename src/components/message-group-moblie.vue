@@ -12,12 +12,15 @@
         >
           <img class="message-avatar" :src="el.icon" />
           <p
-            :class="{
+            :class="[{
               'reply-aduio':
                 device === 'moblie' &&
                 el.isRplay !== null &&
                 el.isRplay.chatType === 'SRV_GROUP_AUDIO',
-            }"
+            },{
+              'reply':
+                el.isRplay !== null
+            }]"
             :id="el.historyId"
           >
             <span
@@ -38,7 +41,7 @@
                     <div class="reply-img">
                       <img :src="noIconShow(el.isRplay)" alt="" />
                     </div>
-                    <div>
+                    <div class="reply-msg">
                       <div style="color: #00a1ff">
                         {{ el.isRplay.nickName }}
                       </div>
@@ -70,8 +73,11 @@
                     </div>
                   </div>
                 </template>
-
-                <div class="message-box-content">
+                <div class="message-box-content" :class="{
+                  'reply-content':
+                    el.isRplay !== null
+                }">
+      
                   <div v-if="device === 'pc'">
                     <span
                       v-for="(item, index) in el.newContent"
@@ -610,6 +616,11 @@ export default {
           top: 30px;
         }
       }
+      .reply{
+        .message-classic{
+          padding: 0;
+        }
+      }
       .message-avatar {
         float: left;
         margin-right: 10px;
@@ -669,6 +680,11 @@ export default {
           audio {
             width: 190px;
           }
+        }
+      }
+      .reply{
+        .message-classic{
+          padding: 0;
         }
       }
       .message-avatar,
@@ -802,7 +818,7 @@ export default {
     margin-right: 3px;
   }
   .message-touch-carte {
-    color: #00a1ff;
+    color: #10686e;
     cursor: pointer;
   }
 }
@@ -841,10 +857,13 @@ export default {
 .reply-box {
   display: flex;
   border-bottom: 1px solid #c3c3c3;
-  margin-bottom: 5px;
   cursor: pointer;
+  .reply-msg{
+    padding:9px 12px 9px 5px;
+  }
   .reply-img {
     margin-right: 5px;
+    padding: 9px 0px 9px 12px;
     img {
       width: 3em !important;
       height: 3em !important;
@@ -853,7 +872,7 @@ export default {
   }
   .goAnchor-box {
     .goAnchor {
-      color: #ababab;
+      color: rgba(0, 0, 0, 0.8);
       text-decoration: none;
     }
     .message-audio {
@@ -866,6 +885,9 @@ export default {
       margin:0 !important;
     }
   }
+}
+.reply-content{
+  padding:5px 12px 5px 12px;
 }
 /* 定义keyframe动画，命名为blink */
 @keyframes blink {

@@ -1,6 +1,12 @@
 <template>
-  <div class="message-pabel-box" @touchmove="$root.handleTouch">
-    <ul class="message-styles-box">
+  <div
+    class="message-pabel-box"
+    @touchmove="$root.handleTouch"
+    draggable="true"
+    @dragenter="drop"
+    @dragend="dragend"
+  >
+    <ul class="message-styles-box" >
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
@@ -11,12 +17,15 @@
           :class="judgeClass(item[index])"
         >
           <p
-            :class="{
+            :class="[{
               'reply-aduio':
                 device === 'moblie' &&
                 el.isRplay !== null &&
                 el.isRplay.chatType === 'SRV_USER_AUDIO',
-            }"
+            },{
+              'reply':
+                el.isRplay !== null
+            }]"
             :id="el.historyId"
           >
             <span
@@ -30,8 +39,8 @@
                   <div class="reply-img">
                     <img :src="noIconShow(el.isRplay)" alt="" />
                   </div>
-                  <div>
-                    <div style="color: #00a1ff">{{ el.isRplay.nickName }}</div>
+                  <div class="reply-msg">
+                    <div  style="color: rgba(0, 0, 0, 0.4)">{{ el.isRplay.nickName }}</div>
                     <div>
                       <div class="goAnchor-box">
                         <span
@@ -46,9 +55,9 @@
                         />
                         <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
                           <div class="reply-audio-box"></div>
-                           <mini-audio
-                              :audio-source="isBase64(el.isRplay.text)"
-                            ></mini-audio>
+                          <mini-audio
+                            :audio-source="isBase64(el.isRplay.text)"
+                          ></mini-audio>
                           <!-- <audio
                             class="message-audio"
                             controls
@@ -61,40 +70,45 @@
                   </div>
                 </div>
               </template>
-
-              <span
-                v-if="
-                  el.message.content.match(
-                    /(http|https):\/\/([\w.]+\/?)\S*/gi
-                  ) === null
-                "
-                @click.prevent.stop="
-                  device === 'moblie' ? onContextmenu(el) : false
-                "
-                v-html="el.message.content"
-              ></span>
-              <div
-                v-else-if="
-                  el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
-                "
-              >
-                <div
-                  v-if="device === 'moblie'"
-                  class="images-more-btn"
-                  style="top: 5px"
+              <div :class="{
+                'reply-content':
+                  el.isRplay !== null
+              }">
+                <span
+                  v-if="
+                    el.message.content.match(
+                      /(http|https):\/\/([\w.]+\/?)\S*/gi
+                    ) === null
+                  "
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                >
-                  <i class="el-icon-more"></i>
-                </div>
-                <div
                   v-html="el.message.content"
-                  v-linkified
-                  :class="device === 'moblie' ? 'link-style' : ''"
-                ></div>
+                ></span>
+                <div
+                  v-else-if="
+                    el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
+                  "
+                >
+                  <div
+                    v-if="device === 'moblie'"
+                    class="images-more-btn"
+                    style="top: 5px"
+                    @click.prevent.stop="
+                      device === 'moblie' ? onContextmenu(el) : false
+                    "
+                  >
+                    <i class="el-icon-more"></i>
+                  </div>
+                  <div
+                    v-html="el.message.content"
+                    v-linkified
+                    :class="device === 'moblie' ? 'link-style' : ''"
+                  ></div>
+                </div>
+                <span v-else v-html="el.message.content"></span>
               </div>
-              <span v-else v-html="el.message.content"></span>
+  
             </span>
             <span
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
@@ -158,6 +172,33 @@
       circle
       @click="$root.gotoBottom()"
     ></el-button> -->
+    <el-dialog
+      title="照相"
+      :visible.sync="uploadShow"
+      width="100%"
+      class="el-dialog-takePicture"
+      center
+      :close-on-click-modal="false"
+    >
+      <el-upload
+              width="100%"
+        class="el-dialog-takePicture"
+        center
+        drag
+        action="#"
+        multiple
+        :on-change="uploadImg"
+        :auto-upload="false"
+        :file-list="fileList"
+        list-type="picture"
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">
+          只能上传jpg/png文件，且不超过500kb
+        </div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -181,9 +222,10 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
+      fileList: [],
       device: localStorage.getItem("device"),
       showScrollBar: false,
-
+      uploadShow: false,
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -238,6 +280,16 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    uploadImg(file, fileList) {
+      this.fileList = fileList;
+    },
+    drop() {
+      this.uploadShow = true
+    },
+    dragend(event){
+      console.log('drop', event)
+      event.preventDefault()
+    },
     goAnchor(data) {
       document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);
@@ -505,6 +557,11 @@ export default {
             }
           }
         }
+        .reply{
+          .message-classic{
+            padding: 0;
+          }
+        }
       }
       .message-layout-right {
         p {
@@ -516,21 +573,26 @@ export default {
             }
           }
         }
+        .reply{
+          .message-classic{
+            padding: 0;
+          }
+        }
       }
-      .message-audio{
-        width:350px;
+      .message-audio {
+        width: 350px;
         display: flex;
       }
-      .vueAudioBetter{
+      .vueAudioBetter {
         margin: 14px 0;
         box-shadow: none;
         background-image: none;
-        /deep/.operate{
-          span{
-            &:nth-child(3){
-              color:rgba(0, 0, 0, 0.8) !important
+        /deep/.operate {
+          span {
+            &:nth-child(3) {
+              color: rgba(0, 0, 0, 0.8) !important;
             }
-          } 
+          }
         }
       }
     }
@@ -547,7 +609,7 @@ export default {
     text-align: center;
     margin: 1em 0;
     span {
-      background-color: rgba(0, 0, 0, 0.05);;
+      background-color: rgba(0, 0, 0, 0.05);
       padding: 4px 15px;
       border-radius: 10px;
     }
@@ -653,7 +715,7 @@ export default {
         color: #000000;
         line-height: 1.4rem;
         font-weight: 500;
-        background-color: #FFFFFF;
+        background-color: #ffffff;
         letter-spacing: 0.5px;
         border-radius: 8px 0 8px 8px;
       }
@@ -756,10 +818,13 @@ export default {
 .reply-box {
   display: flex;
   border-bottom: 1px solid #c3c3c3;
-  margin-bottom: 5px;
   cursor: pointer;
+  .reply-msg{
+    padding:9px 12px 9px 5px;
+  }
   .reply-img {
     margin-right: 5px;
+    padding: 9px 0px 9px 12px;
     img {
       width: 3em !important;
       height: 3em !important;
@@ -769,7 +834,7 @@ export default {
   .goAnchor-box {
     cursor: pointer;
     .goAnchor {
-      color: #ababab;
+      color: rgba(0, 0, 0, 0.8);
       text-decoration: none;
     }
     .reply-audio-box {
@@ -779,16 +844,18 @@ export default {
       height: 40px;
       position: absolute;
       z-index: 9;
-      
     }
     .message-audio {
       width: 200px !important;
       border: 0 !important;
     }
-    /deep/.vueAudioBetter{
-      margin:0 !important;
+    /deep/.vueAudioBetter {
+      margin: 0 !important;
     }
   }
+}
+.reply-content{
+  padding:5px 12px 5px 12px;
 }
 /* 定义keyframe动画，命名为blink */
 @keyframes blink {
@@ -853,8 +920,8 @@ export default {
 .link-style {
   padding: 10px 0;
 }
-/deep/.linkified{
-  color:#10686e;
+/deep/.linkified {
+  color: #10686e;
   text-decoration: none;
 }
 </style>
