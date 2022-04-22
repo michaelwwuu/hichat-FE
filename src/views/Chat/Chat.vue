@@ -114,7 +114,7 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       return "hiWeb" + number
     },
-    getUserInfo(userId,type){
+    getUserInfo(userId){
       let params = [...new Set(userId)]
       userinfo(params).then((res) => {
         if (res.code === 200) {
@@ -161,10 +161,10 @@ export default {
         historyId: data.historyId,
         message: {
           time: data.sendTime,
-          content: data.text = data.chatType === "SRV_JOIN_ROOM" ? "進入聊天室": data.text
+          content: data.text = data.chatType === "SRV_JOIN_ROOM" && data.username !== "guest" ? "進入聊天室": data.text
         },
         fromChatId:data.fromChatId,
-        username: data.fromChatId,
+        username: data.fromChatId = data.username === "guest" ? data.username : data.fromChatId,
         nickname: data.nickname = data.chatType === "SRV_JOIN_ROOM" ? data.username : data.nickname,
         typeStyle:data.typeStyle = data.chatType !== "SRV_JOIN_ROOM" && data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
@@ -188,7 +188,10 @@ export default {
           userInfo.roomMemberList.forEach((list)=>{
             this.userListId.push(list.username)
           })
-          this.getUserInfo(this.userListId)
+          if(userInfo.username !== "guest"){
+            this.getUserInfo(this.userListId)
+
+          }
           this.messageList(userInfo)
         // 发送讯息成功
         case "SRV_ROOM_SEND":
