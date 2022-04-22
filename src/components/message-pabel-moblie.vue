@@ -40,7 +40,7 @@
                     <img :src="noIconShow(el.isRplay)" alt="" />
                   </div>
                   <div class="reply-msg">
-                    <div  style="color: rgba(0, 0, 0, 0.4)">{{ el.isRplay.nickName }}</div>
+                    <div style="color: rgba(0, 0, 0, 0.4)">{{ el.isRplay.nickName }}</div>
                     <div>
                       <div class="goAnchor-box">
                         <span
@@ -58,12 +58,6 @@
                           <mini-audio
                             :audio-source="isBase64(el.isRplay.text)"
                           ></mini-audio>
-                          <!-- <audio
-                            class="message-audio"
-                            controls
-                            :src="isBase64(el.isRplay.text)"
-                            type="mp3"
-                          ></audio> -->
                         </span>
                       </div>
                     </div>
@@ -118,12 +112,6 @@
               "
               @dblclick="dblclick(el)"
             >
-              <!-- <audio
-                class="message-audio"
-                :src="el.message.content"
-                controls
-                type="mp3"
-              ></audio> -->
               <mini-audio
                 class="message-audio"
                 :audio-source="el.message.content"
@@ -298,11 +286,13 @@ export default {
       }, 3000);
     },
     isBase64(data) {
-      if (data === "" || data.trim() === "") {
+      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv)
+        // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
@@ -645,6 +635,8 @@ export default {
       .message-avatar {
         float: left;
         margin-right: 10px;
+        border-radius: 10px;
+        border: 0;
       }
       .message-classic {
         background-color: rgba(0, 0, 0, 0.05);
@@ -817,7 +809,7 @@ export default {
 }
 .reply-box {
   display: flex;
-  border-bottom: 1px solid #c3c3c3;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
   .reply-msg{
     padding:9px 12px 9px 5px;

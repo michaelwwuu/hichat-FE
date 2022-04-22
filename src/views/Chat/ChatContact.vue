@@ -322,11 +322,13 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      if (data === "" || data.trim() === "") {
+      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv)
+        // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }

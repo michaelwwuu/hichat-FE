@@ -31,7 +31,7 @@
               :id="el.historyId"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name }}</span>
+                <div class="message-name">{{ el.name }}</div>
 
                 <template v-if="el.isRplay !== null">
                   <div
@@ -42,9 +42,7 @@
                       <img :src="noIconShow(el.isRplay)" alt="" />
                     </div>
                     <div class="reply-msg">
-                      <div style="color: #00a1ff">
-                        {{ el.isRplay.nickName }}
-                      </div>
+                      <div style="color: rgba(0, 0, 0, 0.4)">{{ el.isRplay.nickName }}</div>
                       <div>
                         <div class="goAnchor-box">
                           <span
@@ -57,13 +55,7 @@
                             :src="isBase64(el.isRplay.text)"
                             style="border-radius: 5px"
                           />
-                          <!-- <audio
-                            v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
-                            class="message-audio"
-                            controls
-                            :src="isBase64(el.isRplay.text)"
-                            type="mp3"
-                          ></audio> -->
+                          <div class="reply-audio-box"></div>
                           <mini-audio
                             v-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
                             :audio-source="isBase64(el.isRplay.text)"
@@ -163,7 +155,7 @@
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
-                <span class="message-name">{{ el.name }}</span>
+                <div class="message-name">{{ el.name }}</div>
                 <mini-audio
                   :audio-source="el.message.content"
                 ></mini-audio>
@@ -311,11 +303,13 @@ export default {
       }, 3000);
     },
     isBase64(data) {
-      if (data === "" || data.trim() === "") {
+      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv)
+        // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
@@ -619,12 +613,18 @@ export default {
       .reply{
         .message-classic{
           padding: 0;
+          .message-box{
+            .message-name{
+              padding:8px 12px 0px 12px;
+            }
+          }
         }
       }
       .message-avatar {
         float: left;
         margin-right: 10px;
         border-radius: 10px;
+        border: 0;
       }
       .message-box {
         .message-name {
@@ -651,7 +651,7 @@ export default {
         position: relative;
         // margin-top: 1em;
         display: inline-block;
-        padding: 5px 10px;
+        padding: 9px 12px;
         background-color: rgba(0, 0, 0, 0.05);
         border-radius: 10px;
         .message-box {
@@ -685,6 +685,11 @@ export default {
       .reply{
         .message-classic{
           padding: 0;
+          .message-box{
+            .message-name{
+              padding:8px 12px 0px 12px;
+            }
+          }
         }
       }
       .message-avatar,
@@ -856,7 +861,7 @@ export default {
 }
 .reply-box {
   display: flex;
-  border-bottom: 1px solid #c3c3c3;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
   .reply-msg{
     padding:9px 12px 9px 5px;
@@ -883,6 +888,14 @@ export default {
     }
     /deep/.vueAudioBetter{
       margin:0 !important;
+    }
+    .reply-audio-box {
+      display: block;
+      // background-color: #000000;
+      width: 24em;
+      height: 40px;
+      position: absolute;
+      z-index: 9;
     }
   }
 }
