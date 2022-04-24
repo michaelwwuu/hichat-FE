@@ -160,8 +160,8 @@ export default {
           path: "HiChat",
         },
         {
-          name: "相片和影片",
-          icon: require("./../../../static/images/pc/globe.png"),
+          name: "查看相片和影片",
+          icon: require("./../../../static/images/pc/image.png"),
           path: "",
         },
       ],
