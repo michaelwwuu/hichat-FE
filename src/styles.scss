@@ -170,7 +170,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       .el-tabs__content{
         position: relative;
         top: 2.4em;
-        overflow: auto;
+        overflow-y: auto;
         -webkit-overflow-scrolling:touch;
         z-index: 5;
       }
