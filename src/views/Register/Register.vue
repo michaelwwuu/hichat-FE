@@ -537,7 +537,6 @@ export default {
       position: relative;
       left: -0.5em;
       color: #10686e;
-      font-weight: 600;
     }
   }
   .register-content {
@@ -671,7 +670,7 @@ export default {
 
 //PC版本樣式
 .register-container-pc {
-  width: 450px;
+  width: 370px;
   margin: 3em auto;
   overflow: initial;
   .register-header {
@@ -694,14 +693,15 @@ export default {
   .register-content {
     .svg-container {
       font-size: 14px;
-      width: 15%;
+      width: 60px;
     }
     .login-form {
       .el-form-item {
         .el-input {
-          width: 70%;
+           width:60%;
           /deep/.el-input__inner {
             vertical-align: middle;
+            background-color: #FFFFFF !important;
           }
         }
       }
@@ -731,5 +731,8 @@ export default {
       }
     }
   }  
+}
+.-webkit-input-placeholder{
+  background-color: #FFFFFF;
 }
 </style>

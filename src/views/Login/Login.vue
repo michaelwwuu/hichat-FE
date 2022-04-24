@@ -109,30 +109,32 @@
           </span>
         </el-form-item>
       </template>
-      <div class="remember-style" :style="device === 'moblie' ? 'flex-direction: row-reverse':''">
-        <router-link :to="'/ForgetPassword'" style="text-decoration: none">
-          <span>忘记密码</span>
-        </router-link>
+      <div
+        class="remember-style"
+        :style="device === 'moblie' ? 'flex-direction: row-reverse' : ''"
+      >
         <el-switch
           v-model="remember"
-          active-color="#fd5f3f"
+          active-color="#fe5f3f"
           inactive-color="#666666"
           active-text="记住帐号"
         >
         </el-switch>
+        <router-link :to="'/ForgetPassword'" style="text-decoration: none">
+          <span>忘记密码</span>
+        </router-link>
       </div>
       <div class="read-check-box">
         <el-checkbox v-model="readChecked">
-          已阅读并同意
-          <a
+          已阅读并同意<a
             href="https://www.hichat.info/pub/userAgreement.html"
             target="_blank"
             >服务条款</a
-          >、<a
+          >與<a
             href="https://www.hichat.info/pub/privacyPolicy.html"
             target="_blank"
             >隐私权政策</a
-          >。</el-checkbox
+          ></el-checkbox
         >
       </div>
       <div>
@@ -148,8 +150,8 @@
             style="
               width: 100%;
               background-color: #67c23a00;
-              border: none;
-              color: #fd5f3f;
+              border: 1px solid #fe5f3f;
+              color: #fe5f3f;
             "
             >注册</el-button
           >
@@ -162,7 +164,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -228,12 +230,12 @@ export default {
     },
   },
   mounted() {
-    if (this.remember){
+    if (this.remember) {
       this.loginForm.email =
         localStorage.getItem("email") !== null
           ? localStorage.getItem("email")
           : "";
-    } 
+    }
     this.getUUID();
   },
   methods: {
@@ -326,7 +328,7 @@ $cursor: #fff;
       border: 0px;
       -webkit-appearance: none;
       border-radius: 0px;
-      padding: 12px 5px 12px 15px;
+      padding: 12px 5px 12px 10px;
       color: $light_gray;
       height: 47px;
       &:-webkit-autofill {
@@ -379,8 +381,8 @@ $light_gray: #eee;
       top: 1em;
       right: 1em;
       text-align: center;
-      border: 1px solid #fd5f3f;
-      color: #fd5f3f;
+      border: 1px solid #fe5f3f;
+      color: #fe5f3f;
       border-radius: 5px;
     }
     .show-pwd {
@@ -404,20 +406,47 @@ $light_gray: #eee;
       justify-content: space-between;
       /deep/.is-checked {
         .is-active {
-          color: #303133;
+          color: rgba(0, 0, 0, 0.8);
         }
       }
       span {
         font-size: 14px;
-        color: #fd5f3f;
+        color: #fe5f3f;
       }
     }
     .read-check-box {
       margin-bottom: 3em;
+      /deep/.el-checkbox__input.is-checked + .el-checkbox__label {
+        color: rgba(0, 0, 0, 0.8);
+      }
+      /deep/.el-checkbox{
+        .el-checkbox__input{
+          .el-checkbox__inner{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            &:after{
+              border: 2px solid #FFFFFF;
+              border-left: 0;
+              border-top: 0;
+              height: 13px;
+              left: 7px;
+            }
+          }
+        }
+      }
+
+      .el-checkbox__label {
+        a {
+          color: #10686e;
+          text-decoration: none;
+        }
+      }
     }
     .el-button {
-      background-color: #fd5f3f;
+      background-color: #fe5f3f;
       color: #fff;
+      padding: 16px 20px;
     }
   }
   .svg-container {
@@ -489,7 +518,7 @@ $light_gray: #eee;
   display: flex;
   align-items: center;
   .login-form {
-    width: 450px;
+    width: 370px;
     .show-pwd {
       cursor: pointer;
     }
@@ -497,20 +526,14 @@ $light_gray: #eee;
       margin: 1em 0 2em 0;
       display: flex;
       justify-content: space-between;
-      /deep/.el-switch__label {
-        span {
-          font-weight: 600;
-        }
-      }
       /deep/.is-checked {
         .is-active {
-          color: #10686e;
+          color: rgba(0, 0, 0, 0.8);
         }
       }
       span {
         font-size: 14px;
-        color: #10686e;
-        font-weight: 600;
+        color: #fe5f3f;
       }
     }
     .read-check-box {
@@ -527,18 +550,17 @@ $light_gray: #eee;
     .header-title {
       margin: 1em auto 0 auto;
       font-size: 1.2em;
-      font-weight: 600;
       color: #474747;
     }
   }
   .svg-container {
     font-size: 14px;
-    width: 15%;
+    width: 60px;
     vertical-align: inherit;
     color: #454545;
   }
   .el-input {
-    width: 70%;
+     width:60%;
   }
 }
 </style>

@@ -312,6 +312,17 @@ export default {
     this.getContactDataList();
     this.getGroupDataList();
     this.getUserData();
+    document.body.addEventListener(
+      "touchmove",
+      (e) => {
+        if (e._isScroller) return;
+        e.preventDefault();
+      },
+      {
+        passive: false,
+      }
+    );
+
   },
   watch: {
     hichatNav(val) {

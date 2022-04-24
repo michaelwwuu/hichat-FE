@@ -255,7 +255,6 @@ export default {
       position: relative;
       left: -0.5em;
       color: #10686e;
-      font-weight: 600;
     }
   }
   .register-content {
@@ -388,7 +387,7 @@ export default {
   }
 }
 .register-container-pc {
-  width: 481px;
+  width: 370px;
   margin: 0 auto;
   overflow: hidden;
   .register-header {
@@ -412,14 +411,14 @@ export default {
   .register-content {
     .svg-container {
       font-size: 14px;
-      width: 15%;
+      width: 60px;
     }
     .login-form {
       height: 15em;
       padding: 0.45em 0;
       .el-form-item {
         .el-input {
-          width: 70%;
+           width:60%;
           /deep/.el-input__inner {
             vertical-align: middle;
           }

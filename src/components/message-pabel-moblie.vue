@@ -570,7 +570,7 @@ export default {
         }
       }
       .message-audio {
-        width: 350px;
+        width: 370px;
         display: flex;
       }
       .vueAudioBetter {

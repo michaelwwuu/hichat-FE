@@ -49,8 +49,9 @@ export default {
   },
   created() {
     this.getDataList();
-    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.userData = JSON.parse(localStorage.getItem("userData"));    
   },
+
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
