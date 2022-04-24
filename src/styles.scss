@@ -74,7 +74,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     //訊息內容
     .address-box {
       background-color: #ffffff;
-      padding: 1em 1em 0 1em;
+      padding: 1em;
       display: flex;
       align-items: center;
     }
@@ -517,12 +517,15 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     .el-tabs{
       width: 100%;
       .el-tabs__header{
-        top: 80px;
+        top: 70px;
         width: 299px;
+        height: 54px;
         position: absolute;
         background-color: #FFFFFF !important;
         padding: 0;
         .el-tabs__nav-wrap{
+          display: flex;
+          align-items: center;
           .el-tabs__nav{
             width:100%;
             .el-tabs__item{

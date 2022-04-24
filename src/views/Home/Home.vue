@@ -156,6 +156,12 @@
             "
           />
         </template>
+        <template v-if="infoMsg.infoMsgShow">
+          <div class="go-room-style">
+            <div>Hichat</div>
+            <el-button>開始聊天</el-button>
+          </div>
+        </template>
       </el-main>
       <el-aside
         width="300px"
@@ -712,5 +718,17 @@ export default {
 .el-badge-box {
   position: absolute;
   margin: -10px 0 0 20px;
+}
+.go-room-style{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  .el-button{
+    color: #FFFFFF;
+    padding: 1.3em 2em;
+    background-color: #fe5f3f;
+  }
 }
 </style>
