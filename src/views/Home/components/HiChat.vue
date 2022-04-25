@@ -343,7 +343,6 @@ export default {
     },
     goChatRoom(data, path) {
       if (path === "ChatMsg") {
-        console.log(123)
         this.setChatUser(data);
       } else if (path === "ChatContact") {
         this.setContactUser(data);

@@ -204,9 +204,10 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { deleteRecentChat } from "@/api";
-import { Decrypt } from "@/utils/AESUtils.js";
+import { deleteRecentChat,uploadMessageImage  } from "@/api";
+import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessagePabel",
@@ -223,6 +224,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
+      fullscreenLoading:false,
       fileList: [],
       device: localStorage.getItem("device"),
       showScrollBar: false,
@@ -328,16 +330,16 @@ export default {
       this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
-          // let message = this.userInfoData;
-          // message.chatType = "CLI_USER_IMAGE";
-          // message.id = Math.random();
-          // message.fromChatId = "u" + localStorage.getItem("id");
-          // message.toChatId = this.userData.toChatId;
-          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),
-          // Socket.send(message);
-          // this.fileList = [];
-          // this.uploadImgShow = false;
-          // this.fullscreenLoading = false;
+          let message = this.userInfoData;
+          message.chatType = "CLI_USER_IMAGE";
+          message.id = Math.random();
+          message.fromChatId = "u" + localStorage.getItem("id");
+          message.toChatId = this.chatUser.toChatId;
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
+          Socket.send(message);
+          this.fileList = [];
+          this.uploadImgShow = false;
+          this.fullscreenLoading = false;
         }else if(res.code === 40001){
           this.fileList = [];
           this.fullscreenLoading = false;

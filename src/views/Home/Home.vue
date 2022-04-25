@@ -485,7 +485,13 @@ export default {
           this.chatDataList.forEach((item) => {
             numNumber += item.unreadCount;
             if (item.toChatId === this.chatUser.toChatId) {
-              item.username = this.chatUser.username;
+              if(item.toChatId === item.forChatId) {
+                item.name = "Hichat 记事本";
+                item.username = "Hichat 记事本";
+                item.icon = require("./../../../static/images/image_savemessage.png")
+              }else{
+                item.username = this.chatUser.username;
+              }
               this.setChatUser(item);
             }
             this.setBadgeNum(numNumber);

@@ -51,8 +51,8 @@
                 }}</span>
               </span>
               <template v-if="chatUser.isContact">
-                <div class="home-user-search"></div>
-                <el-dropdown trigger="click">
+                <div class="home-user-search" :style="chatUser.forChatId === chatUser.toChatId ? 'right: 30px':''"></div>
+                <el-dropdown trigger="click" v-if="chatUser.forChatId !== chatUser.toChatId">
                   <div class="el-dropdown-link">
                     <div class="home-user-more"></div>
                   </div>
