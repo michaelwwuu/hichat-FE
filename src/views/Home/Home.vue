@@ -158,8 +158,8 @@
         </template>
         <template v-if="infoMsg.infoMsgShow">
           <div class="go-room-style">
-            <div>Hichat</div>
-            <el-button>開始聊天</el-button>
+            <img src="./../../../static/images/msg-btn.png" alt="">
+            <el-button  @click="goChatRoom(chatUser,activeName)">開始聊天</el-button>
           </div>
         </template>
       </el-main>
@@ -377,6 +377,23 @@ export default {
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
+    goChatRoom(data,type) {
+      this.setInfoMsg({
+        infoMsgShow: false,
+        infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
+      });
+      if (type === "address") {
+        delete this.chatUser.type;
+        this.setChatUser(this.chatUser);
+      } else {
+        delete this.groupUser.type;
+        this.getGroupListMember(data);
+        this.setChatGroup(this.groupUser);
+      }
+      this.setHichatNav({ type: type, num: 1 });
+      this.getHistory(type);
+      this.$router.push({ name: "HiChat", params: data });
+    },
     //判斷是否base64
     isBase64(data) {
       var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
@@ -407,6 +424,11 @@ export default {
         this.addressDataList.forEach((el) => {
           if (el.icon === undefined) {
             return (el.icon = require("./../../../static/images/image_user_defult.png"));
+          }
+          if(el.contactId === localStorage.getItem("id")) {
+            el.name = "Hichat 记事本"
+            el.icon = require("./../../../static/images/image_savemessage.png")
+            el.toChatId = "u" + el.memberId
           }
         });
       });
@@ -725,9 +747,13 @@ export default {
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  img{
+    height: 8em;
+    margin-bottom: 2.5em;
+  }
   .el-button{
     color: #FFFFFF;
-    padding: 1.3em 2em;
+    padding: 1.3em 3em;
     background-color: #fe5f3f;
   }
 }

@@ -18,21 +18,23 @@
                   <span>資訊</span>
                 </div>
               </span>
-              <template v-if="infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact">
-                <div
-                  class="home-add-user"
-                  @click="editShowBtn(infoMsg.infoMsgNav)"
-                ></div>
-              </template>
-              <template v-else>
-                <div
-                  class="home-add-user"
-                  :class="{ notAdmin: !groupUser.isAdmin }"
-                  @click="
-                    groupUser.isAdmin ? editShowBtn(infoMsg.infoMsgNav) : false
-                  "
-                ></div>
-              </template>
+              <div :style="{'visibility: hidden;': chatUser.contactId !== JSON.stringify(this.myUserInfo.id)}">
+                <template v-if="infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact">
+                  <div
+                    class="home-add-user"
+                    @click="editShowBtn(infoMsg.infoMsgNav)"
+                  ></div>
+                </template>
+                <template v-else>
+                  <div
+                    class="home-add-user"
+                    :class="{ notAdmin: !groupUser.isAdmin }"
+                    @click="
+                      groupUser.isAdmin ? editShowBtn(infoMsg.infoMsgNav) : false
+                    "
+                  ></div>
+                </template>
+              </div>
             </div>
           </el-header>
           <div class="home-content">
@@ -44,7 +46,7 @@
                   :preview-src-list="[noIconShow(chatUser,'user')]"
                 />
                 <span>{{chatUser.name}}</span>
-                <span class="user-data-id">
+                <span class="user-data-id" v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)">
                   ID :
                   <span
                     class="user-paste"
@@ -54,6 +56,7 @@
                 >
               </div>
               <div
+               v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)"
                 class="setting-notification"
                 @click="developmentMessage('提醒通知')"
               >
@@ -154,11 +157,11 @@ export default {
     return {
       userData: {},
       settingContactData: [
-        {
-          name: "传送讯息",
-          icon: require("./../../../static/images/pc/message.png"),
-          path: "HiChat",
-        },
+        // {
+        //   name: "传送讯息",
+        //   icon: require("./../../../static/images/pc/message.png"),
+        //   path: "HiChat",
+        // },
         {
           name: "查看相片和影片",
           icon: require("./../../../static/images/pc/image.png"),
@@ -203,6 +206,7 @@ export default {
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
       infoMsg: (state) => state.ws.infoMsg,
+      myUserInfo: (state) => state.ws.myUserInfo,
       msgInfoPage: (state) => state.ws.msgInfoPage,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
@@ -242,11 +246,16 @@ export default {
     getUserId() { 
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-        this.chatUser.username = res.data.username;
-        this.chatUser.name = res.data.name;
-        this.chatUser.isBlock = res.data.isBlock;
-        this.chatUser.isContact = res.data.isContact;
+        if(res.data.id === this.myUserInfo.id){
+          this.chatUser.name = "Hichat 记事本"
+          this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
+        }else {
+          this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
+          this.chatUser.username = res.data.username;
+          this.chatUser.name = res.data.name;
+          this.chatUser.isBlock = res.data.isBlock;
+          this.chatUser.isContact = res.data.isContact;
+        }
         this.setChatUser(this.chatUser);
       });
     },     

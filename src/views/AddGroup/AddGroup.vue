@@ -257,14 +257,16 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setChatUser:"ws/setChatUser",
       setChatGroup:"ws/setChatGroup",
     }),
     getAddressList() {
       getContactList().then((res) => {
-        this.contactList = res.data.list;
+        this.contactList = res.data.list.filter((el=> el.contactId !== localStorage.getItem("id")))
         this.contactList.forEach((res) => {
-          if (res.icon === undefined)
+          if (res.icon === undefined){
             res.icon = require("./../../../static/images/image_user_defult.png");
+          }
         });
       });
     },

@@ -288,6 +288,12 @@ export default {
           this.hiChatDataList = userInfo.recentChat.filter(
             (item) => item.isContact && item.lastChat !== null
           );
+          this.hiChatDataList.forEach(list => {
+            if(list.forChatId === list.toChatId){
+              list.name = "Hichat 记事本"
+              list.icon = require("./../../../../static/images/image_savemessage.png")
+            }
+          });
           this.groupDataList = userInfo.recentChat.filter(
             (item) => item.isGroup && item.lastChat !== null
           );
@@ -337,6 +343,7 @@ export default {
     },
     goChatRoom(data, path) {
       if (path === "ChatMsg") {
+        console.log(123)
         this.setChatUser(data);
       } else if (path === "ChatContact") {
         this.setContactUser(data);

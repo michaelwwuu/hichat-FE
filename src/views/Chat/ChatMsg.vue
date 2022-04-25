@@ -358,7 +358,13 @@ export default {
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        this.userData.username = res.data.username;
+        if(res.data.id === localStorage.getItem("id")){
+          this.userData.name = "Hichat 记事本"
+          this.userData.icon = require("./../../../static/images/image_savemessage.png")
+
+        } else{
+          this.userData.username = res.data.username
+        }
         this.setChatUser(this.userData);
       });
     },

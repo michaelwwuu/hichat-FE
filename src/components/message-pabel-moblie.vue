@@ -6,7 +6,7 @@
     @dragenter="drop"
     @dragend="dragend"
   >
-    <ul class="message-styles-box" >
+    <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
@@ -17,15 +17,17 @@
           :class="judgeClass(item[index])"
         >
           <p
-            :class="[{
-              'reply-aduio':
-                device === 'moblie' &&
-                el.isRplay !== null &&
-                el.isRplay.chatType === 'SRV_USER_AUDIO',
-            },{
-              'reply':
-                el.isRplay !== null
-            }]"
+            :class="[
+              {
+                'reply-aduio':
+                  device === 'moblie' &&
+                  el.isRplay !== null &&
+                  el.isRplay.chatType === 'SRV_USER_AUDIO',
+              },
+              {
+                reply: el.isRplay !== null,
+              },
+            ]"
             :id="el.historyId"
           >
             <span
@@ -40,7 +42,9 @@
                     <img :src="noIconShow(el.isRplay)" alt="" />
                   </div>
                   <div class="reply-msg">
-                    <div style="color: rgba(0, 0, 0, 0.4)">{{ el.isRplay.nickName }}</div>
+                    <div style="color: rgba(0, 0, 0, 0.4)">
+                      {{ el.isRplay.nickName }}
+                    </div>
                     <div>
                       <div class="goAnchor-box">
                         <span
@@ -64,10 +68,11 @@
                   </div>
                 </div>
               </template>
-              <div :class="{
-                'reply-content':
-                  el.isRplay !== null
-              }">
+              <div
+                :class="{
+                  'reply-content': el.isRplay !== null,
+                }"
+              >
                 <span
                   v-if="
                     el.message.content.match(
@@ -81,7 +86,9 @@
                 ></span>
                 <div
                   v-else-if="
-                    el.message.content.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
+                    el.message.content.match(
+                      /(http|https):\/\/([\w.]+\/?)\S*/gi
+                    )
                   "
                 >
                   <div
@@ -102,7 +109,6 @@
                 </div>
                 <span v-else v-html="el.message.content"></span>
               </div>
-  
             </span>
             <span
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
@@ -163,16 +169,15 @@
     <el-dialog
       title="照相"
       :visible.sync="uploadShow"
-      width="100%"
       class="el-dialog-takePicture"
       center
       :close-on-click-modal="false"
+      style="600px"
     >
       <el-upload
-              width="100%"
-        class="el-dialog-takePicture"
         center
         drag
+        :limit="1"
         action="#"
         multiple
         :on-change="uploadImg"
@@ -186,6 +191,14 @@
           只能上传jpg/png文件，且不超过500kb
         </div>
       </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="uploadShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-orange" @click="submitAvatarUpload"
+          >确认</el-button
+        >
+      </span>      
     </el-dialog>
   </div>
 </template>
@@ -272,11 +285,10 @@ export default {
       this.fileList = fileList;
     },
     drop() {
-      this.uploadShow = true
+      this.uploadShow = true;
     },
-    dragend(event){
-      console.log('drop', event)
-      event.preventDefault()
+    dragend(event) {
+      event.preventDefault();
     },
     goAnchor(data) {
       document.getElementById(data).classList.add("blink");
@@ -286,12 +298,13 @@ export default {
       }, 3000);
     },
     isBase64(data) {
-      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv)
+        return Decrypt(data, this.aesKey, this.aesIv);
         // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
@@ -308,6 +321,29 @@ export default {
         return iconData.icon;
       }
     },
+    // 上傳圖片
+    submitAvatarUpload() {
+      let formData = new FormData();
+      formData.append("file", this.fileList[0].raw);
+      this.fullscreenLoading = true;
+      uploadMessageImage(formData).then((res) => {
+        if (res.code === 200) {
+          // let message = this.userInfoData;
+          // message.chatType = "CLI_USER_IMAGE";
+          // message.id = Math.random();
+          // message.fromChatId = "u" + localStorage.getItem("id");
+          // message.toChatId = this.userData.toChatId;
+          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),
+          // Socket.send(message);
+          // this.fileList = [];
+          // this.uploadImgShow = false;
+          // this.fullscreenLoading = false;
+        }else if(res.code === 40001){
+          this.fileList = [];
+          this.fullscreenLoading = false;
+        }
+      })
+    },    
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -382,6 +418,11 @@ export default {
           onClick: () => {
             this.downloadImages(data);
           },
+        },
+        {
+          name: "upDown",
+          label: "置顶",
+          onClick: () => {},
         },
         {
           name: "deleteAllChat",
@@ -547,8 +588,8 @@ export default {
             }
           }
         }
-        .reply{
-          .message-classic{
+        .reply {
+          .message-classic {
             padding: 0;
           }
         }
@@ -563,8 +604,8 @@ export default {
             }
           }
         }
-        .reply{
-          .message-classic{
+        .reply {
+          .message-classic {
             padding: 0;
           }
         }
@@ -586,7 +627,13 @@ export default {
         }
       }
     }
+    /deep/.el-dialog-takePicture{
+    .el-dialog{
+        width: 450px !important;
+      }
+    }
   }
+
 }
 .message-pabel-box {
   padding: 0 10px 0 20px;
@@ -811,8 +858,8 @@ export default {
   display: flex;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  .reply-msg{
-    padding:9px 12px 9px 5px;
+  .reply-msg {
+    padding: 9px 12px 9px 5px;
   }
   .reply-img {
     margin-right: 5px;
@@ -846,8 +893,8 @@ export default {
     }
   }
 }
-.reply-content{
-  padding:5px 12px 5px 12px;
+.reply-content {
+  padding: 5px 12px 5px 12px;
 }
 /* 定义keyframe动画，命名为blink */
 @keyframes blink {

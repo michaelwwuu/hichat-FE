@@ -57,6 +57,7 @@ export default {
       wsRes: (state) => state.ws.wsRes,
       groupList: (state) => state.ws.groupList,
       groupUser: (state) => state.ws.groupUser,
+      myUserInfo: (state) => state.ws.myUserInfo,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
@@ -78,8 +79,14 @@ export default {
       getContactList().then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((el) => {
-          if (el.icon === undefined)
+          if (el.icon === undefined){
             el.icon = require("./../../../../static/images/image_user_defult.png");
+          }
+          if(el.contactId === localStorage.getItem("id")){
+            el.name = "Hichat 记事本"
+            el.icon = require("./../../../../static/images/image_savemessage.png")
+            this.setChatUser(el);
+          }
         });
         this.setMyContactDataList(this.contactList);
       });
@@ -95,10 +102,17 @@ export default {
     getUserId(data) {
       let id = data.contactId;
       getSearchById({ id }).then((res) => {
-        data.username = res.data.username;
-        data.name = res.data.name;
-        data.isBlock = res.data.isBlock;
-        data.isContact = res.data.isContact;
+        if(res.data.id === this.myUserInfo.id){
+          console.log(123)
+          data.username = res.data.username;
+          data.name = "Hichat 记事本"
+          data.icon = require("./../../../../static/images/image_savemessage.png")
+        }else {
+          data.username = res.data.username;
+          data.name = res.data.name;
+          data.isBlock = res.data.isBlock;
+          data.isContact = res.data.isContact;
+        }
         this.setChatUser(data);
       });
     },

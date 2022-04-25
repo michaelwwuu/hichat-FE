@@ -424,7 +424,6 @@ export default {
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
-                console.log(el);
                 if (el.chat.fromChatId === this.contactUser.toChatId) {
                   el.chat.name = this.contactUser.name;
                   el.chat.icon = this.contactUser.icon;
