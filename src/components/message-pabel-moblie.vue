@@ -585,7 +585,7 @@ export default {
       .message-layout-left {
         p {
           .el-image {
-            width: auto !important;
+            width: 15em !important;
             height: 15em !important;
             /deep/.el-image__inner {
               height: 100%;
@@ -601,7 +601,7 @@ export default {
       .message-layout-right {
         p {
           .el-image {
-            width: auto !important;
+            width: 15em !important;
             height: 15em !important;
             /deep/.el-image__inner {
               height: 100%;
@@ -676,8 +676,8 @@ export default {
           width: 210px;
         }
         .el-image {
-          width: auto !important;
-          height: 10em !important;
+          width: 15em !important;
+          height: 15em !important;
           /deep/.el-image__inner {
             height: 15em;
           }
@@ -742,8 +742,8 @@ export default {
           }
         }
         .el-image {
-          width: auto !important;
-          height: 10em !important;
+          width: 15em !important;
+          height: 15em !important;
           /deep/.el-image__inner {
             height: 15em;
           }

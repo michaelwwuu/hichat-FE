@@ -666,8 +666,8 @@ export default {
             padding: 10px 0;
           }
           .el-image {
-            width: auto !important;
-            height: 10em !important;
+            width: 15em !important;
+            height: 15em !important;
             /deep/.el-image__inner {
               height: 15em;
             }
@@ -742,8 +742,8 @@ export default {
         background-color: #e5e4e4;
         border-radius: 10px;
         .el-image {
-          width: auto !important;
-          height: 10em !important;
+          width: 15em !important;
+          height: 15em !important;
           /deep/.el-image__inner {
             height: 100%;
           }
@@ -802,8 +802,8 @@ export default {
       .message-layout-left {
         p {
           .el-image {
-            width: auto !important;
-            height: 10em !important;
+            width: 15em !important;
+            height: 15em !important;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -813,8 +813,8 @@ export default {
       .message-layout-right {
         p {
           .el-image {
-            width: auto !important;
-            height: 10em !important;
+            width: 15em !important;
+            height: 15em !important;
             /deep/.el-image__inner {
               height: 100%;
             }
