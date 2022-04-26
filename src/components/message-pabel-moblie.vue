@@ -6,6 +6,7 @@
     @dragenter="drop"
     @dragend="dragend"
   >
+
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -286,7 +287,8 @@ export default {
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
-    drop() {
+    drop(event){
+      console.log(event)
       this.uploadShow = true;
     },
     dragend(event) {
@@ -965,4 +967,5 @@ export default {
   color: #10686e;
   text-decoration: none;
 }
+
 </style>

@@ -123,6 +123,11 @@
             <li @click="addUser(chatUser)">加入联络人</li>
           </ul>
         </div>
+        <!-- 置頂訊息 -->
+        <!-- <div class="top-msg">
+          <span>置頂訊息:</span>
+          <span>123</span>
+        </div> -->
         <message-pabel
           v-loading="loading"
           element-loading-text="讯息加载中"
@@ -1108,5 +1113,9 @@ export default {
       }
     }
   }
+}
+.top-msg{
+  background-color: #ffffff7e;
+  padding: 10px;
 }
 </style>

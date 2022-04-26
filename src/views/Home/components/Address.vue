@@ -105,6 +105,9 @@ export default {
         if(res.data.id === this.myUserInfo.id){
           console.log(123)
           data.username = res.data.username;
+          data.isContact = true
+          data.forChatId = "u" + data.memberId
+          data.toChatId = "u" + data.memberId
           data.name = "Hichat 记事本"
           data.icon = require("./../../../../static/images/image_savemessage.png")
         }else {
@@ -117,6 +120,7 @@ export default {
       });
     },
     goContactPage(data, path) {
+      console.log(data)
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
         data.type = this.device === "pc" ? "address":"";
