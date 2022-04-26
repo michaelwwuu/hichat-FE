@@ -83,7 +83,7 @@ export default {
             el.icon = require("./../../../../static/images/image_user_defult.png");
           }
           if(el.contactId === localStorage.getItem("id")){
-            el.name = "Hichat 记事本"
+            el.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
             el.icon = require("./../../../../static/images/image_savemessage.png")
             this.setChatUser(el);
           }
@@ -103,24 +103,19 @@ export default {
       let id = data.contactId;
       getSearchById({ id }).then((res) => {
         if(res.data.id === this.myUserInfo.id){
-          console.log(123)
-          data.username = res.data.username;
-          data.isContact = true
-          data.forChatId = "u" + data.memberId
-          data.toChatId = "u" + data.memberId
-          data.name = "Hichat 记事本"
+          data.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
+          data.forChatId = "u" + res.data.id
           data.icon = require("./../../../../static/images/image_savemessage.png")
         }else {
-          data.username = res.data.username;
           data.name = res.data.name;
-          data.isBlock = res.data.isBlock;
-          data.isContact = res.data.isContact;
         }
+        data.isBlock = res.data.isBlock;
+        data.isContact = res.data.isContact;
+        data.username = res.data.username;
         this.setChatUser(data);
       });
     },
     goContactPage(data, path) {
-      console.log(data)
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
         data.type = this.device === "pc" ? "address":"";

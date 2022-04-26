@@ -426,7 +426,7 @@ export default {
             return (el.icon = require("./../../../static/images/image_user_defult.png"));
           }
           if(el.contactId === localStorage.getItem("id")) {
-            el.name = "Hichat 记事本"
+            el.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
             el.icon = require("./../../../static/images/image_savemessage.png")
             el.toChatId = "u" + el.memberId
           }
@@ -486,8 +486,8 @@ export default {
             numNumber += item.unreadCount;
             if (item.toChatId === this.chatUser.toChatId) {
               if(item.toChatId === item.forChatId) {
-                item.name = "Hichat 记事本";
-                item.username = "Hichat 记事本";
+                item.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
+                item.username = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
                 item.icon = require("./../../../static/images/image_savemessage.png")
               }else{
                 item.username = this.chatUser.username;

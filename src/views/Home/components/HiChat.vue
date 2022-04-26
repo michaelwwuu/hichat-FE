@@ -290,7 +290,7 @@ export default {
           );
           this.hiChatDataList.forEach(list => {
             if(list.forChatId === list.toChatId){
-              list.name = "Hichat 记事本"
+              list.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
               list.icon = require("./../../../../static/images/image_savemessage.png")
             }
           });

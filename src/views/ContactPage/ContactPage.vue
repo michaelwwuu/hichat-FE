@@ -6,7 +6,7 @@
           <div class="home-header">
             <div class="home-user" @click="back"></div>
             <span class="home-header-title"></span>
-            <router-link :to="'/EditContact'">
+            <router-link :to="'/EditContact'" v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)">
               <div class="home-add-user"></div>
             </router-link>
           </div>
@@ -19,8 +19,18 @@
               :preview-src-list="[noIconShow(chatUser)]"
             />
             <div>
-              <span>{{ chatUser.name }}</span>
-              <span class="user-data-id">
+              <span
+                :style="
+                  chatUser.contactId === JSON.stringify(this.myUserInfo.id)
+                    ? 'height:2em'
+                    : ''
+                "
+                >{{ chatUser.name }}</span
+              >
+              <span
+                class="user-data-id"
+                v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)"
+              >
                 ID :
                 <span
                   class="user-paste"
@@ -30,70 +40,88 @@
               >
             </div>
           </div>
-          <div
-            class="setting-button"
-            v-for="(item, index) in settingData"
-            :key="index"
-            @click="developmentMessage(item.name)"
-          >
-            <a @click="goChatRoom(chatUser, item.path)">
-              <div class="setting-button-left">
-                <img :src="item.icon" alt="" />
-                <span>{{ item.name }}</span>
-              </div>
-              <img src="./../../../static/images/next.png" alt="" />
-            </a>
-          </div>
-
-          <!-- <div
-            class="setting-notification"
-            @click="developmentMessage('提醒通知')"
-          >
-            <div class="setting-button-left">
-              <img src="./../../../static/images/notification.png" alt="" />
-              <span>提醒通知</span>
-            </div>
-            <el-switch
-              v-model="notification"
-              active-color="#fd5f3f"
-              inactive-color="#666666"
-              disabled
+          <template v-if="chatUser.contactId === JSON.stringify(this.myUserInfo.id)">
+            <div
+              class="setting-button"
+              v-for="(item, index) in saveSettingData"
+              :key="index"
             >
-            </el-switch>
-          </div>
-           -->
+              <a @click="goChatRoom(chatUser, item.path)">
+                <div class="setting-button-left">
+                  <img :src="item.icon" alt="" />
+                  <span>{{ item.name }}</span>
+                </div>
+                <img src="./../../../static/images/next.png" alt="" />
+              </a>
+            </div>
+          </template>
+          <template v-else>
+            <div
+              class="setting-button"
+              v-for="(item, index) in settingData"
+              :key="index"
+              @click="developmentMessage(item.name)"
+            >
+              <a @click="goChatRoom(chatUser, item.path)">
+                <div class="setting-button-left">
+                  <img :src="item.icon" alt="" />
+                  <span>{{ item.name }}</span>
+                </div>
+                <img src="./../../../static/images/next.png" alt="" />
+              </a>
+            </div>
 
-          <div
-            class="setting-button mt10"
-            @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
-          >
-            <a>
+            <!-- <div
+              class="setting-notification"
+              @click="developmentMessage('提醒通知')"
+            >
               <div class="setting-button-left">
-                <img src="./../../../static/images/blockade.png" alt="" />
-                <span>{{ !chatUser.isBlock ? "封锁联络人" : "解除封锁" }}</span>
+                <img src="./../../../static/images/notification.png" alt="" />
+                <span>提醒通知</span>
               </div>
-            </a>
-          </div>
-          <div
-            class="setting-button"
-            @click="dialogShow(!chatUser.isContact ? 'add' : 'delete')"
-          >
-            <a>
-              <div class="setting-button-left">
-                <img
-                  :src="
-                    require(`./../../../static/images/${
-                      !chatUser.isContact ? 'add_user' : 'trash'
-                    }.png`)
-                  "
-                  alt=""
-                />
-                <span class="red-text">{{
-                  !chatUser.isContact ? "加入联络人" : "刪除联络人"
-                }}</span>
-              </div>
-            </a>
-          </div>
+              <el-switch
+                v-model="notification"
+                active-color="#fd5f3f"
+                inactive-color="#666666"
+                disabled
+              >
+              </el-switch>
+            </div>
+            -->
+
+            <div
+              class="setting-button mt10"
+              @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
+            >
+              <a>
+                <div class="setting-button-left">
+                  <img src="./../../../static/images/blockade.png" alt="" />
+                  <span>{{ !chatUser.isBlock ? "封锁联络人" : "解除封锁" }}</span>
+                </div>
+              </a>
+            </div>
+            <div
+              class="setting-button"
+              @click="dialogShow(!chatUser.isContact ? 'add' : 'delete')"
+            >
+              <a>
+                <div class="setting-button-left">
+                  <img
+                    :src="
+                      require(`./../../../static/images/${
+                        !chatUser.isContact ? 'add_user' : 'trash'
+                      }.png`)
+                    "
+                    alt=""
+                  />
+                  <span class="red-text">{{
+                    !chatUser.isContact ? "加入联络人" : "刪除联络人"
+                  }}</span>
+                </div>
+              </a>
+            </div>
+          </template>
+    
         </div>
       </el-main>
     </el-container>
@@ -102,7 +130,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -123,7 +151,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -139,7 +167,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -155,7 +183,7 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { mapState,mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import {
   getSearchById,
   addContactUser,
@@ -169,6 +197,13 @@ export default {
   data() {
     return {
       userData: {},
+      saveSettingData: [
+        {
+          name: "传送讯息",
+          icon: require("./../../../static/images/chat_icon.png"),
+          path: "ChatMsg",
+        },
+      ],
       settingData: [
         {
           name: "传送讯息",
@@ -197,23 +232,25 @@ export default {
   computed: {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
+      myUserInfo: (state) => state.ws.myUserInfo,
     }),
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.getUserId();     
+    this.getUserId();
   },
   methods: {
     ...mapMutations({
       setChatUser: "ws/setChatUser",
     }),
-    getUserId() { 
+    getUserId() {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        if(res.data.id === this.myUserInfo.id){
-          this.chatUser.name = "Hichat 记事本"
-          this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
-        }else {
+        if (res.data.id === this.myUserInfo.id) {
+          this.chatUser.name =
+            this.device === "pc" ? "Hichat 记事本" : "儲存的訊息";
+          this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
+        } else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
           this.chatUser.username = res.data.username;
           this.chatUser.name = res.data.name;
@@ -223,7 +260,7 @@ export default {
 
         this.setChatUser(this.chatUser);
       });
-    },       
+    },
     noIconShow(iconData) {
       if (
         iconData.icon === undefined ||
@@ -281,7 +318,7 @@ export default {
             if (res.code === 200) {
               this.successDialogShow = true;
               this.chatUser.isBlock = true;
-              this.setChatUser(this.chatUser)
+              this.setChatUser(this.chatUser);
             }
           });
           break;
@@ -292,7 +329,7 @@ export default {
               if (res.code === 200) {
                 this.successDialogShow = true;
                 this.chatUser.isBlock = false;
-                this.setChatUser(this.chatUser)
+                this.setChatUser(this.chatUser);
               }
             })
             .catch((err) => {
@@ -307,7 +344,7 @@ export default {
               if (res.code === 200) {
                 this.successDialogShow = true;
                 this.chatUser.isContact = false;
-                this.setChatUser(this.chatUser)
+                this.setChatUser(this.chatUser);
               }
             })
             .catch((err) => {
@@ -325,7 +362,7 @@ export default {
               this.settingDialogShow = false;
               this.chatUser.isContact = true;
               this.addContactDialogShow = true;
-              this.setChatUser(this.chatUser)
+              this.setChatUser(this.chatUser);
             }
           });
       }
@@ -427,7 +464,7 @@ export default {
       margin-top: 1em;
     }
   }
-  
+
   /deep/.el-dialog-loginOut {
     overflow: auto;
     .el-dialog {
@@ -479,5 +516,4 @@ export default {
     }
   }
 }
-
 </style>

@@ -197,10 +197,6 @@ export default {
   }
   .home-search {
     /deep/.el-input {
-      .el-input__inner {
-        background-color: #e9e8e8;
-        color: #666666;
-      }
       .el-input__prefix {
         color: #666666;
       }

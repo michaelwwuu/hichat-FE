@@ -247,7 +247,7 @@ export default {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         if(res.data.id === this.myUserInfo.id){
-          this.chatUser.name = "Hichat 记事本"
+          this.chatUser.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
         }else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
