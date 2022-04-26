@@ -799,7 +799,7 @@ export default {
         }
         .home-photo-link {
           position: absolute;
-          left: 14px;
+          left: 20px;
           display: flex;
           align-items: center;
           cursor: pointer;

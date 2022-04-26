@@ -18,7 +18,7 @@
                   <span>資訊</span>
                 </div>
               </span>
-              <div :style="{'visibility: hidden;': chatUser.contactId !== JSON.stringify(this.myUserInfo.id)}">
+              <div :style="chatUser.contactId === JSON.stringify(this.myUserInfo.id)?'visibility: hidden':''">
                 <template v-if="infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact">
                   <div
                     class="home-add-user"

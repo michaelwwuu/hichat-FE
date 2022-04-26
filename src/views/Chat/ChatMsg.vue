@@ -124,10 +124,10 @@
           </ul>
         </div>
         <!-- 置頂訊息 -->
-        <!-- <div class="top-msg">
-          <span>置頂訊息:</span>
-          <span>123</span>
-        </div> -->
+        <div class="top-msg">
+          <img src="./../../../static/images/pin.png" alt="">
+          <span>訊息內容</span>
+        </div>
         <message-pabel
           v-loading="loading"
           element-loading-text="讯息加载中"
@@ -899,7 +899,7 @@ export default {
         }
         .home-photo-link {
           position: absolute;
-          left: 14px;
+          left: 20px;
           display: flex;
           align-items: center;
           cursor: pointer;
@@ -1115,7 +1115,12 @@ export default {
   }
 }
 .top-msg{
-  background-color: #ffffff7e;
-  padding: 10px;
+  background-color: #ffffff;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  img{
+    height: 1.5em;
+  }
 }
 </style>
