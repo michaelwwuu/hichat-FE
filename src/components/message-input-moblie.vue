@@ -88,7 +88,7 @@
           <img src="./../../static/images/send.png" alt="" />
         </div>
       </template>
-      
+
       <template v-else>
         <div>
           <img
@@ -109,10 +109,10 @@
       :visible.sync="uploadImgShow"
       width="100%"
       :append-to-body="device !== 'pc'"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
       v-loading.fullscreen.lock="fullscreenLoading"
-      element-loading-text="圖片上传中"      
+      element-loading-text="圖片上传中"
       center
     >
       <el-upload
@@ -149,10 +149,10 @@
       width="100%"
       append-to-body
       :before-close="closeAduioShow"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
       v-loading.fullscreen.lock="fullscreenLoading"
-      element-loading-text="录音上传中"           
+      element-loading-text="录音上传中"
     >
       <div class="record-play">
         <div class="record-time">
@@ -181,7 +181,7 @@
       width="100%"
       class="el-dialog-takePicture"
       center
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
     >
       <Photo
         :chatType="'CLI_USER_IMAGE'"
@@ -199,8 +199,7 @@ import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
-import { Encrypt} from '@/utils/AESUtils.js'
-
+import { Encrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessageInput",
@@ -211,7 +210,7 @@ export default {
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
-      fullscreenLoading:false,
+      fullscreenLoading: false,
       fileList: [],
       device: localStorage.getItem("device"),
       //錄音
@@ -234,11 +233,10 @@ export default {
       cde: 0, // 分的計數
       efg: 0, // 時的計數
       scrollTop: 0,
-      
+
       //加解密 key iv
-      aesKey:"hichatisachatapp",
-      aesIv:"hichatisachatapp",
-    
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   props: {
@@ -264,7 +262,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setEditMsg:"ws/setEditMsg",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
     pictureShow(val) {
@@ -286,16 +284,16 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
-          Socket.send(message);
+          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          (message.text = res.data), Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
-        }else if(res.code === 40001){
+        } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
         }
-      })
+      });
     },
 
     // 開始計時
@@ -432,7 +430,8 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
+          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          message.text = res.data, 
           Socket.send(message);
           this.sendAduioShow = false;
           this.fullscreenLoading = false;
@@ -493,14 +492,14 @@ export default {
     // 關閉回復訊息
     closeReplyMessage() {
       this.setReplyMsg({
-        name:"",
-        icon:"",
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        name: "",
+        icon: "",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
-      this.setEditMsg({ innerText:""});
+      this.setEditMsg({ innerText: "" });
     },
     // 发送消息
     sendMessage() {
@@ -514,7 +513,12 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
+        // text: Encrypt(
+        //   this.textArea.replace(/(\s*$)/g, ""),
+        //   this.aesKey,
+        //   this.aesIv
+        // ),//TODO 加密
+        text: this.textArea,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
@@ -534,7 +538,13 @@ export default {
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
+        // text: Encrypt(
+        //   this.textArea.replace(/(\s*$)/g, ""),
+        //   this.aesKey,
+        //   this.aesIv
+        // ),//TODO 加密
+        text: this.textArea,
+
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),

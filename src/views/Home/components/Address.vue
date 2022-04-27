@@ -83,7 +83,7 @@ export default {
             el.icon = require("./../../../../static/images/image_user_defult.png");
           }
           if(el.contactId === localStorage.getItem("id")){
-            el.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
+            el.name = "Hichat 记事本"
             el.icon = require("./../../../../static/images/image_savemessage.png")
             this.setChatUser(el);
           }
@@ -103,7 +103,7 @@ export default {
       let id = data.contactId;
       getSearchById({ id }).then((res) => {
         if(res.data.id === this.myUserInfo.id){
-          data.name = this.device ==="pc" ? "Hichat 记事本": "儲存的訊息"
+          data.name = "Hichat 记事本"
           data.forChatId = "u" + res.data.id
           data.icon = require("./../../../../static/images/image_savemessage.png")
         }else {

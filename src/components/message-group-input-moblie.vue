@@ -350,7 +350,8 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = "g" + this.groupData.groupId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
+          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          message.text = res.data,
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -494,7 +495,8 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = "g" + this.groupData.groupId,
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
+          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          message.text = res.data,
           Socket.send(message);
           this.sendAduioShow = false;
           this.fullscreenLoading = false;          
@@ -597,7 +599,8 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: this.targetArray,
-        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
+        // text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
+        text: this.textArea,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
         tokenType: 0,
@@ -619,7 +622,8 @@ export default {
         tokenType: 0,
         fromChatId: this.groupData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),
+        // text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
+        text: this.textArea,
         toChatId: this.groupData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),

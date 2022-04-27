@@ -124,10 +124,10 @@
           </ul>
         </div>
         <!-- 置頂訊息 -->
-        <div class="top-msg">
+        <!-- <div class="top-msg">
           <img src="./../../../static/images/pin.png" alt="">
           <span>訊息內容</span>
-        </div>
+        </div> -->
         <message-pabel
           v-loading="loading"
           element-loading-text="讯息加载中"

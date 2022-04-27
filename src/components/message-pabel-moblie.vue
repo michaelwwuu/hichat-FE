@@ -337,7 +337,8 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.chatUser.toChatId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),
+          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          message.text = res.data,this.aesKey,this.aesIv,
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -615,18 +616,28 @@ export default {
         }
       }
       .message-audio {
-        width: 370px;
+        width: 190px;
         display: flex;
       }
       .vueAudioBetter {
         margin: 14px 0;
         box-shadow: none;
         background-image: none;
+        width:auto;
         /deep/.operate {
           span {
             &:nth-child(3) {
               color: rgba(0, 0, 0, 0.8) !important;
             }
+          }
+        }
+        /deep/.slider{
+          display: none;
+        }
+        /deep/.icon-notificationfill{
+          &:before{
+            content: "\E66A";
+            display: none;
           }
         }
       }
@@ -639,6 +650,7 @@ export default {
   }
 
 }
+
 .message-pabel-box {
   padding: 0 10px 0 20px;
   flex: 1;
@@ -830,7 +842,31 @@ export default {
         width: 6em;
       }
     }
+
   }
+  .vueAudioBetter {
+    margin: 14px 0;
+    box-shadow: none;
+    background-image: none;
+    width:auto;
+    margin:0;
+    /deep/.operate {
+      span {
+        &:nth-child(3) {
+          color: rgba(0, 0, 0, 0.8) !important;
+        }
+      }
+    }
+    /deep/.slider{
+      display: none;
+    }
+    /deep/.icon-notificationfill{
+      &:before{
+        content: "\E66A";
+        display: none;
+      }
+    }
+  }  
 }
 .reply-aduio {
   .message-classic {
@@ -883,7 +919,7 @@ export default {
     .reply-audio-box {
       display: block;
       // background-color: #000000;
-      width: 24em;
+      width: 12em;
       height: 40px;
       position: absolute;
       z-index: 9;
@@ -892,8 +928,27 @@ export default {
       width: 200px !important;
       border: 0 !important;
     }
-    /deep/.vueAudioBetter {
-      margin: 0 !important;
+    .vueAudioBetter {
+      box-shadow: none;
+      background-image: none;
+      width:auto;
+      margin:0;
+      /deep/.operate {
+        span {
+          &:nth-child(3) {
+            color: rgba(0, 0, 0, 0.8) !important;
+          }
+        }
+      }
+      /deep/.slider{
+        display: none;
+      }
+      /deep/.icon-notificationfill{
+        &:before{
+          content: "\E66A";
+          display: none;
+        }
+      }
     }
   }
 }

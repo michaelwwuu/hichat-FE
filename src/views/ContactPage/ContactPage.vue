@@ -6,7 +6,10 @@
           <div class="home-header">
             <div class="home-user" @click="back"></div>
             <span class="home-header-title"></span>
-            <router-link :to="'/EditContact'" v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)">
+            <router-link
+              :to="'/EditContact'"
+              v-if="chatUser.forChatId !== chatUser.toChatId"
+            >
               <div class="home-add-user"></div>
             </router-link>
           </div>
@@ -40,7 +43,9 @@
               >
             </div>
           </div>
-          <template v-if="chatUser.contactId === JSON.stringify(this.myUserInfo.id)">
+          <template
+            v-if="chatUser.contactId === JSON.stringify(this.myUserInfo.id)"
+          >
             <div
               class="setting-button"
               v-for="(item, index) in saveSettingData"
@@ -96,7 +101,9 @@
               <a>
                 <div class="setting-button-left">
                   <img src="./../../../static/images/blockade.png" alt="" />
-                  <span>{{ !chatUser.isBlock ? "封锁联络人" : "解除封锁" }}</span>
+                  <span>{{
+                    !chatUser.isBlock ? "封锁联络人" : "解除封锁"
+                  }}</span>
                 </div>
               </a>
             </div>
@@ -121,7 +128,6 @@
               </a>
             </div>
           </template>
-    
         </div>
       </el-main>
     </el-container>
@@ -237,6 +243,7 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.setChatUser(this.userData)
     this.getUserId();
   },
   methods: {
@@ -247,8 +254,7 @@ export default {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         if (res.data.id === this.myUserInfo.id) {
-          this.chatUser.name =
-            this.device === "pc" ? "Hichat 记事本" : "儲存的訊息";
+          this.chatUser.name = "Hichat 记事本";
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
         } else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
@@ -257,7 +263,6 @@ export default {
           this.chatUser.isBlock = res.data.isBlock;
           this.chatUser.isContact = res.data.isContact;
         }
-
         this.setChatUser(this.chatUser);
       });
     },

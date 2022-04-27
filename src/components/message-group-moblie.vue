@@ -795,6 +795,29 @@ export default {
       // border: 1px solid #eeeeee;
     }
   }
+  .vueAudioBetter {
+    margin: 14px 0;
+    box-shadow: none;
+    background-image: none;
+    width:auto;
+    margin:0;
+    /deep/.operate {
+      span {
+        &:nth-child(3) {
+          color: rgba(0, 0, 0, 0.8) !important;
+        }
+      }
+    }
+    /deep/.slider{
+      display: none;
+    }
+    /deep/.icon-notificationfill{
+      &:before{
+        content: "\E66A";
+        display: none;
+      }
+    }
+  }    
 }
 .hichat-pc {
   .message-pabel-box {
@@ -887,22 +910,41 @@ export default {
       color: rgba(0, 0, 0, 0.8);
       text-decoration: none;
     }
+    .reply-audio-box {
+      display: block;
+      // background-color: #000000;
+      width: 12em;
+      height: 40px;
+      position: absolute;
+      z-index: 9;
+    }    
     .message-audio {
       height: 2.5em !important;
       padding: 0 !important;
       border: none !important;
       background-color:none;
     }
-    /deep/.vueAudioBetter{
-      margin:0 !important;
-    }
-    .reply-audio-box {
-      display: block;
-      // background-color: #000000;
-      width: 24em;
-      height: 40px;
-      position: absolute;
-      z-index: 9;
+    .vueAudioBetter {
+      box-shadow: none;
+      background-image: none;
+      width:auto;
+      margin:0;
+      /deep/.operate {
+        span {
+          &:nth-child(3) {
+            color: rgba(0, 0, 0, 0.8) !important;
+          }
+        }
+      }
+      /deep/.slider{
+        display: none;
+      }
+      /deep/.icon-notificationfill{
+        &:before{
+          content: "\E66A";
+          display: none;
+        }
+      }
     }
   }
 }
