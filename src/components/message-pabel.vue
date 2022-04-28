@@ -97,7 +97,8 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showBottomBtn =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 450
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 250
+          console.log(this.showBottomBtn)
       },
       true
     );
@@ -199,9 +200,9 @@ export default {
   text-align: center;
 }
 .bottom-btn{
-  width: 450px;
-  position: fixed;
+  position: absolute;
   bottom: 170px;
+  right: 25px;
   text-align: right;
 }
 </style>
