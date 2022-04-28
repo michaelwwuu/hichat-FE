@@ -79,22 +79,21 @@ export default {
       getContactList().then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((el) => {
-          if (el.icon === undefined){
-            el.icon = require("./../../../../static/images/image_user_defult.png");
-          }
           if(el.contactId === localStorage.getItem("id")){
             el.name = "Hichat 记事本"
             el.icon = require("./../../../../static/images/image_savemessage.png")
-            this.setChatUser(el);
-          }
+          }else if (el.icon === undefined){
+            el.icon = require("./../../../../static/images/image_user_defult.png");
+          }          
         });
         this.setMyContactDataList(this.contactList);
       });
       getGroupList().then((res) => {
         this.groupData = res.data.list;
         this.groupData.forEach((el) => {
-          if (el.icon === "")
+          if (el.icon === "") {
             el.icon = require("./../../../../static/images/image_group_defult.png");
+          }
         });
         this.setGroupList(this.groupData);
       });
