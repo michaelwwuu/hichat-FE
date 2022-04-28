@@ -796,7 +796,6 @@ export default {
     }
   }
   .vueAudioBetter {
-    margin: 14px 0;
     box-shadow: none;
     background-image: none;
     width:auto;

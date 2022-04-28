@@ -620,10 +620,10 @@ export default {
         display: flex;
       }
       .vueAudioBetter {
-        margin: 14px 0;
         box-shadow: none;
         background-image: none;
         width:auto;
+        margin:0;
         /deep/.operate {
           span {
             &:nth-child(3) {
@@ -845,7 +845,6 @@ export default {
 
   }
   .vueAudioBetter {
-    margin: 14px 0;
     box-shadow: none;
     background-image: none;
     width:auto;
