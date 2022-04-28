@@ -7,6 +7,18 @@
 <script>
 export default {
   name: "App",
+  mounted() {
+    document.body.addEventListener(
+      "touchmove",
+      (e) => {
+        if (e._isScroller) return;
+        e.preventDefault();
+      },
+      {
+        passive: false,
+      }
+    );
+  },
 };
 </script>
 
