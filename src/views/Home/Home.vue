@@ -230,6 +230,7 @@
         <el-button class="background-red" @click="loginOut">登出</el-button>
       </span>
     </el-dialog>
+    <audio id="notify-receive-audio" src="./../../../static/wav/receive.mp3"></audio>
   </div>
 </template>
 
@@ -503,6 +504,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+          document.getElementById('notify-receive-audio').play()
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }

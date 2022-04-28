@@ -188,6 +188,7 @@
         v-on:closePictureShow="pictureShow"
       ></Photo>
     </el-dialog>
+    <audio id="notify-send-audio" src="./../../static/wav/send.mp3"></audio>
   </div>
 </template>
 
@@ -285,7 +286,8 @@ export default {
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
           // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          (message.text = res.data), Socket.send(message);
+          message.text = res.data; 
+          Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
@@ -467,6 +469,7 @@ export default {
       if (this.textArea.replace(/\s+/g, "") === "") {
         this.$alert("不能发送空白消息", "提示", {
           confirmButtonText: "确定",
+          closeOnPressEscape:true,
           customClass: "winClass", //弹窗样式
         });
         return false;
@@ -524,6 +527,7 @@ export default {
       };
       if (this.blankTesting()) {
         // 发送服务器
+        document.getElementById('notify-send-audio').play()
         Socket.send(message);
         this.closeReplyMessage();
         // 消息清空
@@ -735,7 +739,7 @@ export default {
   }
 }
 .winClass {
-  width: 90%;
+  width: 300px;
 }
 .hichat-pc {
   .el-dialog__wrapper.el-dialog-takePicture {

@@ -24,7 +24,7 @@
             <div>
               <span
                 :style="
-                  chatUser.contactId === JSON.stringify(this.myUserInfo.id)
+                  chatUser.contactId === chatUser.memberId
                     ? 'height:2em'
                     : ''
                 "
@@ -32,7 +32,7 @@
               >
               <span
                 class="user-data-id"
-                v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)"
+                v-if="chatUser.contactId !== chatUser.memberId"
               >
                 ID :
                 <span
@@ -44,7 +44,7 @@
             </div>
           </div>
           <template
-            v-if="chatUser.contactId === JSON.stringify(this.myUserInfo.id)"
+            v-if="chatUser.contactId === chatUser.memberId"
           >
             <div
               class="setting-button"

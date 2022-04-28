@@ -239,6 +239,7 @@
         v-on:closePictureShow="pictureShow"
       ></Photo>
     </el-dialog>
+    <audio id="notify-send-audio" src="./../../static/wav/send.mp3"></audio>
   </div>
 </template>
 
@@ -607,6 +608,7 @@ export default {
       };
       if (this.blankTesting()) {
         // 发送服务器
+        document.getElementById('notify-send-audio').play()
         Socket.send(message);
         this.closeReplyMessage();
         // 消息清空
@@ -814,7 +816,7 @@ export default {
   }
 }
 .winClass {
-  width: 90%;
+  width: 300px;
 }
 .hichat-pc {
   .el-dialog__wrapper.el-dialog-takePicture {
