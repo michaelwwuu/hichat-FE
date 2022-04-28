@@ -39,7 +39,7 @@ const routes = [
     path: "/Home",
     name: "Home",
     component: () => import(/* webpackChunkName: "Home" */ '@/views/Home/Home.vue'),
-    redirect: '/Address',//页面默认加载的路由
+    redirect: '/HiChat',//页面默认加载的路由
     children: [
       {
         path: "/Address",

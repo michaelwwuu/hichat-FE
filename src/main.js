@@ -46,6 +46,10 @@ import VueAudio from 'vue-audio-better'
 
 Vue.use(VueAudio)
 
+//i18n
+import i18n from './common/plugins/vue-i18n'
+
+
 Vue.prototype.$md5 = md5;
 Vue.prototype.$moment = moment;
 Vue.config.productionTip = false
@@ -53,6 +57,7 @@ Vue.config.productionTip = false
 
 new Vue({
   mixins: [mixins],
+  i18n,
   router,
   store,
   render: h => h(App)

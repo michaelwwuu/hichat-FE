@@ -5,8 +5,8 @@
         <span slot="label" v-if="hiChatDataList.length > 0">
           <span>联络人</span>
           <el-badge
-            v-if="userNumberBadge"
-            is-dot
+            v-if="hiChatNumBadge > 0"
+            :value="hiChatNumBadge"
             class="contact-badge"
           ></el-badge>
         </span>
@@ -52,8 +52,8 @@
         <span slot="label" v-if="groupDataList.length > 0">
           <span>群组</span>
           <el-badge
-            v-if="groupNumberBadge"
-            is-dot
+            v-if="groupNumBadge > 0"
+            :value="groupNumBadge"
             class="contact-badge"
           ></el-badge>
         </span>
@@ -103,8 +103,8 @@
         <span slot="label" v-if="contactDataList.length > 0">
           <span>陌生讯息</span>
           <el-badge
-            v-if="contactNumberBadge"
-            is-dot
+            v-if="contactNumBadge > 0"
+            :value="contactNumBadge"
             class="contact-badge"
           ></el-badge>
         </span>
@@ -158,7 +158,7 @@
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getGroupList, groupListMember } from "@/api";
+import { getGroupList, groupListMember,getSearchById } from "@/api";
 
 export default {
   name: "HiChat",
@@ -168,11 +168,8 @@ export default {
       groupList: [],
       groupDataList: [],
       hiChatDataList: [],
-      newMsgDataList: [],
       contactDataList: [],
-      userNumberBadge: false,
-      groupNumberBadge: false,
-      contactNumberBadge: false,
+      newMsgDataList: [],
       getHistoryMessage: {
         chatType: "",
         toChatId: "",
@@ -256,12 +253,13 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv)
+        return Decrypt(data, this.aesKey, this.aesIv);
         // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
@@ -281,37 +279,35 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-
       switch (userInfo.chatType) {
         //成功收到
         case "SRV_RECENT_CHAT":
-          this.hiChatDataList = userInfo.recentChat.filter(
-            (item) => item.isContact && item.lastChat !== null
-          );
-          this.hiChatDataList.forEach(list => {
-            if(list.forChatId === list.toChatId){
-              list.name = "Hichat 记事本"
-              list.icon = require("./../../../../static/images/image_savemessage.png")
-            }
-          });
-          this.groupDataList = userInfo.recentChat.filter(
-            (item) => item.isGroup && item.lastChat !== null
-          );
-          this.contactDataList = userInfo.recentChat.filter(
-            (item) =>
+          this.groupNumBadge = 0;
+          this.hiChatNumBadge = 0;
+          this.contactNumBadge = 0;
+          this.hiChatDataList= []
+          this.groupDataList= []
+          this.contactDataList= []
+          userInfo.recentChat.forEach((item) => {
+            if (item.isContact && item.lastChat !== null) {
+              if (item.forChatId === item.toChatId) {
+                item.name = "Hichat 记事本";
+                item.icon = require("./../../../../static/images/image_savemessage.png");
+              }
+              this.hiChatDataList.push(item);
+              this.hiChatNumBadge += item.unreadCount;
+            } else if (item.isGroup && item.lastChat !== null) {
+              this.groupDataList.push(item);
+              this.groupNumBadge += item.unreadCount;
+            } else if (
               !item.isContact &&
               item.isContact !== null &&
               item.lastChat !== null
-          );
-          this.userNumberBadge = this.hiChatDataList.some(
-            (item) => item.unreadCount > 0
-          );
-          this.groupNumberBadge = this.groupDataList.some(
-            (item) => item.unreadCount > 0
-          );
-          this.contactNumberBadge = this.contactDataList.some(
-            (item) => item.unreadCount > 0
-          );
+            ) {
+              this.contactDataList.push(item);
+              this.contactNumBadge += item.unreadCount;
+            }
+          });
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -341,10 +337,25 @@ export default {
         this.setContactListData(this.contactList);
       });
     },
+    getUserId(data) {
+      let id = data.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        if(res.data.id === localStorage.getItem("id")){
+          data.name = "Hichat 记事本"
+          data.icon = require("./../../../../static/images/image_savemessage.png")
+        } else{
+          data.username = res.data.username
+          data.toChatId = "u" + res.data.id
+        }
+        console.log(this.chatUser)
+        this.setChatUser(data);
+      });
+    },    
     goChatRoom(data, path) {
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         this.setChatUser(data);
+        // this.getUserId(data)
       } else if (path === "ChatContact") {
         this.setContactUser(data);
       } else {
@@ -466,6 +477,7 @@ export default {
 .contact-badge {
   vertical-align: initial;
   padding-left: 5px;
+  top: -2px;
 }
 .hichat-pc {
   .address-box {

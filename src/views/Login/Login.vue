@@ -13,7 +13,7 @@
     >
       <div class="title-container">
         <img src="./../../../static/images/material_ic_logo.png" alt="" />
-        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span>
+        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span><!--{{ $t('LOGIN.LGOIN_TITLE') }}-->
       </div>
       <template v-if="device === 'moblie'">
         <el-form-item prop="email">
@@ -157,6 +157,15 @@
           >
         </router-link>
       </div>
+      <!-- <el-dropdown>
+        <span class="el-dropdown-link">
+          選擇語言<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item data-lang="tw" @click.native="setLang">中文</el-dropdown-item>
+          <el-dropdown-item data-lang="en" @click.native="setLang">English</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown> -->
     </el-form>
     <el-dialog
       :title="device === 'pc' ? '帐号已锁定' : ''"
@@ -239,6 +248,14 @@ export default {
     this.getUUID();
   },
   methods: {
+    setActiveLanguage(lang) {
+      localStorage.setItem('language', lang)
+    },
+    setLang(evt) {
+      const lang = evt.target.dataset.lang
+      this.setActiveLanguage(lang)
+      return history.go(0)
+    },
     showPwd() {
       this.passwordType = this.passwordType === "password" ? "" : "password";
       this.$nextTick(() => this.$refs.password.focus());

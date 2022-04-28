@@ -250,7 +250,7 @@ export default {
       type: Object,
     },
   },
-  watch: {
+  watch: { 
     editMsg(val) {
       this.textArea = val.innerText;
     },

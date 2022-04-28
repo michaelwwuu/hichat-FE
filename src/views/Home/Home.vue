@@ -156,7 +156,7 @@
             "
           />
         </template>
-        <template v-if="infoMsg.infoMsgShow">
+        <template v-if="infoMsg.infoMsgShow && !infoMsg.infoMsgChat">
           <div class="go-room-style">
             <img src="./../../../static/images/msg-btn.png" alt="">
             <el-button  @click="goChatRoom(chatUser,activeName)">開始聊天</el-button>
@@ -238,6 +238,7 @@
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
+
 import { mapState, mapMutations } from "vuex";
 import {
   getGroupList,
@@ -329,9 +330,22 @@ export default {
         passive: false,
       }
     );
-
   },
   watch: {
+    wsRes(val){
+      switch (val.chatType) {
+        case "SRV_USER_IMAGE":
+        case "SRV_USER_AUDIO":
+        case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
+        case "SRV_GROUP_SEND":
+          if(val.forChatId.replace("u","") !== localStorage.getItem("id")){
+            document.getElementById('notify-receive-audio').play()
+          }
+          break;
+      }
+    },   
     hichatNav(val) {
       this.num = val.num;
     },
@@ -355,6 +369,7 @@ export default {
   },
   computed: {
     ...mapState({
+      wsRes: (state) => state.ws.wsRes,
       infoMsg: (state) => state.ws.infoMsg,
       chatUser: (state) => state.ws.chatUser,
       badgeNum: (state) => state.ws.badgeNum,
@@ -491,6 +506,7 @@ export default {
                 item.username = "Hichat 记事本"
                 item.icon = require("./../../../static/images/image_savemessage.png")
               }else{
+                item.contactId = this.chatUser.contactId
                 item.username = this.chatUser.username;
               }
               this.setChatUser(item);
@@ -504,7 +520,8 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          document.getElementById('notify-receive-audio').play()
+          document.getElementById('notify-send-audio').play()
+
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }

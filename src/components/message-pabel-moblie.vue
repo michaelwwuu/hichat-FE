@@ -6,7 +6,6 @@
     @dragenter="drop"
     @dragend="dragend"
   >
-
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -588,6 +587,7 @@ export default {
           .el-image {
             width: 15em !important;
             height: 15em !important;
+            top:0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -604,6 +604,7 @@ export default {
           .el-image {
             width: 15em !important;
             height: 15em !important;
+            top:0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -690,6 +691,7 @@ export default {
         .el-image {
           width: 15em !important;
           height: 15em !important;
+          top:0;
           /deep/.el-image__inner {
             height: 15em;
           }
@@ -756,6 +758,7 @@ export default {
         .el-image {
           width: 15em !important;
           height: 15em !important;
+          top:0;
           /deep/.el-image__inner {
             height: 15em;
           }
