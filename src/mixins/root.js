@@ -7,6 +7,10 @@ const rootMixins = {
   created() {
   },
   methods: {
+    //鎖定滾動
+    handleTouch (e) {
+      e._isScroller = true
+    },
     // // 为了做验证的时分秒默认时间
     newDefaultEnd() {
       return this.$moment().endOf('day').format('YYYY-MM-DD 23:59:59')
