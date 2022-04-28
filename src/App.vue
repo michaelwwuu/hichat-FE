@@ -11,7 +11,7 @@ export default {
     document.body.addEventListener(
       "touchmove",
       (e) => {
-        if (e._isScroller) return;
+        if (e.target.parentElement._isScroller) return;
         e.preventDefault();
       },
       {

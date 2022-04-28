@@ -9,7 +9,7 @@ const rootMixins = {
   methods: {
     //鎖定滾動
     handleTouch (e) {
-      e._isScroller = true
+      e.target.parentElement._isScroller = true
     },
     // // 为了做验证的时分秒默认时间
     newDefaultEnd() {

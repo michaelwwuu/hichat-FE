@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <el-button
       v-if="isShowMoreMsg && userInfoData.usernameCLI_ROOM_SEND !== 'guest'"
       class="eye-more"
@@ -98,7 +98,6 @@ export default {
           document.querySelector(".message-pabel-box").scrollTop;
         this.showBottomBtn =
           (scrollTopBox.scrollHeight - scrollTop) / 4 > 450
-          console.log(this.showBottomBtn)
       },
       true
     );
