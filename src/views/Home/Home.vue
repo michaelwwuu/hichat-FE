@@ -158,8 +158,10 @@
         </template>
         <template v-if="infoMsg.infoMsgShow && !infoMsg.infoMsgChat">
           <div class="go-room-style">
-            <img src="./../../../static/images/msg-btn.png" alt="">
-            <el-button  @click="goChatRoom(chatUser,activeName)">開始聊天</el-button>
+            <img src="./../../../static/images/msg-btn.png" alt="" />
+            <el-button @click="goChatRoom(chatUser, activeName)"
+              >開始聊天</el-button
+            >
           </div>
         </template>
       </el-main>
@@ -230,7 +232,12 @@
         <el-button class="background-red" @click="loginOut">登出</el-button>
       </span>
     </el-dialog>
-    <audio id="notify-receive-audio" src="./../../../static/wav/receive.mp3"></audio>
+    <audio
+      id="notify-receive-audio"
+      muted="muted"
+      preload="none"
+      src="./../../../static/wav/receive.mp3"
+    ></audio>
   </div>
 </template>
 
@@ -332,7 +339,7 @@ export default {
     );
   },
   watch: {
-    wsRes(val){
+    wsRes(val) {
       switch (val.chatType) {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -340,12 +347,12 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          if(val.forChatId.replace("u","") !== localStorage.getItem("id")){
-            document.getElementById('notify-receive-audio').play()
+          console.log(123);
+          if (val.forChatId.replace("u", "") !== localStorage.getItem("id")) {
           }
           break;
       }
-    },   
+    },
     hichatNav(val) {
       this.num = val.num;
     },
@@ -393,7 +400,7 @@ export default {
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
-    goChatRoom(data,type) {
+    goChatRoom(data, type) {
       this.setInfoMsg({
         infoMsgShow: false,
         infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
@@ -412,12 +419,13 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv)
+        return Decrypt(data, this.aesKey, this.aesIv);
         // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
@@ -441,10 +449,10 @@ export default {
           if (el.icon === undefined) {
             return (el.icon = require("./../../../static/images/image_user_defult.png"));
           }
-          if(el.contactId === localStorage.getItem("id")) {
-            el.name = "Hichat 记事本"
-            el.icon = require("./../../../static/images/image_savemessage.png")
-            el.toChatId = "u" + el.memberId
+          if (el.contactId === localStorage.getItem("id")) {
+            el.name = "Hichat 记事本";
+            el.icon = require("./../../../static/images/image_savemessage.png");
+            el.toChatId = "u" + el.memberId;
           }
         });
       });
@@ -501,12 +509,12 @@ export default {
           this.chatDataList.forEach((item) => {
             numNumber += item.unreadCount;
             if (item.toChatId === this.chatUser.toChatId) {
-              if(item.toChatId === item.forChatId) {
-                item.name = "Hichat 记事本"
-                item.username = "Hichat 记事本"
-                item.icon = require("./../../../static/images/image_savemessage.png")
-              }else{
-                item.contactId = this.chatUser.contactId
+              if (item.toChatId === item.forChatId) {
+                item.name = "Hichat 记事本";
+                item.username = "Hichat 记事本";
+                item.icon = require("./../../../static/images/image_savemessage.png");
+              } else {
+                item.contactId = this.chatUser.contactId;
                 item.username = this.chatUser.username;
               }
               this.setChatUser(item);
@@ -520,9 +528,8 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          document.getElementById('notify-send-audio').play()
-
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
+            document.getElementById("notify-receive-audio").play();
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
           break;
@@ -755,29 +762,29 @@ export default {
     }
   }
 }
-::v-deep .el-input__suffix{
-  .el-icon-circle-close:before{
+::v-deep .el-input__suffix {
+  .el-icon-circle-close:before {
     content: "\e6db";
-    font-size:18px;
-    color:#10686e;
+    font-size: 18px;
+    color: #10686e;
   }
 }
 .el-badge-box {
   position: absolute;
   margin: -10px 0 0 20px;
 }
-.go-room-style{
+.go-room-style {
   height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  img{
+  img {
     height: 8em;
     margin-bottom: 2.5em;
   }
-  .el-button{
-    color: #FFFFFF;
+  .el-button {
+    color: #ffffff;
     padding: 1.3em 3em;
     background-color: #fe5f3f;
   }

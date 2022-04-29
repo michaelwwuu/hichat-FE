@@ -388,7 +388,8 @@ export default {
         });
         this.getHistory(data, path);
         this.closeReplyMessage();
-        setTimeout(() => this.getHiChatDataList(), 2000);
+        this.getHiChatDataList()
+        // setTimeout(() => this.getHiChatDataList(), 2000);
       }
     },
     closeReplyMessage() {
