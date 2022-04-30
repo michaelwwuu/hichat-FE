@@ -50,8 +50,8 @@
                   ID :
                   <span
                     class="user-paste"
-                    @click="copyPaste(chatUser.username)"
-                    >{{ chatUser.username }}</span
+                    @click="copyPaste(chatUserId)"
+                    >{{ chatUserId }}</span
                   ></span
                 >
               </div>
@@ -169,11 +169,11 @@ export default {
         },
       ],
       settingGroupData: [
-        {
-          name: "传送讯息",
-          icon: require("./../../../static/images/pc/message.png"),
-          path: "HiChat",
-        },
+        // {
+        //   name: "传送讯息",
+        //   icon: require("./../../../static/images/pc/message.png"),
+        //   path: "HiChat",
+        // },
         {
           name: "查看相片和影片",
           icon: require("./../../../static/images/pc/image.png"),
@@ -195,6 +195,7 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       },
+      chatUserId:"",
       contactList:[],
       groupDataList: [],
       notification: true,
@@ -214,12 +215,10 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.infoMsgSettingData();
-    setTimeout(() => {
-      if(this.infoMsg.infoMsgNav === "ContactPage"){
-        this.getUserId();
-      }
-    }, 1000); 
+    // this.infoMsgSettingData();
+    if(this.infoMsg.infoMsgNav === "ContactPage"){
+      this.getUserId();
+    }
   },
   methods: {
     ...mapMutations({
@@ -251,7 +250,7 @@ export default {
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
         }else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-          this.chatUser.username = res.data.username;
+          this.chatUserId = res.data.username;
           this.chatUser.name = res.data.name;
           this.chatUser.isBlock = res.data.isBlock;
           this.chatUser.isContact = res.data.isContact;
@@ -262,12 +261,12 @@ export default {
     editShowBtn(data) {
       this.setMsgInfoPage({ pageShow: false, type: data });
     },
-    infoMsgSettingData() {
-      if (this.infoMsg.infoMsgChat) {
-        this.settingContactData.splice(0, 1);
-        this.settingGroupData.splice(0, 1);
-      }
-    },
+    // infoMsgSettingData() {
+    //   if (this.infoMsg.infoMsgChat) {
+    //     // this.settingContactData.splice(0, 1);
+    //     // this.settingGroupData.splice(0, 1);
+    //   }
+    // },
     closeInfoMsgShow() {
       this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
     },
@@ -418,7 +417,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-content: center;
-      border-bottom: 2px solid #e3e3e3;
+      border-bottom: 3px solid rgba(0, 0, 0, 0.05);
       img {
         height: 1.2em;
       }

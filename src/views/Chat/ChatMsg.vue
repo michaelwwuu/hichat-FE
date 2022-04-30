@@ -35,7 +35,7 @@
             <div class="home-header-pc">
               <span
                 class="home-photo-link"
-                @click="chatUser.isContact ? infoMsgShow() : false"
+                @click="chatUser.isContact ? infoMsgShow(chatUser) : false"
               >
                 <div class="home-user-photo">
                   <img
@@ -57,6 +57,15 @@
                     <div class="home-user-more"></div>
                   </div>
                   <el-dropdown-menu slot="dropdown" class="chat-more">
+                    <el-dropdown-item>
+                      <div class="logout-btn">
+                        <img
+                          src="./../../../static/images/pc/bell-off.png"
+                          alt=""
+                        />
+                        <span>關閉通知</span>
+                      </div>
+                    </el-dropdown-item>
                     <el-dropdown-item>
                       <div class="logout-btn" @click="isBlockDialogShow = true">
                         <img
@@ -327,7 +336,7 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     if (this.userData !== null) {
       this.setChatUser(this.userData);
-      this.getUserId(this.userData);
+      // this.getUserId(this.userData);
       this.getChatHistoryMessage();
     }
     Socket.$on("message", this.handleGetMessage);
@@ -346,6 +355,7 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      myUserInfo:"ws/myUserInfo",
       setInfoMsg: "ws/setInfoMsg",
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
@@ -439,14 +449,32 @@ export default {
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
-    infoMsgShow() {
+    infoMsgShow(chatUser) {
       this.setMsgInfoPage({ pageShow: true, type: "" });
       this.setInfoMsg({
         infoMsgShow: true,
         infoMsgNav: "ContactPage",
         infoMsgChat: true,
       });
+      // this.getUserId(chatUser)
     },
+    getUserId(data) { 
+      console.log(data)
+      let id = this.chatUser.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        if(res.data.id === this.myUserInfo.id){
+          this.chatUser.name = "Hichat 记事本"
+          this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
+        }else {
+          this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
+          this.chatUser.username = res.data.username;
+          this.chatUser.name = res.data.name;
+          this.chatUser.isBlock = res.data.isBlock;
+          this.chatUser.isContact = res.data.isContact;
+        }
+        this.setChatUser(this.chatUser);
+      });
+    },         
     // 已讀
     readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
@@ -474,12 +502,8 @@ export default {
             userInfo.chat.fromChatId ===
             "u" + JSON.parse(localStorage.getItem("id"))
           ) {
-            userInfo.chat.name = JSON.parse(
-              localStorage.getItem("myUserInfo")
-            ).nickname;
-            userInfo.chat.icon = JSON.parse(
-              localStorage.getItem("myUserInfo")
-            ).icon;
+            userInfo.chat.name = this.myUserInfo.nickname;
+            userInfo.chat.icon = this.myUserInfo.icon;
           }
           if (userInfo.replyChat !== null) {
             if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
@@ -490,15 +514,9 @@ export default {
               userInfo.replyChat.fromChatId ===
               "u" + JSON.parse(localStorage.getItem("id"))
             ) {
-              userInfo.replyChat.name = JSON.parse(
-                localStorage.getItem("myUserInfo")
-              ).nickname;
-              userInfo.replyChat.icon = JSON.parse(
-                localStorage.getItem("myUserInfo")
-              ).icon;
-              userInfo.replyChat.nickName = JSON.parse(
-                localStorage.getItem("myUserInfo")
-              ).nickname;
+              userInfo.replyChat.name = this.myUserInfo.nickname;
+              userInfo.replyChat.icon = this.myUserInfo.icon;
+              userInfo.replyChat.nickName = this.myUserInfo.nickname;
             }
           }
           if (userInfo.toChatId === this.chatUser.toChatId) {
@@ -525,12 +543,8 @@ export default {
                   el.chat.fromChatId ===
                   "u" + JSON.parse(localStorage.getItem("id"))
                 ) {
-                  el.chat.name = JSON.parse(
-                    localStorage.getItem("myUserInfo")
-                  ).nickname;
-                  el.chat.icon = JSON.parse(
-                    localStorage.getItem("myUserInfo")
-                  ).icon;
+                  el.chat.name = this.myUserInfo.nickname;
+                  el.chat.icon = this.myUserInfo.icon;
                 }
                 if (el.replyChat !== null) {
                   if (el.replyChat.fromChatId === this.chatUser.toChatId) {
@@ -541,15 +555,9 @@ export default {
                     el.replyChat.fromChatId ===
                     "u" + JSON.parse(localStorage.getItem("id"))
                   ) {
-                    el.replyChat.name = JSON.parse(
-                      localStorage.getItem("myUserInfo")
-                    ).nickname;
-                    el.replyChat.icon = JSON.parse(
-                      localStorage.getItem("myUserInfo")
-                    ).icon;
-                    el.replyChat.nickName = JSON.parse(
-                      localStorage.getItem("myUserInfo")
-                    ).nickname;
+                    el.replyChat.name = this.myUserInfo.nickname;
+                    el.replyChat.icon = this.myUserInfo.icon;
+                    el.replyChat.nickName = this.myUserInfo.nickname;
                   }
                 }
                 if (el.toChatId === this.chatUser.toChatId) {
