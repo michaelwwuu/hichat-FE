@@ -50,8 +50,8 @@
                   ID :
                   <span
                     class="user-paste"
-                    @click="copyPaste(chatUserId)"
-                    >{{ chatUserId }}</span
+                    @click="copyPaste(chatUserId ===''?chatUser.username:chatUserId)"
+                    >{{ chatUserId ===''?chatUser.username:chatUserId }}</span
                   ></span
                 >
               </div>
@@ -198,7 +198,6 @@ export default {
       chatUserId:"",
       contactList:[],
       groupDataList: [],
-      notification: true,
       developmentMessage: developmentMessage,
     };
   },
@@ -216,7 +215,7 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     // this.infoMsgSettingData();
-    if(this.infoMsg.infoMsgNav === "ContactPage"){
+    if(this.infoMsg.infoMsgNav === "ContactPage" && this.infoMsg.infoMsgChat){
       this.getUserId();
     }
   },
