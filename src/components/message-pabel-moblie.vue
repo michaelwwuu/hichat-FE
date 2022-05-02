@@ -585,7 +585,7 @@ export default {
       .message-layout-left {
         p {
           .el-image {
-            width: 15em !important;
+            width: -webkit-fill-available !important;
             height: 15em !important;
             top:0;
             /deep/.el-image__inner {
@@ -602,7 +602,7 @@ export default {
       .message-layout-right {
         p {
           .el-image {
-            width: 15em !important;
+            width: -webkit-fill-available !important;
             height: 15em !important;
             top:0;
             /deep/.el-image__inner {
@@ -614,6 +614,9 @@ export default {
           .message-classic {
             padding: 0;
           }
+        }
+        .message-image{
+          background-color: #FFFFFF;
         }
       }
       .message-audio {
@@ -689,7 +692,7 @@ export default {
           width: 210px;
         }
         .el-image {
-          width: 15em !important;
+          width: -webkit-fill-available !important;
           height: 15em !important;
           top:0;
           /deep/.el-image__inner {
@@ -706,7 +709,7 @@ export default {
       .message-classic {
         background-color: rgba(0, 0, 0, 0.05);
         line-height: 1.4rem;
-        font-weight: 500;
+        font-weight: 600;
         letter-spacing: 0.5px;
         border-radius: 0 8px 8px 8px;
       }
@@ -756,7 +759,7 @@ export default {
           }
         }
         .el-image {
-          width: 15em !important;
+          width: -webkit-fill-available !important;
           height: 15em !important;
           top:0;
           /deep/.el-image__inner {
@@ -772,7 +775,7 @@ export default {
         text-align: left;
         color: #000000;
         line-height: 1.4rem;
-        font-weight: 500;
+        font-weight: 600;
         background-color: #ffffff;
         letter-spacing: 0.5px;
         border-radius: 8px 0 8px 8px;

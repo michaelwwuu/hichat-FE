@@ -32,7 +32,6 @@ export default {
       this.device = "pc";
     }
     localStorage.setItem("device", this.device);
-
     document.body.addEventListener(
       "touchmove",
       (e) => {
@@ -43,8 +42,6 @@ export default {
         passive: false,
       }
     );
-
-
   },
   mounted() {
     if (this.device === "moblie") this.safariHacks();
@@ -67,6 +64,7 @@ export default {
 
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300&display=swap');
 html,
 body {
   height: 100vh;
@@ -79,8 +77,9 @@ body {
   height: 100vh;
   min-height: -webkit-fill-available;
   overflow: hidden;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", "Regular", Arial, sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
+  user-select: none;
+  -webkit-user-select: none;  
 }
 .el-notification__content {
   margin-top: 20px;

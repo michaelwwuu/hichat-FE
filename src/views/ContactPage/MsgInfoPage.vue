@@ -198,6 +198,7 @@ export default {
       chatUserId:"",
       contactList:[],
       groupDataList: [],
+      notification:true,
       developmentMessage: developmentMessage,
     };
   },

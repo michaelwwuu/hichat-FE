@@ -244,7 +244,6 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
-    this.setChatUser(this.userData)
     this.setMyUserInfo(this.myInfo)
     this.getUserId();
   },

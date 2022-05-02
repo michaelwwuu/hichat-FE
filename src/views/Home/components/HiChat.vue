@@ -315,13 +315,18 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          this.getHiChatDataList();
+          if(this.device === "pc") this.getHiChatDataList();
           break;
       }
     },
     getGroupDataList() {
       getGroupList().then((res) => {
         this.groupList = res.data.list;
+        this.groupList.forEach((el) => {
+          if (el.icon === "") {
+            return (el.icon = require("./../../../../static/images/image_group_defult.png"));
+          }
+        });
         this.setGroupList(this.groupList);
       });
     },
@@ -388,8 +393,6 @@ export default {
         });
         this.getHistory(data, path);
         this.closeReplyMessage();
-        this.getHiChatDataList()
-        // setTimeout(() => this.getHiChatDataList(), 2000);
       }
     },
     closeReplyMessage() {

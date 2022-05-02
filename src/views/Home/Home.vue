@@ -325,34 +325,9 @@ export default {
         : 2;
     Socket.$on("message", this.handleGetMessage);
     this.getContactDataList();
-    this.getGroupDataList();
     this.getUserData();
-    document.body.addEventListener(
-      "touchmove",
-      (e) => {
-        if (e._isScroller) return;
-        e.preventDefault();
-      },
-      {
-        passive: false,
-      }
-    );
   },
   watch: {
-    wsRes(val) {
-      switch (val.chatType) {
-        case "SRV_USER_IMAGE":
-        case "SRV_USER_AUDIO":
-        case "SRV_USER_SEND":
-        case "SRV_GROUP_IMAGE":
-        case "SRV_GROUP_AUDIO":
-        case "SRV_GROUP_SEND":
-          console.log(123);
-          if (val.forChatId.replace("u", "") !== localStorage.getItem("id")) {
-          }
-          break;
-      }
-    },
     hichatNav(val) {
       this.num = val.num;
     },
@@ -430,17 +405,6 @@ export default {
       } catch (err) {
         return data;
       }
-    },
-    getGroupDataList() {
-      getGroupList().then((res) => {
-        this.groupList = res.data.list;
-        this.groupList.forEach((el) => {
-          if (el.icon === "") {
-            return (el.icon = require("./../../../static/images/image_group_defult.png"));
-          }
-        });
-        this.setGroupList(this.groupList);
-      });
     },
     getContactDataList() {
       getContactList().then((res) => {
@@ -531,6 +495,9 @@ export default {
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
             document.getElementById("notify-receive-audio").play();
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
+          }
+          if (this.device === "moblie") {
+            this.getHiChatDataList();
           }
           break;
         case "SRV_ERROR_MSG":
