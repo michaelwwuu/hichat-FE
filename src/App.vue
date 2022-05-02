@@ -65,13 +65,7 @@ export default {
 
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300&display=swap');
-html,
-body {
-  height: 100vh;
-  min-height: -webkit-fill-available;
-  overflow: hidden;
-  background-color: #eaf5fa;
-}
+
 #app {
   max-width: 100vw;
   height: 100vh;
