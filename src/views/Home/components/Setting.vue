@@ -118,7 +118,7 @@ export default {
           name: "提醒",
           icon: require("./../../../../static/images/notification.png"),
           pcIcon: require("./../../../../static/images/pc/bell.png"),
-          path: "",
+          path: "/Notify",
         },
         {
           name: "相片和影片",

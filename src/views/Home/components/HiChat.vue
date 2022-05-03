@@ -224,6 +224,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
       setContactUser: "ws/setContactUser",
+      setActiveName:"ws/setActiveName",
       setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData, key) {
@@ -249,6 +250,7 @@ export default {
       }
       Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
+      this.setActiveName(this.hichatNav.type)
       this.closeReplyMessage();
     },
     //判斷是否base64

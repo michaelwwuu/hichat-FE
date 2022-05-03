@@ -881,19 +881,12 @@ export default {
 
 .images-more-btn {
   width: 2em;
-  // height: 2em;
   cursor: pointer;
   border-radius: 5px;
-  // background-size: 70%;
-  // background-position: center;
-  // background-repeat: no-repeat;
-  // background-color: #f7f7f794;
-  // background-image: url("./../../static/images/pc/more.png");
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 9;
-  // border:1px solid #ebebeb;
   text-align: center;
   .el-icon-more {
     font-size: 20px;

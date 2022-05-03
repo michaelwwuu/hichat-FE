@@ -147,6 +147,12 @@ const routes = [
     meta: { keepAlive: false },
   },
   {
+    path: "/Notify",
+    name: "Notify",
+    component: () => import(/* webpackChunkName: "Notify" */ '@/views/Notify/Notify.vue'),
+    meta: { keepAlive: false },
+  },
+  {
     path: "/EditUser",
     name: "EditUser",
     component: () => import(/* webpackChunkName: "EditUser" */ '@/views/EditUser/EditUser.vue'),

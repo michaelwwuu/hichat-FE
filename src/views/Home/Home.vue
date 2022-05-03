@@ -96,12 +96,12 @@
               clearable
             >
             </el-input>
-            <template v-if="num === 0">
+            <template v-if="activeName ==='address'">
               <router-link :to="'/AddUser'">
                 <img src="./../../../static/images/pc/user-plus.png" alt="" />
               </router-link>
             </template>
-            <template v-else-if="num === 1">
+            <template v-else-if="activeName ==='group'">
               <router-link :to="'/AddGroup'">
                 <img
                   src="./../../../static/images/pc/message-plus.png"
