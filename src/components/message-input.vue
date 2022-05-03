@@ -11,7 +11,7 @@
         placeholder="请输入文字..."
         :autosize="{ minRows: 3.5, maxRows: 3.5 }"
         v-model="textArea"
-        v-on:keyup.native="keyUp"
+        @keyup.native="keyUp" 
       >
       </el-input>
 
@@ -47,21 +47,20 @@ export default {
         .replace(/\n/g, "")
         .replace(new RegExp("<", "gm"), "&lt");
     },
-    // 检测空白
-    blankTesting() {
-      if (this.textArea.replace(/\s+/g, "") === "") {
-        this.$alert("不能发送空白消息", "提示", {
-          confirmButtonText: "确定",
-        });
-        return false;
-      }
-      return true;
-    },
     // 按Enter发送消息
     keyUp(event) {
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
+        if (this.textArea.replace(/\s+/g, "") === "") {
+          this.$alert("不能发送空白消息", "提示", {
+            confirmButtonText: "确定",
+          }).then(() => {
+            this.textArea = ""
+          });
+          event.target.blur()
+          return false;
+        }
         this.sendMessage();
       }
     },
@@ -72,12 +71,9 @@ export default {
       message.id = Math.random();
       message.text = this.textArea;
       delete message.username
-      if (this.blankTesting()) {
-        // 发送服务器
-        Socket.send(message);
-        // 消息清空
-        this.textArea = "";
-      }
+      Socket.send(message);
+      this.textArea = "";
+
     },
   },
 };

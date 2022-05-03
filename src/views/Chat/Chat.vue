@@ -169,12 +169,19 @@ export default {
         typeStyle:data.typeStyle = data.chatType !== "SRV_JOIN_ROOM" && data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
       if(chatType === "SRV_ROOM_HISTORY_RSP"){
-        this.messageData.unshift(this.chatRoomMsg);
-      }else if (data.chatType === "SRV_JOIN_ROOM"){
-        this.messageData.push(this.chatRoomMsg);
-      }else if(chatType === "SRV_ROOM_SEND"){
-        this.messageData.push(this.chatRoomMsg);
+        if(data.toChatId === localStorage.getItem("roomId")){
+          this.messageData.unshift(this.chatRoomMsg);
+        }
+      }else if (chatType === "SRV_JOIN_ROOM" || chatType === "SRV_ROOM_SEND"){
+        if(data.chatRoomId === localStorage.getItem("roomId")){
+          this.messageData.push(this.chatRoomMsg);
+        }
       }
+      // else if(chatType === "SRV_ROOM_SEND"){
+      //   if(data.toChatId === localStorage.getItem("roomId")){
+      //     this.messageData.push(this.chatRoomMsg);
+      //   }
+      // }
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
@@ -190,9 +197,12 @@ export default {
           })
           if(userInfo.username !== "guest"){
             this.getUserInfo(this.userListId)
-
           }
-          this.messageList(userInfo)
+          console.log(userInfo)
+          if(localStorage.getItem("roomId") === null){
+            localStorage.setItem("roomId",userInfo.chatRoomId)
+          }
+          this.messageList(userInfo,"SRV_JOIN_ROOM")
         // 发送讯息成功
         case "SRV_ROOM_SEND":
           this.chatListData.forEach((userList)=>{
@@ -208,6 +218,7 @@ export default {
           let historyPageSize = userInfo.pageSize;
           if (historyMsgList.length < historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
+            console.log()
             this.messageList(el,"SRV_ROOM_HISTORY_RSP")
           });
           
