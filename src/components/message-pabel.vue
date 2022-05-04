@@ -97,7 +97,7 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showBottomBtn =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 450
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > (scrollTopBox.offsetHeight / 3)
       },
       true
     );
