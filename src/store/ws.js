@@ -49,7 +49,6 @@ export const state = {
       name:"群組訊息",
       isNofity: true,
       key: 'group',
-
     },
   ],
   device: localStorage.getItem("device"),

@@ -30,7 +30,7 @@
             <span>{{ item.name }}</span>
           </div>
           <div class="setting-button-right">
-            <span v-if="item.name === '提醒'">开启</span>
+            <span v-if="item.name === '提醒'"></span>
             <span v-if="item.name === '语言'">简体中文</span>
             <img src="./../../../../static/images/next.png" alt="" />
           </div>
@@ -161,10 +161,6 @@ export default {
       this.settingData.forEach((el) => {
         if (el.name === "密码管理") el.path = "/PasswordEdit";
       });
-    }else {
-      this.settingData = this.settingData.filter((el)=>{
-        return el.name !== "提醒"
-      })
     }
   },
   methods: {

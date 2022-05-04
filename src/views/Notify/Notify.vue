@@ -1,6 +1,63 @@
 <template>
   <div class="home-wrapper">
-    <el-container v-if="device === 'moblie'"> </el-container>
+    <el-container v-if="device === 'moblie'">
+      <el-main>
+        <div class="home-header">
+          <div class="home-user" @click="back"></div>
+          <span class="home-header-title">提醒</span>
+          <div class="home-add-user"></div>
+        </div>
+        <div class="home-content">
+          <div class="setting-title">通知</div>
+          <div
+            class="setting-button"
+            v-for="(item, index) in nofity"
+            :key="index"
+            :class="{
+              mb10: item.key === 'nofity'
+            }"
+          >
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="setting-button-right">
+                <el-switch
+                  v-model="item.isNofity"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+          <div class="setting-title">應用內音效</div>
+          <div
+            class="setting-button"
+            v-for="(item, index) in soundNofiy"
+            :key="item + index"
+            :class="{
+              mb10: item.key === 'sound'
+            }"
+          >
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="setting-button-right">
+                <el-switch
+                  v-model="item.isNofity"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  @change="chengeSoundNofiy(item)"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
@@ -35,7 +92,6 @@
             class="setting-button"
             v-for="(item, index) in soundNofiy"
             :key="item + index"
-            
           >
             <div class="setting-box">
               <div class="setting-button-left">
@@ -69,61 +125,59 @@ export default {
         {
           name: "通知",
           isNofity: true,
-          isAdmin: true,
+          key: "nofity",
         },
         {
           name: "新訊息",
           isNofity: true,
-          isAdmin: false,
+          key: "newNofity",
         },
         {
           name: "群組邀請",
           isNofity: true,
-          isAdmin: false,
+          key: "groupNofity",
         },
         {
           name: "鈴聲",
           isNofity: true,
-          isAdmin: false,
+          key: "ringNofity",
         },
         {
           name: "震動",
           isNofity: true,
-          isAdmin: false,
+          key: "shockkNofity",
         },
       ],
       device: localStorage.getItem("device"),
     };
   },
-    computed: {
+  computed: {
     ...mapState({
       soundNofiy: (state) => state.ws.soundNofiy,
     }),
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     ...mapMutations({
       setSoundNofiy: "ws/setSoundNofiy",
     }),
-    chengeSoundNofiy(item){
-      this.soundNofiy.forEach(data => {
-        if(item.key === 'sound'){
-          if(!item.isNofity){
-            return data.isNofity = false
-          }else if(item.isNofity){
-            return data.isNofity = true
+    chengeSoundNofiy(item) {
+      this.soundNofiy.forEach((data) => {
+        if (item.key === "sound") {
+          if (!item.isNofity) {
+            return (data.isNofity = false);
+          } else if (item.isNofity) {
+            return (data.isNofity = true);
           }
-        }else if(item.key === data.key){
-          if(!item.isNofity){
-            return data.isNofity = false
-          }else if(item.isNofity){
-            return data.isNofity = true
+        } else if (item.key === data.key) {
+          if (!item.isNofity) {
+            return (data.isNofity = false);
+          } else if (item.isNofity) {
+            return (data.isNofity = true);
           }
         }
       });
-      this.setSoundNofiy(this.soundNofiy)
+      this.setSoundNofiy(this.soundNofiy);
     },
     back() {
       this.$router.back(-1);
@@ -140,7 +194,34 @@ export default {
     cursor: pointer;
   }
 }
+
+.hichat-moblie {
+  .home-wrapper {
+    .el-container {
+      .el-main {
+        .home-content {
+          .setting-title {
+            padding: 12px 0 16px 18px;
+          }
+          .setting-button {
+            .setting-button-left {
+              span {
+                margin-left: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .home-wrapper {
+  .home-header {
+    .home-user {
+      background-color: #fff;
+      background-image: url("./../../../static/images/back.png");
+    }
+  }
   .home-content {
     .setting-title {
       padding: 30px 0 5px 33px;
@@ -193,5 +274,8 @@ export default {
       }
     }
   }
+}
+.mb10 {
+  margin-bottom: 1em;
 }
 </style>

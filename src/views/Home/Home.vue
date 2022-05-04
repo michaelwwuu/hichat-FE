@@ -14,17 +14,17 @@
             <span class="home-header-title">{{
               num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
             }}</span>
-            <template v-if="num === 0">
+            <template v-if="activeName === 'address' && num !== 2">
               <router-link :to="'/AddUser'">
                 <div class="home-add-user address-img"></div>
               </router-link>
             </template>
-            <template v-else-if="num === 1">
+            <template v-else-if="activeName === 'group' && num !== 2">
               <router-link :to="'/AddGroup'">
                 <div class="home-add-user hichat-img"></div>
               </router-link>
             </template>
-            <template v-else>
+            <template v-else-if="num === 2">
               <router-link :to="'/EditUser'"
                 ><div class="home-add-user setting-img"></div
               ></router-link>
@@ -511,9 +511,9 @@ export default {
             });
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
-          if (this.device === "moblie") {
-            this.getHiChatDataList();
-          }
+          // if (this.device === "moblie") {
+          //   this.getHiChatDataList();
+          // }
           break;
         case "SRV_ERROR_MSG":
           if (msgInfo.text === "30006") {
