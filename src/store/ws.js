@@ -33,11 +33,33 @@ export const state = {
   editMsg:{
     innerText:"",
   },
+  soundNofiy:[
+    {
+      name:"音效",
+      isNofity: true,
+      key: 'sound',
+    },
+    {
+      name:"私人訊息",
+      isNofity: true,
+      key: 'private',
+
+    },
+    {
+      name:"群組訊息",
+      isNofity: true,
+      key: 'group',
+
+    },
+  ],
   device: localStorage.getItem("device"),
 };
 export const actions = {};
 
 export const mutations = {
+  setSoundNofiy(state, payload) {
+    state.soundNofiy = payload;
+  },
   setActiveName(state, payload) {
     state.activeName = payload;
   },

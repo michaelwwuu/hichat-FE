@@ -10,19 +10,47 @@
           </div>
         </el-header>
         <div class="home-content">
+          <div class="setting-title">通知</div>
           <div
-            class="setting-notification"
+            class="setting-button"
+            v-for="(item, index) in nofity"
+            :key="index"
           >
-            <div class="setting-button-left">
-              <span>通知</span>
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="setting-button-right">
+                <el-switch
+                  v-model="item.isNofity"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                >
+                </el-switch>
+              </div>
             </div>
-            <el-switch
-              v-model="notification"
-              active-color="#fd5f3f"
-              inactive-color="#666666"
-              disabled
-            >
-            </el-switch>
+          </div>
+          <div class="setting-title">應用內音效</div>
+          <div
+            class="setting-button"
+            v-for="(item, index) in soundNofiy"
+            :key="item + index"
+            
+          >
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="setting-button-right">
+                <el-switch
+                  v-model="item.isNofity"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  @change="chengeSoundNofiy(item)"
+                >
+                </el-switch>
+              </div>
+            </div>
           </div>
         </div>
       </el-aside>
@@ -31,24 +59,72 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
+
 export default {
   name: "Notify",
   data() {
     return {
-      notification:true,
-      newNofiy:true,
-      groupNofiy:true,
-      audioNofiy:true,
-      shockNofiy:true,
-      soundNofiy:true,
-      groupSoundNofiy:true,
-      privateSoundNofiy:true,
-
+      nofity: [
+        {
+          name: "通知",
+          isNofity: true,
+          isAdmin: true,
+        },
+        {
+          name: "新訊息",
+          isNofity: true,
+          isAdmin: false,
+        },
+        {
+          name: "群組邀請",
+          isNofity: true,
+          isAdmin: false,
+        },
+        {
+          name: "鈴聲",
+          isNofity: true,
+          isAdmin: false,
+        },
+        {
+          name: "震動",
+          isNofity: true,
+          isAdmin: false,
+        },
+      ],
       device: localStorage.getItem("device"),
     };
   },
-  mounted() {},
+    computed: {
+    ...mapState({
+      soundNofiy: (state) => state.ws.soundNofiy,
+    }),
+  },
+  mounted() {
+
+  },
   methods: {
+    ...mapMutations({
+      setSoundNofiy: "ws/setSoundNofiy",
+    }),
+    chengeSoundNofiy(item){
+      this.soundNofiy.forEach(data => {
+        if(item.key === 'sound'){
+          if(!item.isNofity){
+            return data.isNofity = false
+          }else if(item.isNofity){
+            return data.isNofity = true
+          }
+        }else if(item.key === data.key){
+          if(!item.isNofity){
+            return data.isNofity = false
+          }else if(item.isNofity){
+            return data.isNofity = true
+          }
+        }
+      });
+      this.setSoundNofiy(this.soundNofiy)
+    },
     back() {
       this.$router.back(-1);
     },
@@ -66,29 +142,56 @@ export default {
 }
 .home-wrapper {
   .home-content {
-    .setting-notification {
-      padding: 1em;
+    .setting-title {
+      padding: 30px 0 5px 33px;
+      color: rgba(0, 0, 0, 0.4);
+      font-size: 15px;
+    }
+    .setting-button {
+      padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
-      margin: 1em 0;
-      display: flex;
-      justify-content: space-between;
-      align-content: center;
-      border-bottom: 3px solid rgba(0, 0, 0, 0.05);
+      &::after {
+        content: "";
+        display: block;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        width: 100%;
+        margin-left: 10px;
+        position: relative;
+        top: 9px;
+      }
+      .setting-box {
+        text-decoration: none;
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        padding: 0.5em 0.7em 0.5em 0;
+        margin-left: 10px;
+      }
       img {
         height: 1.2em;
       }
       .setting-button-left {
         display: flex;
         align-items: center;
-        margin-left: 10px;
         width: 20em;
         span {
-          margin-left: 0;
+          margin-left: 1em;
           font-size: 15px;
           color: #333333;
         }
       }
+      .setting-button-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: 10em;
+        span {
+          margin-right: 1em;
+          font-size: 15px;
+          color: #b3b3b3;
+        }
+      }
     }
-   }
+  }
 }
 </style>

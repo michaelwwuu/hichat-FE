@@ -96,12 +96,12 @@
               clearable
             >
             </el-input>
-            <template v-if="activeName ==='address'">
+            <template v-if="activeName === 'address'">
               <router-link :to="'/AddUser'">
                 <img src="./../../../static/images/pc/user-plus.png" alt="" />
               </router-link>
             </template>
-            <template v-else-if="activeName ==='group'">
+            <template v-else-if="activeName === 'group'">
               <router-link :to="'/AddGroup'">
                 <img
                   src="./../../../static/images/pc/message-plus.png"
@@ -357,6 +357,7 @@ export default {
       badgeNum: (state) => state.ws.badgeNum,
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
+      soundNofiy: (state) => state.ws.soundNofiy,
       activeName: (state) => state.ws.activeName,
       contactUser: (state) => state.ws.contactUser,
     }),
@@ -493,7 +494,21 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
-            document.getElementById("notify-receive-audio").play();
+            this.soundNofiy.forEach((res) => {
+              if (
+                msgInfo.chatType === "SRV_USER_IMAGE" ||
+                msgInfo.chatType === "SRV_USER_AUDIO" ||
+                msgInfo.chatType === "SRV_USER_SEND"
+              ) {
+                if (res.key === "private" && res.isNofity) {
+                  document.getElementById("notify-receive-audio").play();
+                }
+              } else {
+                if (res.key === "group" && res.isNofit) {
+                  document.getElementById("notify-receive-audio").play();
+                }
+              }
+            });
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
           if (this.device === "moblie") {

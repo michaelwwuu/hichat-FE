@@ -298,6 +298,10 @@ export default {
                 "token",
                 res.data.tokenHead + res.data.token
               );
+              localStorage.setItem(
+                "id",
+                res.data.memberId
+              );
               this.$router.push({ path: "/Home" });
             } else if (res.code === 10009) {
               //登录失敗

@@ -259,6 +259,7 @@ export default {
   computed: {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
+      soundNofiy: (state) => state.ws.soundNofiy,
     }),
   },
   mounted() {

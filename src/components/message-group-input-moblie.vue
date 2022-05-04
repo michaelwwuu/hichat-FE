@@ -307,6 +307,7 @@ export default {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
       editMsg: (state) => state.ws.editMsg,
+      soundNofiy: (state) => state.ws.soundNofiy,      
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -527,19 +528,6 @@ export default {
         .replace(/\n/g, "")
         .replace(new RegExp("<", "gm"), "&lt");
     },
-
-    // 检测空白
-    blankTesting() {
-      if (this.textArea.replace(/\s+/g, "") === "") {
-        this.$alert("不能发送空白消息", "提示", {
-          confirmButtonText: "确定",
-          customClass: "winClass", //弹窗样式
-        });
-        return false;
-      }
-      return true;
-    },
-
     callout() {
       this.textArea.split(" ").forEach((res)=>{
         if(res.startsWith('@')){
@@ -549,19 +537,27 @@ export default {
         }
       })
     },
-
     keyUp(event) {
       this.textArea.split(" ").forEach((res)=>{
-        if(res.startsWith('@')){
-          this.calloutShow = true;
-        } else {
-          this.calloutShow = false;
-        }
+        this.calloutShow = res.startsWith('@')
+        // if(res.startsWith('@')){
+        //   this.calloutShow = true;
+        // } else {
+        //   this.calloutShow = false;
+        // }
       })
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
-        if (
+        if (this.textArea.replace(/\s+/g, "") === "") {
+          this.$alert("不能发送空白消息", "提示", {
+            confirmButtonText: "确定",
+          }).then(() => {
+            this.textArea = "";
+          });
+          event.target.blur();
+          return false;
+        } else if (
           this.replyMsg.clickType === "replyMsg" ||
           this.replyMsg.clickType === ""
         ) {
@@ -606,16 +602,18 @@ export default {
         token: localStorage.getItem("token"),
         tokenType: 0,
       };
-      if (this.blankTesting()) {
-        // 发送服务器
-        document.getElementById('notify-send-audio').play()
-        Socket.send(message);
-        this.closeReplyMessage();
-        // 消息清空
-        this.targetArray = [];
-        this.checkName = [];
-        this.textArea = "";
-      }
+      // 发送服务器
+      this.soundNofiy.forEach((res)=>{
+        if(res.key === "group" && res.isNofity){
+          document.getElementById("notify-send-audio").play();
+        }
+      })
+      Socket.send(message);
+      this.closeReplyMessage();
+      // 消息清空
+      this.targetArray = [];
+      this.checkName = [];
+      this.textArea = "";
     },
     editMessage() {
       let editMessage = {
@@ -630,13 +628,11 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
-      if (this.blankTesting()) {
-        // 发送服务器
-        Socket.send(editMessage);
-        this.closeReplyMessage();
-        // 消息清空
-        this.textArea = "";
-      }
+      // 发送服务器
+      Socket.send(editMessage);
+      this.closeReplyMessage();
+      // 消息清空
+      this.textArea = "";
     },
   },
   components: {
