@@ -29,13 +29,18 @@ export default {
   data() {
     return {
       textArea: "",
+      
     };
   },
   props: {
     isGuest: {
       type: Boolean,
     },  
+    roomId:{
+      type: String,
+    },
   },
+
   methods: {
     // 消息过滤
     textAreaTran() {
@@ -68,7 +73,7 @@ export default {
         id: Math.random(),
         platformCode: "manycaiSport",
         text: this.textArea,
-        toChatId: localStorage.getItem('roomId'),
+        toChatId: this.roomId,
         token: localStorage.getItem('token'),
         tokenType: 1,
       }

@@ -9,13 +9,14 @@
             <span style="color:#d3d3d3;margin-left:5px; font-size:16px;">{{num.length > 99999 ?'9999++': num.length}}</span>
           </span>
         </el-header>
+        
         <message-pabel
           :isShowMoreMsg="isShowMoreMsg"
           :messageData="messageData"
           :userInfoData="userInfoData"
           :chatListData="chatListData"
         />
-        <message-input :userInfoData="userInfoData" :isGuest="isGuest"/>
+        <message-input :roomId="roomId" :isGuest="isGuest"/>
       </el-main>
     </el-container>
   </div>
@@ -55,6 +56,7 @@ export default {
       isShowMoreMsg: true,
       isGuest: true,
       userName: getLocal('username'),
+      roomId:''
     };
   },
   created() {
@@ -64,7 +66,6 @@ export default {
   },
   mounted() {
     Socket.$on("message", this.handleGetMessage);
-        
     window.addEventListener("beforeunload", this.closeWebsocket); 
   },
   beforeDestroy() {
@@ -80,16 +81,6 @@ export default {
     }),
   },
   watch: {
-    wsRes(val) {
-      let chatType = val.chatType;
-      switch (chatType) {
-        case "SRV_ROOM_SEND":
-
-          break;
-        case "SRV_LEAVE_ROOM":
-          break;
-      }
-    }, 
     messageData(val){
       const set = new Set();
       this.num = val.filter((item)=>{
@@ -169,15 +160,15 @@ export default {
         typeStyle:data.typeStyle = data.chatType !== "SRV_JOIN_ROOM" && data.fromChatId === localStorage.getItem("username") ? "userIdStyle" :""
       };
       if(chatType === "SRV_ROOM_HISTORY_RSP"){
-        if(data.toChatId === localStorage.getItem("roomId")){
+        if(data.toChatId === this.roomId){
           this.messageData.unshift(this.chatRoomMsg);
         }
       }else if (chatType === "SRV_JOIN_ROOM"){
-        if(data.chatRoomId === localStorage.getItem("roomId")){
+        if(data.chatRoomId === this.roomId){
           this.messageData.push(this.chatRoomMsg);
         }
       } else if(chatType === "SRV_ROOM_SEND"){
-        if(data.toChatId === localStorage.getItem("roomId")){
+        if(data.toChatId === this.roomId){
           this.messageData.push(this.chatRoomMsg);
         }
       }
@@ -197,10 +188,10 @@ export default {
           if(userInfo.username !== "guest"){
             this.getUserInfo(this.userListId)
           }
-          console.log(userInfo)
-          if(localStorage.getItem("roomId") === null){
-            localStorage.setItem("roomId",userInfo.chatRoomId)
-          }
+          if(this.roomId === ""){
+            this.roomId = userInfo.chatRoomId
+          } 
+          console.log(this.roomId)
           this.messageList(userInfo,"SRV_JOIN_ROOM")
         // 发送讯息成功
         case "SRV_ROOM_SEND":
