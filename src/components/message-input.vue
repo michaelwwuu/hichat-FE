@@ -32,10 +32,6 @@ export default {
     };
   },
   props: {
-    // 当前用户
-    userInfoData: {
-      type: Object,
-    },
     isGuest: {
       type: Boolean,
     },  
@@ -66,14 +62,18 @@ export default {
     },
     // 发送消息
     sendMessage() {
-      let message = this.userInfoData;
-      message.chatType = "CLI_ROOM_SEND"
-      message.id = Math.random();
-      message.text = this.textArea;
-      delete message.username
-      Socket.send(message);
+      let sendMessageData= {
+        chatType: "CLI_ROOM_SEND",
+        deviceId: localStorage.getItem('UUID'),
+        id: Math.random(),
+        platformCode: "manycaiSport",
+        text: this.textArea,
+        toChatId: localStorage.getItem('roomId'),
+        token: localStorage.getItem('token'),
+        tokenType: 1,
+      }
+      Socket.send(sendMessageData);
       this.textArea = "";
-
     },
   },
 };

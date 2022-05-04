@@ -172,16 +172,15 @@ export default {
         if(data.toChatId === localStorage.getItem("roomId")){
           this.messageData.unshift(this.chatRoomMsg);
         }
-      }else if (chatType === "SRV_JOIN_ROOM" || chatType === "SRV_ROOM_SEND"){
+      }else if (chatType === "SRV_JOIN_ROOM"){
         if(data.chatRoomId === localStorage.getItem("roomId")){
           this.messageData.push(this.chatRoomMsg);
         }
+      } else if(chatType === "SRV_ROOM_SEND"){
+        if(data.toChatId === localStorage.getItem("roomId")){
+          this.messageData.push(this.chatRoomMsg);
+        }
       }
-      // else if(chatType === "SRV_ROOM_SEND"){
-      //   if(data.toChatId === localStorage.getItem("roomId")){
-      //     this.messageData.push(this.chatRoomMsg);
-      //   }
-      // }
     },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {

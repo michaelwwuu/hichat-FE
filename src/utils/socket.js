@@ -14,7 +14,7 @@ const emitter = new Vue({
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 1,
-        platformCode: "dcw",
+        platformCode: "manycaiSport",
       }
       socket.send(JSON.stringify(leaveChat));
       socket.close();
@@ -28,7 +28,7 @@ const emitter = new Vue({
         deviceId: localStorage.getItem('UUID'),
         token: localStorage.getItem('token'),
         tokenType: 1,
-        platformCode: "dcw",
+        platformCode: "manycaiSport",
       }
       socket.onmessage = function (msg) {
         let messageData = JSON.parse(msg.data)
