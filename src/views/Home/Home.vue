@@ -519,7 +519,7 @@ export default {
                   this.audioAction()
                 }
               } else {
-                if (res.key === "group" && res.isNofit) {
+                if (res.key === "group" && res.isNofity) {
                  this.audioAction()
                 }
               }
