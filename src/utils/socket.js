@@ -1,9 +1,19 @@
 import Vue from "vue";
+import { mapState, mapMutations } from "vuex";
+
 const wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
 // const wsUrl = "ws://test.hichat3rd.tools/ws/im/echo";//模擬環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
+  computed: {
+    ...mapState({
+      wsRes: (state) => state.ws.wsRes,
+    }),
+  },
   methods: {
+    ...mapMutations({
+      setWsRes: "ws/setWsRes",
+    }),
     send(message) {
       if (socket.readyState === 1)socket.send(JSON.stringify(message));
     },
