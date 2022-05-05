@@ -234,8 +234,6 @@
     </el-dialog>
     <audio
       id="notify-receive-audio"
-      muted="muted"
-      preload="none"
       src="./../../../static/wav/receive.mp3"
     ></audio>
   </div>
@@ -258,6 +256,8 @@ import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
 import MsgInfoPage from "./../ContactPage/MsgInfoPage.vue";
+import wx from "weixin-js-sdk";
+
 export default {
   name: "Home",
   data() {
@@ -464,6 +464,22 @@ export default {
       a.href = iconUrl;
       a.dispatchEvent(event);
     },
+    audioAction(){
+      let audioEl = document.getElementById("notify-receive-audio")  
+      var playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.pause();
+        })
+        .catch(error => {
+        });
+      }
+      audioEl.src= "" // 移除src, 防止之后播放空白音频  
+      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../../static/wav/receive.mp3")
+        audioEl.play();
+      }, 150);      
+    },
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
       let numNumber = 0;
@@ -501,11 +517,11 @@ export default {
                 msgInfo.chatType === "SRV_USER_SEND"
               ) {
                 if (res.key === "private" && res.isNofity) {
-                  document.getElementById("notify-receive-audio").play();
+                  this.audioAction()
                 }
               } else {
                 if (res.key === "group" && res.isNofit) {
-                  document.getElementById("notify-receive-audio").play();
+                 this.audioAction()
                 }
               }
             });

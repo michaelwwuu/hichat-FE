@@ -35,7 +35,7 @@
             <div class="home-header-pc">
               <span
                 class="home-photo-link"
-                @click="chatUser.isContact ? infoMsgShow(chatUser) : false"
+                @click="chatUser.isContact ? infoMsgShow() : false"
               >
                 <div class="home-user-photo">
                   <img
@@ -306,7 +306,6 @@ import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
-
 export default {
   name: "ChatMsg",
   data() {
@@ -449,14 +448,13 @@ export default {
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
-    infoMsgShow(chatUser) {
+    infoMsgShow() {
       this.setMsgInfoPage({ pageShow: true, type: "" });
       this.setInfoMsg({
         infoMsgShow: true,
         infoMsgNav: "ContactPage",
         infoMsgChat: true,
       });
-      // this.getUserId(chatUser)
     },
     getUserId(data) { 
       console.log(data)
@@ -474,7 +472,7 @@ export default {
         }
         this.setChatUser(this.chatUser);
       });
-    },         
+    },      
     // 已讀
     readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
@@ -531,7 +529,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 40;
+          let timeOut = historyMsgList.length * 10;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {

@@ -188,7 +188,7 @@
         v-on:closePictureShow="pictureShow"
       ></Photo>
     </el-dialog>
-    <audio id="notify-send-audio" src="./../../static/wav/send.mp3"></audio>
+    <audio id="notify-send-audio" src="./../../static/wav/send.mp3" preload="none"></audio>
   </div>
 </template>
 
@@ -514,6 +514,8 @@ export default {
     },
     // 发送消息
     sendMessage() {
+
+
       let message = {
         chatType: "CLI_USER_SEND",
         id: Math.random(),
@@ -535,16 +537,30 @@ export default {
       };
       // 发送服务器
       this.soundNofiy.forEach((res)=>{
-        if(res.key === "private" && res.isNofity){
-          document.getElementById("notify-send-audio").play();
-        }
+        if(res.key === "private" && res.isNofity) this.audioAction()
       })
+      
       Socket.send(message);
       this.closeReplyMessage();
       // 消息清空
       this.textArea = "";
     },
-
+    audioAction(){
+      let audioEl = document.getElementById("notify-send-audio")  
+      var playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.pause();
+        })
+        .catch(error => {
+        });
+      }
+      audioEl.src= "" // 移除src, 防止之后播放空白音频  
+      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../static/wav/send.mp3")
+        audioEl.play();
+      }, 150);
+    },
     editMessage() {
       let editMessage = {
         chatType: "CLI_CHAT_EDIT",
@@ -585,7 +601,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 15px;
   .input-tools-left,
   .input-tools-right {
     padding: 15px 0;
@@ -594,7 +610,7 @@ export default {
     }
   }
   .text-send-box {
-    width: 83vw;
+    width: 280px;
     height: 35px;
     display: flex;
     align-items: center;
