@@ -468,6 +468,7 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)
                 this.readMsgShow(this.readMsg[0]);
               this.loading = false;
+              if (this.device === "pc") this.getHiChatDataList();
             }, timeOut);
           });
           break;

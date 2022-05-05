@@ -341,6 +341,7 @@ export default {
                 this.readMsgShow(historyMsgList[0]);
               }
               this.loading = false;
+              if (this.device === "pc") this.getHiChatDataList();
             }, timeOut);
           });
           break;
