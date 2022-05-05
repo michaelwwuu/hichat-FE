@@ -284,7 +284,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 40;
+          let timeOut = historyMsgList.length * 10;
           this.$nextTick(() => {
             setTimeout(() => {
               this.groupListData = JSON.parse(
