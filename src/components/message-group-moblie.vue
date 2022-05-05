@@ -916,7 +916,7 @@ export default {
     .reply-audio-box {
       display: block;
       // background-color: #000000;
-      width: 12em;
+      // width: 12em;
       height: 40px;
       position: absolute;
       z-index: 9;
