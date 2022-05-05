@@ -814,7 +814,7 @@ export default {
     .message-classic,
     .message-disabled {
       position: relative;
-      max-width: 45%;
+      // max-width: 45%;
       // margin-top: 5px;
       display: inline-block;
       padding: 9px 12px;

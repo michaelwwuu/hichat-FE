@@ -317,7 +317,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-          if(this.device === "pc") this.getHiChatDataList();
+          this.getHiChatDataList();
           break;
       }
     },

@@ -256,7 +256,6 @@ import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
 import MsgInfoPage from "./../ContactPage/MsgInfoPage.vue";
-import wx from "weixin-js-sdk";
 
 export default {
   name: "Home",
