@@ -125,7 +125,6 @@ export default {
       uploadImgShow: false,
       fileList: [],
       disabled: true,
-      noIcon: require("./../../../static/images/image_group_defult.png"),
       device: localStorage.getItem("device"),
     };
   },
@@ -156,12 +155,8 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     noIconShow(iconData) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
-        return this.noIcon;
+      if ([undefined,null,""].includes(iconData.icon)) {
+        return require("./../../../static/images/image_group_defult.png");
       } else {
         return iconData.icon;
       }

@@ -119,7 +119,7 @@ export default {
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
         data.type = this.device === "pc" ? "address":"";
-        this.getUserId(data);
+        this.device === 'pc' ? this.getUserId(data) : this.setChatUser(data);
       } else {
         data.toChatId = "g" + data.groupId;
         data.type = this.device === "pc" ? "address":"";

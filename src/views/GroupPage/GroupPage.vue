@@ -136,7 +136,6 @@ export default {
         },
       ],
       dialogContent: "",
-      noIcon: require("./../../../static/images/image_group_defult.png"),
       notification: true,
       leaveGroupDialogShow: false,
       developmentMessage: developmentMessage,
@@ -151,12 +150,8 @@ export default {
       setChatGroup: "ws/setChatGroup",
     }),
     noIconShow(iconData) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
-        return this.noIcon;
+      if ([undefined,null,""].includes(iconData.icon)) {
+        return require("./../../../static/images/image_group_defult.png")
       } else {
         return iconData.icon;
       }

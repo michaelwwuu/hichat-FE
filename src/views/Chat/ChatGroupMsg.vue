@@ -115,7 +115,6 @@ export default {
       groupData: {},
       readMsgData: [],
       contactList: [],
-      noIcon: require("./../../../static/images/image_group_defult.png"),
       loading: false,
       device: localStorage.getItem("device"),
 
@@ -159,12 +158,8 @@ export default {
       this.getHiChatDataList();
     },
     noIconShow(iconData) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
-        return this.noIcon;
+      if ([undefined,null,""].includes(iconData.icon)) {
+        return require("./../../../static/images/image_group_defult.png");
       } else {
         return iconData.icon;
       }

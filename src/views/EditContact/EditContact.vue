@@ -85,7 +85,6 @@ export default {
       userEditForm: {
         nickname: "",
       },
-      noIcon: require("./../../../static/images/image_user_defult.png"),
       device: localStorage.getItem("device"),
     };
   },
@@ -106,12 +105,8 @@ export default {
       setMyContactDataList: "ws/setMyContactDataList",
     }),
     noIconShow(iconData) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
-        return this.noIcon;
+      if ([undefined,null,""].includes(iconData.icon)) {
+        return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
       }

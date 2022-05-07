@@ -239,7 +239,6 @@ export default {
       },
       userData: {},
       readMsgData: [],
-      noIcon: require("./../../../static/images/image_user_defult.png"),
       loading: false,
       deleteDialogShow: false,
       successDialogShow: false,
@@ -286,12 +285,8 @@ export default {
       this.getHiChatDataList();
     },
     noIconShow(iconData) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
-        return this.noIcon;
+      if ([undefined,null,""].includes(iconData.icon)) {
+        return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
       }

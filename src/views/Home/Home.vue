@@ -580,7 +580,7 @@ export default {
       }
     },
     noIconShow(iconData) {
-      if (iconData === undefined || iconData === null || iconData === "") {
+      if ([undefined,null,""].includes(iconData.icon)) {
         return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData;
