@@ -107,6 +107,11 @@
         <el-button class="background-red" @click="submitBtn">确认</el-button>
       </span>
     </el-dialog>
+    <audio
+      id="notify-receive-audio"
+      muted="muted"
+      src="./../../../static/wav/receive.mp3"
+    ></audio>    
   </div>
 </template>
 
@@ -261,6 +266,21 @@ export default {
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
+    audioAction(){
+      let audioEl = document.getElementById("notify-receive-audio")  
+      const playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.src= "" // 移除src, 防止之后播放空白音频  
+          setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+            audioEl.src = require("./../../../static/wav/receive.mp3")
+          }, 150);  
+        })
+        .catch(error => {
+          audioEl.pause();
+        });
+      }
+    },        
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -294,6 +314,7 @@ export default {
                 userInfo.replyChat.nickName = item.name;
               }
             });
+            this.audioAction()
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
@@ -305,7 +326,7 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
-          let timeOut = historyMsgList.length * 10;
+          let timeOut = historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {

@@ -462,7 +462,6 @@ export default {
       });
     },
     getUserId(data) { 
-      console.log(data)
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         if(res.data.id === this.myUserInfo.id){
@@ -512,34 +511,33 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
-            userInfo.chat.name = this.chatUser.name;
-            userInfo.chat.icon = this.chatUser.icon;
-            userInfo.chat.nickName = this.chatUser.name;
-            this.audioAction()
-          } else if (
-            userInfo.chat.fromChatId ===
-            "u" + JSON.parse(localStorage.getItem("id"))
-          ) {
-            userInfo.chat.name = this.myUserInfo.nickname;
-            userInfo.chat.icon = this.myUserInfo.icon;
-            
-          }
-          if (userInfo.replyChat !== null) {
-            if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
-              userInfo.replyChat.name = this.chatUser.name;
-              userInfo.replyChat.icon = this.chatUser.icon;
-              userInfo.replyChat.nickName = this.chatUser.name;
+          if (userInfo.toChatId === this.chatUser.toChatId) {
+            if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
+              userInfo.chat.name = this.chatUser.name;
+              userInfo.chat.icon = this.chatUser.icon;
+              userInfo.chat.nickName = this.chatUser.name;
             } else if (
-              userInfo.replyChat.fromChatId ===
+              userInfo.chat.fromChatId ===
               "u" + JSON.parse(localStorage.getItem("id"))
             ) {
-              userInfo.replyChat.name = this.myUserInfo.nickname;
-              userInfo.replyChat.icon = this.myUserInfo.icon;
-              userInfo.replyChat.nickName = this.myUserInfo.nickname;
+              userInfo.chat.name = this.myUserInfo.nickname;
+              userInfo.chat.icon = this.myUserInfo.icon;
             }
-          }
-          if (userInfo.toChatId === this.chatUser.toChatId) {
+            if (userInfo.replyChat !== null) {
+              if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
+                userInfo.replyChat.name = this.chatUser.name;
+                userInfo.replyChat.icon = this.chatUser.icon;
+                userInfo.replyChat.nickName = this.chatUser.name;
+              } else if (
+                userInfo.replyChat.fromChatId ===
+                "u" + JSON.parse(localStorage.getItem("id"))
+              ) {
+                userInfo.replyChat.name = this.myUserInfo.nickname;
+                userInfo.replyChat.icon = this.myUserInfo.icon;
+                userInfo.replyChat.nickName = this.myUserInfo.nickname;
+              }
+            }
+            this.audioAction()
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
@@ -551,7 +549,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 10;
+          let timeOut = historyMsgList.length * 5;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -588,10 +586,9 @@ export default {
               this.readMsg = historyMsgList.filter((el) => {
                 return el.chat.toChatId === "u" + localStorage.getItem("id");
               });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0)
-                this.readMsgShow(this.readMsg[0]);
-              this.loading = false;
+              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
+              this.loading = false;
             }, timeOut);
           });
           break;
@@ -619,10 +616,10 @@ export default {
           });
           this.getHiChatDataList();
           break;
-        // 撈取歷史訊息
-        case "SRV_RECENT_CHAT":
-          if (this.device === "moblie") this.getChatHistoryMessage();
-          break;
+        // // 撈取歷史訊息
+        // case "SRV_RECENT_CHAT":
+        //   if (this.device === "moblie") this.getChatHistoryMessage();
+        //   break;
       }
     },
     addUser(data) {

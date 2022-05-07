@@ -203,6 +203,11 @@
         >
       </span>
     </el-dialog>
+    <audio
+      id="notify-receive-audio"
+      muted="muted"
+      src="./../../../static/wav/receive.mp3"
+    ></audio>
   </div>
 </template>
 
@@ -363,6 +368,21 @@ export default {
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
+    audioAction(){
+      let audioEl = document.getElementById("notify-receive-audio")  
+      const playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.src= "" // 移除src, 防止之后播放空白音频  
+          setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+            audioEl.src = require("./../../../static/wav/receive.mp3")
+          }, 150);  
+        })
+        .catch(error => {
+          audioEl.pause();
+        });
+      }
+    },        
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -373,46 +393,48 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-          if (userInfo.chat.fromChatId === this.contactUser.toChatId) {
-            userInfo.chat.name = this.contactUser.name;
-            userInfo.chat.icon = this.contactUser.icon;
-            userInfo.chat.nickName = this.contactUser.name;
-          } else if (
-            userInfo.chat.fromChatId ===
-            "u" + JSON.parse(localStorage.getItem("id"))
-          ) {
-            userInfo.chat.name = JSON.parse(
-              localStorage.getItem("myUserInfo")
-            ).nickname;
-            userInfo.chat.icon = JSON.parse(
-              localStorage.getItem("myUserInfo")
-            ).icon;
-          }
-          if (userInfo.replyChat !== null) {
-            if (userInfo.replyChat.fromChatId === this.contactUser.toChatId) {
-              userInfo.replyChat.name = this.contactUser.name;
-              userInfo.replyChat.icon = this.contactUser.icon;
-              userInfo.replyChat.nickName = this.contactUser.name;
+          if (userInfo.toChatId === this.contactUser.toChatId) {
+            if (userInfo.chat.fromChatId === this.contactUser.toChatId) {
+              userInfo.chat.name = this.contactUser.name;
+              userInfo.chat.icon = this.contactUser.icon;
+              userInfo.chat.nickName = this.contactUser.name;
+              
             } else if (
-              userInfo.replyChat.fromChatId ===
+              userInfo.chat.fromChatId ===
               "u" + JSON.parse(localStorage.getItem("id"))
             ) {
-              userInfo.replyChat.name = JSON.parse(
+              userInfo.chat.name = JSON.parse(
                 localStorage.getItem("myUserInfo")
               ).nickname;
-              userInfo.replyChat.icon = JSON.parse(
+              userInfo.chat.icon = JSON.parse(
                 localStorage.getItem("myUserInfo")
               ).icon;
-              userInfo.replyChat.nickName = JSON.parse(
-                localStorage.getItem("myUserInfo")
-              ).nickname;
             }
-          }
-          if (userInfo.toChatId === this.contactUser.toChatId) {
+            if (userInfo.replyChat !== null) {
+              if (userInfo.replyChat.fromChatId === this.contactUser.toChatId) {
+                userInfo.replyChat.name = this.contactUser.name;
+                userInfo.replyChat.icon = this.contactUser.icon;
+                userInfo.replyChat.nickName = this.contactUser.name;
+              } else if (
+                userInfo.replyChat.fromChatId ===
+                "u" + JSON.parse(localStorage.getItem("id"))
+              ) {
+                userInfo.replyChat.name = JSON.parse(
+                  localStorage.getItem("myUserInfo")
+                ).nickname;
+                userInfo.replyChat.icon = JSON.parse(
+                  localStorage.getItem("myUserInfo")
+                ).icon;
+                userInfo.replyChat.nickName = JSON.parse(
+                  localStorage.getItem("myUserInfo")
+                ).nickname;
+              }
+            }
+            this.audioAction()
+            this.getHiChatDataList();
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if (this.device === "pc") this.getHiChatDataList();
           }
           break;
         // 历史讯息
@@ -420,7 +442,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 10;
+          let timeOut = historyMsgList.length * 5;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -465,10 +487,9 @@ export default {
               this.readMsg = historyMsgList.filter((el) => {
                 return el.chat.toChatId === "u" + localStorage.getItem("id");
               });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0)
-                this.readMsgShow(this.readMsg[0]);
+              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+              this.getHiChatDataList();
               this.loading = false;
-              if (this.device === "pc") this.getHiChatDataList();
             }, timeOut);
           });
           break;
@@ -495,9 +516,9 @@ export default {
           this.getHiChatDataList();
           break;
         // 撈取歷史訊息
-        case "SRV_RECENT_CHAT":
-          if (this.device === "moblie") this.getChatHistoryMessage();
-          break;
+        // case "SRV_RECENT_CHAT":
+        //   if (this.device === "moblie") this.getChatHistoryMessage();
+        //   break;
       }
     },
     addUser(data) {
@@ -539,7 +560,6 @@ export default {
             if (this.device === "pc") {
               this.setHichatNav({ type: "contact", num: 1 });
               window.location.reload();
-              // this.setContactUser({});
               this.getHiChatDataList();
             }
           }

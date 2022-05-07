@@ -84,6 +84,11 @@
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
+    <audio
+      id="notify-receive-audio"
+      muted="muted"
+      src="./../../../static/wav/receive.mp3"
+    ></audio>
   </div>
 </template>
 
@@ -238,6 +243,21 @@ export default {
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
+    audioAction(){
+      let audioEl = document.getElementById("notify-receive-audio")  
+      const playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.src= "" // 移除src, 防止之后播放空白音频  
+          setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+            audioEl.src = require("./../../../static/wav/receive.mp3")
+          }, 150);  
+        })
+        .catch(error => {
+          audioEl.pause();
+        });
+      }
+    },    
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -273,9 +293,10 @@ export default {
                 userInfo.replyChat.nickName = item.name;
               }
             });
+            this.audioAction()
             this.messageList(userInfo);
-            this.messageData.push(this.chatRoomMsg);
             this.readMsgShow(userInfo);
+            this.messageData.push(this.chatRoomMsg);
             if (this.device === "pc") this.getHiChatDataList();
           }
           break;
@@ -284,7 +305,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 10;
+          let timeOut = historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               this.groupListData = JSON.parse(
@@ -348,10 +369,10 @@ export default {
           });
           this.getHiChatDataList();
           break;
-        // 撈取歷史訊息
-        case "SRV_RECENT_CHAT":
-          this.getChatHistoryMessage();
-          break;
+        // // 撈取歷史訊息
+        // case "SRV_RECENT_CHAT":
+        //   this.getChatHistoryMessage();
+        //   break;
       }
     },
     getHiChatDataList() {

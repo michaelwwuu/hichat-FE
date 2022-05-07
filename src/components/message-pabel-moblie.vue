@@ -288,7 +288,6 @@ export default {
       this.fileList = fileList;
     },
     drop(event){
-      console.log(event)
       this.uploadShow = true;
     },
     dragend(event) {

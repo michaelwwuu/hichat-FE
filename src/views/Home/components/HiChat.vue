@@ -354,7 +354,6 @@ export default {
           data.username = res.data.username
           data.toChatId = "u" + res.data.id
         }
-        console.log(this.chatUser)
         this.setChatUser(data);
       });
     },    

@@ -255,7 +255,6 @@ export default {
     getUserId() {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        console.log('123',this.myUserInfo)
         if (res.data.id === this.myUserInfo.id) {
           this.chatUser.name = "Hichat 记事本";
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
