@@ -116,13 +116,13 @@
                   <img
                     :src="
                       require(`./../../../static/images/${
-                        !chatUser.isContact ? 'add_user' : 'trash'
+                        chatUser.isContact === false ? 'add_user' : 'trash'
                       }.png`)
                     "
                     alt=""
                   />
                   <span class="red-text">{{
-                    !chatUser.isContact ? "加入联络人" : "刪除联络人"
+                    chatUser.isContact === false ? "加入联络人" : "刪除联络人"
                   }}</span>
                 </div>
               </a>
@@ -246,6 +246,7 @@ export default {
     this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
     this.setMyUserInfo(this.myInfo)
     this.getUserId();
+    console.log(this.chatUser)
   },
   methods: {
     ...mapMutations({
