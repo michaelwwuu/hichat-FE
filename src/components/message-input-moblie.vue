@@ -288,6 +288,10 @@ export default {
           message.toChatId = this.userData.toChatId;
           // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
           message.text = res.data;
+          // 发送服务器
+          this.soundNofiy.forEach((res)=>{
+            if(res.key === "private" && res.isNofity) this.audioAction()
+          })          
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -435,6 +439,10 @@ export default {
           message.toChatId = this.userData.toChatId;
           // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
           (message.text = res.data), Socket.send(message);
+          // 发送服务器
+          this.soundNofiy.forEach((res)=>{
+            if(res.key === "private" && res.isNofity) this.audioAction()
+          })
           this.sendAduioShow = false;
           this.fullscreenLoading = false;
           this.audioMessageData = {};
@@ -514,8 +522,6 @@ export default {
     },
     // 发送消息
     sendMessage() {
-
-
       let message = {
         chatType: "CLI_USER_SEND",
         id: Math.random(),

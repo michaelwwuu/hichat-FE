@@ -232,10 +232,11 @@
         <el-button class="background-red" @click="loginOut">登出</el-button>
       </span>
     </el-dialog>
-    <audio
+    <!-- <audio
       id="notify-receive-audio"
+      muted="muted"
       src="./../../../static/wav/receive.mp3"
-    ></audio>
+    ></audio> -->
   </div>
 </template>
 
@@ -464,20 +465,19 @@ export default {
       a.dispatchEvent(event);
     },
     audioAction(){
-      let audioEl = document.getElementById("notify-receive-audio")  
-      var playPromise = audioEl.play();
-      if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.pause();
-        })
-        .catch(error => {
-        });
-      }
-      audioEl.src= "" // 移除src, 防止之后播放空白音频  
-      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-        audioEl.src = require("./../../../static/wav/receive.mp3")
-        audioEl.play();
-      }, 150);      
+      // let audioEl = document.getElementById("notify-receive-audio")  
+      // const playPromise = audioEl.play();
+      // if (playPromise !== undefined) {
+      //   playPromise.then(_ => {
+      //     audioEl.src= "" // 移除src, 防止之后播放空白音频  
+      //     setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+      //       audioEl.src = require("./../../../static/wav/receive.mp3")
+      //     }, 150);  
+      //   })
+      //   .catch(error => {
+      //     audioEl.pause();
+      //   });
+      // }
     },
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
@@ -526,9 +526,9 @@ export default {
             });
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
-          // if (this.device === "moblie") {
-          //   this.getHiChatDataList();
-          // }
+          if (this.device === "moblie") {
+            this.getHiChatDataList();
+          }
           break;
         case "SRV_ERROR_MSG":
           if (msgInfo.text === "30006") {

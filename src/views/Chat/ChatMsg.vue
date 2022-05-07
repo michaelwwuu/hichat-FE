@@ -288,6 +288,11 @@
         >
       </span>
     </el-dialog>
+    <audio
+      id="notify-receive-audio"
+      muted="muted"
+      src="./../../../static/wav/receive.mp3"
+    ></audio>
   </div>
 </template>
 
@@ -482,6 +487,21 @@ export default {
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
+    audioAction(){
+      let audioEl = document.getElementById("notify-receive-audio")  
+      const playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.src= "" // 移除src, 防止之后播放空白音频  
+          setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+            audioEl.src = require("./../../../static/wav/receive.mp3")
+          }, 150);  
+        })
+        .catch(error => {
+          audioEl.pause();
+        });
+      }
+    },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -496,12 +516,14 @@ export default {
             userInfo.chat.name = this.chatUser.name;
             userInfo.chat.icon = this.chatUser.icon;
             userInfo.chat.nickName = this.chatUser.name;
+            this.audioAction()
           } else if (
             userInfo.chat.fromChatId ===
             "u" + JSON.parse(localStorage.getItem("id"))
           ) {
             userInfo.chat.name = this.myUserInfo.nickname;
             userInfo.chat.icon = this.myUserInfo.icon;
+            
           }
           if (userInfo.replyChat !== null) {
             if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {

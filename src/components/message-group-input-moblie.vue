@@ -354,6 +354,10 @@ export default {
           message.toChatId = "g" + this.groupData.groupId;
           // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
           message.text = res.data,
+          // 发送服务器
+          this.soundNofiy.forEach((res)=>{
+            if(res.key === "group" && res.isNofity) this.audioAction()
+          })          
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -499,6 +503,10 @@ export default {
           message.toChatId = "g" + this.groupData.groupId,
           // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
           message.text = res.data,
+          // 发送服务器
+          this.soundNofiy.forEach((res)=>{
+            if(res.key === "group" && res.isNofity) this.audioAction()
+          })          
           Socket.send(message);
           this.sendAduioShow = false;
           this.fullscreenLoading = false;          
