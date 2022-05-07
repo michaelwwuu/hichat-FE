@@ -111,7 +111,7 @@
       id="notify-receive-audio"
       muted="muted"
       src="./../../../static/wav/receive.mp3"
-    ></audio>    
+    ></audio>
   </div>
 </template>
 
@@ -180,7 +180,7 @@ export default {
       this.getHiChatDataList();
     },
     noIconShow(iconData) {
-      if ([undefined,null,""].includes(iconData.icon)) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require("./../../../static/images/image_group_defult.png");
       } else {
         return iconData.icon;
@@ -242,13 +242,13 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv)
-        // return Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
@@ -262,21 +262,23 @@ export default {
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
-    audioAction(){
-      let audioEl = document.getElementById("notify-receive-audio")  
+    audioAction() {
+      let audioEl = document.getElementById("notify-receive-audio");
       const playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.src= "" // 移除src, 防止之后播放空白音频  
-          setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-            audioEl.src = require("./../../../static/wav/receive.mp3")
-          }, 150);  
-        })
-        .catch(error => {
-          audioEl.pause();
-        });
+        playPromise
+          .then((_) => {
+            audioEl.src = ""; // 移除src, 防止之后播放空白音频
+            setTimeout(() => {
+              // 用setTimeout模拟一个2秒的延迟
+              audioEl.src = require("./../../../static/wav/receive.mp3");
+            }, 150);
+          })
+          .catch((error) => {
+            audioEl.pause();
+          });
       }
-    },        
+    },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -310,7 +312,7 @@ export default {
                 userInfo.replyChat.nickName = item.name;
               }
             });
-            this.audioAction()
+            this.audioAction();
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);

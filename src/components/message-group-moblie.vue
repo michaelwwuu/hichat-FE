@@ -12,15 +12,17 @@
         >
           <img class="message-avatar" :src="el.icon" />
           <p
-            :class="[{
-              'reply-aduio':
-                device === 'moblie' &&
-                el.isRplay !== null &&
-                el.isRplay.chatType === 'SRV_GROUP_AUDIO',
-            },{
-              'reply':
-                el.isRplay !== null
-            }]"
+            :class="[
+              {
+                'reply-aduio':
+                  device === 'moblie' &&
+                  el.isRplay !== null &&
+                  el.isRplay.chatType === 'SRV_GROUP_AUDIO',
+              },
+              {
+                reply: el.isRplay !== null,
+              },
+            ]"
             :id="el.historyId"
           >
             <span
@@ -42,7 +44,9 @@
                       <img :src="noIconShow(el.isRplay)" alt="" />
                     </div>
                     <div class="reply-msg">
-                      <div style="color: rgba(0, 0, 0, 0.4)">{{ el.isRplay.nickName }}</div>
+                      <div style="color: rgba(0, 0, 0, 0.4)">
+                        {{ el.isRplay.nickName }}
+                      </div>
                       <div>
                         <div class="goAnchor-box">
                           <span
@@ -65,11 +69,12 @@
                     </div>
                   </div>
                 </template>
-                <div class="message-box-content" :class="{
-                  'reply-content':
-                    el.isRplay !== null
-                }">
-      
+                <div
+                  class="message-box-content"
+                  :class="{
+                    'reply-content': el.isRplay !== null,
+                  }"
+                >
                   <div v-if="device === 'pc'">
                     <span
                       v-for="(item, index) in el.newContent"
@@ -156,9 +161,7 @@
             >
               <div class="message-box">
                 <div class="message-name">{{ el.name }}</div>
-                <mini-audio
-                  :audio-source="el.message.content"
-                ></mini-audio>
+                <mini-audio :audio-source="el.message.content"></mini-audio>
               </div>
             </span>
             <span
@@ -303,19 +306,19 @@ export default {
       }, 3000);
     },
     isBase64(data) {
-      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv)
-        // return Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
     },
     noIconShow(iconData) {
-      if ([undefined,null,""].includes(iconData.icon)) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require("./../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
@@ -410,9 +413,7 @@ export default {
         {
           name: "upDown",
           label: "置顶",
-          onClick: () => {
-           
-          },
+          onClick: () => {},
         },
         {
           name: "deleteAllChat",
@@ -576,7 +577,7 @@ export default {
     text-align: center;
     margin: 1em 0;
     span {
-      background-color: rgba(0, 0, 0, 0.05);;
+      background-color: rgba(0, 0, 0, 0.05);
       padding: 4px 15px;
       border-radius: 10px;
     }
@@ -613,12 +614,12 @@ export default {
           top: 30px;
         }
       }
-      .reply{
-        .message-classic{
+      .reply {
+        .message-classic {
           padding: 0;
-          .message-box{
-            .message-name{
-              padding:8px 12px 0px 12px;
+          .message-box {
+            .message-name {
+              padding: 8px 12px 0px 12px;
             }
           }
         }
@@ -664,7 +665,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 15em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 15em;
             }
@@ -686,12 +687,12 @@ export default {
           }
         }
       }
-      .reply{
-        .message-classic{
+      .reply {
+        .message-classic {
           padding: 0;
-          .message-box{
-            .message-name{
-              padding:8px 12px 0px 12px;
+          .message-box {
+            .message-name {
+              padding: 8px 12px 0px 12px;
             }
           }
         }
@@ -705,7 +706,7 @@ export default {
         color: #000000;
         line-height: 1.4rem;
         font-weight: 600;
-        background-color: #FFFFFF;
+        background-color: #ffffff;
         letter-spacing: 0.5px;
         border-radius: 8px 0 8px 8px;
       }
@@ -741,7 +742,7 @@ export default {
         .el-image {
           width: -webkit-fill-available !important;
           height: 15em !important;
-          top:0;
+          top: 0;
           /deep/.el-image__inner {
             height: 100%;
           }
@@ -755,18 +756,18 @@ export default {
       border-radius: 2px;
       border: 1px solid #eeeeee;
     }
-    .vueAudioBetter{
-        margin:0;
-        box-shadow: none;
-        background-image: none;
-        /deep/.operate{
-          span{
-            &:nth-child(3){
-              color:rgba(0, 0, 0, 0.8) !important
-            }
-          } 
+    .vueAudioBetter {
+      margin: 0;
+      box-shadow: none;
+      background-image: none;
+      /deep/.operate {
+        span {
+          &:nth-child(3) {
+            color: rgba(0, 0, 0, 0.8) !important;
+          }
         }
       }
+    }
     .message-classic,
     .message-disabled {
       position: relative;
@@ -796,8 +797,8 @@ export default {
   .vueAudioBetter {
     box-shadow: none;
     background-image: none;
-    width:auto;
-    margin:0;
+    width: auto;
+    margin: 0;
     /deep/.operate {
       span {
         &:nth-child(3) {
@@ -805,16 +806,16 @@ export default {
         }
       }
     }
-    /deep/.slider{
+    /deep/.slider {
       display: none;
     }
-    /deep/.icon-notificationfill{
-      &:before{
+    /deep/.icon-notificationfill {
+      &:before {
         content: "\E66A";
         display: none;
       }
     }
-  }    
+  }
 }
 .hichat-pc {
   .message-pabel-box {
@@ -824,7 +825,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 15em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -836,7 +837,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 15em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -892,8 +893,8 @@ export default {
   display: flex;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  .reply-msg{
-    padding:9px 12px 9px 5px;
+  .reply-msg {
+    padding: 9px 12px 9px 5px;
   }
   .reply-img {
     margin-right: 5px;
@@ -916,18 +917,18 @@ export default {
       height: 40px;
       position: absolute;
       z-index: 9;
-    }    
+    }
     .message-audio {
       height: 2.5em !important;
       padding: 0 !important;
       border: none !important;
-      background-color:none;
+      background-color: none;
     }
     .vueAudioBetter {
       box-shadow: none;
       background-image: none;
-      width:auto;
-      margin:0;
+      width: auto;
+      margin: 0;
       /deep/.operate {
         span {
           &:nth-child(3) {
@@ -935,11 +936,11 @@ export default {
           }
         }
       }
-      /deep/.slider{
+      /deep/.slider {
         display: none;
       }
-      /deep/.icon-notificationfill{
-        &:before{
+      /deep/.icon-notificationfill {
+        &:before {
           content: "\E66A";
           display: none;
         }
@@ -947,8 +948,8 @@ export default {
     }
   }
 }
-.reply-content{
-  padding:5px 12px 5px 12px;
+.reply-content {
+  padding: 5px 12px 5px 12px;
 }
 /* 定义keyframe动画，命名为blink */
 @keyframes blink {
@@ -1013,8 +1014,8 @@ export default {
 .link-style {
   padding: 10px 0;
 }
-/deep/.linkified{
-  color:#10686e;
+/deep/.linkified {
+  color: #10686e;
   text-decoration: none;
 }
 </style>

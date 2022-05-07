@@ -308,7 +308,6 @@ export default {
       }
       try {
         return Decrypt(data, this.aesKey, this.aesIv);
-        // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }

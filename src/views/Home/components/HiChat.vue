@@ -158,7 +158,7 @@
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getGroupList, groupListMember,getSearchById } from "@/api";
+import { getGroupList, groupListMember, getSearchById } from "@/api";
 
 export default {
   name: "HiChat",
@@ -224,7 +224,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
       setContactUser: "ws/setContactUser",
-      setActiveName:"ws/setActiveName",
+      setActiveName: "ws/setActiveName",
       setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData, key) {
@@ -250,7 +250,7 @@ export default {
       }
       Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
-      this.setActiveName(this.hichatNav.type)
+      this.setActiveName(this.hichatNav.type);
       this.closeReplyMessage();
     },
     //判斷是否base64
@@ -262,7 +262,6 @@ export default {
       }
       try {
         return Decrypt(data, this.aesKey, this.aesIv);
-        // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
@@ -287,9 +286,9 @@ export default {
           this.groupNumBadge = 0;
           this.hiChatNumBadge = 0;
           this.contactNumBadge = 0;
-          this.hiChatDataList= []
-          this.groupDataList= []
-          this.contactDataList= []
+          this.hiChatDataList = [];
+          this.groupDataList = [];
+          this.contactDataList = [];
           userInfo.recentChat.forEach((item) => {
             if (item.isContact && item.lastChat !== null) {
               if (item.forChatId === item.toChatId) {
@@ -347,16 +346,16 @@ export default {
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        if(res.data.id === localStorage.getItem("id")){
-          data.name = "Hichat 记事本"
-          data.icon = require("./../../../../static/images/image_savemessage.png")
-        } else{
-          data.username = res.data.username
-          data.toChatId = "u" + res.data.id
+        if (res.data.id === localStorage.getItem("id")) {
+          data.name = "Hichat 记事本";
+          data.icon = require("./../../../../static/images/image_savemessage.png");
+        } else {
+          data.username = res.data.username;
+          data.toChatId = "u" + res.data.id;
         }
         this.setChatUser(data);
       });
-    },    
+    },
     goChatRoom(data, path) {
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");

@@ -369,10 +369,10 @@ export default {
       setBadgeNum: "ws/setBadgeNum",
       setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
-      setContactUser: "ws/setContactUser",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
       setMyUserInfo: "ws/setMyUserInfo",
+      setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
@@ -402,7 +402,6 @@ export default {
       }
       try {
         return Decrypt(data, this.aesKey, this.aesIv);
-        // return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }

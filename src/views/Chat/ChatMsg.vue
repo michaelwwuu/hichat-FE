@@ -51,8 +51,18 @@
                 }}</span>
               </span>
               <template v-if="chatUser.isContact">
-                <div class="home-user-search" :style="chatUser.forChatId === chatUser.toChatId ? 'right: 30px':''"></div>
-                <el-dropdown trigger="click" v-if="chatUser.forChatId !== chatUser.toChatId">
+                <div
+                  class="home-user-search"
+                  :style="
+                    chatUser.forChatId === chatUser.toChatId
+                      ? 'right: 30px'
+                      : ''
+                  "
+                ></div>
+                <el-dropdown
+                  trigger="click"
+                  v-if="chatUser.forChatId !== chatUser.toChatId"
+                >
                   <div class="el-dropdown-link">
                     <div class="home-user-more"></div>
                   </div>
@@ -377,18 +387,17 @@ export default {
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        if(res.data.id === localStorage.getItem("id")){
-          this.userData.name = "Hichat 记事本"
-          this.userData.icon = require("./../../../static/images/image_savemessage.png")
-
-        } else{
-          this.userData.username = res.data.username
+        if (res.data.id === localStorage.getItem("id")) {
+          this.userData.name = "Hichat 记事本";
+          this.userData.icon = require("./../../../static/images/image_savemessage.png");
+        } else {
+          this.userData.username = res.data.username;
         }
         this.setChatUser(this.userData);
       });
     },
     noIconShow(iconData) {
-      if ([undefined,null,""].includes(iconData.icon)) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
@@ -425,13 +434,13 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       if (!base64Rejex.test(data)) {
         return data;
       }
       try {
-        return Decrypt(data, this.aesKey, this.aesIv)
-        // return Decrypt(data, this.aesKey, this.aesIv);
+        return Decrypt(data, this.aesKey, this.aesIv);
       } catch (err) {
         return data;
       }
@@ -457,13 +466,13 @@ export default {
         infoMsgChat: true,
       });
     },
-    getUserId(data) { 
+    getUserId(data) {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        if(res.data.id === this.myUserInfo.id){
-          this.chatUser.name = "Hichat 记事本"
-          this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
-        }else {
+        if (res.data.id === this.myUserInfo.id) {
+          this.chatUser.name = "Hichat 记事本";
+          this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
+        } else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
           this.chatUser.username = res.data.username;
           this.chatUser.name = res.data.name;
@@ -472,7 +481,7 @@ export default {
         }
         this.setChatUser(this.chatUser);
       });
-    },      
+    },
     // 已讀
     readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
@@ -482,19 +491,21 @@ export default {
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
     },
-    audioAction(){
-      let audioEl = document.getElementById("notify-receive-audio")  
+    audioAction() {
+      let audioEl = document.getElementById("notify-receive-audio");
       const playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.src= "" // 移除src, 防止之后播放空白音频  
-          setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-            audioEl.src = require("./../../../static/wav/receive.mp3")
-          }, 150);  
-        })
-        .catch(error => {
-          audioEl.pause();
-        });
+        playPromise
+          .then((_) => {
+            audioEl.src = ""; // 移除src, 防止之后播放空白音频
+            setTimeout(() => {
+              // 用setTimeout模拟一个2秒的延迟
+              audioEl.src = require("./../../../static/wav/receive.mp3");
+            }, 150);
+          })
+          .catch((error) => {
+            audioEl.pause();
+          });
       }
     },
     // 收取 socket 回来讯息 (全局讯息)
@@ -533,7 +544,7 @@ export default {
                 userInfo.replyChat.nickName = this.myUserInfo.nickname;
               }
             }
-            this.audioAction()
+            this.audioAction();
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
@@ -582,7 +593,8 @@ export default {
               this.readMsg = historyMsgList.filter((el) => {
                 return el.chat.toChatId === "u" + localStorage.getItem("id");
               });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+              if (historyMsgList.length > 0 && this.readMsg.length > 0)
+                this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
               this.loading = false;
             }, timeOut);
@@ -1136,12 +1148,12 @@ export default {
     }
   }
 }
-.top-msg{
+.top-msg {
   background-color: #ffffff;
   padding: 20px;
   display: flex;
   align-items: center;
-  img{
+  img {
     height: 1.5em;
   }
 }
