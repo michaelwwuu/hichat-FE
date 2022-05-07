@@ -4,7 +4,7 @@
       <el-tab-pane label="联络人" name="address">
         <div
           class="address-box"
-          v-for="(item, index) in contactList"
+          v-for="(item, index) in myContactDataList"
           :key="index"
           @click="goContactPage(item, 'ContactPage')"
         >
@@ -18,7 +18,7 @@
       <el-tab-pane label="群组" name="group">
         <div
           class="address-box"
-          v-for="(item, index) in groupData"
+          v-for="(item, index) in groupList"
           :key="index"
           @click="goContactPage(item, 'GroupPage')"
         >
@@ -56,10 +56,10 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
-      // groupList: (state) => state.ws.groupList,
+      groupList: (state) => state.ws.groupList,
       groupUser: (state) => state.ws.groupUser,
       myUserInfo: (state) => state.ws.myUserInfo,
-      // myContactDataList: (state) => state.ws.myContactDataList,
+      myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
   methods: {

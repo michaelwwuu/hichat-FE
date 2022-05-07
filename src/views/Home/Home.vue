@@ -292,6 +292,7 @@ export default {
       },
       num: 0,
       searchKey: "",
+      groupList:[],
       searchData: [],
       chatDataList: [],
       addressDataList: [],
@@ -421,6 +422,15 @@ export default {
           }
         });
       });
+      getGroupList().then((res) => {
+      this.groupList = res.data.list;
+      this.groupList.forEach((el) => {
+        if (el.icon === "") {
+          el.icon = require("./../../../static/images/image_group_defult.png");
+        }
+      });
+      // this.setGroupList(this.groupData);
+    });
     },
     getUserData() {
       getUserInfo().then((res) => {
