@@ -292,7 +292,7 @@ export default {
       },
       num: 0,
       searchKey: "",
-      groupList:[],
+      groupList: [],
       searchData: [],
       chatDataList: [],
       addressDataList: [],
@@ -358,7 +358,6 @@ export default {
       badgeNum: (state) => state.ws.badgeNum,
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
-      soundNofiy: (state) => state.ws.soundNofiy,
       activeName: (state) => state.ws.activeName,
       contactUser: (state) => state.ws.contactUser,
     }),
@@ -426,7 +425,7 @@ export default {
         this.groupList = res.data.list;
         this.groupList.forEach((el) => {
           if (el.icon === "") {
-            el.icon = require("./../../../static/images/image_group_defult.png");
+            return (el.icon = require("./../../../static/images/image_group_defult.png"));
           }
         });
       });
@@ -434,7 +433,7 @@ export default {
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined) {
-          res.data.icon = require("./../../../static/images/image_user_defult.png");
+          return (res.data.icon = require("./../../../static/images/image_user_defult.png"));
         }
         this.setMyUserInfo(res.data);
       });
@@ -473,15 +472,15 @@ export default {
       a.href = iconUrl;
       a.dispatchEvent(event);
     },
-    audioAction(){
-      // let audioEl = document.getElementById("notify-receive-audio")  
+    audioAction() {
+      // let audioEl = document.getElementById("notify-receive-audio")
       // const playPromise = audioEl.play();
       // if (playPromise !== undefined) {
       //   playPromise.then(_ => {
-      //     audioEl.src= "" // 移除src, 防止之后播放空白音频  
+      //     audioEl.src= "" // 移除src, 防止之后播放空白音频
       //     setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
       //       audioEl.src = require("./../../../static/wav/receive.mp3")
-      //     }, 150);  
+      //     }, 150);
       //   })
       //   .catch(error => {
       //     audioEl.pause();
@@ -518,21 +517,6 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
-            this.soundNofiy.forEach((res) => {
-              if (
-                msgInfo.chatType === "SRV_USER_IMAGE" ||
-                msgInfo.chatType === "SRV_USER_AUDIO" ||
-                msgInfo.chatType === "SRV_USER_SEND"
-              ) {
-                if (res.key === "private" && res.isNofity) {
-                  this.audioAction()
-                }
-              } else {
-                if (res.key === "group" && res.isNofity) {
-                 this.audioAction()
-                }
-              }
-            });
             setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
           }
           if (this.device === "moblie") {
@@ -589,7 +573,7 @@ export default {
       }
     },
     noIconShow(iconData) {
-      if ([undefined,null,""].includes(iconData.icon)) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData;
