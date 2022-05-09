@@ -191,7 +191,6 @@ export default {
           if(this.roomId === ""){
             this.roomId = userInfo.chatRoomId
           } 
-          console.log(this.roomId)
           this.messageList(userInfo,"SRV_JOIN_ROOM")
         // 发送讯息成功
         case "SRV_ROOM_SEND":
@@ -204,11 +203,11 @@ export default {
           break;
         // 历史讯息
         case "SRV_ROOM_HISTORY_RSP":
+          this.messageData = []
           let historyMsgList = userInfo.historyMessage;
           let historyPageSize = userInfo.pageSize;
           if (historyMsgList.length < historyPageSize) this.isShowMoreMsg = false;
           historyMsgList.forEach((el) => {
-            console.log()
             this.messageList(el,"SRV_ROOM_HISTORY_RSP")
           });
           
