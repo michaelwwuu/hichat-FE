@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       searchKey: "",
-      activeName:"address",
+      activeName: "address",
       groupData: [],
       contactList: [],
       device: localStorage.getItem("device"),
@@ -49,8 +49,8 @@ export default {
   },
   created() {
     this.getDataList();
-    this.userData = JSON.parse(localStorage.getItem("userData"));   
-    this.setActiveName(this.activeName)
+    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.setActiveName(this.activeName);
   },
 
   computed: {
@@ -69,23 +69,23 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
       setMsgInfoPage: "ws/setMsgInfoPage",
-      setActiveName:"ws/setActiveName",
+      setActiveName: "ws/setActiveName",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
-    handleClick(){
+    handleClick() {
       this.setInfoMsg({ infoMsgShow: false });
-      this.setActiveName(this.activeName)
+      this.setActiveName(this.activeName);
     },
     getDataList() {
       getContactList().then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((el) => {
-          if(el.contactId === localStorage.getItem("id")){
-            el.name = "Hichat 记事本"
-            el.icon = require("./../../../../static/images/image_savemessage.png")
-          }else if (el.icon === undefined){
+          if (el.contactId === localStorage.getItem("id")) {
+            el.name = "Hichat 记事本";
+            el.icon = require("./../../../../static/images/image_savemessage.png");
+          } else if (el.icon === undefined) {
             el.icon = require("./../../../../static/images/image_user_defult.png");
-          }          
+          }
         });
         this.setMyContactDataList(this.contactList);
       });
@@ -102,11 +102,11 @@ export default {
     getUserId(data) {
       let id = data.contactId;
       getSearchById({ id }).then((res) => {
-        if(res.data.id === this.myUserInfo.id){
-          data.name = "Hichat 记事本"
-          data.forChatId = "u" + res.data.id
-          data.icon = require("./../../../../static/images/image_savemessage.png")
-        }else {
+        if (res.data.id === this.myUserInfo.id) {
+          data.name = "Hichat 记事本";
+          data.forChatId = "u" + res.data.id;
+          data.icon = require("./../../../../static/images/image_savemessage.png");
+        } else {
           data.name = res.data.name;
         }
         data.isBlock = res.data.isBlock;
@@ -118,11 +118,11 @@ export default {
     goContactPage(data, path) {
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
-        data.type = this.device === "pc" ? "address":"";
-        this.device === 'pc' ? this.getUserId(data) : this.setChatUser(data);
+        data.type = this.device === "pc" ? "address" : "";
+        this.device === "pc" ? this.getUserId(data) : this.setChatUser(data);
       } else {
         data.toChatId = "g" + data.groupId;
-        data.type = this.device === "pc" ? "address":"";
+        data.type = this.device === "pc" ? "address" : "";
         this.setChatGroup(data);
       }
       if (this.device === "moblie") {
