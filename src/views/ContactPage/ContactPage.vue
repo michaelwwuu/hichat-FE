@@ -237,16 +237,15 @@ export default {
   },
   computed: {
     ...mapState({
-      chatUser: (state) => state.ws.chatUser,
+      // chatUser: (state) => state.ws.chatUser,
       myUserInfo: (state) => state.ws.myUserInfo,
     }),
   },
   created() {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
+    this.chatUser = JSON.parse(localStorage.getItem("userData"));
     this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
     this.setMyUserInfo(this.myInfo)
     this.getUserId();
-    console.log(this.chatUser)
   },
   methods: {
     ...mapMutations({

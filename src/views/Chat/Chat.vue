@@ -389,6 +389,7 @@ export default {
           });
           this.getHiChatDataList();
           break;
+
       }
     },
 

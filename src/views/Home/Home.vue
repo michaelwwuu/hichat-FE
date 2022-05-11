@@ -14,8 +14,8 @@
             <span class="home-header-title">{{
               num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
             }}</span>
-            <template v-if="activeName === 'address' && num !== 2">
-              <router-link :to="'/AddUser'">
+            <template v-if="activeName === 'address' || activeName === 'contact' && num !== 2" >
+              <router-link :to="'/AddUser'" :style="activeName === 'contact' ? 'visibility: hidden':''">
                 <div class="home-add-user address-img"></div>
               </router-link>
             </template>
@@ -504,7 +504,8 @@ export default {
                 item.contactId = this.chatUser.contactId;
                 item.username = this.chatUser.username;
               }
-              this.setChatUser(item);
+              if(this.device === "pc") this.setChatUser(item);
+              
             }
             this.setBadgeNum(numNumber);
           });

@@ -350,9 +350,9 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     if (this.userData !== null) {
       this.setChatUser(this.userData);
-      // this.getUserId(this.userData);
       this.getChatHistoryMessage();
     }
+    if(this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
@@ -393,6 +393,7 @@ export default {
         } else {
           this.userData.username = res.data.username;
         }
+        console.log(this.userData)
         this.setChatUser(this.userData);
       });
     },
@@ -624,10 +625,10 @@ export default {
           });
           this.getHiChatDataList();
           break;
-        // // 撈取歷史訊息
-        // case "SRV_RECENT_CHAT":
-        //   if (this.device === "moblie") this.getChatHistoryMessage();
-        //   break;
+        // 撈取歷史訊息
+        case "SRV_NEED_AUTH":
+          this.getChatHistoryMessage();
+          break;
       }
     },
     addUser(data) {

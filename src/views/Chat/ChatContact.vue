@@ -513,9 +513,9 @@ export default {
           this.getHiChatDataList();
           break;
         // 撈取歷史訊息
-        // case "SRV_RECENT_CHAT":
-        //   if (this.device === "moblie") this.getChatHistoryMessage();
-        //   break;
+        case "SRV_NEED_AUTH":
+          this.getChatHistoryMessage();
+          break;
       }
     },
     addUser(data) {

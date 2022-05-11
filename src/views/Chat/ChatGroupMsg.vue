@@ -290,11 +290,14 @@ export default {
                 userInfo.replyChat.nickName = item.name;
               }
             });
-            this.audioAction();
             this.messageList(userInfo);
             this.readMsgShow(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.device === "pc") this.getHiChatDataList();
+
+            if(userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")){
+              this.audioAction();
+            }
           }
           break;
         // 历史讯息
@@ -366,10 +369,10 @@ export default {
           });
           this.getHiChatDataList();
           break;
-        // // 撈取歷史訊息
-        // case "SRV_RECENT_CHAT":
-        //   this.getChatHistoryMessage();
-        //   break;
+        // 撈取歷史訊息
+        case "SRV_NEED_AUTH":
+          this.getChatHistoryMessage();
+          break;
       }
     },
     getHiChatDataList() {
