@@ -416,11 +416,11 @@ export default {
             this.downloadImages(data);
           },
         },
-        {
-          name: "upDown",
-          label: "置顶",
-          onClick: () => {},
-        },
+        // {
+        //   name: "upDown",
+        //   label: "置顶",
+        //   onClick: () => {},
+        // },
         {
           name: "deleteAllChat",
           label: "在所有人的對話紀錄中刪除",
