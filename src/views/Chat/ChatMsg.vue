@@ -530,7 +530,7 @@ export default {
             ) {
               userInfo.chat.name = this.myUserInfo.nickname;
               userInfo.chat.icon = this.myUserInfo.icon;
-            }
+            }  
             if (userInfo.replyChat !== null) {
               if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
                 userInfo.replyChat.name = this.chatUser.name;
@@ -545,11 +545,14 @@ export default {
                 userInfo.replyChat.nickName = this.myUserInfo.nickname;
               }
             }
-            this.audioAction();
+
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
             if (this.device === "pc") this.getHiChatDataList();
+            if(userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))){
+              this.audioAction();
+            }            
           }
           break;
         // 历史讯息

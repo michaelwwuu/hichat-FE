@@ -14,20 +14,42 @@
             <span class="home-header-title">{{
               num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
             }}</span>
-            <template v-if="activeName === 'address' || activeName === 'contact' && num !== 2" >
-              <router-link :to="'/AddUser'" :style="activeName === 'contact' ? 'visibility: hidden':''">
-                <div class="home-add-user address-img"></div>
-              </router-link>
+            <template v-if=" num === 0">
+              <div> 
+                <template v-if="['address','contact'].includes(activeName)">
+                  <router-link :to="'/AddUser'" :style="activeName === 'contact' ? 'visibility: hidden':''">
+                    <div class="home-add-user address-img"></div>
+                  </router-link>
+                </template>
+                <template v-else-if="activeName === 'group'">
+                  <router-link :to="'/AddGroup'">
+                    <div class="home-add-user hichat-img"></div>
+                  </router-link>
+                </template>  
+              </div>
             </template>
-            <template v-else-if="activeName === 'group' && num !== 2">
-              <router-link :to="'/AddGroup'">
-                <div class="home-add-user hichat-img"></div>
-              </router-link>
+            <template v-if=" num === 1">
+              <div> 
+                <template v-if="['address','contact'].includes(hichatNav.type)">
+                  <router-link :to="'/AddUser'" :style="hichatNav.type === 'contact' ? 'visibility: hidden':''">
+                    <div class="home-add-user address-img"></div>
+                  </router-link>
+                </template>
+                <template v-else-if="hichatNav.type === 'group'">
+                  <router-link :to="'/AddGroup'">
+                    <div class="home-add-user hichat-img"></div>
+                  </router-link>
+                </template>  
+              </div>
             </template>
-            <template v-else-if="num === 2">
-              <router-link :to="'/EditUser'"
-                ><div class="home-add-user setting-img"></div
-              ></router-link>
+            <template v-if=" num === 2">
+              <div> 
+                <template >
+                  <router-link :to="'/EditUser'"
+                    ><div class="home-add-user setting-img"></div
+                  ></router-link>
+                </template>
+              </div>
             </template>
           </div>
           <div class="home-search" v-if="num !== 2">
@@ -96,18 +118,41 @@
               clearable
             >
             </el-input>
-            <template v-if="activeName === 'address'">
-              <router-link :to="'/AddUser'">
-                <img src="./../../../static/images/pc/user-plus.png" alt="" />
-              </router-link>
+            <template v-if="num === 0">
+              <div>
+                <template v-if="activeName === 'address'">
+                  <router-link :to="'/AddUser'">
+                    <img src="./../../../static/images/pc/user-plus.png" alt="" />
+                  </router-link>
+                </template>
+                
+                <template v-else-if="activeName === 'group'">
+                  <router-link :to="'/AddGroup'">
+                    <img
+                      src="./../../../static/images/pc/message-plus.png"
+                      alt=""
+                    />
+                  </router-link>
+                </template>
+              </div>
             </template>
-            <template v-else-if="activeName === 'group'">
-              <router-link :to="'/AddGroup'">
-                <img
-                  src="./../../../static/images/pc/message-plus.png"
-                  alt=""
-                />
-              </router-link>
+            <template v-if="num === 1">
+              <div>
+                <template v-if="hichatNav.type === 'address'">
+                  <router-link :to="'/AddUser'">
+                    <img src="./../../../static/images/pc/user-plus.png" alt="" />
+                  </router-link>
+                </template>
+                
+                <template v-else-if="hichatNav.type === 'group'">
+                  <router-link :to="'/AddGroup'">
+                    <img
+                      src="./../../../static/images/pc/message-plus.png"
+                      alt=""
+                    />
+                  </router-link>
+                </template>
+              </div>
             </template>
           </div>
         </el-header>
@@ -471,21 +516,6 @@ export default {
       a.href = iconUrl;
       a.dispatchEvent(event);
     },
-    audioAction() {
-      // let audioEl = document.getElementById("notify-receive-audio")
-      // const playPromise = audioEl.play();
-      // if (playPromise !== undefined) {
-      //   playPromise.then(_ => {
-      //     audioEl.src= "" // 移除src, 防止之后播放空白音频
-      //     setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-      //       audioEl.src = require("./../../../static/wav/receive.mp3")
-      //     }, 150);
-      //   })
-      //   .catch(error => {
-      //     audioEl.pause();
-      //   });
-      // }
-    },
     handleGetMessage(msg) {
       let msgInfo = JSON.parse(msg);
       let numNumber = 0;
@@ -504,8 +534,9 @@ export default {
                 item.contactId = this.chatUser.contactId;
                 item.username = this.chatUser.username;
               }
-              if(this.device === "pc") this.setChatUser(item);
-              
+              if(this.device === "pc") {
+                this.setChatUser(item)
+              }
             }
             this.setBadgeNum(numNumber);
           });

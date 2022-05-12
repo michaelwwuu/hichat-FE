@@ -312,11 +312,13 @@ export default {
                 userInfo.replyChat.nickName = item.name;
               }
             });
-            this.audioAction();
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
+            this.getHiChatDataList();
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if (this.device === "pc") this.getHiChatDataList();
+            if(userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")){
+              this.audioAction();
+            }
           }
           break;
         // 历史讯息
@@ -325,14 +327,12 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           let timeOut = historyMsgList.length * 40;
+
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
-                this.groupListData = JSON.parse(
-                  localStorage.getItem("groupListMember")
-                );
                 this.groupListData.forEach((item) => {
                   if (el.chat.fromChatId === "u" + item.memberId) {
                     el.chat.icon = item.icon;
@@ -360,7 +360,7 @@ export default {
                 this.readMsgShow(historyMsgList[0]);
               }
               this.loading = false;
-              if (this.device === "pc") this.getHiChatDataList();
+              this.getHiChatDataList();
             }, timeOut);
           });
           break;
@@ -369,6 +369,7 @@ export default {
           this.messageData.forEach((res) => {
             if (res.historyId === userInfo.historyId) res.isRead = true;
           });
+          this.getHiChatDataList();
           break;
         // 編輯訊息
         case "SRV_CHAT_EDIT":

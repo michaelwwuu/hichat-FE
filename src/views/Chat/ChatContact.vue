@@ -426,11 +426,14 @@ export default {
                 ).nickname;
               }
             }
-            this.audioAction();
+
             this.getHiChatDataList();
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            if(userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))){
+              this.audioAction();
+            }            
           }
           break;
         // 历史讯息

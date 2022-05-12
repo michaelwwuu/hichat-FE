@@ -181,6 +181,7 @@ export default {
         token: localStorage.getItem("token"),
       },
       device: localStorage.getItem("device"),
+      activeName: "address",
 
       //加解密 key iv
       aesKey: "hichatisachatapp",
@@ -190,6 +191,7 @@ export default {
   created() {
     Socket.$on("message", this.handleGetMessage);
     this.getGroupDataList();
+    this.setActiveName(this.hichatNav.type);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);

@@ -294,7 +294,6 @@ export default {
             this.readMsgShow(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.device === "pc") this.getHiChatDataList();
-
             if(userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")){
               this.audioAction();
             }
