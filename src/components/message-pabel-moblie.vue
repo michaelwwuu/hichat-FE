@@ -111,13 +111,20 @@
               </div>
             </span>
             <span
+              class="message-mini-audio"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @click.prevent.stop="
-                device === 'moblie' ? onContextmenu(el) : false
-              "
               @dblclick="dblclick(el)"
             >
+              <div
+                v-if="device === 'moblie'"
+                class="images-more-btn"
+                @click.prevent.stop="
+                  device === 'moblie' ? onContextmenu(el) : false
+                "
+              >
+                <i class="el-icon-more"></i>
+              </div>
               <mini-audio
                 class="message-audio"
                 :audio-source="el.message.content"
@@ -691,7 +698,7 @@ export default {
           height: 15em !important;
           top:0;
           /deep/.el-image__inner {
-            height: 15em;
+            height: unset;
           }
         }
       }
@@ -758,7 +765,7 @@ export default {
           height: 15em !important;
           top:0;
           /deep/.el-image__inner {
-            height: 15em;
+            height: unset;
           }
         }
       }
@@ -843,7 +850,12 @@ export default {
         width: 6em;
       }
     }
-
+    .message-mini-audio {
+      position: relative;
+      // margin-top: 1em;
+      display: inline-block;
+      border-radius: 10px;
+    }
   }
   .vueAudioBetter {
     box-shadow: none;
@@ -883,6 +895,7 @@ export default {
   right: 10px;
   z-index: 9;
   text-align: center;
+  background-color: #FFF;
   .el-icon-more {
     font-size: 20px;
   }

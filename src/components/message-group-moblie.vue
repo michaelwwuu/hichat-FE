@@ -154,13 +154,19 @@
               class="message-audio"
               v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @click.prevent.stop="
-                device === 'moblie' ? onContextmenu(el) : false
-              "
               @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <div class="message-name">{{ el.name }}</div>
+                <div
+                  v-if="device === 'moblie'"
+                  class="images-more-btn"
+                  @click.prevent.stop="
+                    device === 'moblie' ? onContextmenu(el) : false
+                  "
+                >
+                  <i class="el-icon-more"></i>
+                </div>
                 <mini-audio :audio-source="el.message.content"></mini-audio>
               </div>
             </span>
@@ -595,6 +601,7 @@ export default {
         display: flex;
         align-items: flex-end;
         .message-audio {
+          
           border-radius: 0 10px 10px 10px;
           background-color: rgba(0, 0, 0, 0.05);
           height: auto;
@@ -611,7 +618,8 @@ export default {
           }
         }
         .images-more-btn {
-          top: 30px;
+          top: 10px;
+          
         }
       }
       .reply {
@@ -667,7 +675,7 @@ export default {
             height: 15em !important;
             top: 0;
             /deep/.el-image__inner {
-              height: 15em;
+              height: unset;
             }
           }
         }
@@ -744,7 +752,7 @@ export default {
           height: 15em !important;
           top: 0;
           /deep/.el-image__inner {
-            height: 100%;
+            height: unset;
           }
         }
       }
@@ -787,11 +795,17 @@ export default {
       }
     }
     .message-audio {
-      // width: 190px;
+      width: 190px;
       height: 2.5em;
       // margin-top: 1em;
       display: inline-block;
+              position: relative;
+        // margin-top: 1em;
+        display: inline-block;
       // border: 1px solid #eeeeee;
+      .images-more-btn{
+        top: 10px !important;
+      }
     }
   }
   .vueAudioBetter {
@@ -871,20 +885,15 @@ export default {
 }
 .images-more-btn {
   width: 2em;
-  // height: 2em;
   cursor: pointer;
   border-radius: 5px;
-  // background-size: 70%;
-  // background-position: center;
-  // background-repeat: no-repeat;
-  // background-color: #f7f7f794;
-  // background-image: url("./../../static/images/pc/more.png");
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 9;
   // border:1px solid #ebebeb;
   text-align: center;
+  background-color: #FFF;
   .el-icon-more {
     font-size: 20px;
   }
