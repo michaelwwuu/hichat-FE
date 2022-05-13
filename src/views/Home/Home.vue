@@ -328,7 +328,7 @@ export default {
         },
       ],
       qrCodeConfig: {
-        text: `${location.origin}/fe/#/AddUser?username=${this.myInfoUser}&id=${this.myInfoUserId}`,
+        text: `${location.origin}/fe/#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
         logo: require("./../../../static/images/material_ic_logo.png"),
       },
       num: 0,
@@ -475,8 +475,7 @@ export default {
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../static/images/image_user_defult.png");
         }
-        this.myInfoUser = res.data.username
-        this.myInfoUserId = res.data.id
+        this.qrCodeConfig.text = `${location.origin}/fe/#/AddUser?username=${res.data.username}&id=${res.data.id}`
         this.setMyUserInfo(res.data);
       });
     },
