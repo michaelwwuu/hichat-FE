@@ -327,7 +327,7 @@ export default {
         this.groupList = res.data.list;
         this.groupList.forEach((el) => {
           if (el.icon === "") {
-            return (el.icon = require("./../../../../static/images/image_group_defult.png"));
+            el.icon = require("./../../../../static/images/image_group_defult.png");
           }
         });
         this.setGroupList(this.groupList);
@@ -339,7 +339,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {
-            return (item.icon = require("./../../../../static/images/image_user_defult.png"));
+            item.icon = require("./../../../../static/images/image_user_defult.png");
           }
         });
         this.setContactListData(this.contactList);

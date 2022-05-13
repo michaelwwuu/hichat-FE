@@ -328,11 +328,7 @@ export default {
         },
       ],
       qrCodeConfig: {
-        text: `${
-          process.env.VUE_APP_URL
-        }fe/#/AddUser?username=${localStorage.getItem(
-          "username"
-        )}&id=${localStorage.getItem("id")}`,
+        text: `${location.origin}/fe/#/AddUser?username=${localStorage.getItem("username")}&id=${localStorage.getItem("id")}`,
         logo: require("./../../../static/images/material_ic_logo.png"),
       },
       num: 0,
@@ -456,7 +452,7 @@ export default {
         this.addressDataList = res.data.list;
         this.addressDataList.forEach((el) => {
           if (el.icon === undefined) {
-            return (el.icon = require("./../../../static/images/image_user_defult.png"));
+            el.icon = require("./../../../static/images/image_user_defult.png");
           }
           if (el.contactId === localStorage.getItem("id")) {
             el.name = "Hichat 记事本";
@@ -469,7 +465,7 @@ export default {
         this.groupList = res.data.list;
         this.groupList.forEach((el) => {
           if (el.icon === "") {
-            return (el.icon = require("./../../../static/images/image_group_defult.png"));
+            el.icon = require("./../../../static/images/image_group_defult.png");
           }
         });
       });
@@ -477,7 +473,7 @@ export default {
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined) {
-          return (res.data.icon = require("./../../../static/images/image_user_defult.png"));
+          res.data.icon = require("./../../../static/images/image_user_defult.png");
         }
         this.setMyUserInfo(res.data);
       });
@@ -488,7 +484,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((res) => {
           if (res.icon === undefined) {
-            return (res.icon = require("./../../../static/images/image_user_defult.png"));
+            res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
         this.setContactListData(this.contactList);

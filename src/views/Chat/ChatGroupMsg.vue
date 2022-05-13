@@ -181,7 +181,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {
-            return (item.icon = require("./../../../static/images/image_user_defult.png"));
+            item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
         this.setContactListData(this.contactList);
