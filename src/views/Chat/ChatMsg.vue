@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-container>
+    <el-container v-show="topMsgShow">
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
@@ -143,10 +143,13 @@
           </ul>
         </div>
         <!-- 置頂訊息 -->
-        <!-- <div class="top-msg">
-          <img src="./../../../static/images/pin.png" alt="">
-          <span>訊息內容</span>
-        </div> -->
+        <div class="top-msg">
+          <div class="top-msg-left">
+            <img src="./../../../static/images/pin.png" alt="">
+            <span>訊息內容</span>
+          </div>
+          <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
+        </div>
         <message-pabel
           v-loading="loading"
           element-loading-text="讯息加载中"
@@ -365,6 +368,7 @@ export default {
       hichatNav: (state) => state.ws.hichatNav,
       replyMsg: (state) => state.ws.replyMsg,
       myUserInfo: (state) => state.ws.myUserInfo,
+      topMsgShow: (state) => state.ws.topMsgShow,
     }),
   },
   methods: {
@@ -377,7 +381,11 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setChatMsgData: "ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setTopMsgShow:"ws/setTopMsgShow"
     }),
+    goTopMsgShow(){
+      this.setTopMsgShow(false)
+    },
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -1154,11 +1162,21 @@ export default {
 }
 .top-msg {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 20px 35px 20px 20px;;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  img {
-    height: 1.5em;
+  .top-msg-left{
+    display: flex;
+    align-items: center;
+    img {
+      height: 1.5em;
+    }
   }
+  .top-msg-right{
+    height: 1.2em;
+    cursor: pointer;
+  }
+  
 }
 </style>

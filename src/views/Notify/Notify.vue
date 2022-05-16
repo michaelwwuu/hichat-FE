@@ -128,12 +128,12 @@ export default {
       soundNofiyData: JSON.parse(localStorage.getItem("soundNofiy")),
     };
   },
-  computed: {
-    ...mapState({
-      nofity: (state) => state.ws.nofity,
-      soundNofiy: (state) => state.ws.soundNofiy,
-    }),
-  },
+  // computed: {
+  //   ...mapState({
+  //     nofity: (state) => state.ws.nofity,
+  //     soundNofiy: (state) => state.ws.soundNofiy,
+  //   }),
+  // },
   created() {
     // if(localStorage.getItem("nofity") === null){
     //   this.setNofiy(this.nofity)

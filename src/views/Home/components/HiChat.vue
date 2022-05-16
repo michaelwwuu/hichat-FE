@@ -227,6 +227,7 @@ export default {
       setGroupList: "ws/setGroupList",
       setContactUser: "ws/setContactUser",
       setActiveName: "ws/setActiveName",
+      setTopMsgShow:"ws/setTopMsgShow",
       setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData, key) {
@@ -359,6 +360,7 @@ export default {
       });
     },
     goChatRoom(data, path) {
+      this.setTopMsgShow(true)
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         this.setChatUser(data);

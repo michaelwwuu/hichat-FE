@@ -79,14 +79,17 @@ export const state = {
     },
   ],
   device: localStorage.getItem("device"),
+  topMsgShow:true,
 };
 export const actions = {};
 
 export const mutations = {
+  setTopMsgShow(state, payload) {
+    state.topMsgShow = payload;
+  },
   setNofiy(state, payload) {
     state.nofity = payload;
     localStorage.setItem("nofity", JSON.stringify(payload));
-
   },
   setSoundNofiy(state, payload) {
     state.soundNofiy = payload;

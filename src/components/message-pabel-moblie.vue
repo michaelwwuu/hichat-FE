@@ -165,16 +165,16 @@
         </li>
       </div>
     </ul>
-    <!-- <el-button
+    <el-button
       v-show="showScrollBar"
       class="scroll-bottom-btn"
       size="medium"
       icon="el-icon-arrow-down"
       circle
       @click="$root.gotoBottom()"
-    ></el-button> -->
+    ></el-button>
     <el-dialog
-      title="照相"
+      title="上傳圖片"
       :visible.sync="uploadShow"
       class="el-dialog-takePicture"
       center
@@ -338,8 +338,11 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.chatUser.toChatId;
-          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          message.text = res.data,this.aesKey,this.aesIv,
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          // message.text = res.data,
+          this.soundNofiy.forEach((res)=>{
+            if(res.key === "private" && res.isNofity) this.audioAction()
+          })        
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
@@ -349,7 +352,23 @@ export default {
           this.fullscreenLoading = false;
         }
       })
-    },    
+    },   
+    audioAction(){
+      let audioEl = document.getElementById("notify-send-audio")  
+      var playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          audioEl.pause();
+        })
+        .catch(error => {
+        });
+      }
+      audioEl.src= "" // 移除src, 防止之后播放空白音频  
+      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../static/wav/send.mp3")
+        audioEl.play();
+      }, 150);
+    },     
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {

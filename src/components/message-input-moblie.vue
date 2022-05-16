@@ -286,8 +286,8 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
-          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          message.text = res.data;
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          // message.text = res.data;
           // 发送服务器
           this.soundNofiy.forEach((res)=>{
             if(res.key === "private" && res.isNofity) this.audioAction()
@@ -437,8 +437,9 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.userData.toChatId;
-          // message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          (message.text = res.data), Socket.send(message);
+          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
+          // (message.text = res.data),
+         Socket.send(message);
           // 发送服务器
           this.soundNofiy.forEach((res)=>{
             if(res.key === "private" && res.isNofity) this.audioAction()
@@ -532,12 +533,12 @@ export default {
             ? this.replyMsg.replyHistoryId
             : "",
         targetArray: [],
-        // text: Encrypt(
-        //   this.textArea.replace(/(\s*$)/g, ""),
-        //   this.aesKey,
-        //   this.aesIv
-        // ),//TODO 加密
-        text: this.textArea,
+        text: Encrypt(
+          this.textArea.replace(/(\s*$)/g, ""),
+          this.aesKey,
+          this.aesIv
+        ),//TODO 加密
+        // text: this.textArea,
         deviceId: localStorage.getItem("UUID"),
         token: localStorage.getItem("token"),
       };
@@ -574,12 +575,12 @@ export default {
         tokenType: 0,
         fromChatId: this.userData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        // text: Encrypt(
-        //   this.textArea.replace(/(\s*$)/g, ""),
-        //   this.aesKey,
-        //   this.aesIv
-        // ),//TODO 加密
-        text: this.textArea,
+        text: Encrypt(
+          this.textArea.replace(/(\s*$)/g, ""),
+          this.aesKey,
+          this.aesIv
+        ),//TODO 加密
+        // text: this.textArea,
 
         toChatId: this.userData.lastChat.toChatId,
         deviceId: localStorage.getItem("UUID"),

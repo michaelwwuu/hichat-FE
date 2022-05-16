@@ -277,11 +277,6 @@
         <el-button class="background-red" @click="loginOut">登出</el-button>
       </span>
     </el-dialog>
-    <!-- <audio
-      id="notify-receive-audio"
-      muted="muted"
-      src="./../../../static/wav/receive.mp3"
-    ></audio> -->
   </div>
 </template>
 
@@ -374,7 +369,6 @@ export default {
     if(localStorage.getItem("soundNofiy") === null){
       this.setSoundNofiy(this.soundNofiy)
     }
-    console.log(JSON.parse(localStorage.getItem("nofity")))    
   },
   watch: {
     hichatNav(val) {
@@ -423,6 +417,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
+      setTopMsgShow:"ws/setTopMsgShow",
       setMyUserInfo: "ws/setMyUserInfo",
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
@@ -433,6 +428,7 @@ export default {
         infoMsgShow: false,
         infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
       });
+      this.setTopMsgShow(true)
       if (type === "address") {
         delete this.chatUser.type;
         this.setChatUser(this.chatUser);
