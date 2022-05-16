@@ -368,6 +368,13 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.getContactDataList();
     this.getUserData();
+    if(localStorage.getItem("nofity") === null){
+      this.setNofiy(this.nofity)
+    }
+    if(localStorage.getItem("soundNofiy") === null){
+      this.setSoundNofiy(this.soundNofiy)
+    }
+    console.log(JSON.parse(localStorage.getItem("nofity")))    
   },
   watch: {
     hichatNav(val) {
@@ -401,10 +408,14 @@ export default {
       hichatNav: (state) => state.ws.hichatNav,
       activeName: (state) => state.ws.activeName,
       contactUser: (state) => state.ws.contactUser,
+      nofity: (state) => state.ws.nofity,
+      soundNofiy: (state) => state.ws.soundNofiy,      
     }),
   },
   methods: {
     ...mapMutations({
+      setNofiy:"ws/setNofiy",
+      setSoundNofiy: "ws/setSoundNofiy",      
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
       setBadgeNum: "ws/setBadgeNum",

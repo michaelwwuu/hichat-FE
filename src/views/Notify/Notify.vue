@@ -11,7 +11,7 @@
           <div class="setting-title">通知</div>
           <div
             class="setting-button"
-            v-for="(item, index) in nofity"
+            v-for="(item, index) in nofityData"
             :key="index"
             :class="{
               mb10: item.key === 'nofity'
@@ -26,6 +26,7 @@
                   v-model="item.isNofity"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
+                  @change="chengeNofiy(item)"
                 >
                 </el-switch>
               </div>
@@ -34,7 +35,7 @@
           <div class="setting-title">應用內音效</div>
           <div
             class="setting-button"
-            v-for="(item, index) in soundNofiy"
+            v-for="(item, index) in soundNofiyData"
             :key="item + index"
             :class="{
               mb10: item.key === 'sound'
@@ -70,7 +71,7 @@
           <div class="setting-title">通知</div>
           <div
             class="setting-button"
-            v-for="(item, index) in nofity"
+            v-for="(item, index) in nofityData"
             :key="index"
           >
             <div class="setting-box">
@@ -82,6 +83,7 @@
                   v-model="item.isNofity"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
+                  @change="chengeNofiy(item)"
                 >
                 </el-switch>
               </div>
@@ -90,7 +92,7 @@
           <div class="setting-title">應用內音效</div>
           <div
             class="setting-button"
-            v-for="(item, index) in soundNofiy"
+            v-for="(item, index) in soundNofiyData"
             :key="item + index"
           >
             <div class="setting-box">
@@ -121,48 +123,60 @@ export default {
   name: "Notify",
   data() {
     return {
-      nofity: [
-        {
-          name: "通知",
-          isNofity: true,
-          key: "nofity",
-        },
-        {
-          name: "新訊息",
-          isNofity: true,
-          key: "newNofity",
-        },
-        {
-          name: "群組邀請",
-          isNofity: true,
-          key: "groupNofity",
-        },
-        {
-          name: "鈴聲",
-          isNofity: true,
-          key: "ringNofity",
-        },
-        {
-          name: "震動",
-          isNofity: true,
-          key: "shockkNofity",
-        },
-      ],
       device: localStorage.getItem("device"),
+      nofityData: JSON.parse(localStorage.getItem("nofity")),
+      soundNofiyData: JSON.parse(localStorage.getItem("soundNofiy")),
     };
   },
   computed: {
     ...mapState({
+      nofity: (state) => state.ws.nofity,
       soundNofiy: (state) => state.ws.soundNofiy,
     }),
   },
-  mounted() {},
+  created() {
+    // if(localStorage.getItem("nofity") === null){
+    //   this.setNofiy(this.nofity)
+    // }
+    // if(localStorage.getItem("soundNofiy") === null){
+    //   this.setSoundNofiy(this.soundNofiy)
+    // }
+    // console.log(JSON.parse(localStorage.getItem("nofity")))
+  },
   methods: {
     ...mapMutations({
+      setNofiy:"ws/setNofiy",
       setSoundNofiy: "ws/setSoundNofiy",
     }),
+    chengeNofiy(item){
+      this.nofityData.forEach((data) => {
+        if (item.key === "nofity") {
+          if (!item.isNofity) {
+            return (data.isNofity = false);
+          } else if (item.isNofity) {
+            return (data.isNofity = true);
+          }
+        } else if (item.key === data.key) {
+          if (!item.isNofity) {
+            return (data.isNofity = false);
+          } else if (item.isNofity) {
+            return (data.isNofity = true);
+          }
+        }
+      })
+      let newNofiy = this.nofityData.filter(el => el.key !== "nofity")
+      let doubleCloseNofiy = newNofiy.every(item => !item.isNofity);
+      let doubleOpenNofiy = newNofiy.every(item => item.isNofity);
+      if(doubleCloseNofiy){
+        this.nofityData.forEach((el)=> el.isNofity = false)
+      } 
+      if(doubleOpenNofiy){
+        this.nofityData.forEach((el)=> el.isNofity = true)
+      }
+      this.setNofiy(this.nofityData);
+    },
     chengeSoundNofiy(item) {
-      this.soundNofiy.forEach((data) => {
+      this.soundNofiyData.forEach((data) => {
         if (item.key === "sound") {
           if (!item.isNofity) {
             return (data.isNofity = false);
@@ -177,7 +191,16 @@ export default {
           }
         }
       });
-      this.setSoundNofiy(this.soundNofiy);
+      let newSoundNofiy = this.soundNofiyData.filter(el => el.key !== "sound")
+      let doubleCloseSoundNofiy = newSoundNofiy.every(item => !item.isNofity);
+      let doubleOpenSoundNofiy = newSoundNofiy.every(item => item.isNofity);
+      if(doubleCloseSoundNofiy){
+        this.soundNofiyData.forEach((el)=> el.isNofity = false)
+      } 
+      if(doubleOpenSoundNofiy){
+        this.soundNofiyData.forEach((el)=> el.isNofity = true)
+      }
+      this.setSoundNofiy(this.soundNofiyData);
     },
     back() {
       this.$router.back(-1);

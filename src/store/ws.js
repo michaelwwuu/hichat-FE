@@ -33,6 +33,33 @@ export const state = {
   editMsg:{
     innerText:"",
   },
+  nofity: [
+    {
+      name: "通知",
+      isNofity: true,
+      key: "nofity",
+    },
+    {
+      name: "新訊息",
+      isNofity: true,
+      key: "newNofity",
+    },
+    {
+      name: "群組邀請",
+      isNofity: true,
+      key: "groupNofity",
+    },
+    {
+      name: "鈴聲",
+      isNofity: true,
+      key: "ringNofity",
+    },
+    {
+      name: "震動",
+      isNofity: true,
+      key: "shockkNofity",
+    },
+  ],
   soundNofiy:[
     {
       name:"音效",
@@ -56,8 +83,14 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setNofiy(state, payload) {
+    state.nofity = payload;
+    localStorage.setItem("nofity", JSON.stringify(payload));
+
+  },
   setSoundNofiy(state, payload) {
     state.soundNofiy = payload;
+    localStorage.setItem("soundNofiy", JSON.stringify(payload));
   },
   setActiveName(state, payload) {
     state.activeName = payload;
