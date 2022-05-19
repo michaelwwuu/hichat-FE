@@ -294,7 +294,6 @@ export default {
     },     
     // 判断讯息Class名称
     judgeClass(item) {
-      console.log(item)
       if (item.isRplay.fromChatId === "u" + localStorage.getItem("id")) {
         return "message-layout-right";
       } else {

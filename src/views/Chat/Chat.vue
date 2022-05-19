@@ -430,7 +430,8 @@ export default {
                     el.chat.icon = item.icon;
                     el.chat.name = item.name;
                     el.chat.username = item.username;
-                  } else if (
+                  }
+                  if (
                     el.chat.icon === undefined &&
                     el.chat.name === undefined
                   ) {
@@ -855,7 +856,7 @@ export default {
 }
 .top-msg {
   background-color: #ffffff;
-  padding: 20px 35px 20px 20px;;
+  padding: 16px 35px 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;

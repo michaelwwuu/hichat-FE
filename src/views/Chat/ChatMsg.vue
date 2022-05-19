@@ -1313,7 +1313,7 @@ export default {
 }
 .top-msg {
   background-color: #ffffff;
-  padding: 20px 35px 20px 20px;;
+  padding: 16px 35px 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
