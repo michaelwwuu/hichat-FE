@@ -2,204 +2,264 @@
   <div
     :class="[
       { 'login-container-pc': device === 'pc' },
-      { 'login-container-moblie': device === 'moblie' }
+      { 'login-container-moblie': device === 'moblie' },
     ]"
   >
     <el-form
       ref="loginForm"
       :model="loginForm"
-      :rules="loginRules"
       class="login-form"
       label-position="top"
     >
       <div class="title-container">
-        <h3 class="title">{{ headerTitle }}</h3>
+        <img src="./../../../static/images/material_ic_logo.png" alt="" />
+        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span><!--{{ $t('LOGIN.LGOIN_TITLE') }}-->
       </div>
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <font-awesome-icon icon="user" />
-        </span>
-        <el-input
-          ref="username"
-          placeholder="请输入用户名称"
-          v-model="loginForm.username"
-          name="username"
-          type="text"
-          tabindex="1"
-          @keyup.enter.native="submitForm('loginForm')"
-        >
-        </el-input>
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <font-awesome-icon icon="key" />
-        </span>
-        <el-input
-          ref="password"
-          placeholder="请输入密码"
-          v-model="loginForm.password"
-          name="password"
-          type="password"
-          tabindex="2"
-          @keyup.enter.native="submitForm('loginForm')"
-        >
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="verificationCode">
-        <span class="svg-container">
-          <font-awesome-icon icon="key" />
-        </span>
-        <el-input
-          ref="verificationCode"
-          placeholder="请输入密码"
-          v-model="loginForm.verificationCode"
-          name="verificationCode"
-          type="verificationCode"
-          tabindex="2"
-          @keyup.enter.native="submitForm('loginForm')"
-        >
-        </el-input>
-      </el-form-item>
-      <el-button
-        type="primary"
-        style="width: 100%; margin-bottom: 30px"
-        @click="submitForm('loginForm')"
-        >登入</el-button
-      >
-      <div style="position: relative">
-        <div class="tips">
-          <span>您还没有帐号吗 ?</span>
-        </div>
-        <div class="tips">
-          <span>点击按钮立即注册</span>
-        </div>
-        <el-button
-          class="thirdparty-button"
-          type="danger"
-          @click="
-            showDialog = true;
-            resetRegisterForm();
-          "
-          >立即注册</el-button
-        >
-      </div>
-    </el-form>
-    <el-dialog :title="registerTitle" :visible.sync="showDialog">
-      <el-form
-        ref="registerForm"
-        label-position="right"
-        :rules="loginRules"
-        label-width="20px"
-        :model="registerForm"
-      >
-        <el-form-item>
-          <font-awesome-icon icon="globe" />
+      <template v-if="device === 'moblie'">
+        <el-form-item prop="email">
+          <span class="svg-container">
+            <img src="./../../../static/images/mail.png" alt="" />
+          </span>
           <el-input
-            v-model="registerForm.countryCallingCode"
-            placeholder="请输入电话区码 如+886"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <font-awesome-icon icon="envelope" />
-          <el-input
-            v-model="registerForm.email"
+            ref="email"
+            v-model.trim="loginForm.email"
+            placeholder="电子邮箱"
+            name="email"
             type="text"
-            placeholder="请输入邮箱"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <font-awesome-icon icon="phone" />
-          <el-input
-            v-model="registerForm.telephone"
-            type="text"
-            placeholder="请输入手机号"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="username">
-          <font-awesome-icon icon="user" />
-          <el-input
-            v-model="registerForm.username"
-            name="username"
-            type="text"
-            placeholder="请输入用户名称"
-          ></el-input>
+            tabindex="1"
+            maxLength="30"
+            @input="
+              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <font-awesome-icon icon="key" />
+          <span class="svg-container">
+            <img src="./../../../static/images/lock.png" alt="" />
+          </span>
           <el-input
-            v-model="registerForm.password"
+            ref="password"
+            placeholder="登录密碼"
+            v-model.trim="loginForm.password"
             name="password"
-            type="password"
-            placeholder="请输入密码"
-          ></el-input>
+            :type="passwordType === 'password' ? 'password' : 'text'"
+            tabindex="2"
+            maxLength="12"
+            @input="
+              (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
+          <span class="show-pwd" @click="showPwd">
+            <img
+              :src="
+                passwordType === 'password'
+                  ? require('../../../static/images/eye_closed.png')
+                  : require('./../../../static/images/eye-solid.svg')
+              "
+              alt=""
+            />
+          </span>
         </el-form-item>
-        <el-button
-          type="danger"
-          style="width: 100%; margin-bottom: 30px"
-          @click="submitForm('registerForm')"
-          >立即注册</el-button
+      </template>
+      <template v-else>
+        <el-form-item prop="email">
+          <span class="svg-container">电子邮箱</span>
+          <el-input
+            ref="email"
+            v-model.trim="loginForm.email"
+            name="email"
+            type="text"
+            tabindex="1"
+            maxLength="30"
+            @input="
+              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">登录密碼</span>
+          <el-input
+            ref="password"
+            v-model.trim="loginForm.password"
+            name="password"
+            :type="passwordType === 'password' ? 'password' : 'text'"
+            tabindex="2"
+            maxLength="12"
+            @input="
+              (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+            "
+          >
+          </el-input>
+          <span
+            class="show-pwd"
+            :class="{ 'eye-off': passwordType === 'password' }"
+            @click="showPwd"
+          >
+            <img
+              :src="
+                passwordType === 'password'
+                  ? require('../../../static/images/pc/eye-off.png')
+                  : require('./../../../static/images/eye-solid.svg')
+              "
+              alt=""
+            />
+          </span>
+        </el-form-item>
+      </template>
+      <div
+        class="remember-style"
+        :style="device === 'moblie' ? 'flex-direction: row-reverse' : ''"
+      >
+        <el-switch
+          v-model="remember"
+          active-color="#fe5f3f"
+          inactive-color="#666666"
+          active-text="记住帐号"
         >
-      </el-form>
+        </el-switch>
+        <router-link :to="'/ForgetPassword'" style="text-decoration: none">
+          <span>忘记密码</span>
+        </router-link>
+      </div>
+      <div class="read-check-box">
+        <el-checkbox v-model="readChecked">
+          已阅读并同意<a
+            href="https://www.hichat.info/pub/userAgreement.html"
+            target="_blank"
+            >服务条款</a
+          >與<a
+            href="https://www.hichat.info/pub/privacyPolicy.html"
+            target="_blank"
+            >隐私权政策</a
+          ></el-checkbox
+        >
+      </div>
+      <div>
+        <el-button
+          style="width: 100%; margin-bottom: 30px"
+          @click="submitForm('loginForm')"
+          >登录</el-button
+        >
+      </div>
+      <div>
+        <router-link :to="'/Register'">
+          <el-button
+            style="
+              width: 100%;
+              background-color: #67c23a00;
+              border: 1px solid #fe5f3f;
+              color: #fe5f3f;
+            "
+            >注册</el-button
+          >
+        </router-link>
+      </div>
+      <!-- <el-dropdown>
+        <span class="el-dropdown-link">
+          選擇語言<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item data-lang="tw" @click.native="setLang">中文</el-dropdown-item>
+          <el-dropdown-item data-lang="en" @click.native="setLang">English</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown> -->
+    </el-form>
+    <el-dialog
+      :title="device === 'pc' ? '帐号已锁定' : ''"
+      :visible.sync="dialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <div style="margin-bottom: 10px"><span>帐号已锁定。</span></div>
+        <div><span>请至邮箱取得验证码以解锁帐号。</span></div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <router-link :to="'/ResetPassword'">
+          <el-button
+            :class="
+              device === 'moblie' ? 'background-orange' : 'background-red'
+            "
+            @click="dialogShow = false"
+            >确认</el-button
+          >
+        </router-link>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { login } from "_api/index.js";
-import { setToken, getToken, setLocal } from "_util/utils.js";
-import { register } from "@/api";
+
 export default {
   data() {
     return {
-      headerTitle: "聊天室登入系統",
-      registerTitle: "立即註冊",
-      showDialog: false,
       loginForm: {
-        username: "",
-        password: "",
-        verificationCode:"",
-      },
-      loginRules: {
-        username: [{ required: true, message: "請輸入帳號", trigger: "blur" }],
-        password: [
-          { required: true, message: "請輸入密碼", trigger: "blur" },
-          { min: 4, message: "最小4個字符以上", trigger: "blur" },
-        ],
-      },
-      registerForm: {
-        username: "",
-        password: "",
-        verificationCode:"",
-        countryCallingCode: "",
         email: "",
-        telephone: "",
+        password: "",
       },
-      token: getToken("token"),
-      device: "",
+      passwordType: "password",
+      remember: true,
+      disabled: true,
+      readChecked: false,
+      dialogShow: false,
+      token: localStorage.getItem("token"),
+      device: localStorage.getItem("device"),
     };
   },
-  created() {
-    if (
-      navigator.userAgent.match(/Android/i) ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match(/iPad/i) ||
-      navigator.userAgent.match(/iPod/i) ||
-      navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i)
-    ) {
-      this.device = "moblie";
-      console.log(this.device);
-    } else {
-      this.device = "pc";
-    }
+  watch: {
+    loginForm: {
+      handler(val) {
+        if (
+          Object.values(val).every((el) => el !== "") &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password)
+        ) {
+          this.disabled = false;
+        } else {
+          this.disabled = true;
+        }
+        this.remember ? localStorage.setItem("email", val.email) : "";
+      },
+      deep: true,
+    },
+    remember(val) {
+      !val
+        ? localStorage.removeItem("email")
+        : localStorage.setItem("email", this.loginForm.email);
+    },
   },
   mounted() {
-    localStorage.clear();
+    if (this.remember) {
+      this.loginForm.email =
+        localStorage.getItem("email") !== null
+          ? localStorage.getItem("email")
+          : "";
+    }
     this.getUUID();
   },
   methods: {
+    setActiveLanguage(lang) {
+      localStorage.setItem('language', lang)
+    },
+    setLang(evt) {
+      const lang = evt.target.dataset.lang
+      this.setActiveLanguage(lang)
+      return history.go(0)
+    },
+    showPwd() {
+      this.passwordType = this.passwordType === "password" ? "" : "password";
+      this.$nextTick(() => this.$refs.password.focus());
+    },
     getUUID() {
       let number = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
         /[xy]/g,
@@ -209,95 +269,54 @@ export default {
           return v.toString(16);
         }
       );
-      setLocal("UUID", "hiWeb" + number);
+      localStorage.setItem("UUID", "hiWeb" + number);
     },
-    //登入&&註冊
+    //登录&&註冊
     submitForm(rules) {
-      switch (rules) {
-        case "loginForm":
-          if (this.loginForm.username.trim() === "")
-            this.loginForm.username = "";
-          if (this.loginForm.password.trim() === "")
-            this.loginForm.password = "";
-          //驗證登入表單是否通過
-          this.$refs[rules].validate((valid) => {
-            if (!valid) {
-              this.$message({
-                message: "登入驗證失敗，請重新輸入並確認",
-                type: "error",
-              });
-              return;
-            }
-            login(this.loginForm)
-              .then((res) => {
-                //登入成功
-                if (res.code === 200) {
-                  setToken(res.data.tokenHead + res.data.token);
-                  this.$router.push({ path: "/Chat" });
-                } else {
-                  this.$message({
-                    message: "登入驗證失敗，請重新輸入並確認",
-                    type: "error",
-                  });
-                  return false;
-                }
-                //登入失敗
-              })
-              .catch((err) => {
-                this.$message({
-                  message: "登入驗證失敗，請重新輸入並確認",
-                  type: "error",
-                });
-                return false;
-              });
-          });
-          break;
-        case "registerForm":
-          if (this.registerForm.username.trim() === "")
-            this.registerForm.username = "";
-          if (this.registerForm.password.trim() === "")
-            this.registerForm.password = "";
-          //驗證註冊表單是否通過
-          this.$refs[rules].validate((valid) => {
-            if (!valid) {
-              this.$message({
-                message: "註冊失敗，請重新輸入並確認",
-                type: "error",
-              });
-              return;
-            }
-            register(this.registerForm)
-              .then((res) => {
-                //登入成功
-                if (res.code === 200) {
-                  setToken(res.data.tokenHead + res.data.token);
-                  this.$router.push({ path: "/Chat" });
-                } else if (res.code === 500) {
-                  this.$message({
-                    message: res.message,
-                    type: "error",
-                  });
-                  return false;
-                }
-              })
-              .catch((err) => {
-                this.$message({
-                  message: "註冊失敗，請重新輸入並確認",
-                  type: "error",
-                });
-                return false;
-              });
-          });
-          break;
-        default:
-          break;
+      if (!this.readChecked) {
+        this.$message({
+          message: "尚未勾選同意條款",
+          type: "warning",
+        });
+        return;
       }
-    },
-    //清空表格
-    resetRegisterForm() {
-      this.$nextTick(() => {
-        this.$refs["loginForm"].resetFields();
-        this.$refs["registerForm"].resetFields();
+      //驗證登录表單是否通過
+      this.$refs[rules].validate(() => {
+        if (this.disabled) {
+          this.$message({
+            message: "资料尚未输入完全或帳號密碼格式錯誤",
+            type: "error",
+          });
+          return;
+        }
+        this.loginForm.email = this.loginForm.email.trim();
+        login(this.loginForm)
+          .then((res) => {
+            //登录成功
+            if (res.code === 200) {
+              localStorage.setItem(
+                "token",
+                res.data.tokenHead + res.data.token
+              );
+              localStorage.setItem(
+                "id",
+                res.data.memberId
+              );
+              this.$router.push({ path: "/Home" });
+            } else if (res.code === 10009) {
+              //登录失敗
+              this.dialogShow = true;
+            }
+          })
+          .catch((err) => {
+            this.$message({
+              message: "登录验证失败，请重输入并确认",
+              type: "error",
+            });
+            localStorage.clear();
+            this.getUUID();
+            return false;
+          });
       });
     },
   },
@@ -307,90 +326,150 @@ export default {
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-$bg: #283443;
-$light_gray: #fff;
+$bg: #eaf5fa;
+$light_gray: #666666;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container-pc .el-input input,.login-container-moblie .el-input input {
+  .login-container-pc .el-input input,
+  .login-container-moblie .el-input input {
     color: $cursor;
   }
 }
 
 /* reset element-ui css */
-.login-container-pc, .login-container-moblie{
+.login-container-pc,
+.login-container-moblie {
   .el-input {
     display: inline-block;
     height: 47px;
     width: 85%;
-
     input {
       background: transparent;
       border: 0px;
       -webkit-appearance: none;
       border-radius: 0px;
-      padding: 12px 5px 12px 15px;
+      padding: 12px 5px 12px 10px;
       color: $light_gray;
       height: 47px;
-      caret-color: $cursor;
-
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        box-shadow: 0 0 0px 1000px $cursor inset !important;
       }
     }
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    background: #ffffff;
+    border-radius: 10px;
     color: #454545;
+    margin-bottom: 20px;
   }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #eaf5fa;
 $dark_gray: #889aa4;
 $light_gray: #eee;
-
-.login-container-pc {
-  min-height: 100%;
+.login-container-pc,
+.login-container-moblie {
   width: 100%;
+  height: 100%;
   background-color: $bg;
   overflow: hidden;
-
+  .title-container {
+    display: flex;
+    img {
+      height: 5em;
+      margin: 0px auto 40px auto;
+      text-align: center;
+    }
+  }
   .login-form {
     position: relative;
-    width: 520px;
+    width: 80vw;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 4em 0;
     margin: 0 auto;
     overflow: hidden;
-  }
-  /deep/.el-dialog__wrapper {
-    .el-input__inner {
-      color: #000000;
-      &:-webkit-autofill {
-        box-shadow: 0 0 1000px 0 #e8e2e2 inset !important;
-        -webkit-text-fill-color: #000000 !important;
+
+    .verification-style {
+      width: 6em;
+      height: 2.1em;
+      line-height: 2.1em;
+      font-size: 12px;
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      text-align: center;
+      border: 1px solid #fe5f3f;
+      color: #fe5f3f;
+      border-radius: 5px;
+    }
+    .show-pwd {
+      height: 2.1em;
+      line-height: 2.1em;
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      img {
+        height: 1.2em;
       }
     }
-  }
-
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
-
-    span {
-      &:first-of-type {
-        margin-right: 16px;
+    .eye-off {
+      img {
+        height: 1.5em;
       }
     }
-  }
+    .remember-style {
+      margin: 1em 0 2em 0;
+      display: flex;
+      justify-content: space-between;
+      /deep/.is-checked {
+        .is-active {
+          color: rgba(0, 0, 0, 0.8);
+        }
+      }
+      span {
+        font-size: 14px;
+        color: #fe5f3f;
+      }
+    }
+    .read-check-box {
+      margin-bottom: 3em;
+      /deep/.el-checkbox__input.is-checked + .el-checkbox__label {
+        color: rgba(0, 0, 0, 0.8);
+      }
+      /deep/.el-checkbox{
+        .el-checkbox__input{
+          .el-checkbox__inner{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            &:after{
+              border: 2px solid #FFFFFF;
+              border-left: 0;
+              border-top: 0;
+              height: 13px;
+              left: 7px;
+            }
+          }
+        }
+      }
 
+      .el-checkbox__label {
+        a {
+          color: #10686e;
+          text-decoration: none;
+        }
+      }
+    }
+    .el-button {
+      background-color: #fe5f3f;
+      color: #fff;
+      padding: 16px 20px;
+    }
+  }
   .svg-container {
     padding: 6px 0 6px 15px;
     color: $dark_gray;
@@ -398,63 +477,112 @@ $light_gray: #eee;
     width: 20px;
     font-size: 22px;
     display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+    img {
+      height: 17px;
     }
-
-    .set-language {
-      color: #fff;
-      position: absolute;
-      top: 3px;
-      font-size: 18px;
-      right: 0px;
+  }
+  /deep/.el-dialog-loginOut {
+    overflow: auto;
+    .el-dialog {
+      position: relative;
+      margin: 0 auto 50px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 10px;
+      }
+      .el-dialog__body {
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          a {
+            width: 100vw;
+          }
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .background-orange {
+            background-color: #fe5f3f;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
+        }
+      }
+    }
+  }
+}
+.login-container-pc {
+  display: flex;
+  align-items: center;
+  .login-form {
+    width: 370px;
+    .show-pwd {
       cursor: pointer;
     }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
-  }
-
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
+    .remember-style {
+      margin: 1em 0 2em 0;
+      display: flex;
+      justify-content: space-between;
+      /deep/.is-checked {
+        .is-active {
+          color: rgba(0, 0, 0, 0.8);
+        }
+      }
+      span {
+        font-size: 14px;
+        color: #fe5f3f;
+      }
+    }
+    .read-check-box {
+      margin-bottom: 3em;
     }
   }
-}
-.login-container-moblie{
-  min-height: 100%;
-  width: 100%;
-  background-color: $bg;
-  overflow: hidden;
-   .login-form {
-      position: relative;
-      width: 70vw;
-      max-width: 100%;
-      padding: 160px 35px 0;
-      margin: 0 auto;
-      overflow: hidden;
+  .title-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto 40px auto;
+    img {
+      margin: 0px auto;
     }
+    .header-title {
+      margin: 1em auto 0 auto;
+      font-size: 1.2em;
+      color: #474747;
+    }
+  }
+  .svg-container {
+    font-size: 14px;
+    width: 60px;
+    vertical-align: inherit;
+    color: #454545;
+  }
+  .el-input {
+     width:60%;
+  }
 }
 </style>
+

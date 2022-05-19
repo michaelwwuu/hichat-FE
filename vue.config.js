@@ -2,20 +2,18 @@ const path = require('path')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+
 module.exports = {
   publicPath: '',
   devServer: {
     open: true,
     https: false,
-    //以上的ip和埠號是我們本機的;下面為需要跨域的
+    // 以上的ip和埠号是我们本机的;下面为需要跨域的
     proxy: {    //配置跨域
       '/': {
-        target: 'http://10.99.114.10:8285', //這裡後台的地址模擬的，應該填寫真實的後台api
+        target: process.env.VUE_APP_URL, // 動態環境
         ws: false,     // 如果要代理 websockets
-        changOrigin: true,  //允許跨域
-        //  pathRewrite: {
-        //   '^/api': '' //請求的時候使用這個api就可以
-        //  }
+        changOrigin: true,  // 允许跨域
       },
     }
   },

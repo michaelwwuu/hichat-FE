@@ -1,71 +1,65 @@
 import Vue from "vue";
-import { getLocal,setLocal,getToken } from "_util/utils.js";
-const wsUrl = "ws://10.99.114.10:8299/im/echo";
+var wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
+// const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   data() {
     return {
-      roomKey: {
-        chatType: "CLI_AUTH",
-        id: Math.random(),
+      chatDataKey: {
+        chatType:"CLI_AUTH",
+        id:Math.random(),
+        deviceId: localStorage.getItem('UUID'),
+        token: localStorage.getItem('token'),
         tokenType: 0,
-        deviceId: getLocal('UUID'),
-        token: getToken('token'),
       },
     }
   },
   methods: {
-    // 初始化websocket 
+    send(message) {
+      if (socket.readyState === 1) socket.send(JSON.stringify(message));
+    },
+    onClose() {
+      let leaveChatKey = this.chatDataKey;
+      leaveChatKey.chatType = "CLI_LEAVE_ROOM";
+      leaveChatKey.id = Math.random();
+      socket.send(JSON.stringify(leaveChatKey));
+      socket.close();
+    },
+    // 初始化 websocket 
     connect() {
       socket = new WebSocket(wsUrl);
-      let joinRoom = this.roomKey;
-      socket.onopen = function () {
-        console.log("<--【开启连线】------初始建立连线-->");
-        socket.send(JSON.stringify(joinRoom));
-      };
-      socket.onmessage = function(msg) {
-        let msgData = JSON.parse(msg.data)
-        let chatType = msgData.chatType
+      let joinChatKey = this.chatDataKey
+      socket.onmessage = function (msg) {
+        let messageData = JSON.parse(msg.data)
+        let chatType = messageData.chatType
         switch (chatType) {
-          case "SRV_SUCCESS_MSG":
-            console.log("<--【连线成功】------Websocket 连线已建立-->");
-            break
+          // 连线成功
+          case "SRV_NEED_AUTH":
+            socket.send(JSON.stringify(joinChatKey));
+            break;
+          // 连线失敗
           case "SRV_ERROR_MSG":
-            console.log("<--【连线失敗】------请检察 Websocket onopen 参数是否正确-->");
-            break
-          case "SRV_RECENT_CHAT":
-            console.log("<--【连线成功】------加入群组聊天室------【toChatId：進入聊天室ID】-->");
-            let groupRoomMsg = {
-              chatType: "CLI_JOIN_ROOM",
-              id: Math.random(),
-              tokenType: 0,
-              deviceId: deviceId,
-              token: token,
-              toChatId: 'c1', //聊天室ID 暫時先寫死 可動態
-              fromChatId: msgData.toChatId, // 登录以后由 SRV_RECENT_CHAT 取得
+            // console.log(`<--【连线失敗】------訊息發送失敗${messageData.text}-->`);
+            if(messageData.text === "50002"){
+              joinChatKey.chatType = "CLI_AUTH";
+              joinChatKey.id = Math.random();
+              socket.send(JSON.stringify(joinChatKey));
             } 
-            setLocal('toChatId',groupRoomMsg.toChatId) 
-            socket.send(JSON.stringify(groupRoomMsg));
-            break;  
-          default:
             break;
         }
         emitter.$emit("message", msg.data);
       };
-      socket.onerror = function(err) {
+      socket.onerror = function (err) {
         emitter.$emit("error", err);
       };
+      socket.onclose = function (e) {
+        // console.log("<--【连线斷開】------自動重新連線-->",e);
+        joinChatKey.chatType = "CLI_AUTH";
+        joinChatKey.id = Math.random();
+        emitter.connect();
+      };
     },
-    send(message) {
-      if (1 === socket.readyState ) socket.send(JSON.stringify(message));
-    },
-    onclose(){
-      console.log("<--【中断连线】------使用者已离开聊天室-->");
-      this.roomKey.chatType = "CLI_LEAVE_ROOM"
-      let leaveRoom =this.roomKey
-      socket.send(JSON.stringify(leaveRoom));
-      socket.close()
-    }
   }
 });
+emitter.connect();
 export default emitter;

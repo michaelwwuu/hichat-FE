@@ -7,6 +7,17 @@ const rootMixins = {
   created() {
   },
   methods: {
+    //鎖定滾動
+    handleTouch (e) {
+      e._isScroller = true
+    },
+    // 置底
+    gotoBottom() {
+      const box = document.getElementsByClassName('message-pabel-box')[0]
+      this.$nextTick(() => {
+        box.scrollTop = box.scrollHeight
+      })
+    },
     // // 为了做验证的时分秒默认时间
     newDefaultEnd() {
       return this.$moment().endOf('day').format('YYYY-MM-DD 23:59:59')
@@ -21,7 +32,7 @@ const rootMixins = {
     },
     // 获取当前对应格式的时间
     newstartTime() {
-      return this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss')
+      return this.$moment().startOf('day').format('YYYY/MM/DD HH:mm:ss')
     },
     endTime(type) {
       type = type === 1 ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
@@ -46,7 +57,16 @@ const rootMixins = {
     },
     // 转换时间为YYY-MM-DD HH:mm-SS
     formatTimeS(time) {
-      return this.$moment(time).format('YYYY-MM-DD HH:mm:ss')
+      return this.$moment(time).format('YYYY/MM/DD HH:mm:ss')
+    },
+    formatTimeDay(time) {
+      return this.$moment(time).format('MM-DD')
+    },
+    formatTimeSecound(time) {
+      return this.$moment(time).format('HH:mm')
+    },
+    formatNowTime(time) {
+      return this.$moment.unix(time).format('YYYY-MM-DD HH:mm:ss')
     },
     formatTimeX(time) {
       return this.$moment(time).format('YYYY-MM-DD 00:00:00')
@@ -85,6 +105,7 @@ const rootMixins = {
       let str = Number(time) === 0 ? '-' : this.$moment.unix(time).format('YYYY-MM-DD HH:mm:ss')
       return str
     },
+   
     newUnixTime(time) {
       let str = Number(time) === 0 ? '-' : this.$moment.unix(time).format('YYYY-MM-DD HH:mm')
       return str
