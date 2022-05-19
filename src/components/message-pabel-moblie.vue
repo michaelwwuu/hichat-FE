@@ -1080,7 +1080,7 @@ export default {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin: 1em 0;
+  margin: 2em 0;
   span{
     background-color: rgba(0, 0, 0, 0.05);
     padding: 4px 15px;

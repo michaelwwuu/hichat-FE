@@ -290,7 +290,7 @@ export default {
       pinList({ toChatId }).then((res) => {
         if(res.code === 200){
           this.pinDataList = res.data
-          this.pinMsg = res.data[0].chat.text
+          if(this.pinDataList.length > 0) this.pinMsg = res.data[0].chat.text
           this.messageData.forEach((data)=>{
             this.pinDataList.forEach((list)=>{
               if(data.historyId === list.historyId){
@@ -315,6 +315,27 @@ export default {
     },
     // 訊息統一格式
     messageList(data) {
+      this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
+      this.groupListData.forEach((item) => {
+        if (data.chat.fromChatId === "u" + item.memberId) {
+          data.chat.icon = item.icon;
+          data.chat.name = item.name;
+          data.chat.username = item.username;
+        } else if (
+          data.chat.icon === undefined &&
+          data.chat.name === undefined
+        ) {
+          data.chat.icon = require("./../../../static/images/image_user_defult.png");
+          data.chat.name = "无此成员";
+        }
+        if (
+          data.replyChat !== null &&
+          data.replyChat.fromChatId === "u" + item.memberId
+        ) {
+          data.replyChat.icon = item.icon;
+          data.replyChat.nickName = item.name;
+        }
+      });
       this.chatRoomMsg = {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
@@ -332,6 +353,7 @@ export default {
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing:false
       };
+      
     },
     //判斷是否base64
     isBase64(data) {
@@ -376,7 +398,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-      this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
+      // this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         case "SRV_GROUP_IMAGE":
@@ -385,26 +407,26 @@ export default {
           if (this.groupUser.toChatId === userInfo.toChatId) {
             this.base64Msg = this.isBase64(userInfo.chat.text);
             userInfo.chat.newContent = this.base64Msg.split(" ");
-            this.groupListData.forEach((item) => {
-              if (userInfo.chat.fromChatId === "u" + item.memberId) {
-                userInfo.chat.icon = item.icon;
-                userInfo.chat.name = item.name;
-                userInfo.chat.username = item.username;
-              } else if (
-                userInfo.chat.icon === undefined &&
-                userInfo.chat.name === undefined
-              ) {
-                userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
-                userInfo.chat.name = "无此成员";
-              }
-              if (
-                userInfo.replyChat !== null &&
-                userInfo.replyChat.fromChatId === "u" + item.memberId
-              ) {
-                userInfo.replyChat.icon = item.icon;
-                userInfo.replyChat.nickName = item.name;
-              }
-            });
+            // this.groupListData.forEach((item) => {
+            //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
+            //     userInfo.chat.icon = item.icon;
+            //     userInfo.chat.name = item.name;
+            //     userInfo.chat.username = item.username;
+            //   } else if (
+            //     userInfo.chat.icon === undefined &&
+            //     userInfo.chat.name === undefined
+            //   ) {
+            //     userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
+            //     userInfo.chat.name = "无此成员";
+            //   }
+            //   if (
+            //     userInfo.replyChat !== null &&
+            //     userInfo.replyChat.fromChatId === "u" + item.memberId
+            //   ) {
+            //     userInfo.replyChat.icon = item.icon;
+            //     userInfo.replyChat.nickName = item.name;
+            //   }
+            // });
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             this.getHiChatDataList();
@@ -420,31 +442,32 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           let timeOut = historyMsgList.length * 40;
+
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
-                this.groupListData.forEach((item) => {
-                  if (el.chat.fromChatId === "u" + item.memberId) {
-                    el.chat.icon = item.icon;
-                    el.chat.name = item.name;
-                    el.chat.username = item.username;
-                  } else if (
-                    el.chat.icon === undefined &&
-                    el.chat.name === undefined
-                  ) {
-                    el.chat.icon = require("./../../../static/images/image_user_defult.png");
-                    el.chat.name = "无此成员";
-                  }
-                  if (
-                    el.replyChat !== null &&
-                    el.replyChat.fromChatId === "u" + item.memberId
-                  ) {
-                    el.replyChat.icon = item.icon;
-                    el.replyChat.nickName = item.name;
-                  }
-                });
+              //   this.groupListData.forEach((item) => {
+              //   if (el.chat.fromChatId === "u" + item.memberId) {
+              //     el.chat.icon = item.icon;
+              //     el.chat.name = item.name;
+              //     el.chat.username = item.username;
+              //   } else if (
+              //     el.chat.icon === undefined &&
+              //     el.chat.name === undefined
+              //   ) {
+              //     el.chat.icon = require("./../../../static/images/image_user_defult.png");
+              //     el.chat.name = "无此成员";
+              //   }
+              //   if (
+              //     el.replyChat !== null &&
+              //     el.replyChat.fromChatId === "u" + item.memberId
+              //   ) {
+              //     el.replyChat.icon = item.icon;
+              //     el.replyChat.nickName = item.name;
+              //   }
+              // });
                 this.messageList(el);
                 this.messageData.unshift(this.chatRoomMsg);
               });
@@ -453,8 +476,8 @@ export default {
               }
               this.loading = false;
               this.getHiChatDataList();
-              this.getPinList()
             }, timeOut);
+            this.getPinList()
           });
           break;
         // 已讀

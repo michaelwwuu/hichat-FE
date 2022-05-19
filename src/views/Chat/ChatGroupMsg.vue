@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-container>
+    <el-container v-show="topMsgShow">
       <el-main>
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
@@ -40,6 +40,14 @@
             </div>
           </template>
         </el-header>
+        <!-- 置頂訊息 -->
+        <div class="top-msg" v-if="pinMsg !==''">
+          <div class="top-msg-left">
+            <img src="./../../../static/images/pin.png" alt="">
+            <span>置顶消息 : {{pinMsg}}</span>
+          </div>
+          <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
+        </div>        
         <message-pabel
           v-loading="loading"
           element-loading-text="讯息加载中"
@@ -84,6 +92,40 @@
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
+    <el-container v-show="!topMsgShow">
+      <el-main style="overflow-y: auto; overflow-x: hidden">
+        <el-header height="70px">
+          <div class="home-header">
+            <span class="home-user-link">
+              <router-link :to="'/HiChat'">
+                <div class="home-user"></div>
+              </router-link>
+            </span>
+            <span class="home-header-title">置顶消息 : {{ pinMsg }}</span>
+            <!-- <div class="home-user-search"></div> -->
+            <!-- <span class="home-photo-link">
+              <router-link :to="'/GroupPage'">
+                <div class="home-user-photo">
+                  <img :src="noIconShow(groupData)" />
+                </div>
+              </router-link>
+            </span> -->
+          </div>
+        </el-header>
+        <message-pin
+          v-loading="loading"
+          element-loading-text="讯息加载中"
+          element-loading-background="rgba(255, 255, 255, 0.5)"
+          :messageData="messageData"
+          :userInfoData="userInfoData"
+          @resetPinMsg="resetPinMsg"
+        />
+        
+        <div class="top-msg-bottom" @click="untopMsgAction">
+          <span>取消所有置顶讯息</span>
+        </div>
+      </el-main>
+    </el-container>    
     <audio
       id="notify-receive-audio"
       muted="muted"
@@ -94,12 +136,13 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { groupListMember } from "@/api";
+import { groupListMember,pinList } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
+import MessagePin from "@/components/message-group-pin";
 
 export default {
   name: "ChatGroupMsg",
@@ -112,6 +155,7 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
+      pinMsg:"",
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -127,6 +171,7 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
+    this.getPinList()
   },
   mounted() {
     this.getChatHistoryMessage();
@@ -140,6 +185,7 @@ export default {
       wsRes: (state) => state.ws.wsRes,
       groupUser: (state) => state.ws.groupUser,
       replyMsg: (state) => state.ws.replyMsg,
+      topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -149,8 +195,18 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
+      setTopMsgShow:"ws/setTopMsgShow",
       setContactListData: "ws/setContactListData",
     }),
+    resetPinMsg(){
+     this.getPinList()
+    },    
+    goTopMsgShow(){
+      this.setTopMsgShow(false)
+    }, 
+    untopMsgAction(){
+
+    },       
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -175,6 +231,22 @@ export default {
       });
       this.setEditMsg({ innerText: "" });
     },
+    getPinList() {
+      let toChatId = this.groupData.toChatId;
+      pinList({ toChatId }).then((res) => {
+        if(res.code === 200){
+          this.pinDataList = res.data
+          if(this.pinDataList.length > 0) this.pinMsg = res.data[0].chat.text
+          this.messageData.forEach((data)=>{
+            this.pinDataList.forEach((list)=>{
+              if(data.historyId === list.historyId){
+                data.isPing = true
+              }
+            })
+          })
+        }
+      });
+    },    
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
@@ -204,6 +276,7 @@ export default {
         username: data.chat.username,
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
+        isPing:false,
       };
     },
     //判斷是否base64
@@ -341,6 +414,8 @@ export default {
               this.loading = false;
               if (this.device === "pc") this.getHiChatDataList();
             }, timeOut);
+            this.getPinList()
+
           });
           break;
         // 已讀
@@ -388,6 +463,7 @@ export default {
   components: {
     MessagePabel,
     MessageInput,
+    MessagePin
   },
 };
 </script>
@@ -672,6 +748,17 @@ export default {
   align-items: center;
   padding: 0 10px;
 }
+.top-msg-bottom {
+  height: 59px;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  color: #959393;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+}
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
@@ -716,5 +803,23 @@ export default {
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
+}
+.top-msg {
+  background-color: #ffffff;
+  padding: 16px 35px 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .top-msg-left{
+    display: flex;
+    align-items: center;
+    img {
+      height: 1.5em;
+    }
+  }
+  .top-msg-right{
+    height: 1.2em;
+    cursor: pointer;
+  }
 }
 </style>
