@@ -1,15 +1,30 @@
 import Vue from "vue";
-const wsUrl = "ws://10.99.114.10:8299/im/echo";//模擬環境
-// const wsUrl = "wss://pre.hichat.tools/ws/im/echo";//pre 環境
-// const wsUrl = "ws://test.hichat.tools/ws/im/echo";//pre 環境
+const wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
+
+// const wsUrl = 'ws://test.hichat.tools/ws/im/echo';//動態環境
 var socket = new WebSocket(wsUrl);
 
 const emitter = new Vue({
+<<<<<<< HEAD
+=======
+  data() {
+    return {
+      chatDataKey: {
+        chatType:"CLI_AUTH",
+        id:Math.random(),
+        deviceId: localStorage.getItem('UUID'),
+        token: localStorage.getItem('token'),
+        tokenType: 0,
+      },
+    }
+  },
+>>>>>>> feat/hichat-web
   methods: {
     send(message) {
-      if (socket.readyState === 1)socket.send(JSON.stringify(message));
+      if (socket.readyState === 1) socket.send(JSON.stringify(message));
     },
     onClose() {
+<<<<<<< HEAD
       let leaveChat = {
         chatType:"CLI_LEAVE_ROOM",
         id:Math.random(),
@@ -19,11 +34,18 @@ const emitter = new Vue({
         platformCode: "dcw",
       }
       socket.send(JSON.stringify(leaveChat));
+=======
+      let leaveChatKey = this.chatDataKey;
+      leaveChatKey.chatType = "CLI_LEAVE_ROOM";
+      leaveChatKey.id = Math.random();
+      socket.send(JSON.stringify(leaveChatKey));
+>>>>>>> feat/hichat-web
       socket.close();
     },
     // 初始化 websocket 
     connect() {
       socket = new WebSocket(wsUrl);
+<<<<<<< HEAD
       let chatDataKey = {
         chatType:"CLI_AUTH",
         id:Math.random(),
@@ -32,35 +54,26 @@ const emitter = new Vue({
         tokenType: 1,
         platformCode: "dcw",
       }
+=======
+      let joinChatKey = this.chatDataKey
+>>>>>>> feat/hichat-web
       socket.onmessage = function (msg) {
         let messageData = JSON.parse(msg.data)
         let chatType = messageData.chatType
         switch (chatType) {
           // 连线成功
-          case "SRV_SUCCESS_MSG":
-            socket.send(JSON.stringify(chatDataKey));
+          case "SRV_NEED_AUTH":
+            socket.send(JSON.stringify(joinChatKey));
             break;
           // 连线失敗
           case "SRV_ERROR_MSG":
             console.log(`<--【连线失敗】------訊息發送失敗${messageData.text}-->`);
-            if(messageData.text === "NEED_AUTH"){
-              chatDataKey.chatType = "CLI_AUTH";
-              chatDataKey.id = Math.random();
-              socket.send(JSON.stringify(chatDataKey));
+            if(messageData.text === "50002"){
+              joinChatKey.chatType = "CLI_AUTH";
+              joinChatKey.id = Math.random();
+              socket.send(JSON.stringify(joinChatKey));
             } 
             break;
-          // 验证身份返回
-          case "SRV_RECENT_CHAT":
-            chatDataKey.chatType = "CLI_JOIN_ROOM";
-            chatDataKey.id = Math.random();
-            chatDataKey.toChatId = localStorage.getItem('chatRoomId');
-            socket.send(JSON.stringify(chatDataKey));
-            break;
-          // 加入房间  
-          case "SRV_JOIN_ROOM":
-            let heartBeat ={ chatType: "CLI_HEARTBEAT"}
-            setInterval(()=> socket.send(JSON.stringify(heartBeat)),25000)
-            break
         }
         emitter.$emit("message", msg.data);
       };
@@ -68,9 +81,9 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        console.log("<--【连线斷開】------自動重新連線-->");
-        chatDataKey.chatType = "CLI_AUTH";
-        chatDataKey.id = Math.random();
+        console.log("<--【连线斷開】------自動重新連線-->",e);
+        joinChatKey.chatType = "CLI_AUTH";
+        joinChatKey.id = Math.random();
         emitter.connect();
       };
     },

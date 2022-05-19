@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "serve:test": "vue-cli-service serve --mode test",
+    "serve:pre": "vue-cli-service serve --mode pre",
+    "build": "vue-cli-service build",
+    "build:test": "vue-cli-service build --mode test",
+    "build:pre": "vue-cli-service build --mode pre"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -13,6 +17,8 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.0",
+    "js-audio-recorder": "^1.0.7",
+    "jsqr": "^1.4.0",
     "moment": "^2.29.1",
     "qs": "^6.9.6",
     "querystring": "^0.2.0",
@@ -20,12 +26,18 @@
     "socket.io-client": "^4.2.0",
     "view-design": "^4.4.0",
     "vue": "^2.6.11",
+<<<<<<< HEAD
     "vue-cryptojs": "^2.1.6",
+=======
+    "vue-audio-recorder": "^3.0.1",
+>>>>>>> feat/hichat-web
     "vue-emoji-picker": "^1.0.3",
     "vue-linkify": "^1.0.1",
+    "vue-qr": "^3.2.2",
     "vue-router": "^3.2.0",
     "vue-socket.io": "^3.0.10",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "webrtc-adapter": "^8.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -1,12 +1,39 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div id="app" :class="[
+      { 'hichat-pc': device === 'pc' },
+      { 'hichat-moblie': device === 'moblie' },
+    ]">
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>	
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>	
   </div>
 </template>
 
 <script>
 export default {
   name: "App",
+  created() {
+    if (
+      navigator.userAgent.match(/Android/i) ||
+      navigator.userAgent.match(/webOS/i) ||
+      navigator.userAgent.match(/iPhone/i) ||
+      navigator.userAgent.match(/iPad/i) ||
+      navigator.userAgent.match(/iPod/i) ||
+      navigator.userAgent.match(/BlackBerry/i) ||
+      navigator.userAgent.match(/Windows Phone/i)
+    ) {
+      this.device = "moblie";
+    } else {
+      this.device = "pc";
+      this.$confirm('PC 版本開發中', '提示', {
+        showConfirmButton:false,
+        showCancelButton:false,
+        type: 'warning',
+        center: true
+      })
+    }
+  },
 };
 </script>
 
@@ -35,4 +62,5 @@ export default {
     }
   }
 }
+
 </style>

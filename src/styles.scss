@@ -5,3 +5,390 @@ $--color-primary: #0275d8;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "~element-ui/packages/theme-chalk/src/index";
+
+
+.hichat-moblie{
+  overflow: hidden;
+  position: static;
+  background-color: #eaf5fa;
+  .home-wrapper {
+    min-height: 100%;
+    width: 100%;
+    .home-header {
+      margin: 1em;
+      display: flex;
+      align-items: center;
+      .home-user {
+        width: 2em;
+        height: 2em;
+        border-radius: 10px;
+        background-size: 50%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .home-header-title {
+        margin: 0 auto;
+        color: #10686e;
+        font-weight: 600;
+      }
+      .home-add-user {
+        width: 2em;
+        height: 2em;
+        border-radius: 10px;
+        background-size: 50%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+    .home-search {
+      margin: 1em;
+      .el-input {
+        .el-input__inner {
+          background-color: #e9e8e8;
+          color: #666666;
+        }
+        .el-input__prefix {
+          color: #666666;
+        }
+        ::placeholder {
+          /* CSS 3 標準 */
+          color: #666666;
+        }
+      }
+    }
+    .home-content{
+      overflow-x: hidden;
+      flex: 1;
+      overflow-y: auto;
+      .user-data{
+        margin: 1.5em auto 2.5em auto;
+        text-align: center;
+      }
+      .group-data{
+        margin: 1.5em auto 0 auto;
+        span {
+          display: block;
+          text-align: center;
+          height: 3.5em;
+        }
+        .photo-edit {
+          height: 1.5em !important;
+          color: #fe5f3f;
+        }
+      }
+    }
+    //訊息內容
+    .address-box {
+      background-color: #ffffff;
+      padding: 0.8em 1em;
+      display: flex;
+      align-items: center;
+    }
+
+    .home-footer-nav {
+      background-color: rgba(255, 255, 255, 0.85);
+      border-top: 1px solid #dddddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+      .footer-nav-btn {
+        text-align: center;
+        font-size: 12px;
+        margin: 0 auto;
+        a {
+          text-decoration: none;
+          color: #999999;
+        }
+        span {
+          display: block;
+        }
+        img {
+          margin-bottom: 5px;
+          height: 2.2em;
+        }
+        .router-link-exact-active {
+          color: #fe5f3f;
+        }
+      }
+    }
+
+    .home-footer-btn {
+      margin: 1em 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #eaf5fa;
+      .el-button {
+        width: 93%;
+      }
+      .gray-btn {
+        background-color: #b3b3b3;
+        color: #fff;
+      }
+      .red-btn {
+        background-color: #ee5253;
+        color: #fff;
+      }
+      .orange-btn{
+        background-color: #fe5f3f;
+        color: #fff;
+      }
+    }
+
+    .el-tabs{
+      width: 100vw;
+      background-color: #eaf5fa;
+      z-index: 8;
+      .el-tabs__header{
+        position: fixed;
+        width: 100vw;
+        z-index: 9;
+        background-color: #e2e0e0;
+        display: flex;
+        justify-content: space-evenly;
+        margin: 0;
+        .el-tabs__nav-wrap {
+          &:after {
+            content: "";
+            display: none;
+          }
+          .el-tabs__active-bar {
+            display: none;
+          }
+          .el-tabs__item.is-active {
+            color: #303133;
+          }
+          .el-tabs__nav {
+            width: 100vw;
+            display: flex;
+            justify-content: space-around;
+            .el-tabs__item {
+              font-size: 15px;
+              padding: 0 10vw
+            }
+          }
+        }
+      }
+      .el-tabs__content{
+        position: relative;
+        top: 2.4em;
+        overflow-y:scroll;
+        -webkit-overflow-scrolling:touch;
+        z-index: 5;
+      }
+    }  
+    .el-container {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow:hidden;
+      .el-aside,
+      .el-main {
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        /deep/.el-row {
+          float: right;
+          .el-button {
+            background-image: linear-gradient(#579fff, #3481e8);
+            color: #ffffff;
+          }
+          .el-checkbox__inner {
+            border-radius: 0;
+            border: 1px solid #dcdfe6;
+            &::after {
+              border: 1px solid #4fba00;
+              border-left: 0;
+              border-top: 0;
+            }
+          }
+          .el-checkbox__input.is-checked .el-checkbox__inner {
+            background-color: #ffffff;
+          }
+          .el-checkbox__label {
+            color: #fff;
+          }
+        }
+      }
+      .el-aside {
+        border-radius: 6px 0px 6px 6px;
+      }
+      .el-main {
+        border-radius: 0px 6px 6px 6px;
+      }
+      .el-aside {
+        background: rgba(235, 233, 232, 0.8);
+      }
+      .el-main {
+        padding: 0;
+      }
+      .el-header {
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        border-right: none;     
+        img {
+          position: relative;
+          top: 7px;
+        }
+        .online-img {
+          position: relative;
+          top: 9px;
+        }
+        .title,
+        .icon-message {
+          color: #ffffff;
+        }
+        .icon-message {
+          font-size: 20px;
+          vertical-align: middle;
+        }
+        .title {
+          display: inline-block;
+          margin-left: 5px;
+          font-size: 16px;
+          letter-spacing: 1px;
+        }
+      }
+      .contact-box{
+        background-color: #FFFFFF;
+        width: 100vw;
+        ul{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #fff;
+          height: 3em;
+          width: 55vw;
+          margin: 0 auto; 
+          font-weight: 550;
+          li{
+            &:nth-child(1){
+              color:#ee5253;
+            }
+            &:nth-child(2){
+              color:#363636
+            }
+          }
+        }
+      }
+    }
+  }
+  .el-checkbox__input.is-checked{
+    .el-checkbox__inner{
+      background-color: #fe5f3f;
+      border-color: #fe5f3f;
+    }
+  }
+  .el-radio__input.is-checked{
+    .el-radio__inner{
+      background-color: #fe5f3f;
+      border-color: #fe5f3f;
+      &::after{
+        content: '';
+        width:8px;
+        height: 3px;
+        border: 2px solid white;
+        border-top: transparent;
+        border-right: transparent;
+        text-align: center;
+        display: block;
+        position: absolute;
+        top: 2px;
+        left: 1px;
+        transform: rotate(-45deg);
+        border-radius: 0px;
+        background: none;
+      }
+    }
+  }
+  .el-radio__inner:hover{
+    border: 1px solid #DCDFE6;
+  }
+  .el-dialog__wrapper {
+    overflow: hidden;
+    .el-dialog {
+      margin: 0 auto;
+      border-radius: 20px 20px 0 0;
+      position: absolute;
+      bottom: 0;
+      .el-dialog__header {
+        .el-dialog__title {
+          color: #10686e;
+          font-weight: 600;
+        }
+        .el-dialog__headerbtn {
+          position: inherit;
+          float: left;
+          .el-dialog__close {
+            color: #f60;
+          }
+        }
+      }
+      .el-dialog__body {
+        text-align: center;
+        .qrcode-box {
+          width: 15em;
+          height: 15em;
+          border: 2px solid #333;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          img {
+            height: 14em;
+          }
+        }
+        .qrcode-box-text {
+          color: #0c0d0d;
+          font-weight: 600;
+          margin-top: 2em;
+          display: block;
+        }
+        .upload-demo {
+          line-height: 1.5em;
+          .el-upload-list {
+            .el-upload-list__item {
+              margin-top: -72px;
+            }
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px 30px 20px 30px;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          .el-button{
+            width: 90%;
+          }
+          img {
+            height: 1em;
+          }
+        }
+      }
+    }
+  }
+  .el-image{
+    width: 3em;
+    height: 48px;
+    border-radius: 10px;
+    .el-image__inner{
+      height: auto;
+      border-radius: 10px;
+    }
+    .el-image__error{
+      height: 48px;
+      font-size: 10px;
+    }
+  }
+  .el-button{
+    border-radius: 10px;
+  }
+}
+.hichat-pc{
+  display: none;
+}
