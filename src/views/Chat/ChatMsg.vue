@@ -143,10 +143,10 @@
           </ul>
         </div>
         <!-- 置頂訊息 -->
-        <div class="top-msg">
+        <div class="top-msg" v-if="pinMsg !==''">
           <div class="top-msg-left">
             <img src="./../../../static/images/pin.png" alt="">
-            <span>訊息內容</span>
+            <span>置顶消息 : {{pinMsg}}</span>
           </div>
           <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
         </div>
@@ -199,6 +199,131 @@
           :userData="chatUser"
           v-else
         />
+      </el-main>
+    </el-container>
+    <el-container v-show="!topMsgShow">
+      <el-main style="overflow-y: auto; overflow-x: hidden">
+        <el-header
+          :height="device === 'moblie' ? '55px' : '70px'"
+          :class="{ 'PC-header': device === 'pc' }"
+        >
+          <template v-if="device === 'moblie'">
+            <div class="home-header">
+              <span
+                class="home-user-link"
+                :style="!chatUser.isContact ? 'position:none;' : ''"
+              >
+                <div class="home-user" @click="setTopMsgShow(true)"></div>
+              </span>
+              <span class="home-header-title">置顶消息 : {{ pinMsg }}</span>
+              <div v-if="chatUser.isContact" class="home-user-search" style="right: 0;"></div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="home-header-pc">
+              <span
+                class="home-photo-link"
+                @click="setTopMsgShow(true)"
+              >
+                <span style="padding-right: 10px" 
+                  ><img
+                    src="./../../../static/images/pc/arrow-left.png"
+                    alt=""
+                /></span>
+                <span>置顶消息 : {{ pinMsg }}</span>
+              </span>
+              <template v-if="chatUser.isContact">
+                <div
+                  class="home-user-search"
+                  :style="
+                    chatUser.forChatId === chatUser.toChatId
+                      ? 'right: 30px'
+                      : ''
+                  "
+                ></div>
+                <el-dropdown
+                  trigger="click"
+                  v-if="chatUser.forChatId !== chatUser.toChatId"
+                >
+                  <div class="el-dropdown-link">
+                    <div class="home-user-more"></div>
+                  </div>
+                  <el-dropdown-menu slot="dropdown" class="chat-more">
+                    <el-dropdown-item>
+                      <div class="logout-btn">
+                        <img
+                          src="./../../../static/images/pc/bell-off.png"
+                          alt=""
+                        />
+                        <span>關閉通知</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div class="logout-btn" @click="isBlockDialogShow = true">
+                        <img
+                          src="./../../../static/images/pc/slash.png"
+                          alt=""
+                        />
+                        <span>{{
+                          chatUser.isBlock ? "解除封锁" : "封锁联络人"
+                        }}</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div
+                        class="logout-btn"
+                        @click="isDeleteContactDialogShow = true"
+                      >
+                        <img
+                          src="./../../../static/images/pc/trash.png"
+                          alt=""
+                        />
+                        <span style="color: #ee5253">删除联络人</span>
+                      </div>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <template v-else>
+                <div class="contact-box">
+                  <ul>
+                    <li @click="deleteDialogShow = true">
+                      <img
+                        src="./.../../../../../static/images/pc/trash.png"
+                        alt=""
+                      />删除
+                    </li>
+                    <li @click="isBlockDialogShow = true">
+                      <img
+                        src="./.../../../../../static/images/pc/slash-red.png"
+                        alt=""
+                      />
+                      {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
+                    </li>
+                    <li @click="addUser(chatUser)">
+                      <img
+                        src="./.../../../../../static/images/pc/user-plus-block.png"
+                        alt=""
+                      />加入联络人
+                    </li>
+                  </ul>
+                </div>
+              </template>
+            </div>
+          </template>
+       </el-header>
+       <message-pin
+          v-loading="loading"
+          element-loading-text="讯息加载中"
+          element-loading-background="rgba(255, 255, 255, 0.5)"
+          :messageData="messageData"
+          :userInfoData="userInfoData"
+          @resetPinMsg="resetPinMsg"
+        />
+        
+        <div class="top-msg-bottom" @click="untopMsgAction">
+          <span>取消所有置顶讯息</span>
+        </div>
       </el-main>
     </el-container>
     <el-dialog
@@ -318,12 +443,14 @@ import {
   deleteRecentChat,
   deleteContactUser,
   getSearchById,
+  pinList,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
+import MessagePin from "@/components/message-pin";
 export default {
   name: "ChatMsg",
   data() {
@@ -337,6 +464,8 @@ export default {
       },
       userData: {},
       readMsgData: [],
+      pinDataList:[],
+      pinMsg:"",
       loading: false,
       deleteDialogShow: false,
       successDialogShow: false,
@@ -353,10 +482,11 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     if (this.userData !== null) {
       this.setChatUser(this.userData);
-      this.getChatHistoryMessage();
+      if(this.device === "moblie") this.getChatHistoryMessage();
     }
     if(this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
+    this.getPinList()
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -386,6 +516,28 @@ export default {
     goTopMsgShow(){
       this.setTopMsgShow(false)
     },
+    untopMsgAction(){
+
+    },
+    resetPinMsg(){
+     this.getPinList()
+    },
+    getPinList() {
+      let toChatId = this.chatUser.toChatId;
+      pinList({ toChatId }).then((res) => {
+        if(res.code === 200){
+          this.pinDataList = res.data
+          this.pinMsg = res.data[0].chat.text
+          this.messageData.forEach((data)=>{
+            this.pinDataList.forEach((list)=>{
+              if(data.historyId === list.historyId){
+                data.isPing = true
+              }
+            })
+          })
+        }
+      });
+    },    
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -401,7 +553,6 @@ export default {
         } else {
           this.userData.username = res.data.username;
         }
-        console.log(this.userData)
         this.setChatUser(this.userData);
       });
     },
@@ -439,6 +590,7 @@ export default {
         name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
+        isPing:false,
       };
     },
     //判斷是否base64
@@ -473,22 +625,6 @@ export default {
         infoMsgShow: true,
         infoMsgNav: "ContactPage",
         infoMsgChat: true,
-      });
-    },
-    getUserId(data) {
-      let id = this.chatUser.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        if (res.data.id === this.myUserInfo.id) {
-          this.chatUser.name = "Hichat 记事本";
-          this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
-        } else {
-          this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-          this.chatUser.username = res.data.username;
-          this.chatUser.name = res.data.name;
-          this.chatUser.isBlock = res.data.isBlock;
-          this.chatUser.isContact = res.data.isContact;
-        }
-        this.setChatUser(this.chatUser);
       });
     },
     // 已讀
@@ -565,6 +701,8 @@ export default {
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
+          this.pinMsg = ""
+          this.getPinList()
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -599,7 +737,7 @@ export default {
                 }
                 if (el.toChatId === this.chatUser.toChatId) {
                   this.messageList(el);
-                  this.messageData.unshift(this.chatRoomMsg);
+                  this.messageData.unshift(this.chatRoomMsg);               
                 }
               });
               this.readMsg = historyMsgList.filter((el) => {
@@ -608,6 +746,7 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)
                 this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
+              this.getPinList()
               this.loading = false;
             }, timeOut);
           });
@@ -759,6 +898,7 @@ export default {
   components: {
     MessagePabel,
     MessageInput,
+    MessagePin,
   },
 };
 </script>
@@ -1061,12 +1201,23 @@ export default {
   align-items: center;
   padding: 0 10px;
 }
+.top-msg-bottom {
+  height: 59px;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  color: #959393;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+}
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
-  color: #959393;
+  color: rgba(0, 0, 0, 0.4);
   // justify-content: center;
   align-items: center;
   padding: 10px;
@@ -1177,6 +1328,5 @@ export default {
     height: 1.2em;
     cursor: pointer;
   }
-  
 }
 </style>

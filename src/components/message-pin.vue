@@ -2,9 +2,6 @@
   <div
     class="message-pabel-box"
     @touchmove="$root.handleTouch"
-    draggable="true"
-    @dragenter="drop"
-    @dragend="dragend"
   >
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
@@ -16,160 +13,145 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <template v-if="el.chatType !== 'SRV_CHAT_PIN'">
-            <p
-              :class="[
-                {
-                  'reply-aduio':
-                    device === 'moblie' &&
-                    el.isRplay !== null &&
-                    el.isRplay.chatType === 'SRV_USER_AUDIO',
-                },
-                {
-                  reply: el.isRplay !== null,
-                },
-              ]"
-              :id="el.historyId"
+          <p
+            :class="[
+              {
+                'reply-aduio':
+                  device === 'moblie' &&
+                  el.isRplay !== null &&
+                  el.isRplay.chatType === 'SRV_USER_AUDIO',
+              },
+              {
+                reply: el.isRplay !== null,
+              },
+            ]"
+            :id="el.historyId"
+            v-if="el.chatType === 'SRV_CHAT_PIN'"
+          >
+            <span
+              class="message-classic"
+              v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             >
-              <span
-                class="message-classic"
-                v-if="el.chatType === 'SRV_USER_SEND'"
-                @contextmenu.prevent.stop="onContextmenu(el)"
-                @dblclick="dblclick(el)"
-              >
-                <template v-if="el.isRplay !== null">
-                  <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">
-                    <div class="reply-img">
-                      <img :src="noIconShow(el.isRplay)" alt="" />
+              <!-- <template v-if="el.isRplay !== null">
+                <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">
+                  <div class="reply-img">
+                    <img :src="noIconShow(el.isRplay)" alt="" />
+                  </div>
+                  <div class="reply-msg">
+                    <div style="color: rgba(0, 0, 0, 0.4)">
+                      {{ el.isRplay.nickName }}
                     </div>
-                    <div class="reply-msg">
-                      <div style="color: rgba(0, 0, 0, 0.4)">
-                        {{ el.isRplay.nickName }}
-                      </div>
-                      <div>
-                        <div class="goAnchor-box">
-                          <span
-                            v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
-                            class="goAnchor"
-                            >{{ isBase64(el.isRplay.text) }}</span
-                          >
-                          <img
-                            v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
-                            :src="isBase64(el.isRplay.text)"
-                            style="border-radius: 5px"
-                          />
-                          <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
-                            <div class="reply-audio-box"></div>
-                            <mini-audio
-                              :audio-source="isBase64(el.isRplay.text)"
-                            ></mini-audio>
-                          </span>
-                        </div>
+                    <div>
+                      <div class="goAnchor-box">
+                        <span
+                          v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+                          class="goAnchor"
+                          >{{ isBase64(el.isRplay.text) }}</span
+                        >
+                        <img
+                          v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
+                          :src="isBase64(el.isRplay.text)"
+                          style="border-radius: 5px"
+                        />
+                        <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                          <div class="reply-audio-box"></div>
+                          <mini-audio
+                            :audio-source="isBase64(el.isRplay.text)"
+                          ></mini-audio>
+                        </span>
                       </div>
                     </div>
                   </div>
-                </template>
+                </div>
+              </template> -->
+              <div
+                :class="{
+                  'reply-content': el.isRplay !== null,
+                }"
+              >
+                <span
+                  v-if="
+                    el.isRplay.text.match(
+                      /(http|https):\/\/([\w.]+\/?)\S*/gi
+                    ) === null
+                  "
+                  @click.prevent.stop="
+                    device === 'moblie' ? onContextmenu(el) : false
+                  "
+                  v-html="el.isRplay.text"
+                ></span>
                 <div
-                  :class="{
-                    'reply-content': el.isRplay !== null,
-                  }"
+                  v-else-if="
+                    el.isRplay.text.match(
+                      /(http|https):\/\/([\w.]+\/?)\S*/gi
+                    )
+                  "
                 >
-                  <span
-                    v-if="
-                      el.message.content.match(
-                        /(http|https):\/\/([\w.]+\/?)\S*/gi
-                      ) === null
-                    "
+                  <div
+                    v-if="device === 'moblie'"
+                    class="images-more-btn"
+                    style="top: 5px"
                     @click.prevent.stop="
                       device === 'moblie' ? onContextmenu(el) : false
                     "
-                    v-html="el.message.content"
-                  ></span>
-                  <div
-                    v-else-if="
-                      el.message.content.match(
-                        /(http|https):\/\/([\w.]+\/?)\S*/gi
-                      )
-                    "
                   >
-                    <div
-                      v-if="device === 'moblie'"
-                      class="images-more-btn"
-                      style="top: 5px"
-                      @click.prevent.stop="
-                        device === 'moblie' ? onContextmenu(el) : false
-                      "
-                    >
-                      <i class="el-icon-more"></i>
-                    </div>
-                    <div
-                      v-html="el.message.content"
-                      v-linkified
-                      :class="device === 'moblie' ? 'link-style' : ''"
-                    ></div>
+                    <i class="el-icon-more"></i>
                   </div>
-                  <span v-else v-html="el.message.content"></span>
+                  <div
+                    v-html="el.isRplay.text"
+                    v-linkified
+                    :class="device === 'moblie' ? 'link-style' : ''"
+                  ></div>
                 </div>
-              </span>
-              <span
-                class="message-mini-audio"
-                v-else-if="el.chatType === 'SRV_USER_AUDIO'"
-                @contextmenu.prevent.stop="onContextmenu(el)"
-                @dblclick="dblclick(el)"
+                <span v-else v-html="el.isRplay.text"></span>
+              </div>
+            </span>
+            <span
+              class="message-mini-audio"
+              v-else-if="el.isRplay.chatType === 'SRV_USER_AUDIO'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)"
+            >
+              <div
+                v-if="device === 'moblie'"
+                class="images-more-btn"
+                @click.prevent.stop="
+                  device === 'moblie' ? onContextmenu(el) : false
+                "
               >
-                <div
-                  v-if="device === 'moblie'"
-                  class="images-more-btn"
-                  @click.prevent.stop="
-                    device === 'moblie' ? onContextmenu(el) : false
-                  "
-                >
-                  <i class="el-icon-more"></i>
-                </div>
-                <mini-audio
-                  class="message-audio"
-                  :audio-source="el.message.content"
-                ></mini-audio>
-              </span>
-              <span
-                class="message-image"
-                v-else-if="el.chatType === 'SRV_USER_IMAGE'"
-                @contextmenu.prevent.stop="onContextmenu(el)"
-                @dblclick="dblclick(el)"
+                <i class="el-icon-more"></i>
+              </div>
+              <mini-audio
+                class="message-audio"
+                :audio-source="el.isRplay.text"
+              ></mini-audio>
+            </span>
+            <span
+              class="message-image"
+              v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)"
+            >
+              <div
+                v-if="device === 'moblie'"
+                class="images-more-btn"
+                @click.prevent.stop="
+                  device === 'moblie' ? onContextmenu(el) : false
+                "
               >
-                <div
-                  v-if="device === 'moblie'"
-                  class="images-more-btn"
-                  @click.prevent.stop="
-                    device === 'moblie' ? onContextmenu(el) : false
-                  "
-                >
-                  <i class="el-icon-more"></i>
-                </div>
-                <el-image
-                  :src="el.message.content"
-                  :preview-src-list="[el.message.content]"
-                />
-              </span>
-              <span class="nickname-time">{{
-                $root.formatTimeSecound(el.message.time)
-              }}</span>
-            </p>
-            <div class="read-check-box">
-              <span class="read-check" v-if="el.isRead"
-                ><img src="./../../static/images/check.png" alt=""
-              /></span>
-              <span class="read-check2"
-                ><img src="./../../static/images/check.png" alt=""
-              /></span>
-            </div>
-          </template>
-          
-          <template v-else>
-            <div class="top-msg-style"> 
-              <span>{{el.message.content}}置顶了消息</span>
-            </div>
-          </template>
+                <i class="el-icon-more"></i>
+              </div>
+              <el-image
+                :src="el.isRplay.text"
+                :preview-src-list="[el.isRplay.text]"
+              />
+            </span>
+            <span class="nickname-time">{{
+              $root.formatTimeSecound(el.message.time)
+            }}</span>
+          </p>
         </li>
       </div>
     </ul>
@@ -181,47 +163,13 @@
       circle
       @click="$root.gotoBottom()"
     ></el-button>
-    <el-dialog
-      title="上傳圖片"
-      :visible.sync="uploadShow"
-      class="el-dialog-takePicture"
-      center
-      :close-on-click-modal="false"
-      style="600px"
-    >
-      <el-upload
-        center
-        drag
-        :limit="1"
-        action="#"
-        multiple
-        :on-change="uploadImg"
-        :auto-upload="false"
-        :file-list="fileList"
-        list-type="picture"
-      >
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">
-          只能上传jpg/png文件，且不超过500kb
-        </div>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="uploadShow = false"
-          >取消</el-button
-        >
-        <el-button class="background-orange" @click="submitAvatarUpload"
-          >确认</el-button
-        >
-      </span>      
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { deleteRecentChat,uploadMessageImage,pinHistory,unpinHistory  } from "@/api";
+import { unpinHistory  } from "@/api";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
 
 export default {
@@ -240,10 +188,9 @@ export default {
       message: [],
       newMessageData: {},
       fullscreenLoading:false,
-      fileList: [],
+
       device: localStorage.getItem("device"),
       showScrollBar: false,
-      uploadShow: false,
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -253,9 +200,15 @@ export default {
     messageData(val) {
       //去除重复
       const set = new Set();
-      this.message = val.filter((item) =>
-        !set.has(item.historyId) ? set.add(item.historyId) : false
-      );
+      this.message = val.filter((item) =>{
+        if(item.chatType === "SRV_CHAT_PIN"){
+          if(!set.has(item.historyId)){
+            return set.add(item.historyId)
+          } else {
+            return false
+          }
+        }
+      });
       this.newMessageData = {};
       this.message.forEach((el) => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
@@ -295,19 +248,7 @@ export default {
     );
   },
   methods: {
-    ...mapMutations({
-      setEditMsg: "ws/setEditMsg",
-      setReplyMsg: "ws/setReplyMsg",
-    }),
-    uploadImg(file, fileList) {
-      this.fileList = fileList;
-    },
-    drop(event){
-      this.uploadShow = true;
-    },
-    dragend(event) {
-      event.preventDefault();
-    },
+
     goAnchor(data) {
       document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);
@@ -334,33 +275,7 @@ export default {
         return iconData.icon;
       }
     },
-    // 上傳圖片
-    submitAvatarUpload() {
-      let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
-      this.fullscreenLoading = true;
-      uploadMessageImage(formData).then((res) => {
-        if (res.code === 200) {
-          let message = this.userInfoData;
-          message.chatType = "CLI_USER_IMAGE";
-          message.id = Math.random();
-          message.fromChatId = "u" + localStorage.getItem("id");
-          message.toChatId = this.chatUser.toChatId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          // message.text = res.data,
-          this.soundNofiy.forEach((res)=>{
-            if(res.key === "private" && res.isNofity) this.audioAction()
-          })        
-          Socket.send(message);
-          this.fileList = [];
-          this.uploadImgShow = false;
-          this.fullscreenLoading = false;
-        }else if(res.code === 40001){
-          this.fileList = [];
-          this.fullscreenLoading = false;
-        }
-      })
-    },   
+
     audioAction(){
       let audioEl = document.getElementById("notify-send-audio")  
       var playPromise = audioEl.play();
@@ -379,50 +294,16 @@ export default {
     },     
     // 判断讯息Class名称
     judgeClass(item) {
-      if (item.userChatId === "u" + localStorage.getItem("id")) {
+      console.log(item)
+      if (item.isRplay.fromChatId === "u" + localStorage.getItem("id")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
       }
     },
-    mouseClick(event) {
-      for (let item in this.newMessageData) {
-        this.newMessageData[item].forEach((res) => {
-          if (res.historyId === event.historyId) {
-            return (res.isMoreSetUp = true);
-          } else {
-            return (res.isMoreSetUp = false);
-          }
-        });
-      }
-    },
-    dblclick(event) {
-      this.setReplyMsg({
-        chatType: event.chatType,
-        clickType: "replyMsg",
-        innerText: event.message.content,
-        replyHistoryId: event.historyId,
-        name: event.name,
-        icon: event.icon,
-      });
-    },
+
     onContextmenu(data) {
       let item = [
-        {
-          name: "edit",
-          label: "編輯",
-          onClick: () => {
-            this.setReplyMsg({
-              chatType: data.chatType,
-              clickType: "editMsg",
-              innerText: data.message.content,
-              replyHistoryId: data.historyId,
-              name: data.name,
-              icon: data.icon,
-            });
-            this.setEditMsg({ innerText: data.message.content });
-          },
-        },
         {
           name: "copy",
           label: "複製",
@@ -431,108 +312,22 @@ export default {
           },
         },
         {
-          name: "reply",
-          label: "回覆",
+          name: "copy",
+          label: "轉傳",
           onClick: () => {
-            this.setReplyMsg({
-              chatType: data.chatType,
-              clickType: "replyMsg",
-              innerText: data.message.content,
-              replyHistoryId: data.historyId,
-              name: data.name,
-              icon: data.icon,
-            });
-          },
-        },
-        {
-          name: "download",
-          label: "下載",
-          onClick: () => {
-            this.downloadImages(data);
+       
           },
         },
         {
           name: "upDown",
-          label: data.isPing ? "取消置頂":"置顶",
+          label: "取消置顶",
           onClick: () => {
-            this.topMsgAction(data,data.isPing)
-          },
-        },
-        {
-          name: "deleteAllChat",
-          label: "在所有人的對話紀錄中刪除",
-          divided: true,
-          onClick: () => {
-            this.deleteRecent(data, "all");
-          },
-        },
-        {
-          name: "deleteMyChat",
-          label: "只在我的對話紀錄中刪除",
-          divided: true,
-          onClick: () => {
-            this.deleteRecent(data, "only");
+            this.topMsgAction(data)
           },
         },
       ];
-      if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        if (
-          data.chatType === "SRV_USER_IMAGE" ||
-          data.chatType === "SRV_USER_AUDIO"
-        ) {
-          if (data.chatType === "SRV_USER_AUDIO") {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "deleteAllChat" &&
-                list.name !== "edit" &&
-                list.name !== "copy" &&
-                list.name !== "download"
-              );
-            });
-          } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "deleteAllChat" &&
-                list.name !== "edit" &&
-                list.name !== "copy"
-              );
-            });
-          }
-        } else {
-          this.newItem = item.filter((list) => {
-            return (
-              list.name !== "deleteAllChat" &&
-              list.name !== "edit" &&
-              list.name !== "download"
-            );
-          });
-        }
-      } else {
-        if (
-          data.chatType === "SRV_USER_IMAGE" ||
-          data.chatType === "SRV_USER_AUDIO"
-        ) {
-          if (data.chatType === "SRV_USER_IMAGE") {
-            this.newItem = item.filter((list) => {
-              return list.name !== "edit" && list.name !== "copy";
-            });
-          } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "edit" &&
-                list.name !== "copy" &&
-                list.name !== "download"
-              );
-            });
-          }
-        } else {
-          this.newItem = item.filter((list) => {
-            return list.name !== "download";
-          });
-        }
-      }
       this.$contextmenu({
-        items: this.newItem,
+        items: item,
         // event,
         x: event.clientX,
         y: event.clientY,
@@ -542,60 +337,21 @@ export default {
       });
       return false;
     },
-    topMsgAction(data,key){
-      console.log(data,key)
+    topMsgAction(data){
       let param ={
         historyId: data.historyId,
         toChatId: data.toChatId
       }
-      if(key){
-        unpinHistory(param).then((res) => {
-          if (res.code === 200) {
-            this.$emit("resetPinMsg");
-          }
-        })
-      }else{
-        pinHistory(param).then((res) => {
-          if (res.code === 200) {
-            this.$emit("resetPinMsg");
-          }
-        })
-      }
-    },
-    downloadImages(data) {
-      let hreLocal = "";
-      hreLocal = data.message.content;
-      this.downloadByBlob(hreLocal, "images");
-    },
-    downloadByBlob(url, name) {
-      let image = new Image();
-      image.setAttribute("crossOrigin", "anonymous");
-      image.src = url;
-      image.onload = () => {
-        let canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-        let ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0, image.width, image.height);
-        canvas.toBlob((blob) => {
-          let url = URL.createObjectURL(blob);
-          this.download(url, name);
-          // 用完释放URL对象
-          URL.revokeObjectURL(url);
-        });
-      };
-    },
-    download(href, name) {
-      let link = document.createElement("a");
-      link.download = name;
-      link.href = href;
-      link.click();
-      link.remove();
+      unpinHistory(param).then((res) => {
+        if (res.code === 200) {
+          this.$emit("resetPinMsg");
+        }
+      })
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content.replace(/(\s*$)/g, "");
+      url.value = data.isRplay.text.replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);
@@ -608,22 +364,7 @@ export default {
         duration: 1000,
       });
     },
-    deleteRecent(data, type) {
-      let parmas = {
-        fullDelete: type === "all",
-        historyId: data.historyId,
-        toChatId: data.toChatId,
-      };
-      deleteRecentChat(parmas)
-        .then((res) => {
-          if (res.code === 200) {
-            this.$emit("deleteMsgHistoryData", data);
-          }
-        })
-        .catch((err) => {
-          this.$message({ message: err, type: "error" });
-        });
-    },
+
   },
 };
 </script>

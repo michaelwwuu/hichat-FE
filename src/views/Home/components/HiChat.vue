@@ -25,6 +25,9 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
+                    isBase64(item.lastChat.text)
+                  }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -72,6 +75,9 @@
                   <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
+                    isBase64(item.lastChat.text)
+                  }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
                     >传送了语音</span
                   >
@@ -127,6 +133,9 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
+                    isBase64(item.lastChat.text)
+                  }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -218,6 +227,7 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
+      setTopMsg:"ws/setTopMsg",
       setInfoMsg: "ws/setInfoMsg",
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",

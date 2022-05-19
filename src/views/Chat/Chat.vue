@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-container>
+    <el-container v-show="topMsgShow">
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
@@ -39,7 +39,14 @@
             </el-dropdown>
           </div>
         </el-header>
-
+        <!-- 置頂訊息 -->
+        <div class="top-msg" v-if="pinMsg !==''">
+          <div class="top-msg-left">
+            <img src="./../../../static/images/pin.png" alt="">
+            <span>置顶消息 : {{pinMsg}}</span>
+          </div>
+          <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
+        </div>
         <message-pabel
           v-loading="loading"
           element-loading-text="讯息加载中"
@@ -47,6 +54,7 @@
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
+          @resetPinMsg="resetPinMsg"
         />
         <div
           class="reply-message"
@@ -84,6 +92,60 @@
         <message-input :userInfoData="userInfoData" :groupData="groupUser" />
       </el-main>
     </el-container>
+    <el-container v-show="!topMsgShow">
+      <el-main style="overflow-y: auto; overflow-x: hidden">
+        <el-header class="PC-header" height="70px">
+          <div class="home-header-pc">
+            <span
+              class="home-photo-link"
+              @click="setTopMsgShow(true)"
+            >
+              <span style="padding-right: 10px" 
+                ><img
+                  src="./../../../static/images/pc/arrow-left.png"
+                  alt=""
+              /></span>
+              <span>置顶消息 : {{ pinMsg }}</span>
+            </span>
+            <el-dropdown trigger="click">
+              <div class="el-dropdown-link">
+                <div class="home-user-more"></div>
+              </div>
+              <el-dropdown-menu slot="dropdown" class="chat-more">
+                <el-dropdown-item>
+                  <div
+                    class="logout-btn"
+                    v-if="groupUser.isAdmin"
+                    @click="changeGroupAdminShow"
+                  >
+                    <img src="./../../../static/images/pc/key.png" alt="" />
+                    <span>转移管理者权限</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <div class="logout-btn" @click="leaveGroupDialogShow = true">
+                    <img src="./../../../static/images/pc/trash.png" alt="" />
+                    <span style="color: #ee5253">退出群组</span>
+                  </div>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </el-header>
+        <message-pin
+          v-loading="loading"
+          element-loading-text="讯息加载中"
+          element-loading-background="rgba(255, 255, 255, 0.5)"
+          :messageData="messageData"
+          :userInfoData="userInfoData"
+          @resetPinMsg="resetPinMsg"
+        />
+        
+        <div class="top-msg-bottom" @click="untopMsgAction">
+          <span>取消所有置顶讯息</span>
+        </div>
+      </el-main>
+    </el-container>
     <el-dialog
       title="退出群組"
       :visible.sync="leaveGroupDialogShow"
@@ -118,11 +180,12 @@
 <script>
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
-import { groupListMember, leaveGroup } from "@/api";
+import { groupListMember, leaveGroup,pinList } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
+import MessagePin from "@/components/message-group-pin";
 
 export default {
   name: "ChatGroupMsg",
@@ -136,12 +199,13 @@ export default {
         deviceId: getLocal("UUID"),
         tokenType: 0,
       },
+      pinMsg:"",
       groupData: {},
       readMsgData: [],
       contactList: [],
       leaveGroupDialogShow: false,
       loading: false,
-
+      pinDataList:[],
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -151,6 +215,7 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     if (this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
+    this.getPinList()
   },
   computed: {
     ...mapState({
@@ -159,6 +224,7 @@ export default {
       hichatNav: (state) => state.ws.hichatNav,
       replyMsg: (state) => state.ws.replyMsg,
       calloutShow: (state) => state.ws.calloutShow,
+      topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -170,9 +236,19 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
+      setTopMsgShow:"ws/setTopMsgShow",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
     }),
+    resetPinMsg(){
+     this.getPinList()
+    },
+    goTopMsgShow(){
+      this.setTopMsgShow(false)
+    },
+    untopMsgAction(){
+
+    },
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -209,6 +285,22 @@ export default {
         infoMsgChat: true,
       });
     },
+    getPinList() {
+      let toChatId = this.groupData.toChatId;
+      pinList({ toChatId }).then((res) => {
+        if(res.code === 200){
+          this.pinDataList = res.data
+          this.pinMsg = res.data[0].chat.text
+          this.messageData.forEach((data)=>{
+            this.pinDataList.forEach((list)=>{
+              if(data.historyId === list.historyId){
+                data.isPing = true
+              }
+            })
+          })
+        }
+      });
+    },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
@@ -238,6 +330,7 @@ export default {
         username: data.chat.username,
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
+        isPing:false
       };
     },
     //判斷是否base64
@@ -327,7 +420,6 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           let timeOut = historyMsgList.length * 40;
-
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -361,6 +453,7 @@ export default {
               }
               this.loading = false;
               this.getHiChatDataList();
+              this.getPinList()
             }, timeOut);
           });
           break;
@@ -423,6 +516,7 @@ export default {
   components: {
     MessagePabel,
     MessageInput,
+    MessagePin
   },
 };
 </script>
@@ -704,6 +798,17 @@ export default {
   align-items: center;
   padding: 0 10px;
 }
+.top-msg-bottom {
+  height: 59px;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  color: #959393;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+}
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
@@ -747,5 +852,23 @@ export default {
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
+}
+.top-msg {
+  background-color: #ffffff;
+  padding: 20px 35px 20px 20px;;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .top-msg-left{
+    display: flex;
+    align-items: center;
+    img {
+      height: 1.5em;
+    }
+  }
+  .top-msg-right{
+    height: 1.2em;
+    cursor: pointer;
+  }
 }
 </style>

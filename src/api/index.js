@@ -213,6 +213,34 @@ export const deleteRecentChat = data => {
   }
   return axios.request(postData)
 }
+// 置頂訊息
+export const pinHistory = data => {
+  let postData = {
+    url: '/api/chat/pinHistory',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+// 取消置頂訊息
+export const unpinHistory = data => {
+  let postData = {
+    url: '/api/chat/unpinHistory',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 置頂訊息列表
+export const pinList = (params) => {
+  let postData = {
+    url: '/api/chat/pinList',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
 
 // 解除封鎖联络人
 export const unBlockContactUser = data => {
@@ -292,3 +320,4 @@ export const blockListMember = (params) => {
   }
   return axios.request(postData)
 }
+

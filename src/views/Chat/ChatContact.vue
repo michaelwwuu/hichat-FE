@@ -257,7 +257,7 @@ export default {
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
-    this.getChatHistoryMessage();
+    // this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
