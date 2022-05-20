@@ -13,80 +13,36 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          {{el}}
           <p
             :class="[
-              {
-                'reply-aduio':
-                  device === 'moblie' &&
-                  el.isRplay !== null &&
-                  el.isRplay.chatType === 'SRV_USER_AUDIO',
-              },
               {
                 reply: el.isRplay !== null,
               },
             ]"
             :id="el.historyId"
-            v-if="el.chatType === 'SRV_CHAT_PIN'"
           >
           
             <span
               class="message-classic"
-              v-if="el.chat.chatType === 'SRV_USER_SEND'"
+              v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
-              <!-- <template v-if="el.isRplay !== null">
-                <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">
-                  <div class="reply-img">
-                    <img :src="noIconShow(el.isRplay)" alt="" />
-                  </div>
-                  <div class="reply-msg">
-                    <div style="color: rgba(0, 0, 0, 0.4)">
-                      {{ el.isRplay.nickName }}
-                    </div>
-                    <div>
-                      <div class="goAnchor-box">
-                        <span
-                          v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
-                          class="goAnchor"
-                          >{{ isBase64(el.isRplay.text) }}</span
-                        >
-                        <img
-                          v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
-                          :src="isBase64(el.isRplay.text)"
-                          style="border-radius: 5px"
-                        />
-                        <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
-                          <div class="reply-audio-box"></div>
-                          <mini-audio
-                            :audio-source="isBase64(el.isRplay.text)"
-                          ></mini-audio>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template> -->
-              <div
-                :class="{
-                  'reply-content': el.isRplay !== null,
-                }"
-              >
+              <div>
                 <span
                   v-if="
-                    el.isRplay.text.match(
+                    isBase64(el.chat.text).match(
                       /(http|https):\/\/([\w.]+\/?)\S*/gi
                     ) === null
                   "
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                  v-html="el.chat.text"
+                  v-html="isBase64(el.chat.text)"
                 ></span>
                 <div
                   v-else-if="
-                    el.chat.text.match(
+                    isBase64(el.chat.text).match(
                       /(http|https):\/\/([\w.]+\/?)\S*/gi
                     )
                   "
@@ -102,17 +58,17 @@
                     <i class="el-icon-more"></i>
                   </div>
                   <div
-                    v-html="el.chat.text"
+                    v-html="isBase64(el.chat.text)"
                     v-linkified
                     :class="device === 'moblie' ? 'link-style' : ''"
                   ></div>
                 </div>
-                <span v-else v-html="el.chat.text"></span>
+                <span v-else v-html="isBase64(el.chat.text)"></span>
               </div>
             </span>
             <span
               class="message-mini-audio"
-              v-else-if="el.isRplay.chatType === 'SRV_USER_AUDIO'"
+              v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -127,12 +83,12 @@
               </div>
               <mini-audio
                 class="message-audio"
-                :audio-source="el.isRplay.text"
+                :audio-source="isBase64(el.chat.text)"
               ></mini-audio>
             </span>
             <span
               class="message-image"
-              v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
+              v-else-if="el.chatType === 'SRV_USER_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -146,12 +102,12 @@
                 <i class="el-icon-more"></i>
               </div>
               <el-image
-                :src="el.isRplay.text"
-                :preview-src-list="[el.isRplay.text]"
+                :src="isBase64(el.chat.text)"
+                :preview-src-list="[isBase64(el.chat.text)]"
               />
             </span>
             <span class="nickname-time">{{
-              $root.formatTimeSecound(el.message.time)
+              $root.formatTimeSecound(el.chat.sendTime)
             }}</span>
           </p>
         </li>
