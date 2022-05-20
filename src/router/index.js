@@ -81,7 +81,6 @@ const routes = [
     path: "/ChatGroupMsg",
     name: "ChatGroupMsg",
     component: () => import(/* webpackChunkName: "ChatMsg" */ '@/views/Chat/ChatGroupMsg.vue'),
-
   },
   {
     path: "/ContactPage",

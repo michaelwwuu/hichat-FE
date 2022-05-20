@@ -165,9 +165,14 @@
             </div>
           </template>
           
-          <template v-else>
+          <template v-else-if="el.chatType === 'SRV_CHAT_PIN'">
             <div class="top-msg-style"> 
               <span>{{el.message.content}}置顶了消息</span>
+            </div>
+          </template>
+          <template v-else-if="el.chatType === 'SRV_CHAT_UNPIN'">
+            <div class="top-msg-style"> 
+              <span>{{el.message.content}}取消置顶了消息</span>
             </div>
           </template>
         </li>

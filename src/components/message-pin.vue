@@ -169,7 +169,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { unpinHistory  } from "@/api";
+import { unpinHistory,pinList  } from "@/api";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
 
 export default {
@@ -246,9 +246,17 @@ export default {
       },
       true
     );
+    this.getPinList()
   },
   methods: {
-
+    getPinList() {
+      let toChatId = this.chatUser.toChatId;
+      pinList({ toChatId }).then((res) => {
+        if(res.code === 200){
+          this.pinDataList = res.data
+        }
+      });
+    },    
     goAnchor(data) {
       document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);

@@ -286,7 +286,7 @@ export default {
       });
     },
     getPinList() {
-      let toChatId = this.groupData.toChatId;
+      let toChatId = this.groupUser.toChatId;
       pinList({ toChatId }).then((res) => {
         if(res.code === 200){
           this.pinDataList = res.data
@@ -439,6 +439,8 @@ export default {
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
           this.messageData = [];
+          this.pinMsg = ""
+          this.getPinList()
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           let timeOut = historyMsgList.length * 40;
@@ -477,7 +479,6 @@ export default {
               this.loading = false;
               this.getHiChatDataList();
             }, timeOut);
-            this.getPinList()
           });
           break;
         // 已讀

@@ -316,10 +316,10 @@
           v-loading="loading"
           element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
-          :messageData="messageData"
           :userInfoData="userInfoData"
           @resetPinMsg="resetPinMsg"
         />
+          <!-- :messageData="messageData" -->
         
         <div class="top-msg-bottom" @click="untopMsgAction">
           <span>取消所有置顶讯息</span>
@@ -444,6 +444,7 @@ import {
   deleteContactUser,
   getSearchById,
   pinList,
+  unpinHistory,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
@@ -517,7 +518,14 @@ export default {
       this.setTopMsgShow(false)
     },
     untopMsgAction(){
-
+      let param ={
+        toChatId: this.chatUser.toChatId
+      }
+      unpinHistory(param).then((res) => {
+        if (res.code === 200) {
+          this.setTopMsgShow(true)
+        }
+      })
     },
     resetPinMsg(){
      this.getPinList()
@@ -663,6 +671,9 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
+        case "SRV_CHAT_PIN":   
+          this.pinMsg = ""
+          this.getPinList()
           if (userInfo.toChatId === this.chatUser.toChatId) {
             if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
               userInfo.chat.name = this.chatUser.name;
@@ -689,7 +700,6 @@ export default {
                 userInfo.replyChat.nickName = this.myUserInfo.nickname;
               }
             }
-
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
@@ -698,6 +708,10 @@ export default {
               this.audioAction();
             }            
           }
+          break;
+        case "SRV_CHAT_UNPIN":
+          this.pinMsg = ""
+          this.getPinList()
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
@@ -746,7 +760,6 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)
                 this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
-              this.getPinList()
               this.loading = false;
             }, timeOut);
           });

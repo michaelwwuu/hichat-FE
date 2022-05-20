@@ -47,175 +47,9 @@
             >
           </div>
         </template>
-        <template v-else>
-          <div class="add-content">
-            <div class="user-data">
-              <span><el-image :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
-              <span class="photo-edit" @click="uploadImgShow = true"
-                >变更群组照片</span
-              >
-            </div>
-            <div class="user-edit-form">
-              <el-form ref="form" :model="groupForm" label-width="100px">
-                <el-form-item label="群组名称">
-                  <el-input
-                    v-model="groupForm.name"
-                    placeholder="群组名称"
-                  ></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-          
-          <div class="home-content">
-            <label class="el-checkbox">
-              <span class="el-checkbox__label">
-                <div class="address-box" v-for="(item, index) in checkList" :key="index">
-                  <el-image :src="item.icon" />
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
-                </div>
-              </span>
-            </label>
-          </div>
-          <div class="home-footer-btn">
-           
-            <el-button
-              :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
-              :disabled="disableEditSubmit"
-              > 設定群組資訊
-              </el-button
-            >
-              <!-- @click="editSubmit" -->
-          </div>
-        </template>
-        <setting-group/>
       </el-main>
     </el-container>
-    <el-container v-else>
-      <el-aside width="300px">
-        <el-header height="70px">
-          <div class="home-header flex-start" >
-            <router-link :to="'/HiChat'" v-if="groupEditShow">
-              <div class="home-user-pc"></div>
-            </router-link>
-            <div class="home-user-pc" v-else @click="groupEditShow = true"></div>
-            <span class="home-header-title">创建群组</span>
-          </div>
-        </el-header>
-        <div v-if="groupEditShow" style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
-          <div class="home-search" >
-            <el-input
-              placeholder="搜寻"
-              prefix-icon="el-icon-search"
-              v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
-            >
-            </el-input>
-          </div>
-        </div>
-        <template v-if="groupEditShow">
-          <div class="home-content">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox
-                :label="item"
-                v-for="(item, index) in contactList"
-                :key="index"
-              >
-                <div class="address-box">
-                  <el-image :src="item.icon"/>
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
-                </div>
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-          <div class="home-footer-btn">
-            <el-button
-              :class="disabled ? 'gray-btn' : 'orange-btn'"
-              :disabled="disabled"
-              @click="createGroup"
-              >邀请联络人</el-button
-            >
-          </div>
-        </template>
-        <template v-else>
-          <div class="add-content">
-            <div class="user-data">
-              <span><el-image :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
-              <span class="photo-edit" @click="uploadImgShow = true"
-                >变更群组照片</span
-              >
-            </div>
-            <div class="user-edit-form">
-              <el-form ref="form" :model="groupForm" label-width="100px">
-                <el-form-item label="群组名称">
-                  <el-input
-                    v-model="groupForm.name"
-                    placeholder="群组名称"
-                  ></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-          
-          <div class="home-content">
-            <label class="el-checkbox">
-              <span class="el-checkbox__label">
-                <div class="address-box" v-for="(item, index) in checkList" :key="index">
-                  <el-image :src="item.icon" />
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
-                </div>
-              </span>
-            </label>
-          </div>
-          <div class="home-footer-btn">
-            <el-button
-              :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
-              :disabled="disableEditSubmit"
-              @click="editSubmit"
-              >创建群组</el-button
-            >
-          </div>
-        </template>
-      </el-aside>
-    </el-container>
-    <el-dialog
-      title="上傳群组照片"
-      :visible.sync="uploadImgShow"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
-      width="100%"
-      center
-      :close-on-click-modal="false"      
-    >
-      <el-upload
-        class="upload-demo"
-        action="#"
-        :on-change="uploadImg"
-        :auto-upload="false"
-        :file-list="fileList"
-        list-type="picture"
-      >
-        <el-button type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">
-          只能上传 jpg / png 圖片，且不超过500kb
-        </div>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <template v-if="device ==='moblie'">
-          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-          <el-button @click="uploadImgShow = false">取 消</el-button>
-        </template>
-        <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
-          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
-        </template>        
-      </span>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -223,10 +57,8 @@
 import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getContactList,uploadGroupIcon,addGroup } from "@/api";
-import settingGroup from './SettingGroup.vue';
 
 export default {
-  components: { settingGroup },
   name: "AddGroup",
   data() {
     return {
@@ -323,9 +155,6 @@ export default {
       });
     },
   },
-  component:{
-    SettingGroup,
-  }
 };
 </script>
 
