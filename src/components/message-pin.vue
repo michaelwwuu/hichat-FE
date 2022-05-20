@@ -13,6 +13,7 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
+          {{el}}
           <p
             :class="[
               {
@@ -28,9 +29,10 @@
             :id="el.historyId"
             v-if="el.chatType === 'SRV_CHAT_PIN'"
           >
+          
             <span
               class="message-classic"
-              v-if="el.isRplay.chatType === 'SRV_USER_SEND'"
+              v-if="el.chat.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
               @dblclick="dblclick(el)"
             >
@@ -80,11 +82,11 @@
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
                   "
-                  v-html="el.isRplay.text"
+                  v-html="el.chat.text"
                 ></span>
                 <div
                   v-else-if="
-                    el.isRplay.text.match(
+                    el.chat.text.match(
                       /(http|https):\/\/([\w.]+\/?)\S*/gi
                     )
                   "
@@ -100,12 +102,12 @@
                     <i class="el-icon-more"></i>
                   </div>
                   <div
-                    v-html="el.isRplay.text"
+                    v-html="el.chat.text"
                     v-linkified
                     :class="device === 'moblie' ? 'link-style' : ''"
                   ></div>
                 </div>
-                <span v-else v-html="el.isRplay.text"></span>
+                <span v-else v-html="el.chat.text"></span>
               </div>
             </span>
             <span
@@ -197,32 +199,32 @@ export default {
     };
   },
   watch: {
-    messageData(val) {
-      //去除重复
-      const set = new Set();
-      this.message = val.filter((item) =>{
-        if(item.chatType === "SRV_CHAT_PIN"){
-          if(!set.has(item.historyId)){
-            return set.add(item.historyId)
-          } else {
-            return false
-          }
-        }
-      });
-      this.newMessageData = {};
-      this.message.forEach((el) => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-        let newData = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-          newData;
-      });
-      this.$root.gotoBottom();
-    },
+    // messageData(val) {
+    //   //去除重复
+    //   const set = new Set();
+    //   this.message = val.filter((item) =>{
+    //     if(item.chatType === "SRV_CHAT_PIN"){
+    //       if(!set.has(item.historyId)){
+    //         return set.add(item.historyId)
+    //       } else {
+    //         return false
+    //       }
+    //     }
+    //   });
+    //   this.newMessageData = {};
+    //   this.message.forEach((el) => {
+    //     this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
+    //     let newData = this.message.filter((res) => {
+    //       return (
+    //         this.$root.formatTimeDay(res.message.time) ===
+    //         this.$root.formatTimeDay(el.message.time)
+    //       );
+    //     });
+    //     this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
+    //       newData;
+    //   });
+    //   this.$root.gotoBottom();
+    // },
   },
   computed: {
     ...mapState({
@@ -254,6 +256,19 @@ export default {
       pinList({ toChatId }).then((res) => {
         if(res.code === 200){
           this.pinDataList = res.data
+          this.newMessageData = {};
+          this.pinDataList.forEach((el) => {
+            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] = [];
+            let newData = this.pinDataList.filter((res) => {
+              console.log(res)
+              return (
+                this.$root.formatTimeDay(res.chat.sendTime) ===
+                this.$root.formatTimeDay(el.chat.sendTime)
+              );
+            });
+            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
+              newData;
+          });
         }
       });
     },    
@@ -302,7 +317,7 @@ export default {
     },     
     // 判断讯息Class名称
     judgeClass(item) {
-      if (item.isRplay.fromChatId === "u" + localStorage.getItem("id")) {
+      if (item.chat.fromChatId === "u" + localStorage.getItem("id")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";

@@ -146,7 +146,7 @@
         <div class="top-msg" v-if="pinMsg !==''">
           <div class="top-msg-left">
             <img src="./../../../static/images/pin.png" alt="">
-            <span>置顶消息 : {{pinMsg}}</span>
+            <span>置顶消息 : {{isBase64(pinMsg)}}</span>
           </div>
           <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
         </div>
@@ -215,7 +215,7 @@
               >
                 <div class="home-user" @click="setTopMsgShow(true)"></div>
               </span>
-              <span class="home-header-title">置顶消息 : {{ pinMsg }}</span>
+              <span class="home-header-title">置顶消息 : {{ isBase64(pinMsg) }}</span>
               <div v-if="chatUser.isContact" class="home-user-search" style="right: 0;"></div>
             </div>
           </template>
@@ -230,7 +230,7 @@
                     src="./../../../static/images/pc/arrow-left.png"
                     alt=""
                 /></span>
-                <span>置顶消息 : {{ pinMsg }}</span>
+                <span>置顶消息 : {{ isBase64(pinMsg) }}</span>
               </span>
               <template v-if="chatUser.isContact">
                 <div
