@@ -21,7 +21,12 @@
         class="setting-button"
         v-for="(item, index) in settingData"
         :key="index"
-        :class="{ mt10: item.name === '相片和影片' || item.name === '关于HiChat' }"
+        :class="{
+          mt10:
+            item.name === '相片和影片' ||
+            item.name === '关于HiChat' ||
+            item.name === '提醒' 
+        }"
         @click="developmentMessage(item.name)"
       >
         <router-link :to="item.path">
@@ -37,7 +42,7 @@
         </router-link>
       </div>
 
-      <div class="setting-button" @click="logoutDialogShow = true">
+      <div class="setting-button mt10" @click="logoutDialogShow = true">
         <a>
           <div class="setting-button-left">
             <img src="./../../../../static/images/logout.png" alt="" />
@@ -120,18 +125,18 @@ export default {
           pcIcon: require("./../../../../static/images/pc/bell.png"),
           path: "/Notify",
         },
-        {
-          name: "相片和影片",
-          icon: require("./../../../../static/images/image_icon.png"),
-          pcIcon: require("./../../../../static/images/pc/image.png"),
-          path: "",
-        },
-        {
-          name: "语言",
-          icon: require("./../../../../static/images/lang_icon.png"),
-          pcIcon: require("./../../../../static/images/pc/globe.png"),
-          path: "",
-        },
+        // {
+        //   name: "相片和影片",
+        //   icon: require("./../../../../static/images/image_icon.png"),
+        //   pcIcon: require("./../../../../static/images/pc/image.png"),
+        //   path: "",
+        // },
+        // {
+        //   name: "语言",
+        //   icon: require("./../../../../static/images/lang_icon.png"),
+        //   pcIcon: require("./../../../../static/images/pc/globe.png"),
+        //   path: "",
+        // },
         {
           name: "关于HiChat",
           icon: require("./../../../../static/images/about.png"),

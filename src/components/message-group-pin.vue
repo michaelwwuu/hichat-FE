@@ -13,159 +13,114 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-            <img class="message-avatar" :src="el.isRplay.icon" />
-            <p
-              :class="[
-                {
-                  'reply-aduio':
-                    device === 'moblie' &&
-                    el.isRplay !== null &&
-                    el.isRplay.chatType === 'SRV_GROUP_AUDIO',
-                },
-                {
-                  reply: el.isRplay !== null,
-                },
-              ]"
-              :id="el.historyId"
+          <img class="message-avatar" :src="el.chat.icon" />
+          <p>
+            <span
+              class="message-classic"
+              v-if="el.chatType === 'SRV_GROUP_SEND'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)"
             >
-              <span
-                class="message-classic"
-                v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
-                @contextmenu.prevent.stop="onContextmenu(el)"
-                @dblclick="dblclick(el)"
-                :id="el.historyId"
-              >
-                <div class="message-box">
-                  <div class="message-name">{{ el.isRplay.nickName }}</div>
-                  <div
-                    class="message-box-content"
-                    :class="{
-                      'reply-content': el.isRplay !== null,
-                    }"
-                  >
-                    <div v-if="device === 'pc'">
-                      <span
-                        v-for="(item, index) in el.newContent"
-                        :key="index"
-                        :class="{
-                          'message-touch-carte':
-                            item.startsWith('@') && item.length > 1,
-                        }"
-                      >
-                        <span
-                          v-html="isBase64(el.isRplay.text)"
-                          v-linkified
-                          @click="
-                            item.startsWith('@')
-                              ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
-                              : false
-                          "
-                        ></span>
-                      </span>
-                    </div>
-
-                    <div v-else>
-                      <div
-                        v-for="(item, index) in el.newContent"
-                        :key="index"
-                        :class="{
-                          'message-touch-carte':
-                            item.startsWith('@') && item.length > 1,
-                        }"
-                      >
-                        <div
-                          v-if="
-                            item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi) ===
-                            null
-                          "
-                          @click.prevent.stop="
-                            !item.startsWith('@') ? onContextmenu(el) : false
-                          "
-                        >
-                          <span
-                            v-html="isBase64(el.isRplay.text)"
-                            @click="
-                              item.startsWith('@')
-                                ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
-                                : false
-                            "
-                          ></span>
-                        </div>
-                        <div
-                          v-else-if="
-                            item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
-                          "
-                        >
-                          <div
-                            v-if="device === 'moblie'"
-                            class="images-more-btn"
-                            style="top: 5px"
-                            @click.prevent.stop="
-                              device === 'moblie' ? onContextmenu(el) : false
-                            "
-                          >
-                            <i class="el-icon-more"></i>
-                          </div>
-                          <div
-                            v-html="isBase64(el.isRplay.text)"
-                            v-linkified
-                            :class="device === 'moblie' ? 'link-style' : ''"
-                          ></div>
-                        </div>
-                        <span v-else v-html="isBase64(el.isRplay.text)"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </span>
-              <span
-                class="message-audio"
-                v-else-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'"
-                @contextmenu.prevent.stop="onContextmenu(el)"
-                @dblclick="dblclick(el)"
-              >
-                <div class="message-box">
-                  <div class="message-name">{{ el.name }}</div>
-                  <div
-                    v-if="device === 'moblie'"
-                    class="images-more-btn"
+            
+              <div class="message-box">
+                <div class="message-name">{{ el.chat.name }}</div>
+                <div
+                  class="message-box-content"
+                >
+                  <span
+                    v-if="
+                      isBase64(el.chat.text).match(
+                        /(http|https):\/\/([\w.]+\/?)\S*/gi
+                      ) === null
+                    "
                     @click.prevent.stop="
                       device === 'moblie' ? onContextmenu(el) : false
                     "
-                  >
-                    <i class="el-icon-more"></i>
-                  </div>
-                  <mini-audio :audio-source="el.message.content"></mini-audio>
-                </div>
-              </span>
-              <span
-                class="message-image"
-                v-else-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'"
-                @contextmenu.prevent.stop="onContextmenu(el)"
-                @dblclick="dblclick(el)"
-              >
-                <div class="message-box">
-                  <div class="message-name">{{ el.name }}</div>
+                    v-html="isBase64(el.chat.text)"
+                  ></span>
                   <div
-                    v-if="device === 'moblie'"
-                    class="images-more-btn"
-                    @click.prevent.stop="
-                      device === 'moblie' ? onContextmenu(el) : false
+                    v-else-if="
+                      isBase64(el.chat.text).match(
+                        /(http|https):\/\/([\w.]+\/?)\S*/gi
+                      )
                     "
                   >
-                    <i class="el-icon-more"></i>
+                    <div
+                      v-if="device === 'moblie'"
+                      class="images-more-btn"
+                      style="top: 5px"
+                      @click.prevent.stop="
+                        device === 'moblie' ? onContextmenu(el) : false
+                      "
+                    >
+                      <i class="el-icon-more"></i>
+                    </div>
+                    <div
+                      v-html="isBase64(el.chat.text)"
+                      v-linkified
+                      :class="device === 'moblie' ? 'link-style' : ''"
+                    ></div>
                   </div>
-                  <el-image
-                    :src="el.message.content"
-                    :preview-src-list="[el.message.content]"
-                  ></el-image>
+                  <span v-else v-html="isBase64(el.chat.text)"></span>
                 </div>
-              </span>
+              </div>
+            </span>
+            <span
+              class="message-audio"
+              v-else-if="el.chat.chatType === 'SRV_GROUP_AUDIO'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)"
+            >
+              <div class="message-box">
+                <div class="message-name">{{ el.chat.name }}</div>
+                <div
+                  v-if="device === 'moblie'"
+                  class="images-more-btn"
+                  @click.prevent.stop="
+                    device === 'moblie' ? onContextmenu(el) : false
+                  "
+                >
+                  <i class="el-icon-more"></i>
+                </div>
+                <mini-audio :audio-source="isBase64(el.chat.text)"></mini-audio>
+              </div>
+            </span>
+            <span
+              class="message-image"
+              v-else-if="el.chat.chatType === 'SRV_GROUP_IMAGE'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)"
+            >
+              <div class="message-box">
+                <div class="message-name">{{ el.chat.name }}</div>
+                <div
+                  v-if="device === 'moblie'"
+                  class="images-more-btn"
+                  @click.prevent.stop="
+                    device === 'moblie' ? onContextmenu(el) : false
+                  "
+                >
+                  <i class="el-icon-more"></i>
+                </div>
+                <el-image
+                  :src="isBase64(el.chat.text)"
+                  :preview-src-list="[isBase64(el.chat.text)]"
+                ></el-image>
+              </div>
+            </span>
 
-              <span class="nickname-time">{{
-                $root.formatTimeSecound(el.message.time)
-              }}</span>
-            </p>
+            <span class="nickname-time">{{
+              $root.formatTimeSecound(el.chat.sendTime)
+            }}</span>
+          </p>
+          <div class="read-check-box">
+            <span class="read-check" v-if="el.isRead"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+            <span class="read-check2"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+          </div>
         </li>
       </div>
     </ul>
@@ -183,7 +138,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { unpinHistory  } from "@/api";
+import { unpinHistory,pinList  } from "@/api";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
 
 export default {
@@ -191,9 +146,6 @@ export default {
   props: {
     userInfoData: {
       type: Object,
-    },
-    messageData: {
-      type: Array,
     },
   },
   data() {
@@ -210,38 +162,16 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
-  watch: {
-    messageData(val) {
-      //去除重复
-      const set = new Set();
-      this.message = val.filter((item) =>{
-        if(item.chatType === "SRV_CHAT_PIN"){
-          if(!set.has(item.historyId)){
-            return set.add(item.historyId)
-          } else {
-            return false
-          }
-        }
-      });
-      this.newMessageData = {};
-      this.message.forEach((el) => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-        let newData = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-          newData;
-      });
-      this.$root.gotoBottom();
-    },
+  watch:{
+    topMsgShow(val){
+      !val ? this.getPinList() : false
+    }
   },
   computed: {
     ...mapState({
-      chatUser: (state) => state.ws.chatUser,
+      groupUser: (state) => state.ws.groupUser,
       soundNofiy: (state) => state.ws.soundNofiy,
+      contactListData: (state) => state.ws.contactListData,
     }),
   },
   mounted() {
@@ -255,21 +185,42 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 200 ||
           (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
     );
+    this.getPinList()
   },
   methods: {
-
-    goAnchor(data) {
-      document.getElementById(data).classList.add("blink");
-      document.getElementById(data).scrollIntoView(true);
-      setTimeout(() => {
-        document.getElementById(data).classList.remove("blink");
-      }, 3000);
-    },
+    getPinList() {
+      let toChatId = this.groupUser.toChatId;
+      pinList({ toChatId }).then((res) => {
+        if(res.code === 200){
+          this.pinDataList = res.data.reverse()
+          this.newMessageData = {};
+          this.pinDataList.forEach((el) => {
+            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] = [];
+            this.contactListData.forEach((list)=>{
+              if(el.chat.fromChatId === "u" + list.memberId){
+                el.chat.name = list.name
+                el.chat.icon = list.icon
+              }
+            })
+            let newData = this.pinDataList.filter((res) => {
+              return (
+                this.$root.formatTimeDay(res.chat.sendTime) ===
+                this.$root.formatTimeDay(el.chat.sendTime)
+              );
+            });
+            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
+              newData;
+          });
+          console.log(this.newMessageData )
+          this.$root.gotoBottom();
+        }
+      });
+    },    
     isBase64(data) {
       var base64Rejex =
         /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
@@ -308,13 +259,12 @@ export default {
     },     
     // 判断讯息Class名称
     judgeClass(item) {
-      if (item.isRplay.fromChatId === "u" + localStorage.getItem("id")) {
+      if (item.chat.fromChatId === "u" + localStorage.getItem("id")) {
         return "message-layout-right";
       } else {
         return "message-layout-left";
       }
     },
-
     onContextmenu(data) {
       let item = [
         {
@@ -325,10 +275,16 @@ export default {
           },
         },
         {
-          name: "copy",
-          label: "轉傳",
+          name: "download",
+          label: "下載",
           onClick: () => {
-       
+            this.downloadImages(data);
+          },
+        },
+        {
+          name: "share",
+          label: "分享",
+          onClick: () => {
           },
         },
         {
@@ -339,8 +295,28 @@ export default {
           },
         },
       ];
+      if(data.chatType === "SRV_GROUP_SEND"){
+        this.newItem = item.filter((list) => {
+          return (
+            list.name !== "share" &&
+            list.name !== "download"
+          );
+        });
+      }else if(data.chatType === "SRV_GROUP_IMAGE"){
+        this.newItem = item.filter((list) => {
+          return (
+            list.name !== "copy" 
+          );
+        });
+      }else if(data.chatType === "SRV_GROUP_AUDIO"){
+        this.newItem = item.filter((list) => {
+          return (
+            list.name === "upDown"
+          );
+        });
+      }
       this.$contextmenu({
-        items: item,
+        items: this.newItem,
         // event,
         x: event.clientX,
         y: event.clientY,
@@ -350,6 +326,36 @@ export default {
       });
       return false;
     },
+    downloadImages(data) {
+      let hreLocal = "";
+      hreLocal = this.isBase64(data.chat.text);
+      this.downloadByBlob(hreLocal, "images");
+    },
+    downloadByBlob(url, name) {
+      let image = new Image();
+      image.setAttribute("crossOrigin", "anonymous");
+      image.src = url;
+      image.onload = () => {
+        let canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        canvas.toBlob((blob) => {
+          let url = URL.createObjectURL(blob);
+          this.download(url, name);
+          // 用完释放URL对象
+          URL.revokeObjectURL(url);
+        });
+      };
+    },
+    download(href, name) {
+      let link = document.createElement("a");
+      link.download = name;
+      link.href = href;
+      link.click();
+      link.remove();
+    },
     topMsgAction(data){
       let param ={
         historyId: data.historyId,
@@ -358,20 +364,22 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.$emit("resetPinMsg");
+          this.getPinList()
         }
       })
     },
     copyPaste(data) {
+      console.log(data)
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.isRplay.text.replace(/(\s*$)/g, "");
+      url.value = data.chat.text.replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);
 
       this.$message({
         message: `${
-          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : url.value
+          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : this.isBase64(url.value)
         } 复制成功`,
         type: "success",
         duration: 1000,
@@ -829,7 +837,8 @@ export default {
   right: 30px;
   bottom: 80px;
   border-radius: 50px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 9;
 }
 .link-style {
   padding: 10px 0;

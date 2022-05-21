@@ -208,9 +208,9 @@
               /></span>
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="el.chatType === 'SRV_CHAT_PIN'">
             <div class="top-msg-style"> 
-              <span>{{el.message.content}}置顶了消息</span>
+              <span>{{pinUserName(el.message.content)}}置顶了一則訊息</span>
             </div>
           </template>
         </li>
@@ -335,7 +335,7 @@ export default {
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
           (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
-          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
+          (scrollTopBox.scrollHeight - scrollTop) / 3 > 170;
       },
       true
     );
@@ -349,7 +349,15 @@ export default {
     }),
     uploadImg(file, fileList) {
       this.fileList = fileList;
-    },    
+    },  
+    pinUserName(data){
+      // console.log(JSON.parse(localStorage.getItem("myUserInfo")))
+      if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
+        return data = "你"
+      } else{
+        return data
+      }
+    },  
     goAnchor(data) {
       document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);
@@ -619,7 +627,7 @@ export default {
     },
     downloadImages(data) {
       let downloadUrl = "";
-      downloadUrl = data.message.content;
+      downloadUrl = this.isBase64(data.message.content);
       this.downloadByBlob(downloadUrl, "images");
     },
     downloadByBlob(url, name) {
@@ -1130,7 +1138,8 @@ export default {
   right: 30px;
   bottom: 80px;
   border-radius: 50px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 9;
 }
 .link-style {
   padding: 10px 0;

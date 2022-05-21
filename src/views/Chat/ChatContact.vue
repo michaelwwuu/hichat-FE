@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-container>
+    <el-container v-if="topMsgShow">
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header height="70px" class="PC-header">
           <template>
@@ -45,10 +45,28 @@
             </div>
           </template>
         </el-header>
-        <message-pabel
+        <el-main
           v-loading="loading"
           element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
+        >
+        <!-- 置頂訊息 -->
+        <div class="top-msg" v-if="pinMsg !== ''">
+          <div class="top-msg-left">
+            <img src="./../../../static/images/pin.png" alt="" />
+            <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
+              <img :src="isBase64(pinMsg)" alt="">
+            </span>
+            <span v-else>{{ isBase64(pinMsg) }}</span>
+          </div>
+          <img
+            class="top-msg-right"
+            src="./../../../static/images/next.png"
+            alt=""
+            @click="goTopMsgShow"
+          />
+        </div>
+        <message-pabel
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
@@ -94,8 +112,43 @@
           :userData="contactUser"
           v-else
         />
+        </el-main>
       </el-main>
     </el-container>
+    <el-container v-if="!topMsgShow">
+      <el-main style="overflow-y: auto; overflow-x: hidden">
+        <el-header
+          :height="device === 'moblie' ? '55px' : '70px'"
+          :class="{ 'PC-header': device === 'pc' }"
+        >
+          <template v-if="device === 'moblie'">
+            <div class="home-header">
+              <span
+                class="home-user-link"
+                :style="!chatUser.isContact ? 'position:none;' : ''"
+              >
+                <div class="home-user" @click="setTopMsgShow(true)"></div>
+              </span>
+              <span class="home-header-title">置顶訊息</span>
+            </div>
+          </template>
+          <template v-else>
+            <div class="home-header-pc">
+              <span class="home-photo-link" @click="setTopMsgShow(true)">
+                <span style="padding-right: 10px"
+                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                /></span>
+                <span>置顶訊息</span>
+              </span>
+            </div>
+          </template>
+        </el-header>
+        <message-pin :contactUser="contactUser" :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
+        <div class="top-msg-bottom" @click="untopMsgAction">
+          <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
+        </div>
+      </el-main>
+    </el-container>    
     <el-dialog
       :title="`${contactUser.isBlock ? '解除封锁' : '封锁'}联络人`"
       :visible.sync="isBlockDialogShow"
@@ -219,12 +272,15 @@ import {
   unBlockContactUser,
   deleteRecentChat,
   deleteContactUser,
+  pinList,
+  unpinHistory,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
+import MessagePin from "@/components/message-pin";
 
 export default {
   name: "ChatMsg",
@@ -239,6 +295,8 @@ export default {
       },
       userData: {},
       readMsgData: [],
+      pinDataList: [],
+      pinMsg: "",      
       loading: false,
       deleteDialogShow: false,
       successDialogShow: false,
@@ -251,13 +309,16 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
+  watch:{
+    topMsgShow(val){
+      val ? this.getChatHistoryMessage() : false
+    }
+  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("contactUser"));
     this.setContactUser(this.userData);
     Socket.$on("message", this.handleGetMessage);
-  },
-  mounted() {
-    // this.getChatHistoryMessage();
+    this.getPinList();
   },
   computed: {
     ...mapState({
@@ -265,6 +326,7 @@ export default {
       contactUser: (state) => state.ws.contactUser,
       hichatNav: (state) => state.ws.hichatNav,
       replyMsg: (state) => state.ws.replyMsg,
+      topMsgShow: (state) => state.ws.topMsgShow,     
     }),
   },
   methods: {
@@ -277,7 +339,44 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setContactUser: "ws/setContactUser",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setTopMsgShow: "ws/setTopMsgShow",      
     }),
+    goTopMsgShow() {
+      this.setTopMsgShow(false);
+    },
+    untopMsgAction() {
+      let param = {
+        toChatId: this.contactUser.toChatId,
+      };
+      unpinHistory(param).then((res) => {
+        if (res.code === 200) {
+          this.setTopMsgShow(true);
+        }
+      });
+    },
+    resetPinMsg() {
+      this.getPinList();
+    },
+    getPinList() {
+      let toChatId = this.contactUser.toChatId;
+      pinList({ toChatId }).then((res) => {
+        if (res.code === 200) {
+          this.pinDataList = res.data;
+          if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
+            this.pinMsg = "語音訊息";
+          } else {
+            this.pinMsg = this.pinDataList[0].chat.text;
+          }
+          this.messageData.forEach((data) => {
+            this.pinDataList.forEach((list) => {
+              if (data.historyId === list.historyId) {
+                data.isPing = true;
+              }
+            });
+          });
+        }
+      });
+    },    
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -390,6 +489,9 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
+        case "SRV_CHAT_PIN":
+          this.pinMsg = "";
+          this.getPinList();          
           if (userInfo.toChatId === this.contactUser.toChatId) {
             if (userInfo.chat.fromChatId === this.contactUser.toChatId) {
               userInfo.chat.name = this.contactUser.name;
@@ -436,12 +538,18 @@ export default {
             }            
           }
           break;
+        case "SRV_CHAT_UNPIN":
+          this.pinMsg = "";
+          this.getPinList();
+          break;          
         // 历史讯息
         case "SRV_HISTORY_RSP":
+          this.pinMsg = "";
+          this.getPinList();          
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 5;
+          let timeOut = historyMsgList.length * 15;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -634,6 +742,7 @@ export default {
   components: {
     MessagePabel,
     MessageInput,
+    MessagePin,    
   },
 };
 </script>
@@ -936,6 +1045,17 @@ export default {
   align-items: center;
   padding: 0 10px;
 }
+.top-msg-bottom {
+  height: 59px;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  color: #959393;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+}
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
@@ -1033,6 +1153,25 @@ export default {
         }
       }
     }
+  }
+}
+.top-msg {
+  background-color: #ffffff;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.01em solid rgba(0, 0, 0, 0.05);
+  .top-msg-left {
+    display: flex;
+    align-items: center;
+    img {
+      height: 1.5em;
+    }
+  }
+  .top-msg-right {
+    height: 1.2em;
+    cursor: pointer;
   }
 }
 </style>

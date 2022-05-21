@@ -216,16 +216,16 @@ export default {
           icon: require("./../../../static/images/chat_icon.png"),
           path: "ChatMsg",
         },
-        {
-          name: "在对话中搜寻",
-          icon: require("./../../../static/images/search.png"),
-          path: "",
-        },
-        {
-          name: "查看相片和影片",
-          icon: require("./../../../static/images/image_icon.png"),
-          path: "",
-        },
+        // {
+        //   name: "在对话中搜寻",
+        //   icon: require("./../../../static/images/search.png"),
+        //   path: "",
+        // },
+        // {
+        //   name: "查看相片和影片",
+        //   icon: require("./../../../static/images/image_icon.png"),
+        //   path: "",
+        // },
       ],
       dialogContent: "",
       notification: true,

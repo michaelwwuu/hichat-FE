@@ -13,15 +13,7 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <p
-            :class="[
-              {
-                reply: el.isRplay !== null,
-              },
-            ]"
-            :id="el.historyId"
-          >
-          
+          <p>
             <span
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
@@ -110,6 +102,14 @@
               $root.formatTimeSecound(el.chat.sendTime)
             }}</span>
           </p>
+          <div class="read-check-box">
+            <span class="read-check" v-if="el.isRead"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+            <span class="read-check2"
+              ><img src="./../../static/images/check.png" alt=""
+            /></span>
+          </div>
         </li>
       </div>
     </ul>
@@ -129,6 +129,7 @@ import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { unpinHistory,pinList  } from "@/api";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
+import { throws } from "assert";
 
 export default {
   name: "MessagePabel",
@@ -136,9 +137,9 @@ export default {
     userInfoData: {
       type: Object,
     },
-    messageData: {
-      type: Array,
-    },
+    contactUser:{
+      type: Object,
+    }
   },
   data() {
     return {
@@ -154,38 +155,16 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
-  watch: {
-    // messageData(val) {
-    //   //去除重复
-    //   const set = new Set();
-    //   this.message = val.filter((item) =>{
-    //     if(item.chatType === "SRV_CHAT_PIN"){
-    //       if(!set.has(item.historyId)){
-    //         return set.add(item.historyId)
-    //       } else {
-    //         return false
-    //       }
-    //     }
-    //   });
-    //   this.newMessageData = {};
-    //   this.message.forEach((el) => {
-    //     this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-    //     let newData = this.message.filter((res) => {
-    //       return (
-    //         this.$root.formatTimeDay(res.message.time) ===
-    //         this.$root.formatTimeDay(el.message.time)
-    //       );
-    //     });
-    //     this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-    //       newData;
-    //   });
-    //   this.$root.gotoBottom();
-    // },
+  watch:{
+    topMsgShow(val){
+      !val ? this.getPinList() : false
+    },
   },
   computed: {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
       soundNofiy: (state) => state.ws.soundNofiy,
+      topMsgShow: (state) => state.ws.topMsgShow,
     }),
   },
   mounted() {
@@ -199,7 +178,7 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 200 ||
           (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
@@ -208,15 +187,19 @@ export default {
   },
   methods: {
     getPinList() {
-      let toChatId = this.chatUser.toChatId;
+      let toChatId = ""
+      if(this.contactUser !== undefined){
+        toChatId = this.contactUser.toChatId;
+      } else{
+        toChatId = this.chatUser.toChatId;
+      }
       pinList({ toChatId }).then((res) => {
         if(res.code === 200){
-          this.pinDataList = res.data
+          this.pinDataList = res.data.reverse()
           this.newMessageData = {};
           this.pinDataList.forEach((el) => {
             this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] = [];
             let newData = this.pinDataList.filter((res) => {
-              console.log(res)
               return (
                 this.$root.formatTimeDay(res.chat.sendTime) ===
                 this.$root.formatTimeDay(el.chat.sendTime)
@@ -225,16 +208,10 @@ export default {
             this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
               newData;
           });
+          this.$root.gotoBottom();
         }
       });
     },    
-    goAnchor(data) {
-      document.getElementById(data).classList.add("blink");
-      document.getElementById(data).scrollIntoView(true);
-      setTimeout(() => {
-        document.getElementById(data).classList.remove("blink");
-      }, 3000);
-    },
     isBase64(data) {
       var base64Rejex =
         /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
@@ -279,7 +256,6 @@ export default {
         return "message-layout-left";
       }
     },
-
     onContextmenu(data) {
       let item = [
         {
@@ -290,10 +266,16 @@ export default {
           },
         },
         {
-          name: "copy",
-          label: "轉傳",
+          name: "download",
+          label: "下載",
           onClick: () => {
-       
+            this.downloadImages(data);
+          },
+        },
+        {
+          name: "share",
+          label: "分享",
+          onClick: () => {
           },
         },
         {
@@ -304,8 +286,28 @@ export default {
           },
         },
       ];
+      if(data.chatType === "SRV_USER_SEND"){
+        this.newItem = item.filter((list) => {
+          return (
+            list.name !== "share" &&
+            list.name !== "download"
+          );
+        });
+      }else if(data.chatType === "SRV_USER_IMAGE"){
+        this.newItem = item.filter((list) => {
+          return (
+            list.name !== "copy" 
+          );
+        });
+      }else if(data.chatType === "SRV_USER_AUDIO"){
+        this.newItem = item.filter((list) => {
+          return (
+            list.name === "upDown"
+          );
+        });
+      }
       this.$contextmenu({
-        items: item,
+        items: this.newItem,
         // event,
         x: event.clientX,
         y: event.clientY,
@@ -315,6 +317,36 @@ export default {
       });
       return false;
     },
+    downloadImages(data) {
+      let hreLocal = "";
+      hreLocal = this.isBase64(data.chat.text);
+      this.downloadByBlob(hreLocal, "images");
+    },
+    downloadByBlob(url, name) {
+      let image = new Image();
+      image.setAttribute("crossOrigin", "anonymous");
+      image.src = url;
+      image.onload = () => {
+        let canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        canvas.toBlob((blob) => {
+          let url = URL.createObjectURL(blob);
+          this.download(url, name);
+          // 用完释放URL对象
+          URL.revokeObjectURL(url);
+        });
+      };
+    },
+    download(href, name) {
+      let link = document.createElement("a");
+      link.download = name;
+      link.href = href;
+      link.click();
+      link.remove();
+    },
     topMsgAction(data){
       let param ={
         historyId: data.historyId,
@@ -323,26 +355,27 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.$emit("resetPinMsg");
+          this.getPinList()
         }
       })
     },
     copyPaste(data) {
+      console.log(data)
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.isRplay.text.replace(/(\s*$)/g, "");
+      url.value = data.chat.text.replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);
 
       this.$message({
         message: `${
-          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : url.value
+          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : this.isBase64(url.value)
         } 复制成功`,
         type: "success",
         duration: 1000,
       });
     },
-
   },
 };
 </script>
@@ -786,7 +819,8 @@ export default {
   right: 30px;
   bottom: 80px;
   border-radius: 50px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 9;
 }
 .link-style {
   padding: 10px 0;

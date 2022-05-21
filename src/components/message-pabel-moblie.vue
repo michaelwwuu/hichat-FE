@@ -167,12 +167,7 @@
           
           <template v-else-if="el.chatType === 'SRV_CHAT_PIN'">
             <div class="top-msg-style"> 
-              <span>{{el.message.content}}置顶了消息</span>
-            </div>
-          </template>
-          <template v-else-if="el.chatType === 'SRV_CHAT_UNPIN'">
-            <div class="top-msg-style"> 
-              <span>{{el.message.content}}取消置顶了消息</span>
+              <span>{{pinUserName(el.message.content)}}置顶了一則訊息</span>
             </div>
           </template>
         </li>
@@ -294,7 +289,7 @@ export default {
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
           (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
-          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
+          (scrollTopBox.scrollHeight - scrollTop) / 3 > 170;
       },
       true
     );
@@ -304,6 +299,14 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    pinUserName(data){
+      // console.log(JSON.parse(localStorage.getItem("myUserInfo")))
+      if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
+        return data = "你"
+      } else{
+        return data
+      }
+    },
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
@@ -569,7 +572,7 @@ export default {
     },
     downloadImages(data) {
       let hreLocal = "";
-      hreLocal = data.message.content;
+      hreLocal = this.isBase64(data.message.content);
       this.downloadByBlob(hreLocal, "images");
     },
     downloadByBlob(url, name) {
@@ -1072,7 +1075,8 @@ export default {
   right: 30px;
   bottom: 80px;
   border-radius: 50px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 9;
 }
 .link-style {
   padding: 10px 0;

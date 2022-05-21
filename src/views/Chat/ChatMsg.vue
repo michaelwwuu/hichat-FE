@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-container v-show="topMsgShow">
+    <el-container v-if="topMsgShow">
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
@@ -142,66 +142,77 @@
             <li @click="addUser(chatUser)">加入联络人</li>
           </ul>
         </div>
-        <!-- 置頂訊息 -->
-        <div class="top-msg" v-if="pinMsg !==''">
-          <div class="top-msg-left">
-            <img src="./../../../static/images/pin.png" alt="">
-            <span>置顶消息 : {{isBase64(pinMsg)}}</span>
-          </div>
-          <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
-        </div>
-        <message-pabel
+        <el-main
           v-loading="loading"
           element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
-          :messageData="messageData"
-          :userInfoData="userInfoData"
-          @deleteMsgHistoryData="deleteMsgData"
-        />
-        <div
-          class="reply-message"
-          v-if="
-            replyMsg.clickType === 'replyMsg' ||
-            replyMsg.clickType === 'editMsg'
-          "
         >
-          <img
-            :src="noIconShow(replyMsg)"
-            alt=""
-            style="height: 2.5em; width: 2.5em; border-radius: 5px"
+          <!-- 置頂訊息 -->
+          <div class="top-msg" v-if="pinMsg !== ''">
+            <div class="top-msg-left">
+              <img src="./../../../static/images/pin.png" alt="" />
+              <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
+                <img :src="isBase64(pinMsg)" alt="">
+              </span>
+              <span v-else>{{ isBase64(pinMsg) }}</span>
+            </div>
+            <img
+              class="top-msg-right"
+              src="./../../../static/images/next.png"
+              alt=""
+              @click="goTopMsgShow"
+            />
+          </div>
+          <message-pabel
+            :messageData="messageData"
+            :userInfoData="userInfoData"
+            @deleteMsgHistoryData="deleteMsgData"
           />
-          <div class="reply-message-box">
-            <span>{{ replyMsg.name }}</span>
-            <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
-              replyMsg.innerText.length > 110
-                ? replyMsg.innerText.substr(0, 110) + " ..."
-                : replyMsg.innerText
-            }}</span>
-            <span
-              v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'"
-              class="replyMsg-Img"
-            >
-              <img :src="replyMsg.innerText" alt="" />
-            </span>
-            <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'"
-              >回復語音訊息</span
-            >
+          <div
+            class="reply-message"
+            v-if="
+              replyMsg.clickType === 'replyMsg' ||
+              replyMsg.clickType === 'editMsg'
+            "
+          >
+            <img
+              :src="noIconShow(replyMsg)"
+              alt=""
+              style="height: 2.5em; width: 2.5em; border-radius: 5px"
+            />
+            <div class="reply-message-box">
+              <span>{{ replyMsg.name }}</span>
+              <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
+                replyMsg.innerText.length > 110
+                  ? replyMsg.innerText.substr(0, 110) + " ..."
+                  : replyMsg.innerText
+              }}</span>
+              <span
+                v-else-if="replyMsg.chatType === 'SRV_USER_IMAGE'"
+                class="replyMsg-Img"
+              >
+                <img :src="replyMsg.innerText" alt="" />
+              </span>
+              <span v-else-if="replyMsg.chatType === 'SRV_USER_AUDIO'"
+                >回復語音訊息</span
+              >
+            </div>
+            <div class="reply-close-btn" @click="closeReplyMessage">
+              <i class="el-icon-close"></i>
+            </div>
           </div>
-          <div class="reply-close-btn" @click="closeReplyMessage">
-            <i class="el-icon-close"></i>
+          <div class="disabled-user" v-if="chatUser.isBlock">
+            <span>該用戶已被封鎖</span>
           </div>
-        </div>
-        <div class="disabled-user" v-if="chatUser.isBlock">
-          <span>該用戶已被封鎖</span>
-        </div>
-        <message-input
-          :userInfoData="userInfoData"
-          :userData="chatUser"
-          v-else
-        />
+          <message-input
+            :userInfoData="userInfoData"
+            :userData="chatUser"
+            v-else
+          />
+        </el-main>
       </el-main>
     </el-container>
-    <el-container v-show="!topMsgShow">
+    <el-container v-if="!topMsgShow">
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
@@ -215,114 +226,23 @@
               >
                 <div class="home-user" @click="setTopMsgShow(true)"></div>
               </span>
-              <span class="home-header-title">置顶消息 : {{ isBase64(pinMsg) }}</span>
-              <div v-if="chatUser.isContact" class="home-user-search" style="right: 0;"></div>
+              <span class="home-header-title">置顶訊息</span>
             </div>
           </template>
           <template v-else>
             <div class="home-header-pc">
-              <span
-                class="home-photo-link"
-                @click="setTopMsgShow(true)"
-              >
-                <span style="padding-right: 10px" 
-                  ><img
-                    src="./../../../static/images/pc/arrow-left.png"
-                    alt=""
+              <span class="home-photo-link" @click="setTopMsgShow(true)">
+                <span style="padding-right: 10px"
+                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
                 /></span>
-                <span>置顶消息 : {{ isBase64(pinMsg) }}</span>
+                <span>置顶訊息</span>
               </span>
-              <template v-if="chatUser.isContact">
-                <div
-                  class="home-user-search"
-                  :style="
-                    chatUser.forChatId === chatUser.toChatId
-                      ? 'right: 30px'
-                      : ''
-                  "
-                ></div>
-                <el-dropdown
-                  trigger="click"
-                  v-if="chatUser.forChatId !== chatUser.toChatId"
-                >
-                  <div class="el-dropdown-link">
-                    <div class="home-user-more"></div>
-                  </div>
-                  <el-dropdown-menu slot="dropdown" class="chat-more">
-                    <el-dropdown-item>
-                      <div class="logout-btn">
-                        <img
-                          src="./../../../static/images/pc/bell-off.png"
-                          alt=""
-                        />
-                        <span>關閉通知</span>
-                      </div>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <div class="logout-btn" @click="isBlockDialogShow = true">
-                        <img
-                          src="./../../../static/images/pc/slash.png"
-                          alt=""
-                        />
-                        <span>{{
-                          chatUser.isBlock ? "解除封锁" : "封锁联络人"
-                        }}</span>
-                      </div>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <div
-                        class="logout-btn"
-                        @click="isDeleteContactDialogShow = true"
-                      >
-                        <img
-                          src="./../../../static/images/pc/trash.png"
-                          alt=""
-                        />
-                        <span style="color: #ee5253">删除联络人</span>
-                      </div>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-              <template v-else>
-                <div class="contact-box">
-                  <ul>
-                    <li @click="deleteDialogShow = true">
-                      <img
-                        src="./.../../../../../static/images/pc/trash.png"
-                        alt=""
-                      />删除
-                    </li>
-                    <li @click="isBlockDialogShow = true">
-                      <img
-                        src="./.../../../../../static/images/pc/slash-red.png"
-                        alt=""
-                      />
-                      {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
-                    </li>
-                    <li @click="addUser(chatUser)">
-                      <img
-                        src="./.../../../../../static/images/pc/user-plus-block.png"
-                        alt=""
-                      />加入联络人
-                    </li>
-                  </ul>
-                </div>
-              </template>
             </div>
           </template>
-       </el-header>
-       <message-pin
-          v-loading="loading"
-          element-loading-text="讯息加载中"
-          element-loading-background="rgba(255, 255, 255, 0.5)"
-          :userInfoData="userInfoData"
-          @resetPinMsg="resetPinMsg"
-        />
-          <!-- :messageData="messageData" -->
-        
+        </el-header>
+        <message-pin :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
         <div class="top-msg-bottom" @click="untopMsgAction">
-          <span>取消所有置顶讯息</span>
+          <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
       </el-main>
     </el-container>
@@ -465,8 +385,8 @@ export default {
       },
       userData: {},
       readMsgData: [],
-      pinDataList:[],
-      pinMsg:"",
+      pinDataList: [],
+      pinMsg: "",
       loading: false,
       deleteDialogShow: false,
       successDialogShow: false,
@@ -479,15 +399,20 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
+  watch:{
+    topMsgShow(val){
+      val ? this.getChatHistoryMessage() : false
+    }
+  },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     if (this.userData !== null) {
       this.setChatUser(this.userData);
-      if(this.device === "moblie") this.getChatHistoryMessage();
+      if (this.device === "moblie") this.getChatHistoryMessage();
     }
-    if(this.device === "moblie") this.getUserId(this.userData);
+    if (this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
-    this.getPinList()
+    this.getPinList();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -512,40 +437,44 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setChatMsgData: "ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
-      setTopMsgShow:"ws/setTopMsgShow"
+      setTopMsgShow: "ws/setTopMsgShow",
     }),
-    goTopMsgShow(){
-      this.setTopMsgShow(false)
+    goTopMsgShow() {
+      this.setTopMsgShow(false);
     },
-    untopMsgAction(){
-      let param ={
-        toChatId: this.chatUser.toChatId
-      }
+    untopMsgAction() {
+      let param = {
+        toChatId: this.chatUser.toChatId,
+      };
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
-          this.setTopMsgShow(true)
+          this.setTopMsgShow(true);
         }
-      })
+      });
     },
-    resetPinMsg(){
-     this.getPinList()
+    resetPinMsg() {
+      this.getPinList();
     },
     getPinList() {
       let toChatId = this.chatUser.toChatId;
       pinList({ toChatId }).then((res) => {
-        if(res.code === 200){
-          this.pinDataList = res.data
-          this.pinMsg = res.data[0].chat.text
-          this.messageData.forEach((data)=>{
-            this.pinDataList.forEach((list)=>{
-              if(data.historyId === list.historyId){
-                data.isPing = true
+        if (res.code === 200) {
+          this.pinDataList = res.data;
+          if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
+            this.pinMsg = "語音訊息";
+          } else {
+            this.pinMsg = this.pinDataList[0].chat.text;
+          }
+          this.messageData.forEach((data) => {
+            this.pinDataList.forEach((list) => {
+              if (data.historyId === list.historyId) {
+                data.isPing = true;
               }
-            })
-          })
+            });
+          });
         }
       });
-    },    
+    },
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -598,7 +527,7 @@ export default {
         name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
-        isPing:false,
+        isPing: false,
       };
     },
     //判斷是否base64
@@ -671,9 +600,9 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-        case "SRV_CHAT_PIN":   
-          this.pinMsg = ""
-          this.getPinList()
+        case "SRV_CHAT_PIN":
+          this.pinMsg = "";
+          this.getPinList();
           if (userInfo.toChatId === this.chatUser.toChatId) {
             if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
               userInfo.chat.name = this.chatUser.name;
@@ -685,7 +614,7 @@ export default {
             ) {
               userInfo.chat.name = this.myUserInfo.nickname;
               userInfo.chat.icon = this.myUserInfo.icon;
-            }  
+            }
             if (userInfo.replyChat !== null) {
               if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
                 userInfo.replyChat.name = this.chatUser.name;
@@ -704,19 +633,22 @@ export default {
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
             if (this.device === "pc") this.getHiChatDataList();
-            if(userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))){
+            if (
+              userInfo.chat.fromChatId !==
+              "u" + JSON.parse(localStorage.getItem("id"))
+            ) {
               this.audioAction();
-            }            
+            }
           }
           break;
         case "SRV_CHAT_UNPIN":
-          this.pinMsg = ""
-          this.getPinList()
+          this.pinMsg = "";
+          this.getPinList();
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
-          this.pinMsg = ""
-          this.getPinList()
+          this.pinMsg = "";
+          this.getPinList();
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -751,7 +683,7 @@ export default {
                 }
                 if (el.toChatId === this.chatUser.toChatId) {
                   this.messageList(el);
-                  this.messageData.unshift(this.chatRoomMsg);               
+                  this.messageData.unshift(this.chatRoomMsg);
                 }
               });
               this.readMsg = historyMsgList.filter((el) => {
@@ -970,6 +902,8 @@ export default {
     }
     .el-main {
       padding: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
     .el-header {
       position: relative;
@@ -1326,18 +1260,19 @@ export default {
 }
 .top-msg {
   background-color: #ffffff;
-  padding: 16px 35px 15px 20px;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .top-msg-left{
+  border-bottom: 0.01em solid rgba(0, 0, 0, 0.05);
+  .top-msg-left {
     display: flex;
     align-items: center;
     img {
       height: 1.5em;
     }
   }
-  .top-msg-right{
+  .top-msg-right {
     height: 1.2em;
     cursor: pointer;
   }

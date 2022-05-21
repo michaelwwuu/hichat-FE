@@ -264,6 +264,7 @@ export default {
       Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
       this.setActiveName(this.hichatNav.type);
+      this.setTopMsgShow(true);
       this.closeReplyMessage();
     },
     //判斷是否base64

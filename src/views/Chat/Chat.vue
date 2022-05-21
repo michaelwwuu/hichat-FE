@@ -39,57 +39,63 @@
             </el-dropdown>
           </div>
         </el-header>
-        <!-- 置頂訊息 -->
-        <div class="top-msg" v-if="pinMsg !==''">
-          <div class="top-msg-left">
-            <img src="./../../../static/images/pin.png" alt="">
-            <span>置顶消息 : {{pinMsg}}</span>
-          </div>
-          <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
-        </div>
-        <message-pabel
+        <el-main
           v-loading="loading"
           element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
-          :messageData="messageData"
-          :userInfoData="userInfoData"
-          @deleteMsgHistoryData="deleteMsgData"
-          @resetPinMsg="resetPinMsg"
-        />
-        <div
-          class="reply-message"
-          v-if="
-            replyMsg.clickType === 'replyMsg' ||
-            replyMsg.clickType === 'editMsg'
-          "
-        >
-          <img
-            :src="noIconShow(replyMsg)"
-            alt=""
-            style="height: 2.5em; width: 2.5em; border-radius: 5px"
+        >        
+          <!-- 置頂訊息 -->
+          <div class="top-msg" v-if="pinMsg !==''">
+            <div class="top-msg-left">
+              <img src="./../../../static/images/pin.png" alt="">
+              <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
+                <img :src="isBase64(pinMsg)" alt="">
+              </span>
+              <span v-else>{{ isBase64(pinMsg) }}</span>
+            </div>
+            <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
+          </div>
+          <message-pabel
+            :messageData="messageData"
+            :userInfoData="userInfoData"
+            @deleteMsgHistoryData="deleteMsgData"
+            @resetPinMsg="resetPinMsg"
           />
-          <div class="reply-message-box">
-            <span>{{ replyMsg.name }}</span>
-            <span v-if="replyMsg.chatType === 'SRV_GROUP_SEND'">{{
-              replyMsg.innerText.length > 110
-                ? replyMsg.innerText.substr(0, 110) + " ..."
-                : replyMsg.innerText
-            }}</span>
-            <span
-              v-else-if="replyMsg.chatType === 'SRV_GROUP_IMAGE'"
-              class="replyMsg-Img"
-            >
-              <img :src="replyMsg.innerText" alt="" />
-            </span>
-            <span v-else-if="replyMsg.chatType === 'SRV_GROUP_AUDIO'"
-              >回復語音訊息</span
-            >
+          <div
+            class="reply-message"
+            v-if="
+              replyMsg.clickType === 'replyMsg' ||
+              replyMsg.clickType === 'editMsg'
+            "
+          >
+            <img
+              :src="noIconShow(replyMsg)"
+              alt=""
+              style="height: 2.5em; width: 2.5em; border-radius: 5px"
+            />
+            <div class="reply-message-box">
+              <span>{{ replyMsg.name }}</span>
+              <span v-if="replyMsg.chatType === 'SRV_GROUP_SEND'">{{
+                replyMsg.innerText.length > 110
+                  ? replyMsg.innerText.substr(0, 110) + " ..."
+                  : replyMsg.innerText
+              }}</span>
+              <span
+                v-else-if="replyMsg.chatType === 'SRV_GROUP_IMAGE'"
+                class="replyMsg-Img"
+              >
+                <img :src="replyMsg.innerText" alt="" />
+              </span>
+              <span v-else-if="replyMsg.chatType === 'SRV_GROUP_AUDIO'"
+                >回復語音訊息</span
+              >
+            </div>
+            <div class="reply-close-btn" @click="closeReplyMessage">
+              <i class="el-icon-close"></i>
+            </div>
           </div>
-          <div class="reply-close-btn" @click="closeReplyMessage">
-            <i class="el-icon-close"></i>
-          </div>
-        </div>
-        <message-input :userInfoData="userInfoData" :groupData="groupUser" />
+          <message-input :userInfoData="userInfoData" :groupData="groupUser" />
+        </el-main>
       </el-main>
     </el-container>
     <el-container v-show="!topMsgShow">
@@ -105,7 +111,7 @@
                   src="./../../../static/images/pc/arrow-left.png"
                   alt=""
               /></span>
-              <span>置顶消息 : {{ pinMsg }}</span>
+              <span>{{ isBase64(pinMsg) }}</span>
             </span>
             <el-dropdown trigger="click">
               <div class="el-dropdown-link">
@@ -133,16 +139,11 @@
           </div>
         </el-header>
         <message-pin
-          v-loading="loading"
-          element-loading-text="讯息加载中"
-          element-loading-background="rgba(255, 255, 255, 0.5)"
-          :messageData="messageData"
           :userInfoData="userInfoData"
           @resetPinMsg="resetPinMsg"
         />
-        
         <div class="top-msg-bottom" @click="untopMsgAction">
-          <span>取消所有置顶讯息</span>
+          <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
       </el-main>
     </el-container>
@@ -180,7 +181,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
-import { groupListMember, leaveGroup,pinList } from "@/api";
+import { groupListMember, leaveGroup,pinList,unpinHistory } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
@@ -242,13 +243,20 @@ export default {
     }),
     resetPinMsg(){
      this.getPinList()
-    },
+    },    
     goTopMsgShow(){
       this.setTopMsgShow(false)
-    },
-    untopMsgAction(){
-
-    },
+    }, 
+    untopMsgAction() {
+      let param = {
+        toChatId: this.groupData.toChatId,
+      };
+      unpinHistory(param).then((res) => {
+        if (res.code === 200) {
+          this.setTopMsgShow(true);
+        }
+      });
+    },     
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -286,21 +294,25 @@ export default {
       });
     },
     getPinList() {
-      let toChatId = this.groupUser.toChatId;
+      let toChatId = this.groupData.toChatId;
       pinList({ toChatId }).then((res) => {
-        if(res.code === 200){
-          this.pinDataList = res.data
-          if(this.pinDataList.length > 0) this.pinMsg = res.data[0].chat.text
-          this.messageData.forEach((data)=>{
-            this.pinDataList.forEach((list)=>{
-              if(data.historyId === list.historyId){
-                data.isPing = true
+        if (res.code === 200) {
+          this.pinDataList = res.data;
+          if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
+            this.pinMsg = "語音訊息";
+          } else {
+            this.pinMsg = this.pinDataList[0].chat.text;
+          }
+          this.messageData.forEach((data) => {
+            this.pinDataList.forEach((list) => {
+              if (data.historyId === list.historyId) {
+                data.isPing = true;
               }
-            })
-          })
+            });
+          });
         }
       });
-    },
+    },    
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
@@ -879,10 +891,11 @@ export default {
 }
 .top-msg {
   background-color: #ffffff;
-  padding: 16px 35px 15px 20px;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 0.01em solid rgba(0, 0, 0, 0.05);
   .top-msg-left{
     display: flex;
     align-items: center;
