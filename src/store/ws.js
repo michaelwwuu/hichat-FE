@@ -78,12 +78,16 @@ export const state = {
       key: 'group',
     },
   ],
+  goAnchorMessage:{},
   device: localStorage.getItem("device"),
   topMsgShow:true,
 };
 export const actions = {};
 
 export const mutations = {
+  setGoAnchorMessage(state, payload) {
+    state.goAnchorMessage = payload;
+  },
   setTopMsgShow(state, payload) {
     state.topMsgShow = payload;
   },

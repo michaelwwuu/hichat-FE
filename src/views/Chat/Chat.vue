@@ -212,6 +212,11 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
+  watch:{
+    topMsgShow(val){
+      val ? this.getChatHistoryMessage() : false
+    }
+  },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     if (this.groupData !== null) this.setChatGroup(this.groupData);
@@ -249,7 +254,7 @@ export default {
     }, 
     untopMsgAction() {
       let param = {
-        toChatId: this.groupData.toChatId,
+        toChatId: this.groupUser.toChatId,
       };
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
@@ -270,6 +275,16 @@ export default {
         return iconData.icon;
       }
     },
+    // 獲取歷史訊息
+    getChatHistoryMessage() {
+      let historyMessageData = this.userInfoData;
+      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
+      historyMessageData.id = Math.random();
+      historyMessageData.toChatId = this.groupUser.toChatId;
+      historyMessageData.targetId = "";
+      historyMessageData.pageSize = 1000;
+      Socket.send(historyMessageData);
+    },    
     closeReplyMessage() {
       this.setReplyMsg({
         name: "",
@@ -294,7 +309,7 @@ export default {
       });
     },
     getPinList() {
-      let toChatId = this.groupData.toChatId;
+      let toChatId = this.groupUser.toChatId;
       pinList({ toChatId }).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
@@ -314,7 +329,7 @@ export default {
       });
     },    
     getGroupListMember() {
-      let groupId = this.groupData.toChatId.replace("g", "");
+      let groupId = this.groupUser.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
@@ -416,6 +431,9 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+        case "SRV_CHAT_PIN":
+          this.pinMsg = "";
+          this.getPinList();          
           if (this.groupUser.toChatId === userInfo.toChatId) {
             this.base64Msg = this.isBase64(userInfo.chat.text);
             userInfo.chat.newContent = this.base64Msg.split(" ");
@@ -448,11 +466,15 @@ export default {
             }
           }
           break;
+        case "SRV_CHAT_UNPIN":
+          this.pinMsg = "";
+          this.getPinList();
+          break;          
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.messageData = [];
           this.pinMsg = ""
           this.getPinList()
+          this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           let timeOut = historyMsgList.length * 40;
@@ -608,6 +630,8 @@ export default {
     }
     .el-main {
       padding: 0;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
     .el-header {
       padding: 0;

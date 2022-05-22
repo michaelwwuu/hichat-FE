@@ -275,6 +275,7 @@ export default {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
       soundNofiy: (state) => state.ws.soundNofiy,
+      goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
   },
   mounted() {
@@ -288,8 +289,8 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
-          (scrollTopBox.scrollHeight - scrollTop) / 3 > 170;
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 200 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
     );

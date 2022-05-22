@@ -176,7 +176,7 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-    this.getPinList()
+    // this.getPinList()
   },
   mounted() {
     this.getChatHistoryMessage();
@@ -353,6 +353,9 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+        case "SRV_CHAT_PIN":
+          this.pinMsg = "";
+          this.getPinList();          
           if (this.groupUser.toChatId === userInfo.toChatId) {
             this.base64Msg = this.isBase64(userInfo.chat.text);
             userInfo.chat.newContent = this.base64Msg.split(" ");
@@ -388,8 +391,14 @@ export default {
             }
           }
           break;
+        case "SRV_CHAT_UNPIN":
+          this.pinMsg = "";
+          this.getPinList();
+          break;          
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
+          this.pinMsg = "";
+          this.getPinList();          
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -535,8 +544,8 @@ export default {
     }
     .el-main {
       padding: 0;
-      border-radius: 0;
-      box-shadow: none;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
     .el-header {
       padding: 0;

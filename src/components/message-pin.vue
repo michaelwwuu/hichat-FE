@@ -98,9 +98,10 @@
                 :preview-src-list="[isBase64(el.chat.text)]"
               />
             </span>
-            <span class="nickname-time">{{
-              $root.formatTimeSecound(el.chat.sendTime)
-            }}</span>
+            <span class="nickname-time">
+              <img class="go-message" src="./../../static/images/gotomessage.png" alt="" @click="goMessageAction(el.chat)">
+              <span>{{ $root.formatTimeSecound(el.chat.sendTime) }}</span>
+            </span>
           </p>
           <div class="read-check-box">
             <span class="read-check" v-if="el.isRead"
@@ -129,7 +130,6 @@ import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { unpinHistory,pinList  } from "@/api";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
-import { throws } from "assert";
 
 export default {
   name: "MessagePabel",
@@ -186,6 +186,14 @@ export default {
     this.getPinList()
   },
   methods: {
+    ...mapMutations({
+      setTopMsgShow:"ws/setTopMsgShow",
+      setGoAnchorMessage: "ws/setGoAnchorMessage",
+    }),
+    goMessageAction(data){
+      this.setGoAnchorMessage(data)
+      this.setTopMsgShow(true)
+    },
     getPinList() {
       let toChatId = ""
       if(this.contactUser !== undefined){
@@ -516,9 +524,18 @@ export default {
         border-radius: 0 8px 8px 8px;
       }
       .nickname-time {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         color: #777777;
         font-size: 12px;
         padding-left: 10px;
+        .go-message{
+          height: 1.5em;
+          width: fit-content;
+          margin-bottom: 10px;
+          cursor: pointer;
+        }
       }
       .read-check-box {
         display: none;
@@ -583,9 +600,18 @@ export default {
         border-radius: 8px 0 8px 8px;
       }
       .nickname-time {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         color: #777777;
         font-size: 12px;
         padding-right: 10px;
+        .go-message{
+          height: 1.5em;
+          width: fit-content;
+          margin-bottom: 10px;
+          cursor: pointer;
+        }
       }
       .read-check-box {
         display: flex;

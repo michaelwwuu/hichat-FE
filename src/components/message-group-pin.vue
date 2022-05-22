@@ -109,9 +109,10 @@
               </div>
             </span>
 
-            <span class="nickname-time">{{
-              $root.formatTimeSecound(el.chat.sendTime)
-            }}</span>
+            <span class="nickname-time">
+              <img class="go-message" src="./../../static/images/gotomessage.png" alt="" @click="goMessageAction(el.chat)">
+              <span>{{ $root.formatTimeSecound(el.chat.sendTime) }}</span>
+            </span>
           </p>
           <div class="read-check-box">
             <span class="read-check" v-if="el.isRead"
@@ -193,6 +194,9 @@ export default {
     this.getPinList()
   },
   methods: {
+    goMessageAction(data){
+      console.log(data)
+    },
     getPinList() {
       let toChatId = this.groupUser.toChatId;
       pinList({ toChatId }).then((res) => {
@@ -216,7 +220,6 @@ export default {
             this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
               newData;
           });
-          console.log(this.newMessageData )
           this.$root.gotoBottom();
         }
       });
@@ -471,9 +474,18 @@ export default {
         border-radius: 0 8px 8px 8px;
       }
       .nickname-time {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         color: #777777;
         font-size: 12px;
         padding-left: 10px;
+        .go-message{
+          height: 1.5em;
+          width: fit-content;
+          margin-bottom: 10px;
+          cursor: pointer;
+        }
       }
       .read-check-box {
         display: none;
@@ -538,9 +550,18 @@ export default {
         border-radius: 8px 0 8px 8px;
       }
       .nickname-time {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         color: #777777;
         font-size: 12px;
         padding-right: 10px;
+        .go-message{
+          height: 1.5em;
+          width: fit-content;
+          margin-bottom: 10px;
+          cursor: pointer;
+        }
       }
       .read-check-box {
         display: flex;

@@ -801,6 +801,8 @@ export default {
     }
     .el-main {
       padding: 0;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
     .el-header {
       position: relative;

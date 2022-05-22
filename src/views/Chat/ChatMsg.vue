@@ -412,7 +412,7 @@ export default {
     }
     if (this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
-    this.getPinList();
+    // this.getPinList();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -548,10 +548,7 @@ export default {
       let historyMessageData = this.userInfoData;
       historyMessageData.chatType = "CLI_HISTORY_REQ";
       historyMessageData.id = Math.random();
-      historyMessageData.toChatId =
-        this.userData.toChatId === undefined
-          ? "u" + this.userData.contactId
-          : this.userData.toChatId;
+      historyMessageData.toChatId = this.chatUser.toChatId;
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
@@ -902,8 +899,8 @@ export default {
     }
     .el-main {
       padding: 0;
-      border-radius: 0;
-      box-shadow: none;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
     .el-header {
       position: relative;
