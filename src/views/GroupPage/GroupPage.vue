@@ -41,7 +41,7 @@
             </a>
           </div>
 
-          <div
+          <!-- <div
             class="setting-notification"
             @click="developmentMessage('提醒通知')"
           >
@@ -56,8 +56,8 @@
               disabled
             >
             </el-switch>
-          </div>
-          <div class="setting-button" v-if="groupData.isAdmin">
+          </div> -->
+          <div class="setting-button mt10" v-if="groupData.isAdmin">
             <a @click="goChatRoom(groupData, 'SettingGroup')">
               <div class="setting-button-left">
                 <img src="./../../../static/images/key.png" alt="" />
@@ -126,16 +126,16 @@ export default {
           icon: require("./../../../static/images/chat_icon.png"),
           path: "ChatGroupMsg",
         },
-        {
-          name: "在对话中搜寻",
-          icon: require("./../../../static/images/search.png"),
-          path: "",
-        },
-        {
-          name: "查看相片和影片",
-          icon: require("./../../../static/images/image_icon.png"),
-          path: "",
-        },
+        // {
+        //   name: "在对话中搜寻",
+        //   icon: require("./../../../static/images/search.png"),
+        //   path: "",
+        // },
+        // {
+        //   name: "查看相片和影片",
+        //   icon: require("./../../../static/images/image_icon.png"),
+        //   path: "",
+        // },
         {
           name: "成員",
           icon: require("./../../../static/images/users.png"),
@@ -319,5 +319,8 @@ export default {
       }
     }
   }
+}
+.mt10 {
+  margin-top: 1em;
 }
 </style>

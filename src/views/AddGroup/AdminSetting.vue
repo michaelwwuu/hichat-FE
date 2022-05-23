@@ -5,7 +5,7 @@
         <el-header height="125px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">管理員設定</span>
+            <span class="home-header-title">管理员设定</span>
             <router-link
               :to="''"
             >
@@ -48,7 +48,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
-            >儲存編輯</el-button
+            >储存编辑</el-button
           >
         </div>
       </el-main>

@@ -5,7 +5,7 @@
         <el-header height="125px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">禁言設定</span>
+            <span class="home-header-title">禁言设定</span>
             <div class="home-add-user"></div>
           </div>
           <div class="home-search">
@@ -37,7 +37,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
-            >儲存設定</el-button
+            >储存设定</el-button
           >
         </div>
       </el-main>

@@ -507,7 +507,7 @@ export default {
           }
           .el-image {
             width: -webkit-fill-available !important;
-            height: 11em !important;
+            height: 9em !important;
             top: 0;
             /deep/.el-image__inner {
               height: unset;
@@ -594,7 +594,7 @@ export default {
         border-radius: 10px;
         .el-image {
           width: -webkit-fill-available !important;
-          height: 11em !important;
+          height: 9em !important;
           top: 0;
           /deep/.el-image__inner {
             height: unset;
@@ -683,7 +683,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 11em !important;
+            height: 9em !important;
             top: 0;
             /deep/.el-image__inner {
               height: 100%;
@@ -695,7 +695,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 11em !important;
+            height: 9em !important;
             top: 0;
             /deep/.el-image__inner {
               height: 100%;

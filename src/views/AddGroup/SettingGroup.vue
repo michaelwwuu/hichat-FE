@@ -5,12 +5,12 @@
         <el-header height="60px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">權限</span>
+            <span class="home-header-title">权限</span>
             <div class="home-add-user"></div>
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群組成員</div>
+          <div class="setting-title">群组成员</div>
           <div
             class="setting-button"
             v-for="(item, index) in messagePermissionData"
@@ -51,7 +51,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
-            >儲存設定</el-button
+            >储存设定</el-button
           >
         </div>
       </el-main>
@@ -70,17 +70,17 @@ export default {
     return {
       messagePermissionData:[
         {
-          name:"傳送訊息與媒體檔案",
+          name:"传送讯息与媒体档案",
           key:"sendMessageFile",
           isCheck:true,
         },
         {
-          name:"查看群組成員資訊",
+          name:"查看群组成员资讯",
           key:"lookGroupInfo",
           isCheck:true,
         },
         {
-          name:"置頂訊息",
+          name:"置顶讯息",
           key:"topMsg",
           isCheck:true,
         },
@@ -88,17 +88,17 @@ export default {
       settingPermission:[
         {
           name:"管理員",
-          value:"管理員設定",
+          value:"管理员设定",
           path:"/AdminSetting",
         },
         {
           name:"禁言",
-          value:"禁言設定",
+          value:"禁言设定",
           path:"/BanSetting",
         },
         {
-          name:"禁用字詞屏蔽",
-          value:"禁用字詞設定",
+          name:"禁用字词屏蔽",
+          value:"禁用字词设定",
           path:"/BanWord",
         }
       ],
