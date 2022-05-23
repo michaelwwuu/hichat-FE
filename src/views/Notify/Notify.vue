@@ -8,7 +8,7 @@
           <div class="home-add-user"></div>
         </div>
         <div class="home-content">
-          <div class="setting-title">通知</div>
+          <!-- <div class="setting-title">通知</div>
           <div
             class="setting-button"
             v-for="(item, index) in nofityData"
@@ -31,8 +31,8 @@
                 </el-switch>
               </div>
             </div>
-          </div>
-          <div class="setting-title">應用內音效</div>
+          </div> -->
+          <div class="setting-title">應用內提醒</div>
           <div
             class="setting-button"
             v-for="(item, index) in soundNofiyData"
@@ -68,7 +68,7 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">通知</div>
+          <!-- <div class="setting-title">通知</div>
           <div
             class="setting-button"
             v-for="(item, index) in nofityData"
@@ -88,8 +88,8 @@
                 </el-switch>
               </div>
             </div>
-          </div>
-          <div class="setting-title">應用內音效</div>
+          </div> -->
+          <div class="setting-title">應用內提醒</div>
           <div
             class="setting-button"
             v-for="(item, index) in soundNofiyData"
@@ -148,33 +148,33 @@ export default {
       setNofiy:"ws/setNofiy",
       setSoundNofiy: "ws/setSoundNofiy",
     }),
-    chengeNofiy(item){
-      this.nofityData.forEach((data) => {
-        if (item.key === "nofity") {
-          if (!item.isNofity) {
-            return (data.isNofity = false);
-          } else if (item.isNofity) {
-            return (data.isNofity = true);
-          }
-        } else if (item.key === data.key) {
-          if (!item.isNofity) {
-            return (data.isNofity = false);
-          } else if (item.isNofity) {
-            return (data.isNofity = true);
-          }
-        }
-      })
-      let newNofiy = this.nofityData.filter(el => el.key !== "nofity")
-      let doubleCloseNofiy = newNofiy.every(item => !item.isNofity);
-      let doubleOpenNofiy = newNofiy.every(item => item.isNofity);
-      if(doubleCloseNofiy){
-        this.nofityData.forEach((el)=> el.isNofity = false)
-      } 
-      if(doubleOpenNofiy){
-        this.nofityData.forEach((el)=> el.isNofity = true)
-      }
-      this.setNofiy(this.nofityData);
-    },
+    // chengeNofiy(item){
+    //   this.nofityData.forEach((data) => {
+    //     if (item.key === "nofity") {
+    //       if (!item.isNofity) {
+    //         return (data.isNofity = false);
+    //       } else if (item.isNofity) {
+    //         return (data.isNofity = true);
+    //       }
+    //     } else if (item.key === data.key) {
+    //       if (!item.isNofity) {
+    //         return (data.isNofity = false);
+    //       } else if (item.isNofity) {
+    //         return (data.isNofity = true);
+    //       }
+    //     }
+    //   })
+    //   let newNofiy = this.nofityData.filter(el => el.key !== "nofity")
+    //   let doubleCloseNofiy = newNofiy.every(item => !item.isNofity);
+    //   let doubleOpenNofiy = newNofiy.every(item => item.isNofity);
+    //   if(doubleCloseNofiy){
+    //     this.nofityData.forEach((el)=> el.isNofity = false)
+    //   } 
+    //   if(doubleOpenNofiy){
+    //     this.nofityData.forEach((el)=> el.isNofity = true)
+    //   }
+    //   this.setNofiy(this.nofityData);
+    // },
     chengeSoundNofiy(item) {
       this.soundNofiyData.forEach((data) => {
         if (item.key === "sound") {
@@ -191,15 +191,15 @@ export default {
           }
         }
       });
-      let newSoundNofiy = this.soundNofiyData.filter(el => el.key !== "sound")
-      let doubleCloseSoundNofiy = newSoundNofiy.every(item => !item.isNofity);
-      let doubleOpenSoundNofiy = newSoundNofiy.every(item => item.isNofity);
-      if(doubleCloseSoundNofiy){
-        this.soundNofiyData.forEach((el)=> el.isNofity = false)
-      } 
-      if(doubleOpenSoundNofiy){
-        this.soundNofiyData.forEach((el)=> el.isNofity = true)
-      }
+      // let newSoundNofiy = this.soundNofiyData.filter(el => el.key !== "sound")
+      // let doubleCloseSoundNofiy = newSoundNofiy.every(item => !item.isNofity);
+      // let doubleOpenSoundNofiy = newSoundNofiy.every(item => item.isNofity);
+      // if(doubleCloseSoundNofiy){
+      //   this.soundNofiyData.forEach((el)=> el.isNofity = false)
+      // } 
+      // if(doubleOpenSoundNofiy){
+      //   this.soundNofiyData.forEach((el)=> el.isNofity = true)
+      // }
       this.setSoundNofiy(this.soundNofiyData);
     },
     back() {

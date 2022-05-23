@@ -5,15 +5,15 @@
         <el-header height="60px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">權限</span>
+            <span class="home-header-title">管理员权限设定</span>
             <div class="home-add-user"></div>
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群組成員</div>
+          <div class="setting-title">管理员权限</div>
           <div
             class="setting-button"
-            v-for="(item, index) in messagePermissionData"
+            v-for="(item, index) in adminPermission"
             :key="item + index"
           >
             <div class="setting-box">
@@ -31,27 +31,11 @@
               </div>
             </div>
           </div>
-          <div
-            v-for="(item, index) in settingPermission"
-            :key="index"
-          >
-            <div class="setting-title">{{item.name}}</div>
-            <div class="setting-button mt10">
-              <router-link :to="item.path">
-                <div class="setting-button-left">
-                  <span>{{item.value}}</span>
-                </div>
-                <div class="setting-button-right">
-                  <img src="./../../../static/images/next.png" alt="" />
-                </div>
-              </router-link>
-            </div>
-          </div>
         </div>
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
-            >儲存設定</el-button
+            >设定群组资讯</el-button
           >
         </div>
       </el-main>
@@ -65,44 +49,58 @@ import { developmentMessage } from "@/assets/tools";
 import { addGroup } from "@/api";
 
 export default {
-  name: "SettingGroup",
+  name: "AdminSetting",
   data() {
     return {
-      messagePermissionData:[
+      searchKey:"",
+      device: localStorage.getItem("device"),
+      adminPermission:[
         {
-          name:"傳送訊息與媒體檔案",
+          name:"传送讯息与媒体档案",
           key:"sendMessageFile",
           isCheck:true,
         },
         {
-          name:"查看群組成員資訊",
-          key:"lookGroupInfo",
-          isCheck:true,
-        },
-        {
-          name:"置頂訊息",
+          name:"置顶讯息",
           key:"topMsg",
           isCheck:true,
         },
-      ],
-      settingPermission:[
         {
-          name:"管理員",
-          value:"管理員設定",
-          path:"/AdminSetting",
+          name:"禁言设定",
+          key:"banSetting",
+          isCheck:true,
         },
         {
-          name:"禁言",
-          value:"禁言設定",
-          path:"/BanSetting",
+          name:"禁言字词设定",
+          key:"banMessage",
+          isCheck:true,
         },
         {
-          name:"禁用字詞屏蔽",
-          value:"禁用字詞設定",
-          path:"/BanWord",
-        }
+          name:"加入成員",
+          key:"joinPeople",
+          isCheck:true,
+        },
+        {
+          name:"踢除成員",
+          key:"leavePeople",
+          isCheck:true,
+        },
+        {
+          name:"变更群组资讯",
+          key:"editGroupMsg",
+          isCheck:true,
+        },
+        {
+          name:"删除群组成员讯息",
+          key:"deleteGroupMsg",
+          isCheck:true,
+        },
+        {
+          name:"查看群组成员资讯",
+          key:"lookGroupMsg",
+          isCheck:true,
+        },
       ],
-      device: localStorage.getItem("device"),
     };
   },
   computed: {
@@ -111,6 +109,9 @@ export default {
     }),
   },  
   methods: {
+    unAdmin(){
+
+    },
     back() {
       this.$router.back(-1);
     },    
@@ -144,10 +145,11 @@ export default {
         content: "";
         display: block;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        width: 100%;
-        margin-left: 10px;
+        width: 94%;
+        /* margin-left: 0; */
         position: relative;
-        top: 9px;
+        top: -14px;
+        left: 74px;
       }
       a,.setting-box {
         text-decoration: none;
@@ -160,12 +162,20 @@ export default {
       img {
         height: 1.2em;
       }
+      .setting-button-left{
+        .el-image{
+          .el-image__inner{
+            height: -webkit-fill-available !important;
+          }
+        }
+      }
+
       .setting-button-left {
         display: flex;
         align-items: center;
         width: 20em;
         span {
-          font-size: 15px;
+          font-size: 16px;
           color: #333333;
         }
       }

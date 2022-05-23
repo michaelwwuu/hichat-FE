@@ -2,49 +2,38 @@
   <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container v-if="device === 'moblie'">
       <el-main>
-        <el-header height="60px">
+        <el-header height="125px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">權限</span>
-            <div class="home-add-user"></div>
+            <span class="home-header-title">禁用詞設定</span>
+            <router-link
+              :to="''"
+            >
+              <div class="home-add-user">＋</div>
+            </router-link>
+          </div>
+          <div class="home-search" >
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+            >
+            </el-input>
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群組成員</div>
           <div
             class="setting-button"
-            v-for="(item, index) in messagePermissionData"
-            :key="item + index"
+            v-for="(item, index) in banMessage"
+            :key="index"
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.name }}</span>
+                <span>{{ item.value }}</span>
               </div>
               <div class="setting-button-right">
-                <el-switch
-                  v-model="item.isCheck"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
-                >
-                </el-switch>
+                <span @click="unAdmin(item)">－</span>
               </div>
-            </div>
-          </div>
-          <div
-            v-for="(item, index) in settingPermission"
-            :key="index"
-          >
-            <div class="setting-title">{{item.name}}</div>
-            <div class="setting-button mt10">
-              <router-link :to="item.path">
-                <div class="setting-button-left">
-                  <span>{{item.value}}</span>
-                </div>
-                <div class="setting-button-right">
-                  <img src="./../../../static/images/next.png" alt="" />
-                </div>
-              </router-link>
             </div>
           </div>
         </div>
@@ -56,6 +45,26 @@
         </div>
       </el-main>
     </el-container>
+    <el-dialog
+      :visible.sync="unBanShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+      append-to-body
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <span>是否確定要刪除該則禁用字詞？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="unBanShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="unBanAction">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -65,43 +74,22 @@ import { developmentMessage } from "@/assets/tools";
 import { addGroup } from "@/api";
 
 export default {
-  name: "SettingGroup",
+  name: "AdminSetting",
   data() {
     return {
-      messagePermissionData:[
+      searchKey:"",
+      banMessage:[
         {
-          name:"傳送訊息與媒體檔案",
-          key:"sendMessageFile",
-          isCheck:true,
+          name:"ban1",
+          value:"請多指教",
         },
         {
-          name:"查看群組成員資訊",
-          key:"lookGroupInfo",
-          isCheck:true,
-        },
-        {
-          name:"置頂訊息",
-          key:"topMsg",
-          isCheck:true,
+          name:"ban2",
+          value:"請勿",
         },
       ],
-      settingPermission:[
-        {
-          name:"管理員",
-          value:"管理員設定",
-          path:"/AdminSetting",
-        },
-        {
-          name:"禁言",
-          value:"禁言設定",
-          path:"/BanSetting",
-        },
-        {
-          name:"禁用字詞屏蔽",
-          value:"禁用字詞設定",
-          path:"/BanWord",
-        }
-      ],
+      banObject:{},
+      unBanShow:false,
       device: localStorage.getItem("device"),
     };
   },
@@ -111,6 +99,13 @@ export default {
     }),
   },  
   methods: {
+    unAdmin(data){
+      this.unBanShow = true
+      this.banObject = data
+    },
+    unBanAction(){
+      console.log(this.banObject)
+    },
     back() {
       this.$router.back(-1);
     },    
@@ -130,6 +125,10 @@ export default {
       background-image: url("./../../../static/images/pc/arrow-left.png");
       cursor: pointer;
     }
+    // .home-add-user {
+    //   background-color: #fff;
+    //   background-image: url("./../../../static/images/edit.png");
+    // }    
   }
   .home-content {
     .setting-title {
@@ -181,6 +180,52 @@ export default {
         }
       }
     }    
+  }
+}
+.el-dialog-loginOut {
+  overflow: auto;
+  /deep/.el-dialog {
+    margin: 0 auto 50px;
+    background: #ffffff;
+    border-radius: 10px;
+    position: relative;
+    box-sizing: border-box;
+    width: 50%;
+    .el-dialog__header {
+      padding: 10px;
+    }
+    .el-dialog__body {
+      text-align: center;
+      padding: 25px 25px 15px;
+      .loginOut-box {
+        img {
+          height: 5em;
+          margin-bottom: 1.2em;
+        }
+      }
+    }
+    .el-dialog__footer {
+      padding: 20px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+      .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        .el-button {
+          width: 100%;
+          border-radius: 8px;
+        }
+        .background-red {
+          background-color: #ee5253;
+          color: #fff;
+        }
+        .border-red {
+          border: 1px solid #fe5f3f;
+          color: #fe5f3f;
+        }
+      }
+    }
   }
 }
 </style>

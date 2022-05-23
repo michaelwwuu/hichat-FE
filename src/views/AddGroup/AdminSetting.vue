@@ -2,56 +2,53 @@
   <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container v-if="device === 'moblie'">
       <el-main>
-        <el-header height="60px">
+        <el-header height="125px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">權限</span>
-            <div class="home-add-user"></div>
+            <span class="home-header-title">管理員設定</span>
+            <router-link
+              :to="''"
+            >
+              <div class="home-add-user"></div>
+            </router-link>
+          </div>
+          <div class="home-search" >
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+            >
+            </el-input>
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群組成員</div>
           <div
-            class="setting-button"
-            v-for="(item, index) in messagePermissionData"
-            :key="item + index"
-          >
-            <div class="setting-box">
-              <div class="setting-button-left">
-                <span>{{ item.name }}</span>
-              </div>
-              <div class="setting-button-right">
-                <el-switch
-                  v-model="item.isCheck"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
-                >
-                </el-switch>
-              </div>
-            </div>
-          </div>
-          <div
-            v-for="(item, index) in settingPermission"
+            v-for="(item, index) in adminUser"
             :key="index"
           >
-            <div class="setting-title">{{item.name}}</div>
             <div class="setting-button mt10">
-              <router-link :to="item.path">
+              <div class="setting-box">
                 <div class="setting-button-left">
-                  <span>{{item.value}}</span>
+                  <div class="el-image">
+                    <img :src="item.icon" alt="" class="el-image__inner"/>
+                  </div>
+                  <span>{{item.name}}</span>
                 </div>
                 <div class="setting-button-right">
-                  <img src="./../../../static/images/next.png" alt="" />
+                  <router-link to="/AdminSettingDetail">
+                    <img src="./../../../static/images/next.png" alt="" />
+                  </router-link>
+                  
+                  <span @click="unAdmin">－</span>
                 </div>
-              </router-link>
+              </div>  
             </div>
           </div>
         </div>
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
-            >儲存設定</el-button
+            >儲存編輯</el-button
           >
         </div>
       </el-main>
@@ -65,44 +62,15 @@ import { developmentMessage } from "@/assets/tools";
 import { addGroup } from "@/api";
 
 export default {
-  name: "SettingGroup",
+  name: "AdminSetting",
   data() {
     return {
-      messagePermissionData:[
-        {
-          name:"傳送訊息與媒體檔案",
-          key:"sendMessageFile",
-          isCheck:true,
-        },
-        {
-          name:"查看群組成員資訊",
-          key:"lookGroupInfo",
-          isCheck:true,
-        },
-        {
-          name:"置頂訊息",
-          key:"topMsg",
-          isCheck:true,
-        },
-      ],
-      settingPermission:[
-        {
-          name:"管理員",
-          value:"管理員設定",
-          path:"/AdminSetting",
-        },
-        {
-          name:"禁言",
-          value:"禁言設定",
-          path:"/BanSetting",
-        },
-        {
-          name:"禁用字詞屏蔽",
-          value:"禁用字詞設定",
-          path:"/BanWord",
-        }
-      ],
+      searchKey:"",
       device: localStorage.getItem("device"),
+      adminUser:[{
+        name:"Michael",
+        icon:"http://test.hichat.tools/images/icon/68f981ed-c647-4ec1-b24d-dc0c1f2bee49.jpg"
+      }]
     };
   },
   computed: {
@@ -111,6 +79,9 @@ export default {
     }),
   },  
   methods: {
+    unAdmin(){
+
+    },
     back() {
       this.$router.back(-1);
     },    
@@ -130,6 +101,10 @@ export default {
       background-image: url("./../../../static/images/pc/arrow-left.png");
       cursor: pointer;
     }
+    .home-add-user {
+      background-color: #fff;
+      background-image: url("./../../../static/images/edit.png");
+    }    
   }
   .home-content {
     .setting-title {
@@ -144,10 +119,11 @@ export default {
         content: "";
         display: block;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        width: 100%;
-        margin-left: 10px;
+        width: 94%;
+        /* margin-left: 0; */
         position: relative;
-        top: 9px;
+        top: -14px;
+        left: 74px;
       }
       a,.setting-box {
         text-decoration: none;
@@ -160,12 +136,21 @@ export default {
       img {
         height: 1.2em;
       }
+      .setting-button-left{
+        .el-image{
+          .el-image__inner{
+            height: -webkit-fill-available !important;
+          }
+        }
+      }
+
       .setting-button-left {
         display: flex;
         align-items: center;
         width: 20em;
         span {
-          font-size: 15px;
+          font-size: 16px;
+          padding-left: 1em;
           color: #333333;
         }
       }

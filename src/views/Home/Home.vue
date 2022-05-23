@@ -363,9 +363,9 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.getContactDataList();
     this.getUserData();
-    if(localStorage.getItem("nofity") === null){
-      this.setNofiy(this.nofity)
-    }
+    // if(localStorage.getItem("nofity") === null){
+    //   this.setNofiy(this.nofity)
+    // }
     if(localStorage.getItem("soundNofiy") === null){
       this.setSoundNofiy(this.soundNofiy)
     }

@@ -84,14 +84,13 @@
             <el-button
               :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
               :disabled="disableEditSubmit"
-              > 設定群組資訊
+              > 设定群组资讯
               </el-button
             >
               <!-- @click="editSubmit" -->
           </div>
         </template>
-        <setting-group/>
-      </el-main>
+      </el-main>      
     </el-container>
     <el-container v-else>
       <el-aside width="300px">
@@ -223,7 +222,6 @@
 import { mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getContactList,uploadGroupIcon,addGroup } from "@/api";
-import settingGroup from './SettingGroup.vue';
 
 export default {
   name: "AddGroup",
@@ -263,6 +261,7 @@ export default {
     ...mapMutations({
       setChatUser:"ws/setChatUser",
       setChatGroup:"ws/setChatGroup",
+      setGroupPermissionData:"ws/setGroupPermissionData",
     }),
     getAddressList() {
       getContactList().then((res) => {
@@ -275,7 +274,13 @@ export default {
       });
     },
     createGroup(){
-      if(this.checkList.length > 0) this.groupEditShow = false;
+      this.$router.push({ path: '/AddGroupList'})
+      let parmas = {
+        name:"",
+        peopleData:this.checkList
+      }
+      this.setGroupPermissionData(parmas)
+      // if(this.checkList.length > 0) this.groupEditShow = false;
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;
@@ -322,9 +327,6 @@ export default {
       });
     },
   },
-  component:{
-    settingGroup,
-  }
 };
 </script>
 
@@ -374,7 +376,7 @@ export default {
                 position: absolute;
                 margin-top: 0.5em;
                 width: 100%;
-                border-bottom: 0.02em solid #b3b3b3;
+                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05) ;
               }
             }
           }

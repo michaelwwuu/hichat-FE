@@ -62,22 +62,25 @@ export const state = {
   ],
   soundNofiy:[
     {
-      name:"音效",
+      name:"應用內音效",
       isNofity: true,
       key: 'sound',
     },
-    {
-      name:"私人訊息",
-      isNofity: true,
-      key: 'private',
-
-    },
-    {
-      name:"群組訊息",
-      isNofity: true,
-      key: 'group',
-    },
+    // {
+    //   name:"私人訊息",
+    //   isNofity: true,
+    //   key: 'private',
+    // },
+    // {
+    //   name:"群組訊息",
+    //   isNofity: true,
+    //   key: 'group',
+    // },
   ],
+  groupPermissionData:{
+    name:"",
+    peopleData:[],
+  },
   goAnchorMessage:{},
   device: localStorage.getItem("device"),
   topMsgShow:true,
@@ -85,6 +88,9 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setGroupPermissionData(state, payload) {
+    state.groupPermissionData = payload;
+  },  
   setGoAnchorMessage(state, payload) {
     state.goAnchorMessage = payload;
   },

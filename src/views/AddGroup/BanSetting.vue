@@ -2,51 +2,37 @@
   <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container v-if="device === 'moblie'">
       <el-main>
-        <el-header height="60px">
+        <el-header height="125px">
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
-            <span class="home-header-title">權限</span>
+            <span class="home-header-title">禁言設定</span>
             <div class="home-add-user"></div>
+          </div>
+          <div class="home-search">
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+              @keyup.native.enter="searchUserData(searchKey)"
+            >
+            </el-input>
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群組成員</div>
-          <div
-            class="setting-button"
-            v-for="(item, index) in messagePermissionData"
-            :key="item + index"
-          >
-            <div class="setting-box">
-              <div class="setting-button-left">
-                <span>{{ item.name }}</span>
-              </div>
-              <div class="setting-button-right">
-                <el-switch
-                  v-model="item.isCheck"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
-                >
-                </el-switch>
-              </div>
-            </div>
-          </div>
-          <div
-            v-for="(item, index) in settingPermission"
-            :key="index"
-          >
-            <div class="setting-title">{{item.name}}</div>
-            <div class="setting-button mt10">
-              <router-link :to="item.path">
-                <div class="setting-button-left">
-                  <span>{{item.value}}</span>
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+              :label="item"
+              v-for="(item, index) in contactList"
+              :key="index"
+            >
+              <div class="address-box">
+                <el-image :src="item.icon"/>
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
                 </div>
-                <div class="setting-button-right">
-                  <img src="./../../../static/images/next.png" alt="" />
-                </div>
-              </router-link>
-            </div>
-          </div>
+              </div>
+            </el-checkbox>
+          </el-checkbox-group>
         </div>
         <div class="home-footer-btn">
           <el-button
@@ -62,48 +48,20 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup } from "@/api";
+import { getContactList,addGroup } from "@/api";
 
 export default {
   name: "SettingGroup",
   data() {
     return {
-      messagePermissionData:[
-        {
-          name:"傳送訊息與媒體檔案",
-          key:"sendMessageFile",
-          isCheck:true,
-        },
-        {
-          name:"查看群組成員資訊",
-          key:"lookGroupInfo",
-          isCheck:true,
-        },
-        {
-          name:"置頂訊息",
-          key:"topMsg",
-          isCheck:true,
-        },
-      ],
-      settingPermission:[
-        {
-          name:"管理員",
-          value:"管理員設定",
-          path:"/AdminSetting",
-        },
-        {
-          name:"禁言",
-          value:"禁言設定",
-          path:"/BanSetting",
-        },
-        {
-          name:"禁用字詞屏蔽",
-          value:"禁用字詞設定",
-          path:"/BanWord",
-        }
-      ],
+      checkList: [],
+      contactList: [],
+      searchKey:"",
       device: localStorage.getItem("device"),
     };
+  },
+  created() {
+    this.contactList = this.groupPermissionData.peopleData;
   },
   computed: {
     ...mapState({
@@ -111,9 +69,12 @@ export default {
     }),
   },  
   methods: {
+    searchUserData(data){
+
+    },
     back() {
       this.$router.back(-1);
-    },    
+    },
   },
 };
 </script>
@@ -178,6 +139,50 @@ export default {
           margin-right: 1em;
           font-size: 15px;
           color: #b3b3b3;
+        }
+      }
+    }    
+    /deep/.el-checkbox {
+      display: flex;
+      align-items: center;
+      flex-flow: row-reverse;
+      background-color: #fff;
+      width: 100vw;
+      .el-checkbox__input {
+        padding-right: 20px;
+        .el-checkbox__inner{
+          border-radius: 10px;
+        }
+      }
+      .el-checkbox__label {
+        width: 100%;
+        padding-left: 0;
+        .address-box {
+          background-color: #ffffff;
+          padding: 0.8em 1em;
+          display: flex;
+          align-items: center;
+          .msg-box {
+            span {
+              display: block;
+              padding-left: 1em;
+              font-size: 16px;
+              color: #666666;
+              &::after {
+                content: "";
+                display: block;
+                position: absolute;
+                margin-top: 0.5em;
+                width: 100%;
+                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05) ;
+              }
+            }
+          }
+          .checkBox {
+            position: absolute;
+            right: 1.5em;
+            font-size: 14px;
+          }
         }
       }
     }    

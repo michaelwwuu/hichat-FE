@@ -72,11 +72,48 @@ const routes = [
     component: () => import(/* webpackChunkName: "AddGroup" */ '@/views/AddGroup/AddGroup.vue'),
   },
   {
+    path: "/AddGroupList",
+    name: "AddGroupList",
+    component: () => import(/* webpackChunkName: "AddGroupList" */ '@/views/AddGroup/AddGroupList.vue'),
+    meta: { keepAlive: false },
+  },
+  {
+    path: "/SettingGroup",
+    name: "SettingGroup",
+    component: () => import(/* webpackChunkName: "SettingGroup" */ '@/views/AddGroup/SettingGroup.vue'),
+    meta: { keepAlive: false },
+  },
+  {
+    path: "/BanSetting",
+    name: "BanSetting",
+    component: () => import(/* webpackChunkName: "BanSetting" */ '@/views/AddGroup/BanSetting.vue'),
+    meta: { keepAlive: false },
+  },  
+  {
+    path: "/BanWord",
+    name: "BanWord",
+    component: () => import(/* webpackChunkName: "BanWord" */ '@/views/AddGroup/BanWord.vue'),
+    meta: { keepAlive: false },
+  },    
+  {
+    path: "/AdminSetting",
+    name: "AdminSetting",
+    component: () => import(/* webpackChunkName: "AdminSetting" */ '@/views/AddGroup/AdminSetting.vue'),
+    meta: { keepAlive: false },
+  },      
+  {
+    path: "/AdminSettingDetail",
+    name: "AdminSettingDetail",
+    component: () => import(/* webpackChunkName: "AdminSettingDetail" */ '@/views/AddGroup/AdminSettingDetail.vue'),
+    meta: { keepAlive: false },
+  },         
+  {
     path: "/ChatMsg",
     name: "ChatMsg",
     component: () => import(/* webpackChunkName: "ChatMsg" */ '@/views/Chat/ChatMsg.vue'),
     meta: { keepAlive: false },
   },
+
   {
     path: "/ChatGroupMsg",
     name: "ChatGroupMsg",
