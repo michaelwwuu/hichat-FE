@@ -226,7 +226,6 @@ import { getContactList,uploadGroupIcon,addGroup } from "@/api";
 import settingGroup from './SettingGroup.vue';
 
 export default {
-  components: { settingGroup },
   name: "AddGroup",
   data() {
     return {
@@ -324,7 +323,7 @@ export default {
     },
   },
   component:{
-    SettingGroup,
+    settingGroup,
   }
 };
 </script>

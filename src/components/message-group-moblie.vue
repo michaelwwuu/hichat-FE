@@ -275,6 +275,9 @@ export default {
     messageData: {
       type: Array,
     },
+    timeOut: {
+      type: Number,
+    },    
   },
   data() {
     return {
@@ -299,6 +302,7 @@ export default {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
       contactListData: (state) => state.ws.contactListData,
+      goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
   },
   watch: {
@@ -334,11 +338,18 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 400 ||
-          (scrollTopBox.scrollHeight - scrollTop) / 3 > 170;
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 170 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
     );
+    if(this.goAnchorMessage.historyId !== undefined){
+      let newTime = this.timeOut + 3000
+      console.log(newTime)
+      setTimeout(() => {
+        this.goAnchor(this.goAnchorMessage.historyId) 
+      }, 4000);
+    }    
   },
   methods: {
     ...mapMutations({
@@ -469,7 +480,6 @@ export default {
       });
     },
     onContextmenu(data) {
-      // console.log(data)
       let item = [
         {
           name: "edit",
@@ -792,7 +802,7 @@ export default {
           }
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top: 0;
             /deep/.el-image__inner {
               height: unset;
@@ -869,7 +879,7 @@ export default {
         border-radius: 10px;
         .el-image {
           width: -webkit-fill-available !important;
-          height: 15em !important;
+          height: 12.5em !important;
           top: 0;
           /deep/.el-image__inner {
             height: unset;
@@ -958,7 +968,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top: 0;
             /deep/.el-image__inner {
               height: 100%;
@@ -970,7 +980,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top: 0;
             /deep/.el-image__inner {
               height: 100%;

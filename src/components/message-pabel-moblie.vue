@@ -233,6 +233,9 @@ export default {
     messageData: {
       type: Array,
     },
+    timeOut: {
+      type: Number,
+    },
   },
   data() {
     return {
@@ -278,6 +281,7 @@ export default {
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
   },
+
   mounted() {
     window.addEventListener(
       "scroll",
@@ -289,11 +293,17 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 200 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 170 ||
           (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
     );
+    if(this.goAnchorMessage.historyId !== undefined){
+      let newTime = this.timeOut + 1000
+      setTimeout(() => {
+        this.goAnchor(this.goAnchorMessage.historyId) 
+      }, newTime);
+    }
   },
   methods: {
     ...mapMutations({
@@ -645,7 +655,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top:0;
             /deep/.el-image__inner {
               height: 100%;
@@ -662,7 +672,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top:0;
             /deep/.el-image__inner {
               height: 100%;
@@ -752,7 +762,7 @@ export default {
         }
         .el-image {
           width: -webkit-fill-available !important;
-          height: 15em !important;
+          height: 12.5em !important;
           top:0;
           /deep/.el-image__inner {
             height: unset;
@@ -819,7 +829,7 @@ export default {
         }
         .el-image {
           width: -webkit-fill-available !important;
-          height: 15em !important;
+          height: 12.5em !important;
           top:0;
           /deep/.el-image__inner {
             height: unset;

@@ -194,8 +194,13 @@ export default {
     this.getPinList()
   },
   methods: {
+    ...mapMutations({
+      setTopMsgShow:"ws/setTopMsgShow",
+      setGoAnchorMessage: "ws/setGoAnchorMessage",
+    }),
     goMessageAction(data){
-      console.log(data)
+      this.setGoAnchorMessage(data)
+      this.setTopMsgShow(true)
     },
     getPinList() {
       let toChatId = this.groupUser.toChatId;
@@ -372,7 +377,6 @@ export default {
       })
     },
     copyPaste(data) {
-      console.log(data)
       let url = document.createElement("textarea");
       document.body.appendChild(url);
       url.value = data.chat.text.replace(/(\s*$)/g, "");
@@ -503,7 +507,7 @@ export default {
           }
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top: 0;
             /deep/.el-image__inner {
               height: unset;
@@ -556,6 +560,7 @@ export default {
         color: #777777;
         font-size: 12px;
         padding-right: 10px;
+        align-items: flex-end;
         .go-message{
           height: 1.5em;
           width: fit-content;
@@ -589,7 +594,7 @@ export default {
         border-radius: 10px;
         .el-image {
           width: -webkit-fill-available !important;
-          height: 15em !important;
+          height: 12.5em !important;
           top: 0;
           /deep/.el-image__inner {
             height: unset;
@@ -678,7 +683,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top: 0;
             /deep/.el-image__inner {
               height: 100%;
@@ -690,7 +695,7 @@ export default {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 15em !important;
+            height: 12.5em !important;
             top: 0;
             /deep/.el-image__inner {
               height: 100%;

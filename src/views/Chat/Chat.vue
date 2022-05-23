@@ -56,6 +56,7 @@
             <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
           </div>
           <message-pabel
+            :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
             @deleteMsgHistoryData="deleteMsgData"
@@ -201,6 +202,7 @@ export default {
         tokenType: 0,
       },
       pinMsg:"",
+      timeOut:0,      
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -477,7 +479,7 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
-          let timeOut = historyMsgList.length * 40;
+          this.timeOut = historyMsgList.length * 40;
 
           this.$nextTick(() => {
             setTimeout(() => {
@@ -512,7 +514,7 @@ export default {
               }
               this.loading = false;
               this.getHiChatDataList();
-            }, timeOut);
+            }, this.timeOut);
           });
           break;
         // 已讀

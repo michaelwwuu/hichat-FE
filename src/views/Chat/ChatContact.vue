@@ -67,9 +67,11 @@
           />
         </div>
         <message-pabel
+          :timeOut="timeOut"
           :messageData="messageData"
           :userInfoData="userInfoData"
           @deleteMsgHistoryData="deleteMsgData"
+          @resetPinMsg="resetPinMsg"
         />
         <div
           class="reply-message"
@@ -296,7 +298,8 @@ export default {
       userData: {},
       readMsgData: [],
       pinDataList: [],
-      pinMsg: "",      
+      pinMsg: "",    
+      timeOut:0,        
       loading: false,
       deleteDialogShow: false,
       successDialogShow: false,
@@ -549,7 +552,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          let timeOut = historyMsgList.length * 15;
+          this.timeOut = historyMsgList.length * 15;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -598,7 +601,7 @@ export default {
                 this.readMsgShow(this.readMsg[0]);
               this.getHiChatDataList();
               this.loading = false;
-            }, timeOut);
+            }, this.timeOut);
           });
           break;
         // 已讀
