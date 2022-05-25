@@ -1,7 +1,7 @@
 <template>
   <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <el-button
-      v-if="isShowMoreMsg && userInfoData.usernameCLI_ROOM_SEND !== 'guest'"
+      v-if="isShowMoreMsg"
       class="eye-more"
       :disabled="disabled"
       @click="seeMoreHistoryMsgData()"

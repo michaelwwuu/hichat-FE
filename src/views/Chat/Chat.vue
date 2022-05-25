@@ -16,7 +16,7 @@
           :userInfoData="userInfoData"
           :chatListData="chatListData"
         />
-        <message-input :roomId="roomId" :isGuest="isGuest"/>
+        <message-input :roomId="roomId" :deviceId="deviceId" :isGuest="isGuest"/>
       </el-main>
     </el-container>
   </div>
@@ -56,7 +56,8 @@ export default {
       isShowMoreMsg: true,
       isGuest: true,
       userName: getLocal('username'),
-      roomId:''
+      roomId:"",
+      deviceId:""
     };
   },
   created() {
@@ -103,6 +104,7 @@ export default {
         }
       );
       localStorage.setItem("UUID", "hiWeb" + number);
+      this.deviceId = "hiWeb" + number
       return "hiWeb" + number
     },
     getUserInfo(userId){
@@ -178,6 +180,19 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
+        // 验证身份返回
+        case "SRV_RECENT_CHAT":
+          let chatDataKey = {
+            chatType:"CLI_JOIN_ROOM",
+            id:Math.random(),
+            deviceId: this.deviceId,
+            token: localStorage.getItem('token'),
+            tokenType: 1,
+            toChatId:localStorage.getItem('chatRoomId'),
+            platformCode: "manycaiSport",
+          }
+          Socket.send(chatDataKey);
+          break;
         // 加入房间成功
         case "SRV_JOIN_ROOM":
           this.userInfoData.toChatId = userInfo.chatRoomId

@@ -59,13 +59,13 @@ const emitter = new Vue({
               socket.send(JSON.stringify(chatDataKey));
             } 
             break;
-          // 验证身份返回
-          case "SRV_RECENT_CHAT":
-            chatDataKey.chatType = "CLI_JOIN_ROOM";
-            chatDataKey.id = Math.random();
-            chatDataKey.toChatId = localStorage.getItem('chatRoomId');
-            socket.send(JSON.stringify(chatDataKey));
-            break;
+          // // 验证身份返回
+          // case "SRV_RECENT_CHAT":
+          //   chatDataKey.chatType = "CLI_JOIN_ROOM";
+          //   chatDataKey.id = Math.random();
+          //   chatDataKey.toChatId = localStorage.getItem('chatRoomId');
+          //   socket.send(JSON.stringify(chatDataKey));
+          //   break;
         }
         emitter.$emit("message", msg.data);
       };

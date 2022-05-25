@@ -39,6 +39,9 @@ export default {
     roomId:{
       type: String,
     },
+    deviceId:{
+      type: String,
+    },
   },
 
   methods: {
@@ -69,7 +72,7 @@ export default {
     sendMessage() {
       let sendMessageData= {
         chatType: "CLI_ROOM_SEND",
-        deviceId: localStorage.getItem('UUID'),
+        deviceId: this.deviceId,
         id: Math.random(),
         platformCode: "manycaiSport",
         text: this.textArea,
@@ -77,6 +80,7 @@ export default {
         token: localStorage.getItem('token'),
         tokenType: 1,
       }
+      console.log(this.deviceId)
       Socket.send(sendMessageData);
       this.textArea = "";
     },
