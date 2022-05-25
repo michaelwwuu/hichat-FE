@@ -205,6 +205,9 @@ export default {
   data() {
     return {
       loginForm: {
+        deviceId: localStorage.getItem("UUID"),
+        deviceName: "",
+        deviceType: 1,
         email: "",
         password: "",
       },
@@ -238,6 +241,9 @@ export default {
         : localStorage.setItem("email", this.loginForm.email);
     },
   },
+  created() {
+    this.browserType()
+  },
   mounted() {
     if (this.remember) {
       this.loginForm.email =
@@ -248,6 +254,28 @@ export default {
     this.getUUID();
   },
   methods: {
+    browserType(){
+      var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
+      var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
+      var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判斷是否IE瀏覽器
+      var isEdge = userAgent.indexOf("Edge") > -1; //判斷是否IE的Edge瀏覽器
+      var isFF = userAgent.indexOf("Firefox") > -1; //判斷是否Firefox瀏覽器
+      var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判斷是否Safari瀏覽器
+      var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1; //判斷Chrome瀏覽器
+      if(isOpera){
+        this.loginForm.deviceName = "Opera"
+      }else if(isIE){
+        this.loginForm.deviceName = "compatible"
+      }else if(isEdge){
+        this.loginForm.deviceName = "Edge"
+      }else if(isFF){
+        this.loginForm.deviceName = "Firefox"
+      }else if(isSafari){
+        this.loginForm.deviceName = "Safari"
+      }else if(isChrome){
+        this.loginForm.deviceName = "Chrome"
+      }
+    },
     setActiveLanguage(lang) {
       localStorage.setItem('language', lang)
     },
@@ -280,6 +308,7 @@ export default {
         });
         return;
       }
+      console.log(this.loginForm)
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {

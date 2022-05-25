@@ -9,6 +9,16 @@ export const login = data => {
   }
   return axios.request(postData)
 }
+//登出
+export const logout = data => {
+  let postData = {
+    url: '/api/sso/logout',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
 //註冊
 export const register = data => {
   let postData = {
@@ -67,7 +77,7 @@ export const getGroupList = (params) => {
   return axios.request(postData)
 }
 
-// 添加好友
+// 添加联络人
 export const addContactUser = data => {
   let postData = {
     url: '/api/member/contact/add',
@@ -87,7 +97,7 @@ export const updateNickname = data => {
   return axios.request(postData)
 }
 
-// 修改好友暱稱
+// 修改联络人暱稱
 export const updateContactNickName = (data,contactId) => {
   let postData = {
     url: `/api/member/contact/update/${contactId}`,

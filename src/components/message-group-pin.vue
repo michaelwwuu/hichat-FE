@@ -293,6 +293,7 @@ export default {
           name: "share",
           label: "分享",
           onClick: () => {
+            this.$message({ message: "網頁無分享功能", type: "warning" });
           },
         },
         {

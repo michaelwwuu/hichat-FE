@@ -56,6 +56,62 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="300px">
+        <el-header height="60px">
+          <div class="home-header flex-start">
+            <div class="home-user-pc" @click="back()"></div>
+            <span class="home-header-title">权限</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div class="home-content">
+          <div class="setting-title">群组成员</div>
+          <div
+            class="setting-button"
+            v-for="(item, index) in messagePermissionData"
+            :key="item + index"
+          >
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="setting-button-right">
+                <el-switch
+                  v-model="item.isCheck"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  @change="chengeSoundNofiy(item)"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+          <div
+            v-for="(item, index) in settingPermission"
+            :key="index"
+          >
+            <div class="setting-title">{{item.name}}</div>
+            <div class="setting-button mt10">
+              <router-link :to="item.path">
+                <div class="setting-button-left">
+                  <span>{{item.value}}</span>
+                </div>
+                <div class="setting-button-right">
+                  <img src="./../../../static/images/next.png" alt="" />
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            class="orange-btn"
+            >储存设定</el-button
+          >
+        </div>
+      </el-aside>
+    </el-container>    
   </div>
 </template>
 

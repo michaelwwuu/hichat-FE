@@ -472,7 +472,7 @@ export default {
         },
         {
           name: "upDown",
-          label: data.isPing ? "取消置頂":"置顶",
+          label: data.isPing ? "取消置頂":"置顶訊息",
           onClick: () => {
             this.topMsgAction(data,data.isPing)
           },

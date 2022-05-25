@@ -301,10 +301,10 @@ export default {
         case "unBlock":
           this.dialogContent = `确认是否${
             type === "block" ? "封锁" : "解除封锁"
-          }好友${this.chatUser.name}？`;
+          }联络人${this.chatUser.name}？`;
           break;
         case "delete":
-          this.dialogContent = `确认是否${type === "delete" ? "删除" : ""}好友${
+          this.dialogContent = `确认是否${type === "delete" ? "删除" : ""}联络人${
             this.chatUser.name
           }？`;
           break;
@@ -315,7 +315,7 @@ export default {
     },
     submitBtn(dialogContent) {
       switch (dialogContent) {
-        case `确认是否封锁好友${this.chatUser.name}？`:
+        case `确认是否封锁联络人${this.chatUser.name}？`:
           let blockId = this.chatUser.toChatId.replace("u", "");
           addBlockContactUser({ blockId }).then((res) => {
             if (res.code === 200) {
@@ -325,7 +325,7 @@ export default {
             }
           });
           break;
-        case `确认是否解除封锁好友${this.chatUser.name}？`:
+        case `确认是否解除封锁联络人${this.chatUser.name}？`:
           let blockIdList = [this.chatUser.toChatId.replace("u", "")];
           unBlockContactUser({ blockIdList })
             .then((res) => {
@@ -340,7 +340,7 @@ export default {
               return false;
             });
           break;
-        case `确认是否删除好友${this.chatUser.name}？`:
+        case `确认是否删除联络人${this.chatUser.name}？`:
           let contactId = this.chatUser.toChatId.replace("u", "");
           deleteContactUser(contactId)
             .then((res) => {

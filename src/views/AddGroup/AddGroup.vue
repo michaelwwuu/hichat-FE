@@ -2,16 +2,15 @@
   <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container v-if="device === 'moblie'">
       <el-main>
-        <el-header :height="groupEditShow?'125px':'60px'">
+        <el-header height="125px">
           <div class="home-header">
-            <router-link :to="'/Home'" v-if="groupEditShow">
+            <router-link :to="'/Home'">
               <div class="home-user"></div>
             </router-link>
-            <div class="home-user" v-else @click="groupEditShow = true"></div>
             <span class="home-header-title">创建群组</span>
             <div class="home-add-user"></div>
           </div>
-          <div class="home-search" v-if="groupEditShow">
+          <div class="home-search">
             <el-input
               placeholder="搜寻"
               prefix-icon="el-icon-search"
@@ -21,89 +20,43 @@
             </el-input>
           </div>
         </el-header>
-        <template v-if="groupEditShow">
-          <div class="home-content">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox
-                :label="item"
-                v-for="(item, index) in contactList"
-                :key="index"
-              >
-                <div class="address-box">
-                  <el-image :src="item.icon"/>
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
-                </div>
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-          <div class="home-footer-btn">
-            <el-button
-              :class="disabled ? 'gray-btn' : 'orange-btn'"
-              :disabled="disabled"
-              @click="createGroup"
-              >邀请联络人</el-button
+        <div class="home-content">
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+              :label="item"
+              v-for="(item, index) in contactList"
+              :key="index"
             >
-          </div>
-        </template>
-        <template v-else>
-          <div class="add-content">
-            <div class="user-data">
-              <span><el-image :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
-              <span class="photo-edit" @click="uploadImgShow = true"
-                >变更群组照片</span
-              >
-            </div>
-            <div class="user-edit-form">
-              <el-form ref="form" :model="groupForm" label-width="100px">
-                <el-form-item label="群组名称">
-                  <el-input
-                    v-model="groupForm.name"
-                    placeholder="群组名称"
-                  ></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-          
-          <div class="home-content">
-            <label class="el-checkbox">
-              <span class="el-checkbox__label">
-                <div class="address-box" v-for="(item, index) in checkList" :key="index">
-                  <el-image :src="item.icon" />
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
+              <div class="address-box">
+                <el-image :src="item.icon"/>
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
                 </div>
-              </span>
-            </label>
-          </div>
-          <div class="home-footer-btn">
-           
-            <el-button
-              :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
-              :disabled="disableEditSubmit"
-              > 设定群组资讯
-              </el-button
-            >
-              <!-- @click="editSubmit" -->
-          </div>
-        </template>
+              </div>
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            :class="disabled ? 'gray-btn' : 'orange-btn'"
+            :disabled="disabled"
+            @click="createGroup"
+            >邀请联络人</el-button
+          >
+        </div>
       </el-main>      
     </el-container>
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
           <div class="home-header flex-start" >
-            <router-link :to="'/HiChat'" v-if="groupEditShow">
+            <router-link :to="'/HiChat'">
               <div class="home-user-pc"></div>
             </router-link>
-            <div class="home-user-pc" v-else @click="groupEditShow = true"></div>
             <span class="home-header-title">创建群组</span>
           </div>
         </el-header>
-        <div v-if="groupEditShow" style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
           <div class="home-search" >
             <el-input
               placeholder="搜寻"
@@ -114,73 +67,30 @@
             </el-input>
           </div>
         </div>
-        <template v-if="groupEditShow">
-          <div class="home-content">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox
-                :label="item"
-                v-for="(item, index) in contactList"
-                :key="index"
-              >
-                <div class="address-box">
-                  <el-image :src="item.icon"/>
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
-                </div>
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-          <div class="home-footer-btn">
-            <el-button
-              :class="disabled ? 'gray-btn' : 'orange-btn'"
-              :disabled="disabled"
-              @click="createGroup"
-              >邀请联络人</el-button
+        <div class="home-content">
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+              :label="item"
+              v-for="(item, index) in contactList"
+              :key="index"
             >
-          </div>
-        </template>
-        <template v-else>
-          <div class="add-content">
-            <div class="user-data">
-              <span><el-image :src="groupIcon === ''?require('./../../../static/images/image_group_defult.png') : groupIcon" alt="" /></span>
-              <span class="photo-edit" @click="uploadImgShow = true"
-                >变更群组照片</span
-              >
-            </div>
-            <div class="user-edit-form">
-              <el-form ref="form" :model="groupForm" label-width="100px">
-                <el-form-item label="群组名称">
-                  <el-input
-                    v-model="groupForm.name"
-                    placeholder="群组名称"
-                  ></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-          
-          <div class="home-content">
-            <label class="el-checkbox">
-              <span class="el-checkbox__label">
-                <div class="address-box" v-for="(item, index) in checkList" :key="index">
-                  <el-image :src="item.icon" />
-                  <div class="msg-box">
-                    <span>{{ item.name }}</span>
-                  </div>
+              <div class="address-box">
+                <el-image :src="item.icon"/>
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
                 </div>
-              </span>
-            </label>
-          </div>
-          <div class="home-footer-btn">
-            <el-button
-              :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
-              :disabled="disableEditSubmit"
-              @click="editSubmit"
-              >创建群组</el-button
-            >
-          </div>
-        </template>
+              </div>
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            :class="disabled ? 'gray-btn' : 'orange-btn'"
+            :disabled="disabled"
+            @click="createGroup"
+            >邀请联络人</el-button
+          >
+        </div>
       </el-aside>
     </el-container>
     <el-dialog
@@ -236,7 +146,7 @@ export default {
       groupIcon: "",
       fileList: [],
       disabled: true,
-      groupEditShow:true,
+
       uploadImgShow: false,
       disableEditSubmit:true,
       developmentMessage: developmentMessage,
@@ -280,7 +190,6 @@ export default {
         peopleData:this.checkList
       }
       this.setGroupPermissionData(parmas)
-      // if(this.checkList.length > 0) this.groupEditShow = false;
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;

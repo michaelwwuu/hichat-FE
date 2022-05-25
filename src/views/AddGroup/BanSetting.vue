@@ -42,6 +42,50 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="300px">
+        <el-header height="70px">
+          <div class="home-header flex-start">
+            <div class="home-user-pc" @click="back()"></div>
+            <span class="home-header-title">禁言设定</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+          <div class="home-search" >
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+              @keyup.native.enter="developmentMessage(searchKey)"
+            >
+            </el-input>
+          </div>
+        </div>        
+        <div class="home-content">
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+              :label="item"
+              v-for="(item, index) in contactList"
+              :key="index"
+            >
+              <div class="address-box">
+                <el-image :src="item.icon"/>
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
+                </div>
+              </div>
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            class="orange-btn"
+            >储存设定</el-button
+          >
+        </div>
+      </el-aside>
+    </el-container>    
   </div>
 </template>
 
@@ -186,6 +230,32 @@ export default {
         }
       }
     }    
+  }
+}
+.hichat-pc{
+  .home-wrapper{
+    .home-search{
+      .el-input{
+        width: 95%;
+      }
+    }
+    .home-content{
+      .el-checkbox{
+        width: 100%;
+      }
+      .el-checkbox__label{
+        .address-box{
+          .msg-box {
+            span {
+              &::after {
+                content: "";
+                margin-top: 1em;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>

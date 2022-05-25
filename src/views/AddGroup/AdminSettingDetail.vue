@@ -40,6 +40,46 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="300px">
+        <el-header height="60px">
+          <div class="home-header flex-start">
+            <div class="home-user-pc" @click="back()"></div>
+            <span class="home-header-title">管理员权限设定</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div class="home-content">
+          <div class="setting-title">管理员权限</div>
+          <div
+            class="setting-button"
+            v-for="(item, index) in adminPermission"
+            :key="item + index"
+          >
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="setting-button-right">
+                <el-switch
+                  v-model="item.isCheck"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  @change="chengeSoundNofiy(item)"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            class="orange-btn"
+            >设定群组资讯</el-button
+          >
+        </div>
+      </el-aside>
+    </el-container>
   </div>
 </template>
 
@@ -141,16 +181,6 @@ export default {
     .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
-      &::after {
-        content: "";
-        display: block;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        width: 94%;
-        /* margin-left: 0; */
-        position: relative;
-        top: -14px;
-        left: 74px;
-      }
       a,.setting-box {
         text-decoration: none;
         display: flex;
@@ -158,6 +188,7 @@ export default {
         align-content: center;
         padding: 0.5em 0.7em 0.5em 0;
         margin-left: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       }
       img {
         height: 1.2em;

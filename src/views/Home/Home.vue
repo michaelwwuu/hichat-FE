@@ -241,7 +241,7 @@
         ></vue-qr>
       </div>
       <span class="qrcode-box-text"
-        >嗨聊用户扫描此二维码后，可将您加入好友！</span
+        >嗨聊用户扫描此二维码后，可将您加入联络人！</span
       >
       <span slot="footer" class="dialog-footer">
         <router-link :to="'/QRcode'"
@@ -291,6 +291,7 @@ import {
   groupListMember,
   getUserInfo,
   getContactList,
+  logout,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";
@@ -716,10 +717,20 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     loginOut() {
-      this.$router.push({ path: "/login" });
-      localStorage.removeItem("token");
-      localStorage.removeItem("myUserList");
-      window.location.reload();
+      logout().then((res) => {
+        console.log(res)
+        if(res.code === 200 && res.message === "登出成功"){
+          this.$router.push({ path: "/login" });
+          localStorage.removeItem("id");
+          localStorage.removeItem("token");
+          localStorage.removeItem("myUserInfo");
+          localStorage.removeItem("myUserList");
+          window.location.reload();
+        }
+      })
+      .catch((err)=>{
+        return false
+      })
     },
   },
   components: {

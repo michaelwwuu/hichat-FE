@@ -266,8 +266,8 @@
         <span
           >确认是否{{
             chatUser.isBlock
-              ? `解除封锁${device === "pc" ? "好友" : ""}`
-              : `封锁${device === "pc" ? "好友" : ""}`
+              ? `解除封锁${device === "pc" ? "联络人" : ""}`
+              : `封锁${device === "pc" ? "联络人" : ""}`
           }}
           {{ chatUser.name }}？</span
         >
@@ -335,7 +335,7 @@
       center
     >
       <div class="loginOut-box">
-        <span>确认是否删除好友 {{ chatUser.name }}？</span>
+        <span>确认是否删除联络人 {{ chatUser.name }}？</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button

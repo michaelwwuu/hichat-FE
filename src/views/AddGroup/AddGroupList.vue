@@ -35,7 +35,6 @@
             </el-form>
           </div>
         </div>
-
         <div class="home-content">
           <label class="el-checkbox">
             <span class="el-checkbox__label">
@@ -64,6 +63,68 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="300px">
+        <el-header height="70px">
+          <div class="home-header flex-start" >
+            <div class="home-user-pc" @click="back()"></div>
+            <span class="home-header-title">创建群组</span>
+          </div>
+        </el-header>
+        <div class="add-content">
+          <div class="user-data">
+            <span
+              ><el-image
+                :src="
+                  groupIcon === ''
+                    ? require('./../../../static/images/image_group_defult.png')
+                    : groupIcon
+                "
+                alt=""
+            /></span>
+            <span class="photo-edit" @click="uploadImgShow = true"
+              >变更群组照片</span
+            >
+          </div>
+          <div class="user-edit-form">
+            <el-form ref="form" :model="groupForm" label-width="100px">
+              <el-form-item label="群组名称">
+                <el-input
+                  v-model="groupForm.name"
+                  placeholder="群组名称"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+        <div class="home-content">
+          <label class="el-checkbox">
+            <span class="el-checkbox__label">
+              <div
+                class="address-box"
+                v-for="(item, index) in checkList"
+                :key="index"
+              >
+                <el-image :src="item.icon" />
+                <div class="msg-box">
+                  <span>{{ item.name }}</span>
+                </div>
+              </div>
+            </span>
+          </label>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            :class="disableEditSubmit ? 'gray-btn' : 'orange-btn'"
+            :disabled="disableEditSubmit"
+            @click="settingGroup"
+          >
+            设定群组资讯
+          </el-button>
+          <!-- @click="editSubmit" -->
+        </div>
+      </el-aside>
+    </el-container>    
     <el-dialog
       title="上傳群组照片"
       :visible.sync="uploadImgShow"

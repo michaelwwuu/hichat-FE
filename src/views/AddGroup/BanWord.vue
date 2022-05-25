@@ -45,6 +45,63 @@
         </div>
       </el-main>
     </el-container>
+    <el-container v-else>
+      <el-aside width="300px">
+        <el-header height="125px">
+          <div class="home-header">
+            <span class="home-header-title">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  cursor: pointer;
+                  margin-left: 5px;
+                  margin-top: 1px;
+                "
+              >
+                <span style="padding-right: 10px" @click="back()"
+                  ><img src="./../../../static/images/pc/arrow-left.png" alt="" style="height: 1.4em;"
+                /></span>
+                <span>禁用詞設定</span>
+              </div>
+            </span>
+            <router-link :to="''">
+              <div class="home-add-user">＋</div>
+            </router-link>
+          </div>
+          <div class="home-search" >
+            <el-input
+              placeholder="搜寻"
+              prefix-icon="el-icon-search"
+              v-model="searchKey"
+            >
+            </el-input>
+          </div>
+        </el-header>
+        <div class="home-content">
+          <div
+            class="setting-button"
+            v-for="(item, index) in banMessage"
+            :key="index"
+          >
+            <div class="setting-box">
+              <div class="setting-button-left">
+                <span>{{ item.value }}</span>
+              </div>
+              <div class="setting-button-right">
+                <span @click="unAdmin(item)">－</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-footer-btn">
+          <el-button
+            class="orange-btn"
+            >儲存設定</el-button
+          >
+        </div>
+      </el-aside>
+    </el-container>    
     <el-dialog
       :visible.sync="unBanShow"
       class="el-dialog-loginOut"
