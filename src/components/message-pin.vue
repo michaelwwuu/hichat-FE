@@ -289,9 +289,7 @@ export default {
         {
           name: "share",
           label: "分享",
-          onClick: () => {
-            this.$message({ message: "網頁無分享功能", type: "warning" });
-          },
+          disabled: true,
         },
         {
           name: "upDown",
@@ -302,17 +300,11 @@ export default {
         },
       ];
       if (data.chatType === "SRV_USER_SEND") {
-        this.newItem = item.filter((list) => {
-          return list.name !== "share" && list.name !== "download";
-        });
+        this.newItem = item.filter(list => list.name !== "share" && list.name !== "download");
       } else if (data.chatType === "SRV_USER_IMAGE") {
-        this.newItem = item.filter((list) => {
-          return list.name !== "copy";
-        });
+        this.newItem = item.filter(list => list.name !== "copy");
       } else if (data.chatType === "SRV_USER_AUDIO") {
-        this.newItem = item.filter((list) => {
-          return list.name === "upDown";
-        });
+        this.newItem = item.filter(list => list.name === "upDown");
       }
       this.$contextmenu({
         items: this.newItem,

@@ -214,8 +214,6 @@ export default {
             this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
               [];
             this.contactListData.forEach((list) => {
-              console.log(el.chat)
-              console.log(list)
               if (el.chat.fromChatId === "u" + list.memberId) {
                 el.chat.name = list.name;
                 el.chat.icon = list.icon;
@@ -301,9 +299,7 @@ export default {
         {
           name: "share",
           label: "分享",
-          onClick: () => {
-            this.$message({ message: "網頁無分享功能", type: "warning" });
-          },
+          disabled: true,
         },
         {
           name: "upDown",
@@ -314,17 +310,11 @@ export default {
         },
       ];
       if (data.chatType === "SRV_GROUP_SEND") {
-        this.newItem = item.filter((list) => {
-          return list.name !== "share" && list.name !== "download";
-        });
+        this.newItem = item.filter(list => list.name !== "share" && list.name !== "download");
       } else if (data.chatType === "SRV_GROUP_IMAGE") {
-        this.newItem = item.filter((list) => {
-          return list.name !== "copy";
-        });
+        this.newItem = item.filter(list => list.name !== "copy");
       } else if (data.chatType === "SRV_GROUP_AUDIO") {
-        this.newItem = item.filter((list) => {
-          return list.name === "upDown";
-        });
+        this.newItem = item.filter(list => list.name === "upDown");
       }
       this.$contextmenu({
         items: this.newItem,
@@ -508,7 +498,7 @@ export default {
             padding: 10px 0;
           }
           .el-image {
-            width: -webkit-fill-available !important;
+            width: 15em !important;
             height: 9em !important;
             top: 0;
             /deep/.el-image__inner {
@@ -595,7 +585,7 @@ export default {
         background-color: #e5e4e4;
         border-radius: 10px;
         .el-image {
-          width: -webkit-fill-available !important;
+          width: 15em !important;
           height: 9em !important;
           top: 0;
           /deep/.el-image__inner {
@@ -684,7 +674,7 @@ export default {
       .message-layout-left {
         p {
           .el-image {
-            width: -webkit-fill-available !important;
+            width: 15em !important;
             height: 9em !important;
             top: 0;
             /deep/.el-image__inner {
@@ -696,7 +686,7 @@ export default {
       .message-layout-right {
         p {
           .el-image {
-            width: -webkit-fill-available !important;
+            width: 15em !important;
             height: 9em !important;
             top: 0;
             /deep/.el-image__inner {

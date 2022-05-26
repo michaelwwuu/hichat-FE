@@ -269,7 +269,6 @@ export default {
               this.pinMsg = "語音訊息";
             } else {
               this.pinMsg = this.pinDataList[0].chat.text;
-              console.log(this.pinMsg)
             }
           }
           this.messageData.forEach((data) => {

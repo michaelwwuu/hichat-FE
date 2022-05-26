@@ -331,6 +331,7 @@ export default {
         }
         this.loginForm.email = this.loginForm.email.trim();
         // this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
+        console.log(this.loginForm.password)
         login(this.loginForm)
           .then((res) => {
             //登录成功
