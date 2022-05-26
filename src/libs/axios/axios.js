@@ -94,6 +94,7 @@ class HttpRequest {
         if (res.code === 50004) this.message = "访客没有权限执行";
         if (res.code === 50005) this.message = "消息格式错误,请检查再传递";
         if (res.code === 50006) this.message = "无此历史记录";
+        if (res.code === 50008) this.message = "置顶已达上限";
         Message({ message: this.message, type: "warning", });
         return Promise.resolve(res)
       }

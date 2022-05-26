@@ -198,6 +198,7 @@ import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
+import { getLocal, getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 import { Encrypt } from "@/utils/AESUtils.js";
@@ -472,19 +473,6 @@ export default {
         .replace(/\n/g, "")
         .replace(new RegExp("<", "gm"), "&lt");
     },
-
-    // 检测空白
-    // blankTesting() {
-    //   if (this.textArea.replace(/\s+/g, "") === "") {
-    //     this.$alert("不能发送空白消息", "提示", {
-    //       confirmButtonText: "确定",
-    //       closeOnPressEscape: true,
-    //       customClass: "winClass", //弹窗样式
-    //     });
-    //     return false;
-    //   }
-    //   return true;
-    // },
     // 按Enter发送消息
     keyUp(event) {
       if (event.shiftKey && event.keyCode === 13) {
@@ -539,8 +527,8 @@ export default {
           this.aesIv
         ),//TODO 加密
         // text: this.textArea,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       // 发送服务器
       this.soundNofiy.forEach((res)=>{
@@ -583,8 +571,8 @@ export default {
         // text: this.textArea,
 
         toChatId: this.userData.lastChat.toChatId,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       // 发送服务器
       Socket.send(editMessage);

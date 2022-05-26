@@ -100,7 +100,7 @@
         </el-main>
       </el-main>
     </el-container>
-    <el-container v-if="!topMsgShow">
+    <el-container v-else>
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header height="70px">
           <div class="home-header">
@@ -246,15 +246,31 @@ export default {
       });
       this.setEditMsg({ innerText: "" });
     },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
+      };
+      Socket.send(chatMsgKey);
+    },        
     getPinList() {
-      let toChatId = this.groupData.toChatId;
-      pinList({ toChatId }).then((res) => {
+      let params={
+        toChatId:this.groupUser.toChatId,
+        order:1,
+      }
+      pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
-          if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
-            this.pinMsg = "語音訊息";
-          } else {
-            this.pinMsg = this.pinDataList[0].chat.text;
+          if(this.pinDataList.length !== 0){
+            if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
+              this.pinMsg = "語音訊息";
+            } else {
+              this.pinMsg = this.pinDataList[0].chat.text;
+              console.log(this.pinMsg)
+            }
           }
           this.messageData.forEach((data) => {
             this.pinDataList.forEach((list) => {
@@ -298,6 +314,7 @@ export default {
         isPing:false,
       };
     },
+
     //判斷是否base64
     isBase64(data) {
       var base64Rejex =
@@ -388,7 +405,7 @@ export default {
             this.messageList(userInfo);
             this.readMsgShow(userInfo);
             this.messageData.push(this.chatRoomMsg);
-            if (this.device === "pc") this.getHiChatDataList();
+            // if (this.device === "pc") this.getHiChatDataList();
             if(userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")){
               this.audioAction();
             }
@@ -400,8 +417,8 @@ export default {
           break;          
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.pinMsg = "";
-          this.getPinList();          
+          this.pinMsg = "";    
+          this.getPinList();   
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -440,10 +457,9 @@ export default {
               if (historyMsgList.length > 0)
                 this.readMsgShow(historyMsgList[0]);
               this.loading = false;
-              if (this.device === "pc") this.getHiChatDataList();
+              // if (this.device === "pc") this.getHiChatDataList();
+                 
             }, this.timeOut);
-            this.getPinList()
-
           });
           break;
         // 已讀
@@ -477,16 +493,7 @@ export default {
           break;
       }
     },
-    getHiChatDataList() {
-      let chatMsgKey = {
-        chatType: "CLI_RECENT_CHAT",
-        id: Math.random(),
-        tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
-      };
-      Socket.send(chatMsgKey);
-    },
+
   },
   components: {
     MessagePabel,

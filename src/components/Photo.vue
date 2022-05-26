@@ -45,6 +45,7 @@
 //父组件通过函数 getImg 获取照片路径,如 @getImg="getImg"
 // const Address = require('../utils/url');//图片上传地址
 import Socket from "@/utils/socket";
+import { getLocal, getToken } from "_util/utils.js";
 import { uploadMessageImage } from "@/api";
 export default {
   name: "TakePhotos",
@@ -91,11 +92,10 @@ export default {
           .then((res) => {
             this.loading = false;
             if (res.code === 200) {
-              
               let message = {
                 chatType: this.chatType,
-                token: localStorage.getItem("token"),
-                deviceId: localStorage.getItem("UUID"),
+                token: getToken("token"),
+                deviceId: getLocal("UUID"),
                 tokenType: 0,
                 id: Math.random(),
                 fromChatId: "u" + localStorage.getItem("id"),

@@ -293,7 +293,7 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 170 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 250 ||
           (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
@@ -562,7 +562,6 @@ export default {
       return false;
     },
     topMsgAction(data,key){
-      console.log(data,key)
       let param ={
         historyId: data.historyId,
         toChatId: data.toChatId
@@ -577,7 +576,7 @@ export default {
         pinHistory(param).then((res) => {
           if (res.code === 200) {
             this.$emit("resetPinMsg");
-          }
+          } 
         })
       }
     },

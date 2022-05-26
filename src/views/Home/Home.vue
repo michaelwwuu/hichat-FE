@@ -284,7 +284,7 @@
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
-
+import { getLocal, getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import {
   getGroupList,
@@ -345,8 +345,8 @@ export default {
         tokenType: 0,
         targetId: "",
         pageSize: 1000,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       },
 
       //加解密 key iv
@@ -469,14 +469,14 @@ export default {
           }
         });
       });
-      getGroupList().then((res) => {
-        this.groupList = res.data.list;
-        this.groupList.forEach((el) => {
-          if (el.icon === "") {
-            el.icon = require("./../../../static/images/image_group_defult.png");
-          }
-        });
-      });
+      // getGroupList().then((res) => {
+      //   this.groupList = res.data.list;
+      //   this.groupList.forEach((el) => {
+      //     if (el.icon === "") {
+      //       el.icon = require("./../../../static/images/image_group_defult.png");
+      //     }
+      //   });
+      // });
     },
     getUserData() {
       getUserInfo().then((res) => {
@@ -584,8 +584,8 @@ export default {
         chatType: "CLI_RECENT_CHAT",
         id: Math.random(),
         tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       Socket.send(chatMsgKey);
     },

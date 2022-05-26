@@ -10,7 +10,7 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <template v-if="el.chatType !== 'SRV_CHAT_PIN'">
+          <template v-if="el.chatType !== 'SRV_CHAT_PIN' && el.chatType !== 'SRV_GROUP_DEL'">
             <img class="message-avatar" :src="el.icon" />
             <p
               :class="[
@@ -213,6 +213,11 @@
               <span>{{pinUserName(el.message.content)}}置顶了一則訊息</span>
             </div>
           </template>
+          <template v-else-if="el.chatType === 'SRV_GROUP_DEL'">
+            <div class="top-msg-style"> 
+              <span>{{pinUserName(el.message.content)}}離開了聊天室</span>
+            </div>
+          </template>
         </li>
       </div>
     </ul>
@@ -338,7 +343,7 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 170 ||
+          (scrollTopBox.scrollHeight - scrollTop) / 4 > 250 ||
           (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
       },
       true
@@ -362,7 +367,6 @@ export default {
       this.fileList = fileList;
     },  
     pinUserName(data){
-      // console.log(JSON.parse(localStorage.getItem("myUserInfo")))
       if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
         return data = "你"
       } else{
@@ -616,7 +620,6 @@ export default {
       return false;
     },
     topMsgAction(data,key){
-      console.log(data,key)
       let param ={
         historyId: data.historyId,
         toChatId: data.toChatId
@@ -631,7 +634,7 @@ export default {
         pinHistory(param).then((res) => {
           if (res.code === 200) {
             this.$emit("resetPinMsg");
-          }
+          } 
         })
       }
     },
@@ -962,28 +965,34 @@ export default {
   }
 }
 .hichat-pc {
+  
   .message-pabel-box {
     .message-styles-box {
       .message-layout-left {
         p {
-          .el-image {
-            width: -webkit-fill-available !important;
-            height: 9em !important;
-            top: 0;
-            /deep/.el-image__inner {
-              height: 100%;
+          .message-image{
+            .message-box{
+              .el-image {
+                width: 15em !important;
+                height: 9em !important;
+                top: 0;
+                /deep/.el-image__inner {
+                  height: unset;
+                }
+              }
             }
           }
+
         }
       }
       .message-layout-right {
         p {
           .el-image {
             width: -webkit-fill-available !important;
-            height: 9em !important;
+            height: 11em !important;
             top: 0;
             /deep/.el-image__inner {
-              height: 100%;
+              height: unset;
             }
           }
         }

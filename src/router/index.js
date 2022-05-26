@@ -100,6 +100,12 @@ const routes = [
     name: "AdminSetting",
     component: () => import(/* webpackChunkName: "AdminSetting" */ '@/views/AddGroup/AdminSetting.vue'),
     meta: { keepAlive: false },
+  },     
+  {
+    path: "/AdminSettingPage",
+    name: "AdminSettingPage",
+    component: () => import(/* webpackChunkName: "AdminSettingPage" */ '@/views/AddGroup/AdminSettingPage.vue'),
+    meta: { keepAlive: false },
   },      
   {
     path: "/AdminSettingDetail",

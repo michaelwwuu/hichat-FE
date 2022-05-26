@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="message-pabel-box"
-    @touchmove="$root.handleTouch"
-  >
+  <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -99,7 +96,12 @@
               />
             </span>
             <span class="nickname-time">
-              <img class="go-message" src="./../../static/images/gotomessage.png" alt="" @click="goMessageAction(el.chat)">
+              <img
+                class="go-message"
+                src="./../../static/images/gotomessage.png"
+                alt=""
+                @click="goMessageAction(el.chat)"
+              />
               <span>{{ $root.formatTimeSecound(el.chat.sendTime) }}</span>
             </span>
           </p>
@@ -128,8 +130,8 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { unpinHistory,pinList  } from "@/api";
-import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
+import { unpinHistory, pinList } from "@/api";
+import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessagePabel",
@@ -137,16 +139,16 @@ export default {
     userInfoData: {
       type: Object,
     },
-    contactUser:{
+    contactUser: {
       type: Object,
-    }
+    },
   },
   data() {
     return {
       newData: [],
       message: [],
       newMessageData: {},
-      fullscreenLoading:false,
+      fullscreenLoading: false,
 
       device: localStorage.getItem("device"),
       showScrollBar: false,
@@ -155,9 +157,9 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
-  watch:{
-    topMsgShow(val){
-      !val ? this.getPinList() : false
+  watch: {
+    topMsgShow(val) {
+      !val ? this.getPinList() : false;
     },
   },
   computed: {
@@ -183,30 +185,34 @@ export default {
       },
       true
     );
-    this.getPinList()
+    this.getPinList();
   },
   methods: {
     ...mapMutations({
-      setTopMsgShow:"ws/setTopMsgShow",
+      setTopMsgShow: "ws/setTopMsgShow",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
-    goMessageAction(data){
-      this.setGoAnchorMessage(data)
-      this.setTopMsgShow(true)
+    goMessageAction(data) {
+      this.setGoAnchorMessage(data);
+      this.setTopMsgShow(true);
     },
     getPinList() {
-      let toChatId = ""
-      if(this.contactUser !== undefined){
-        toChatId = this.contactUser.toChatId;
-      } else{
-        toChatId = this.chatUser.toChatId;
+      let params = {
+        toChatId: this.chatUser.toChatId,
+        order: 0,
+      };
+      if (this.contactUser !== undefined) {
+        params.toChatId = this.contactUser.toChatId;
+      } else {
+        params.toChatId = this.chatUser.toChatId;
       }
-      pinList({ toChatId }).then((res) => {
-        if(res.code === 200){
-          this.pinDataList = res.data.reverse()
+      pinList(params).then((res) => {
+        if (res.code === 200) {
+          this.pinDataList = res.data.reverse();
           this.newMessageData = {};
           this.pinDataList.forEach((el) => {
-            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] = [];
+            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
+              [];
             let newData = this.pinDataList.filter((res) => {
               return (
                 this.$root.formatTimeDay(res.chat.sendTime) ===
@@ -219,7 +225,7 @@ export default {
           this.$root.gotoBottom();
         }
       });
-    },    
+    },
     isBase64(data) {
       var base64Rejex =
         /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
@@ -233,29 +239,29 @@ export default {
       }
     },
     noIconShow(iconData) {
-      if ([undefined,null,""].includes(iconData.icon)) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require("./../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
       }
     },
-
-    audioAction(){
-      let audioEl = document.getElementById("notify-send-audio")  
+    audioAction() {
+      let audioEl = document.getElementById("notify-send-audio");
       var playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.pause();
-        })
-        .catch(error => {
-        });
+        playPromise
+          .then((_) => {
+            audioEl.pause();
+          })
+          .catch((error) => {});
       }
-      audioEl.src= "" // 移除src, 防止之后播放空白音频  
-      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-        audioEl.src = require("./../../static/wav/send.mp3")
+      audioEl.src = ""; // 移除src, 防止之后播放空白音频
+      setTimeout(() => {
+        // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../static/wav/send.mp3");
         audioEl.play();
       }, 150);
-    },     
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.chat.fromChatId === "u" + localStorage.getItem("id")) {
@@ -291,28 +297,21 @@ export default {
           name: "upDown",
           label: "取消置顶",
           onClick: () => {
-            this.topMsgAction(data)
+            this.topMsgAction(data);
           },
         },
       ];
-      if(data.chatType === "SRV_USER_SEND"){
+      if (data.chatType === "SRV_USER_SEND") {
         this.newItem = item.filter((list) => {
-          return (
-            list.name !== "share" &&
-            list.name !== "download"
-          );
+          return list.name !== "share" && list.name !== "download";
         });
-      }else if(data.chatType === "SRV_USER_IMAGE"){
+      } else if (data.chatType === "SRV_USER_IMAGE") {
         this.newItem = item.filter((list) => {
-          return (
-            list.name !== "copy" 
-          );
+          return list.name !== "copy";
         });
-      }else if(data.chatType === "SRV_USER_AUDIO"){
+      } else if (data.chatType === "SRV_USER_AUDIO") {
         this.newItem = item.filter((list) => {
-          return (
-            list.name === "upDown"
-          );
+          return list.name === "upDown";
         });
       }
       this.$contextmenu({
@@ -356,17 +355,17 @@ export default {
       link.click();
       link.remove();
     },
-    topMsgAction(data){
-      let param ={
+    topMsgAction(data) {
+      let param = {
         historyId: data.historyId,
-        toChatId: data.toChatId
-      }
+        toChatId: data.toChatId,
+      };
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.$emit("resetPinMsg");
-          this.getPinList()
+          this.getPinList();
         }
-      })
+      });
     },
     copyPaste(data) {
       let url = document.createElement("textarea");
@@ -378,7 +377,9 @@ export default {
 
       this.$message({
         message: `${
-          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : this.isBase64(url.value)
+          url.value.length > 110
+            ? url.value.substr(0, 110) + " ..."
+            : this.isBase64(url.value)
         } 复制成功`,
         type: "success",
         duration: 1000,
@@ -397,7 +398,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 11em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -414,7 +415,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 11em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -425,8 +426,8 @@ export default {
             padding: 0;
           }
         }
-        .message-image{
-          background-color: #FFFFFF;
+        .message-image {
+          background-color: #ffffff;
         }
       }
       .message-audio {
@@ -436,8 +437,8 @@ export default {
       .vueAudioBetter {
         box-shadow: none;
         background-image: none;
-        width:auto;
-        margin:0;
+        width: auto;
+        margin: 0;
         /deep/.operate {
           span {
             &:nth-child(3) {
@@ -445,24 +446,23 @@ export default {
             }
           }
         }
-        /deep/.slider{
+        /deep/.slider {
           display: none;
         }
-        /deep/.icon-notificationfill{
-          &:before{
+        /deep/.icon-notificationfill {
+          &:before {
             content: "\E66A";
             display: none;
           }
         }
       }
     }
-    /deep/.el-dialog-takePicture{
-    .el-dialog{
+    /deep/.el-dialog-takePicture {
+      .el-dialog {
         width: 450px !important;
       }
     }
   }
-
 }
 
 .message-pabel-box {
@@ -504,7 +504,7 @@ export default {
         .el-image {
           width: -webkit-fill-available !important;
           height: 11em !important;
-          top:0;
+          top: 0;
           /deep/.el-image__inner {
             height: unset;
           }
@@ -530,7 +530,7 @@ export default {
         color: #777777;
         font-size: 12px;
         padding-left: 10px;
-        .go-message{
+        .go-message {
           height: 1.5em;
           width: fit-content;
           margin-bottom: 10px;
@@ -580,7 +580,7 @@ export default {
         .el-image {
           width: -webkit-fill-available !important;
           height: 11em !important;
-          top:0;
+          top: 0;
           /deep/.el-image__inner {
             height: unset;
           }
@@ -607,7 +607,7 @@ export default {
         font-size: 12px;
         padding-right: 10px;
         align-items: flex-end;
-        .go-message{
+        .go-message {
           height: 1.5em;
           width: fit-content;
           margin-bottom: 10px;
@@ -687,8 +687,8 @@ export default {
   .vueAudioBetter {
     box-shadow: none;
     background-image: none;
-    width:auto;
-    margin:0;
+    width: auto;
+    margin: 0;
     /deep/.operate {
       span {
         &:nth-child(3) {
@@ -696,16 +696,16 @@ export default {
         }
       }
     }
-    /deep/.slider{
+    /deep/.slider {
       display: none;
     }
-    /deep/.icon-notificationfill{
-      &:before{
+    /deep/.icon-notificationfill {
+      &:before {
         content: "\E66A";
         display: none;
       }
     }
-  }  
+  }
 }
 .reply-aduio {
   .message-classic {
@@ -722,7 +722,7 @@ export default {
   right: 10px;
   z-index: 9;
   text-align: center;
-  background-color: #FFF;
+  background-color: #fff;
   .el-icon-more {
     font-size: 20px;
   }
@@ -764,8 +764,8 @@ export default {
     .vueAudioBetter {
       box-shadow: none;
       background-image: none;
-      width:auto;
-      margin:0;
+      width: auto;
+      margin: 0;
       /deep/.operate {
         span {
           &:nth-child(3) {
@@ -773,11 +773,11 @@ export default {
           }
         }
       }
-      /deep/.slider{
+      /deep/.slider {
         display: none;
       }
-      /deep/.icon-notificationfill{
-        &:before{
+      /deep/.icon-notificationfill {
+        &:before {
           content: "\E66A";
           display: none;
         }
@@ -856,12 +856,12 @@ export default {
   color: #10686e;
   text-decoration: none;
 }
-.top-msg-style{
+.top-msg-style {
   width: 100%;
   font-size: 12px;
   text-align: center;
   margin: 2em 0;
-  span{
+  span {
     background-color: rgba(0, 0, 0, 0.05);
     padding: 4px 15px;
     border-radius: 10px;

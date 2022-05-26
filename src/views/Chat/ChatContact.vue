@@ -117,7 +117,7 @@
         </el-main>
       </el-main>
     </el-container>
-    <el-container v-if="!topMsgShow">
+    <el-container v-else>
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header
           :height="device === 'moblie' ? '55px' : '70px'"
@@ -361,15 +361,21 @@ export default {
       this.getPinList();
     },
     getPinList() {
-      let toChatId = this.contactUser.toChatId;
-      pinList({ toChatId }).then((res) => {
+      let params={
+        toChatId:this.contactUser.toChatId,
+        order:1,
+      }      
+      pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
-          if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
-            this.pinMsg = "語音訊息";
-          } else {
-            this.pinMsg = this.pinDataList[0].chat.text;
+          if(this.pinDataList.length !== 0){
+            if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
+              this.pinMsg = "語音訊息";
+            } else {
+              this.pinMsg = this.pinDataList[0].chat.text;
+            }
           }
+
           this.messageData.forEach((data) => {
             this.pinDataList.forEach((list) => {
               if (data.historyId === list.historyId) {
@@ -548,7 +554,6 @@ export default {
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";
-          this.getPinList();          
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -600,6 +605,7 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)
                 this.readMsgShow(this.readMsg[0]);
               this.getHiChatDataList();
+              this.getPinList();          
               this.loading = false;
             }, this.timeOut);
           });
@@ -733,8 +739,8 @@ export default {
         chatType: "CLI_RECENT_CHAT",
         id: Math.random(),
         tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       Socket.send(chatMsgKey);
     },

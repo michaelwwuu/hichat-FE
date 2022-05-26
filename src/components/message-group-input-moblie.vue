@@ -249,6 +249,7 @@ import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
+import { getLocal, getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageImage, uploadMessageFile } from "@/api";
 import { Encrypt} from '@/utils/AESUtils.js'
@@ -481,13 +482,11 @@ export default {
       if (document.getElementById("audioVoice") !== null)
         this.recorder.clear(this.audio);
     },
-
     // 關閉錄音
     closeAduioShow() {
       this.sendAduioShow = false;
       this.audioMessageData = {};
     },
-
     // 上傳錄音
     onAudioFile() {
       let formData = new FormData();
@@ -514,7 +513,6 @@ export default {
         }
       });
     },
-
     // 表情符号转简中
     emojiChine(category) {
       if (category === "Frequently used") return "经常使用";
@@ -529,13 +527,13 @@ export default {
     insert(emoji) {
       this.textArea += emoji;
     },
-
     // 消息过滤
     textAreaTran() {
       return this.textArea
         .replace(/\n/g, "")
         .replace(new RegExp("<", "gm"), "&lt");
     },
+
     callout() {
       this.textArea.split(" ").forEach((res)=>{
         if(res.startsWith('@')){
@@ -545,6 +543,7 @@ export default {
         }
       })
     },
+    
     keyUp(event) {
       this.textArea.split(" ").forEach((res)=>{
         this.calloutShow = res.startsWith('@')
@@ -601,8 +600,8 @@ export default {
         targetArray: this.targetArray,
         text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
         // text: this.textArea,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
         tokenType: 0,
       };
       // 发送服务器
@@ -642,8 +641,8 @@ export default {
         text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
         // text: this.textArea,
         toChatId: this.groupData.lastChat.toChatId,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       // 发送服务器
       Socket.send(editMessage);

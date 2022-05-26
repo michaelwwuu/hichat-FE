@@ -145,6 +145,7 @@
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
+import { getLocal, getToken } from "_util/utils.js";
 import { getSearchById,groupListMember } from "@/api";
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
@@ -192,8 +193,8 @@ export default {
         tokenType: 0,
         targetId: "",
         pageSize: 1000,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       },
       chatUserId:"",
       contactList:[],

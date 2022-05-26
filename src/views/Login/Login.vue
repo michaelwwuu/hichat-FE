@@ -13,7 +13,8 @@
     >
       <div class="title-container">
         <img src="./../../../static/images/material_ic_logo.png" alt="" />
-        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span><!--{{ $t('LOGIN.LGOIN_TITLE') }}-->
+        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span
+        ><!--{{ $t('LOGIN.LGOIN_TITLE') }}-->
       </div>
       <template v-if="device === 'moblie'">
         <el-form-item prop="email">
@@ -200,16 +201,18 @@
 
 <script>
 import { login } from "_api/index.js";
-
+import { Encrypt } from "@/utils/AESUtils.js";
+import { getLocal } from "_util/utils.js";
 export default {
   data() {
     return {
       loginForm: {
-        deviceId: localStorage.getItem("UUID"),
+        deviceId: getLocal("UUID"),
         deviceName: "",
         deviceType: 1,
         email: "",
         password: "",
+        version: 0,
       },
       passwordType: "password",
       remember: true,
@@ -218,6 +221,10 @@ export default {
       dialogShow: false,
       token: localStorage.getItem("token"),
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey: "142c7ec1b64ae0c6",
+      aesIv: "0000000000000000",
     };
   },
   watch: {
@@ -242,7 +249,7 @@ export default {
     },
   },
   created() {
-    this.browserType()
+    this.browserType();
   },
   mounted() {
     if (this.remember) {
@@ -254,35 +261,40 @@ export default {
     this.getUUID();
   },
   methods: {
-    browserType(){
+    browserType() {
       var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
       var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
-      var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判斷是否IE瀏覽器
+      var isIE =
+        userAgent.indexOf("compatible") > -1 &&
+        userAgent.indexOf("MSIE") > -1 &&
+        !isOpera; //判斷是否IE瀏覽器
       var isEdge = userAgent.indexOf("Edge") > -1; //判斷是否IE的Edge瀏覽器
       var isFF = userAgent.indexOf("Firefox") > -1; //判斷是否Firefox瀏覽器
-      var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判斷是否Safari瀏覽器
-      var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1; //判斷Chrome瀏覽器
-      if(isOpera){
-        this.loginForm.deviceName = "Opera"
-      }else if(isIE){
-        this.loginForm.deviceName = "compatible"
-      }else if(isEdge){
-        this.loginForm.deviceName = "Edge"
-      }else if(isFF){
-        this.loginForm.deviceName = "Firefox"
-      }else if(isSafari){
-        this.loginForm.deviceName = "Safari"
-      }else if(isChrome){
-        this.loginForm.deviceName = "Chrome"
+      var isSafari =
+        userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判斷是否Safari瀏覽器
+      var isChrome =
+        userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1; //判斷Chrome瀏覽器
+      if (isOpera) {
+        this.loginForm.deviceName = "Opera";
+      } else if (isIE) {
+        this.loginForm.deviceName = "compatible";
+      } else if (isEdge) {
+        this.loginForm.deviceName = "Edge";
+      } else if (isFF) {
+        this.loginForm.deviceName = "Firefox";
+      } else if (isSafari) {
+        this.loginForm.deviceName = "Safari";
+      } else if (isChrome) {
+        this.loginForm.deviceName = "Chrome";
       }
     },
     setActiveLanguage(lang) {
-      localStorage.setItem('language', lang)
+      localStorage.setItem("language", lang);
     },
     setLang(evt) {
-      const lang = evt.target.dataset.lang
-      this.setActiveLanguage(lang)
-      return history.go(0)
+      const lang = evt.target.dataset.lang;
+      this.setActiveLanguage(lang);
+      return history.go(0);
     },
     showPwd() {
       this.passwordType = this.passwordType === "password" ? "" : "password";
@@ -308,7 +320,6 @@ export default {
         });
         return;
       }
-      console.log(this.loginForm)
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {
@@ -319,6 +330,7 @@ export default {
           return;
         }
         this.loginForm.email = this.loginForm.email.trim();
+        // this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
         login(this.loginForm)
           .then((res) => {
             //登录成功
@@ -327,10 +339,7 @@ export default {
                 "token",
                 res.data.tokenHead + res.data.token
               );
-              localStorage.setItem(
-                "id",
-                res.data.memberId
-              );
+              localStorage.setItem("id", res.data.memberId);
               this.$router.push({ path: "/Home" });
             } else if (res.code === 10009) {
               //登录失敗
@@ -469,14 +478,14 @@ $light_gray: #eee;
       /deep/.el-checkbox__input.is-checked + .el-checkbox__label {
         color: rgba(0, 0, 0, 0.8);
       }
-      /deep/.el-checkbox{
-        .el-checkbox__input{
-          .el-checkbox__inner{
+      /deep/.el-checkbox {
+        .el-checkbox__input {
+          .el-checkbox__inner {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            &:after{
-              border: 2px solid #FFFFFF;
+            &:after {
+              border: 2px solid #ffffff;
               border-left: 0;
               border-top: 0;
               height: 13px;
@@ -610,7 +619,7 @@ $light_gray: #eee;
     color: #454545;
   }
   .el-input {
-     width:60%;
+    width: 60%;
   }
 }
 </style>

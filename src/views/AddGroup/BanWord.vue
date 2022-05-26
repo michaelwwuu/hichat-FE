@@ -6,11 +6,7 @@
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
             <span class="home-header-title">禁用詞設定</span>
-            <router-link
-              :to="''"
-            >
-              <div class="home-add-user">＋</div>
-            </router-link>
+            <div class="home-add-user" @click=" addBanShow = true">＋</div>
           </div>
           <div class="home-search" >
             <el-input
@@ -36,12 +32,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="home-footer-btn">
-          <el-button
-            class="orange-btn"
-            >儲存設定</el-button
-          >
         </div>
       </el-main>
     </el-container>
@@ -94,14 +84,28 @@
             </div>
           </div>
         </div>
-        <div class="home-footer-btn">
-          <el-button
-            class="orange-btn"
-            >儲存設定</el-button
-          >
-        </div>
       </el-aside>
-    </el-container>    
+    </el-container>  
+    <el-dialog
+      title="請輸入要新增的禁用字詞"
+      :visible.sync="addBanShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+      append-to-body
+    >
+      <div class="loginOut-box">
+        <el-input v-model="input" placeholder="请输入内容"></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="addBanShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red">确认</el-button>
+      </span>
+    </el-dialog>     
     <el-dialog
       :visible.sync="unBanShow"
       class="el-dialog-loginOut"
@@ -135,6 +139,7 @@ export default {
   data() {
     return {
       searchKey:"",
+      input:"",
       banMessage:[
         {
           name:"ban1",
@@ -147,6 +152,7 @@ export default {
       ],
       banObject:{},
       unBanShow:false,
+      addBanShow:false,
       device: localStorage.getItem("device"),
     };
   },
@@ -182,10 +188,13 @@ export default {
       background-image: url("./../../../static/images/pc/arrow-left.png");
       cursor: pointer;
     }
-    // .home-add-user {
-    //   background-color: #fff;
-    //   background-image: url("./../../../static/images/edit.png");
-    // }    
+    .home-add-user {
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fe5f3f;
+    }    
   }
   .home-content {
     .setting-title {
@@ -233,7 +242,8 @@ export default {
         span {
           margin-right: 1em;
           font-size: 15px;
-          color: #b3b3b3;
+          color: #fe5f3f;
+          border: 1px solid #fe5f3f;
         }
       }
     }    
@@ -249,7 +259,7 @@ export default {
     box-sizing: border-box;
     width: 50%;
     .el-dialog__header {
-      padding: 10px;
+      padding: 30px 10px 0 10px;
     }
     .el-dialog__body {
       text-align: center;

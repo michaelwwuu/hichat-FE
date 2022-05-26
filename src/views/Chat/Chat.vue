@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-container v-show="topMsgShow">
+    <el-container v-if="topMsgShow">
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
@@ -99,7 +99,7 @@
         </el-main>
       </el-main>
     </el-container>
-    <el-container v-show="!topMsgShow">
+    <el-container v-else>
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
@@ -311,14 +311,19 @@ export default {
       });
     },
     getPinList() {
-      let toChatId = this.groupUser.toChatId;
-      pinList({ toChatId }).then((res) => {
+      let params={
+        toChatId:this.groupUser.toChatId,
+        order:1,
+      }
+      pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
-          if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
-            this.pinMsg = "語音訊息";
-          } else {
-            this.pinMsg = this.pinDataList[0].chat.text;
+          if(this.pinDataList.length !== 0){
+            if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
+              this.pinMsg = "語音訊息";
+            } else {
+              this.pinMsg = this.pinDataList[0].chat.text;
+            }
           }
           this.messageData.forEach((data) => {
             this.pinDataList.forEach((list) => {
@@ -382,7 +387,6 @@ export default {
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing:false
       };
-      
     },
     //判斷是否base64
     isBase64(data) {
@@ -433,6 +437,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+        case "SRV_GROUP_DEL":
         case "SRV_CHAT_PIN":
           this.pinMsg = "";
           this.getPinList();          
@@ -480,7 +485,6 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
           this.timeOut = historyMsgList.length * 40;
-
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -567,8 +571,8 @@ export default {
         chatType: "CLI_RECENT_CHAT",
         id: Math.random(),
         tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       Socket.send(chatMsgKey);
     },

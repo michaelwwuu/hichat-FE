@@ -111,6 +111,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
+import { getLocal, getToken } from "_util/utils.js";
 import { uploadGroupIcon, updateGroup } from "@/api";
 
 export default {
@@ -207,8 +208,8 @@ export default {
         chatType: "CLI_RECENT_CHAT",
         id: Math.random(),
         tokenType: 0,
-        deviceId: localStorage.getItem("UUID"),
-        token: localStorage.getItem("token"),
+        token: getToken("token"),
+        deviceId: getLocal("UUID"),
       };
       Socket.send(chatMsgKey);
     },
