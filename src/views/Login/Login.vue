@@ -212,7 +212,7 @@ export default {
         deviceType: 1,
         email: "",
         password: "",
-        version: 0,
+        version: 1,
       },
       passwordType: "password",
       remember: true,
@@ -330,7 +330,7 @@ export default {
           return;
         }
         this.loginForm.email = this.loginForm.email.trim();
-        // this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
+        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
         console.log(this.loginForm.password)
         login(this.loginForm)
           .then((res) => {

@@ -459,6 +459,7 @@ export default {
         display: flex;
         font-size: 14px;
         opacity: 0.5;
+        height:20px;
         span {
           &:nth-child(1) {
             width: 15em;
