@@ -315,7 +315,16 @@ export default {
   watch:{
     topMsgShow(val){
       val ? this.getChatHistoryMessage() : false
-    }
+    },
+    messageData(val){
+      val.forEach((data) => {
+        this.pinDataList.forEach((list) => {
+          if (data.historyId === list.historyId) {
+            return data.isPing = true;
+          }
+        });
+      });
+    }    
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("contactUser"));
@@ -498,9 +507,6 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-        case "SRV_CHAT_PIN":
-          this.pinMsg = "";
-          this.getPinList();          
           if (userInfo.toChatId === this.contactUser.toChatId) {
             if (userInfo.chat.fromChatId === this.contactUser.toChatId) {
               userInfo.chat.name = this.contactUser.name;
@@ -547,6 +553,7 @@ export default {
             }            
           }
           break;
+        case "SRV_CHAT_PIN": 
         case "SRV_CHAT_UNPIN":
           this.pinMsg = "";
           this.getPinList();

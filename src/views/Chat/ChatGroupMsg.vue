@@ -173,7 +173,16 @@ export default {
   watch:{
     topMsgShow(val){
       val ? this.getChatHistoryMessage() : false
-    }
+    },
+    messageData(val){
+      val.forEach((data) => {
+        this.pinDataList.forEach((list) => {
+          if (data.historyId === list.historyId) {
+            return data.isPing = true;
+          }
+        });
+      });
+    }    
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
@@ -372,9 +381,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        case "SRV_CHAT_PIN":
-          this.pinMsg = "";
-          this.getPinList();          
+            
           if (this.groupUser.toChatId === userInfo.toChatId) {
             this.base64Msg = this.isBase64(userInfo.chat.text);
             userInfo.chat.newContent = this.base64Msg.split(" ");
@@ -410,6 +417,7 @@ export default {
             }
           }
           break;
+        case "SRV_CHAT_PIN":       
         case "SRV_CHAT_UNPIN":
           this.pinMsg = "";
           this.getPinList();
