@@ -38,7 +38,10 @@
                 @dblclick="dblclick(el)"
               >
                 <template v-if="el.isRplay !== null">
-                  <div class="reply-box" @click="goAnchor(el.isRplay.historyId)">
+                  <div
+                    class="reply-box"
+                    @click="goAnchor(el.isRplay.historyId)"
+                  >
                     <div class="reply-img">
                       <img :src="noIconShow(el.isRplay)" alt="" />
                     </div>
@@ -164,10 +167,10 @@
               /></span>
             </div>
           </template>
-          
+
           <template v-else-if="el.chatType === 'SRV_CHAT_PIN'">
-            <div class="top-msg-style"> 
-              <span>{{pinUserName(el.message.content)}}置顶了一則訊息</span>
+            <div class="top-msg-style">
+              <span>{{ pinUserName(el.message.content) }}置顶了一則訊息</span>
             </div>
           </template>
         </li>
@@ -213,7 +216,7 @@
         <el-button class="background-orange" @click="submitAvatarUpload"
           >确认</el-button
         >
-      </span>      
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -221,8 +224,13 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { deleteRecentChat,uploadMessageImage,pinHistory,unpinHistory  } from "@/api";
-import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
+import {
+  deleteRecentChat,
+  uploadMessageImage,
+  pinHistory,
+  unpinHistory,
+} from "@/api";
+import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessagePabel",
@@ -242,7 +250,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      fullscreenLoading:false,
+      fullscreenLoading: false,
       fileList: [],
       device: localStorage.getItem("device"),
       showScrollBar: false,
@@ -293,15 +301,15 @@ export default {
           document.body.scrollTop ||
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 > 250 ||
-          (scrollTopBox.scrollHeight - scrollTop) / 3 > 300;
+          (scrollTopBox.scrollHeight - scrollTop) / 4 >
+          (this.device === "pc" ? 150 : 170);
       },
       true
     );
-    if(this.goAnchorMessage.historyId !== undefined){
-      let newTime = this.timeOut + 1000
+    if (this.goAnchorMessage.historyId !== undefined) {
+      let newTime = this.timeOut + 1000;
       setTimeout(() => {
-        this.goAnchor(this.goAnchorMessage.historyId) 
+        this.goAnchor(this.goAnchorMessage.historyId);
       }, newTime);
     }
   },
@@ -310,18 +318,18 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
-    pinUserName(data){
+    pinUserName(data) {
       // console.log(JSON.parse(localStorage.getItem("myUserInfo")))
-      if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
-        return data = "你"
-      } else{
-        return data
+      if (data === JSON.parse(localStorage.getItem("myUserInfo")).username) {
+        return (data = "你");
+      } else {
+        return data;
       }
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
-    drop(event){
+    drop(event) {
       this.uploadShow = true;
     },
     dragend(event) {
@@ -347,7 +355,7 @@ export default {
       }
     },
     noIconShow(iconData) {
-      if ([undefined,null,""].includes(iconData.icon)) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require("./../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
@@ -365,37 +373,38 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.chatUser.toChatId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          // message.text = res.data,
-          this.soundNofiy.forEach((res)=>{
-            if(res.key === "private" && res.isNofity) this.audioAction()
-          })        
+          (message.text = Encrypt(res.data, this.aesKey, this.aesIv)), //TODO 加密
+            // message.text = res.data,
+            this.soundNofiy.forEach((res) => {
+              if (res.key === "private" && res.isNofity) this.audioAction();
+            });
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
-        }else if(res.code === 40001){
+        } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
         }
-      })
-    },   
-    audioAction(){
-      let audioEl = document.getElementById("notify-send-audio")  
+      });
+    },
+    audioAction() {
+      let audioEl = document.getElementById("notify-send-audio");
       var playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.pause();
-        })
-        .catch(error => {
-        });
+        playPromise
+          .then((_) => {
+            audioEl.pause();
+          })
+          .catch((error) => {});
       }
-      audioEl.src= "" // 移除src, 防止之后播放空白音频  
-      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-        audioEl.src = require("./../../static/wav/send.mp3")
+      audioEl.src = ""; // 移除src, 防止之后播放空白音频
+      setTimeout(() => {
+        // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../static/wav/send.mp3");
         audioEl.play();
       }, 150);
-    },     
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -472,9 +481,9 @@ export default {
         },
         {
           name: "upDown",
-          label: data.isPing ? "取消置頂":"置顶訊息",
+          label: data.isPing ? "取消置頂" : "置顶訊息",
           onClick: () => {
-            this.topMsgAction(data,data.isPing)
+            this.topMsgAction(data, data.isPing);
           },
         },
         {
@@ -561,23 +570,23 @@ export default {
       });
       return false;
     },
-    topMsgAction(data,key){
-      let param ={
+    topMsgAction(data, key) {
+      let param = {
         historyId: data.historyId,
-        toChatId: data.toChatId
-      }
-      if(key){
+        toChatId: data.toChatId,
+      };
+      if (key) {
         unpinHistory(param).then((res) => {
           if (res.code === 200) {
             this.$emit("resetPinMsg");
           }
-        })
-      }else{
+        });
+      } else {
         pinHistory(param).then((res) => {
           if (res.code === 200) {
             this.$emit("resetPinMsg");
-          } 
-        })
+          }
+        });
       }
     },
     downloadImages(data) {
@@ -655,7 +664,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 11em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -672,7 +681,7 @@ export default {
           .el-image {
             width: -webkit-fill-available !important;
             height: 11em !important;
-            top:0;
+            top: 0;
             /deep/.el-image__inner {
               height: 100%;
             }
@@ -683,8 +692,8 @@ export default {
             padding: 0;
           }
         }
-        .message-image{
-          background-color: #FFFFFF;
+        .message-image {
+          background-color: #ffffff;
         }
       }
       .message-audio {
@@ -694,8 +703,8 @@ export default {
       .vueAudioBetter {
         box-shadow: none;
         background-image: none;
-        width:auto;
-        margin:0;
+        width: auto;
+        margin: 0;
         /deep/.operate {
           span {
             &:nth-child(3) {
@@ -703,24 +712,23 @@ export default {
             }
           }
         }
-        /deep/.slider{
+        /deep/.slider {
           display: none;
         }
-        /deep/.icon-notificationfill{
-          &:before{
+        /deep/.icon-notificationfill {
+          &:before {
             content: "\E66A";
             display: none;
           }
         }
       }
     }
-    /deep/.el-dialog-takePicture{
-    .el-dialog{
+    /deep/.el-dialog-takePicture {
+      .el-dialog {
         width: 450px !important;
       }
     }
   }
-
 }
 
 .message-pabel-box {
@@ -762,7 +770,7 @@ export default {
         .el-image {
           width: -webkit-fill-available !important;
           height: 11em !important;
-          top:0;
+          top: 0;
           /deep/.el-image__inner {
             height: unset;
           }
@@ -829,7 +837,7 @@ export default {
         .el-image {
           width: -webkit-fill-available !important;
           height: 11em !important;
-          top:0;
+          top: 0;
           /deep/.el-image__inner {
             height: unset;
           }
@@ -926,8 +934,8 @@ export default {
   .vueAudioBetter {
     box-shadow: none;
     background-image: none;
-    width:auto;
-    margin:0;
+    width: auto;
+    margin: 0;
     /deep/.operate {
       span {
         &:nth-child(3) {
@@ -935,16 +943,16 @@ export default {
         }
       }
     }
-    /deep/.slider{
+    /deep/.slider {
       display: none;
     }
-    /deep/.icon-notificationfill{
-      &:before{
+    /deep/.icon-notificationfill {
+      &:before {
         content: "\E66A";
         display: none;
       }
     }
-  }  
+  }
 }
 .reply-aduio {
   .message-classic {
@@ -961,7 +969,7 @@ export default {
   right: 10px;
   z-index: 9;
   text-align: center;
-  background-color: #FFF;
+  background-color: #fff;
   .el-icon-more {
     font-size: 20px;
   }
@@ -1003,8 +1011,8 @@ export default {
     .vueAudioBetter {
       box-shadow: none;
       background-image: none;
-      width:auto;
-      margin:0;
+      width: auto;
+      margin: 0;
       /deep/.operate {
         span {
           &:nth-child(3) {
@@ -1012,11 +1020,11 @@ export default {
           }
         }
       }
-      /deep/.slider{
+      /deep/.slider {
         display: none;
       }
-      /deep/.icon-notificationfill{
-        &:before{
+      /deep/.icon-notificationfill {
+        &:before {
           content: "\E66A";
           display: none;
         }
@@ -1095,12 +1103,12 @@ export default {
   color: #10686e;
   text-decoration: none;
 }
-.top-msg-style{
+.top-msg-style {
   width: 100%;
   font-size: 12px;
   text-align: center;
   margin: 2em 0;
-  span{
+  span {
     background-color: rgba(0, 0, 0, 0.05);
     padding: 4px 15px;
     border-radius: 10px;

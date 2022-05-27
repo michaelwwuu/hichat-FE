@@ -259,12 +259,12 @@ export default {
           this.chatUser.name = "Hichat 记事本";
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
         } else {
-          this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
           this.chatUser.username = res.data.username;
           this.chatUser.name = res.data.name;
-          this.chatUser.isBlock = res.data.isBlock;
-          this.chatUser.isContact = res.data.isContact;
         }
+        this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
+        this.chatUser.isBlock = res.data.isBlock;
+        this.chatUser.isContact = res.data.isContact;
         this.setChatUser(this.chatUser);
       });
     },
