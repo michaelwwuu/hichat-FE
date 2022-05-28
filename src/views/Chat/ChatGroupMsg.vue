@@ -49,7 +49,7 @@
           <div class="top-msg" v-if="pinMsg !==''">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="">
-              <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
+              <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
                 <img :src="isBase64(pinMsg)" alt="">
               </span>
               <span v-else>{{ isBase64(pinMsg) }}</span>

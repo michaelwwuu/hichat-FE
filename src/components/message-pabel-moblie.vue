@@ -319,7 +319,6 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
     }),
     pinUserName(data) {
-      // console.log(JSON.parse(localStorage.getItem("myUserInfo")))
       if (data === JSON.parse(localStorage.getItem("myUserInfo")).username) {
         return (data = "你");
       } else {

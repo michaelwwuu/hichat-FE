@@ -350,7 +350,6 @@ export default {
     );
     if(this.goAnchorMessage.historyId !== undefined){
       let newTime = this.timeOut + 3000
-      console.log(newTime)
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId) 
       }, 4000);

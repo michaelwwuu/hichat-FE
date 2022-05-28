@@ -184,7 +184,6 @@ export default {
     },
     loginOut() {
       logout().then((res) => {
-        console.log(res)
         if(res.code === 200 && res.message === "登出成功"){
           this.$router.push({ path: "/login" });
           localStorage.removeItem("id");

@@ -524,8 +524,8 @@ export default {
         padding-left: 10px;
         .go-message {
           height: 1.5em;
-          width: -webkit-fit-content;
-          margin-bottom: 10px;
+          display: table;
+          margin: 10px auto;
           cursor: pointer;
         }
       }
@@ -601,8 +601,8 @@ export default {
         align-items: flex-end;
         .go-message {
           height: 1.5em;
-          width: -webkit-fit-content;
-          margin-bottom: 10px;
+          display: table;
+          margin: 10px auto;
           cursor: pointer;
         }
       }
