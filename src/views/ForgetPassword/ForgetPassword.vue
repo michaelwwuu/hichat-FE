@@ -63,6 +63,67 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="password"
+              placeholder="登录密码"
+              v-model.trim="loginForm.password"
+              name="password"
+              :type="passwordType === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('password')">
+              <img
+                :src="
+                  passwordType === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <el-form-item prop="passwordAganin">
+            <span class="svg-container">
+              <img src="./../../../static/images/lock.png" alt="" />
+            </span>
+            <el-input
+              ref="passwordAganin"
+              placeholder="再次确认登录密码"
+              v-model.trim="loginForm.passwordAganin"
+              name="passwordAganin"
+              :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.passwordAganin = v.replace(
+                    /^[\u4E00-\u9FA5]+$/,
+                    ''
+                  ))
+              "
+            >
+            </el-input>
+            <span class="show-pwd" @click="showPwd('passwordAgain')">
+              <img
+                :src="
+                  passwordTypeAgain === 'password'
+                    ? require('../../../static/images/eye_closed.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>          
           <div class="register-footer">
             <el-button
               style="width: 100%; margin-bottom: 30px"
@@ -127,6 +188,69 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
+          <el-form-item prop="password">
+            <span class="svg-container">登录密码</span>
+            <el-input
+              ref="password"
+              v-model.trim="loginForm.password"
+              name="password"
+              :type="passwordType === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              "
+            >
+            </el-input>
+            <span
+              class="show-pwd"
+              :class="{ 'eye-off': passwordType === 'password' }"
+              @click="showPwd('password')"
+            >
+              <img
+                :src="
+                  passwordType === 'password'
+                    ? require('../../../static/images/pc/eye-off.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
+          <el-form-item prop="passwordAganin">
+            <span class="svg-container">确认密码</span>
+            <el-input
+              ref="passwordAganin"
+              v-model.trim="loginForm.passwordAganin"
+              name="passwordAganin"
+              :type="passwordTypeAgain === 'password' ? 'password' : 'text'"
+              tabindex="2"
+              maxLength="12"
+              @input="
+                (v) =>
+                  (loginForm.passwordAganin = v.replace(
+                    /^[\u4E00-\u9FA5]+$/,
+                    ''
+                  ))
+              "
+            >
+            </el-input>
+            <span
+              class="show-pwd"
+              :class="{ 'eye-off': passwordTypeAgain === 'password' }"
+              @click="showPwd('passwordAgain')"
+            >
+              <img
+                :src="
+                  passwordTypeAgain === 'password'
+                    ? require('../../../static/images/pc/eye-off.png')
+                    : require('./../../../static/images/eye-solid.svg')
+                "
+                alt=""
+              />
+            </span>
+          </el-form-item>
           <div class="register-footer">
             <div>
               <el-button
@@ -176,14 +300,19 @@
 
 <script>
 import { forgetPassword, genAuthCode } from "@/api";
-
+import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
 export default {
   data() {
     return {
       loginForm: {
         email: "",
         authCode: "",
+        password: "",
+        passwordAganin: "",
+        version:1,
       },
+      passwordType: "password",
+      passwordTypeAgain: "password",
       count: 60,
       timer: false,
       disabled: true,
@@ -195,8 +324,19 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        if (Object.values(val).every((el) => el !== "")) {
-          this.disabled = false;
+        if (val.password === val.passwordAganin) {
+          if (
+            Object.values(val).every((el) => el !== "") &&
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
+              val.passwordAganin
+            ) &&
+            /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
+          ) {
+            this.disabled = false;
+          } else {
+            this.disabled = true;
+          }
         } else {
           this.disabled = true;
         }
@@ -233,6 +373,19 @@ export default {
         }
       });
     },
+    showPwd(value) {
+      switch (value) {
+        case "password":
+          this.passwordType =
+            this.passwordType === "password" ? "" : "password";
+          break;
+        case "passwordAgain":
+          this.passwordTypeAgain =
+            this.passwordTypeAgain === "password" ? "" : "password";
+          break;
+      }
+      this.$nextTick(() => this.$refs.password.focus());
+    },
     //登录&&註冊
     submitForm(rules) {
       //驗證註冊表單是否通過
@@ -244,13 +397,17 @@ export default {
           });
           return;
         }
+        delete this.loginForm.passwordAganin;
+        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)        
         this.disabled = true;
         forgetPassword(this.loginForm)
           .then((res) => {
             if (res.code === 200) {
               this.dialogShow = true;
+              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             } else {
               this.loginForm.authCode = "";
+              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             }
           })
           .catch((err) => {
@@ -452,7 +609,7 @@ export default {
       width: 60px;
     }
     .login-form{
-      height: 18em;
+      height: 25em;
       padding: 0.45em 0;
       .el-form-item{
         .el-input{

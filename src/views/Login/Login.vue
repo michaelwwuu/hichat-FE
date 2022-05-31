@@ -201,7 +201,7 @@
 
 <script>
 import { login } from "_api/index.js";
-import { Encrypt } from "@/utils/AESUtils.js";
+import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
 import { getLocal } from "_util/utils.js";
 export default {
   data() {
@@ -261,6 +261,7 @@ export default {
     this.getUUID();
   },
   methods: {
+
     browserType() {
       var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
       var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
@@ -311,6 +312,18 @@ export default {
       );
       localStorage.setItem("UUID", "hiWeb" + number);
     },
+    isBase64(data) {
+      var base64Rejex =
+        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
+      if (!base64Rejex.test(data)) {
+        return data;
+      }
+      try {
+        return Decrypt(data, this.aesKey, this.aesIv);
+      } catch (err) {
+        return data;
+      }
+    },
     //登录&&註冊
     submitForm(rules) {
       if (!this.readChecked) {
@@ -344,6 +357,8 @@ export default {
             } else if (res.code === 10009) {
               //登录失敗
               this.dialogShow = true;
+            } else if(res.code === 10002){
+               this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             }
           })
           .catch((err) => {

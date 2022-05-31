@@ -118,6 +118,7 @@ export const mutations = {
     state.badgeNum = num
   },
   setMsgInfoPage(state, payload){
+    console.log(payload)
     state.msgInfoPage = payload;
   },
   setHichatNav(state, payload) {

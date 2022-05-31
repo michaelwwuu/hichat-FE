@@ -309,7 +309,11 @@ export default {
     },
     changeGroupAdminShow() {
       this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
-      this.infoMsgShow();
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "GroupPage",
+        infoMsgChat: true,
+      });
     },
     infoMsgShow() {
       this.setMsgInfoPage({ pageShow: true, type: "" });

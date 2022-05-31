@@ -128,6 +128,22 @@
                   <img src="./../../../static/images/next.png" alt="" />
                 </a>
               </div>
+              <div class="setting-button mt10-border" v-if="groupData.isAdmin || groupData.isManager">
+                <a @click="goChatRoom(groupData, 'SettingGroup')">
+                  <div class="setting-button-left">
+                    <img src="./../../../static/images/key.png" alt="" />
+                    <span>權限</span>
+                  </div>
+                </a>
+              </div>
+              <div class="setting-button" v-if="groupData.isAdmin">
+                <a @click="goChatRoom(groupData, 'GroupAdminChange')">
+                  <div class="setting-button-left">
+                    <img src="./../../../static/images/shield.png" alt="" />
+                    <span>轉移管理者權限</span>
+                  </div>
+                </a>
+              </div>
             </template>
           </div>
         </el-main>
@@ -299,6 +315,7 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
+      console.log(data, path, type)
       if (path === "HiChat") {
         this.setInfoMsg({
           infoMsgShow: false,
@@ -316,7 +333,9 @@ export default {
         this.getHistory(type);
         this.$router.push({ name: path, params: data });
       } else if (path === "GroupPeople") {
-        this.setMsgInfoPage({ pageShow: false, type: path });
+        this.setMsgInfoPage({ pageShow: false, type: path }); 
+      } else if(path === "GroupPeople"){
+
       }
     },
     getGroupListMember(data) {
@@ -488,5 +507,8 @@ export default {
       }
     }
   }
+}
+.mt10-border{
+  border-top: 3px solid rgba(0, 0, 0, 0.05);
 }
 </style>

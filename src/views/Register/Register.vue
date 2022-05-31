@@ -387,18 +387,23 @@
 
 <script>
 import { register, genAuthCode } from "@/api";
-import { setToken } from "_util/utils.js";
+import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
+import { getLocal,setToken } from "_util/utils.js";
 
 export default {
   data() {
     return {
       loginForm: {
+        deviceId: getLocal("UUID"),
+        deviceName: "",
+        deviceType: 1,
         email: "",
         password: "",
         passwordAganin: "",
         authCode: "",
         nickname: "",
         username: "",
+        version:1,
       },
       passwordType: "password",
       passwordTypeAgain: "password",
@@ -408,6 +413,10 @@ export default {
       disabled: true,
       dialogShow: false,
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey: "142c7ec1b64ae0c6",
+      aesIv: "0000000000000000",
     };
   },
   watch: {
@@ -433,7 +442,37 @@ export default {
       deep: true,
     },
   },
+  created() {
+    this.browserType();
+  },  
   methods: {
+    browserType() {
+      var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
+      var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
+      var isIE =
+        userAgent.indexOf("compatible") > -1 &&
+        userAgent.indexOf("MSIE") > -1 &&
+        !isOpera; //判斷是否IE瀏覽器
+      var isEdge = userAgent.indexOf("Edge") > -1; //判斷是否IE的Edge瀏覽器
+      var isFF = userAgent.indexOf("Firefox") > -1; //判斷是否Firefox瀏覽器
+      var isSafari =
+        userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判斷是否Safari瀏覽器
+      var isChrome =
+        userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1; //判斷Chrome瀏覽器
+      if (isOpera) {
+        this.loginForm.deviceName = "Opera";
+      } else if (isIE) {
+        this.loginForm.deviceName = "compatible";
+      } else if (isEdge) {
+        this.loginForm.deviceName = "Edge";
+      } else if (isFF) {
+        this.loginForm.deviceName = "Firefox";
+      } else if (isSafari) {
+        this.loginForm.deviceName = "Safari";
+      } else if (isChrome) {
+        this.loginForm.deviceName = "Chrome";
+      }
+    },    
     getAuthCodeData(email, key) {
       if (email === "") {
         this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
@@ -487,6 +526,7 @@ export default {
           return;
         }
         delete this.loginForm.passwordAganin;
+        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
         this.disabled = true;
         register(this.loginForm)
           .then((res) => {
@@ -495,6 +535,7 @@ export default {
               setToken(res.data.tokenHead + res.data.token);
               localStorage.setItem("email", this.loginForm.email);
               this.dialogShow = true;
+              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             }
           })
           .catch((err) => {

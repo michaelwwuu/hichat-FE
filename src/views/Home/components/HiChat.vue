@@ -253,9 +253,13 @@ export default {
       }
     },
     handleClick(tab) {
-      if (tab.name === "address" || tab.name === "contact") {
+      if (tab.name === "address") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+        this.getHistoryMessage.id = Math.random();
+      } else if( tab.name === "contact"){
+        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
+        this.getHistoryMessage.toChatId = this.contactUser.toChatId;
         this.getHistoryMessage.id = Math.random();
       } else {
         this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
@@ -386,7 +390,8 @@ export default {
         data.memberId = JSON.parse(data.forChatId.replace("u", ""));
         this.groupList.forEach((item) => {
           if (item.groupName === data.groupName) {
-            return (data.isAdmin = item.isAdmin);
+            data.isAdmin = item.isAdmin
+            data.isManager = item.isManager
           }
         });
         this.setChatGroup(data);

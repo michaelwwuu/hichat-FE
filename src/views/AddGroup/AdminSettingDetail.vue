@@ -97,47 +97,47 @@ export default {
       adminPermission:[
         {
           name:"传送讯息与媒体档案",
-          key:"sendMessageFile",
+          key:"sendMessage",
           isCheck:true,
         },
         {
           name:"置顶讯息",
-          key:"topMsg",
+          key:"pin",
           isCheck:true,
         },
         {
           name:"禁言设定",
-          key:"banSetting",
+          key:"disableUser",
           isCheck:true,
         },
         {
           name:"禁言字词设定",
-          key:"banMessage",
+          key:"disabledWord",
           isCheck:true,
         },
         {
           name:"加入成員",
-          key:"joinPeople",
+          key:"addUser",
           isCheck:true,
         },
         {
           name:"踢除成員",
-          key:"leavePeople",
+          key:"delUser",
           isCheck:true,
         },
         {
           name:"变更群组资讯",
-          key:"editGroupMsg",
+          key:"updateGroupInfo",
           isCheck:true,
         },
         {
           name:"删除群组成员讯息",
-          key:"deleteGroupMsg",
+          key:"delUserMessage",
           isCheck:true,
         },
         {
           name:"查看群组成员资讯",
-          key:"lookGroupMsg",
+          key:"checkUserInfo",
           isCheck:true,
         },
       ],

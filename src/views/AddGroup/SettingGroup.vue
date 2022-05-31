@@ -133,12 +133,12 @@ export default {
         {
           name:"查看群组成员资讯",
           key:"lookGroupInfo",
-          isCheck:true,
+          isCheck:false,
         },
         {
           name:"置顶讯息",
           key:"topMsg",
-          isCheck:true,
+          isCheck:false,
         },
       ],
       settingPermission:[
