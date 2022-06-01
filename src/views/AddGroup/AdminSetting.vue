@@ -30,9 +30,9 @@
                   <span>{{ item.name }}</span>
                 </div>
                 <div class="setting-button-right">
-                  <router-link to="/AdminSettingDetail">
+                  <a @click="addAdmin(item)">
                     <img src="./../../../static/images/next.png" alt="" />
-                  </router-link>
+                  </a>
                   <span @click="unAdmin(item)">－</span>
                 </div>
               </div>
@@ -184,10 +184,12 @@ export default {
       delManager(params).then((res)=>{
         if(res.code === 200){
           this.unAdminShow = false;
-
           this.getGroupListMember()
         }
       })  
+    },
+    addAdmin(data){
+      this.$router.push({ name: "AdminSettingDetail",params:data });
     },
     back() {
       this.$router.back(-1);

@@ -140,16 +140,7 @@ export default {
     return {
       searchKey:"",
       input:"",
-      banMessage:[
-        {
-          name:"ban1",
-          value:"請多指教",
-        },
-        {
-          name:"ban2",
-          value:"請勿",
-        },
-      ],
+      banMessage:[],
       banObject:{},
       unBanShow:false,
       addBanShow:false,

@@ -207,7 +207,7 @@ export default {
   data() {
     return {
       loginForm: {
-        deviceId: localStorage.getItem("UUID"),
+        deviceId: "",
         deviceName: "",
         deviceType: 1,
         email: "",
@@ -261,7 +261,6 @@ export default {
     this.getUUID();
   },
   methods: {
-
     browserType() {
       var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
       var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
@@ -311,6 +310,7 @@ export default {
         }
       );
       localStorage.setItem("UUID", "hiWeb" + number);
+      this.loginForm.deviceId = "hiWeb" + number
     },
     isBase64(data) {
       var base64Rejex =

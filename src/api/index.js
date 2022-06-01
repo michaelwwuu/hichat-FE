@@ -360,15 +360,6 @@ export const delManager = data => {
   return axios.request(postData)
 }
 
-// 取得群組權限
-export const getAuthority = (params) => {
-  let postData = {
-    url: '/api/group/getAuthority',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
 // 新增群組禁用字詞
 export const addGroupDisabledWord = data => {
   let postData = {
@@ -398,6 +389,17 @@ export const getGroupDisabledWord = (params) => {
   }
   return axios.request(postData)
 }
+// 取得管理員權限
+export const listMember = (params) => {
+  let postData = {
+    url: '/api/group/listMember',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+
 // 取得群組權限設定
 export const getGroupAuthoritySetting = (params) => {
   let postData = {
@@ -408,6 +410,23 @@ export const getGroupAuthoritySetting = (params) => {
   return axios.request(postData)
 }
 
+// 設定群組權限(設定)
+export const setGroupAuthority = data => {
+  let postData = {
+    url: '/api/group/setGroupAuthority',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
 
-
+// 取得群組管理者權限設定
+export const getManagerAuthority = (params) => {
+  let postData = {
+    url: '/api/group/getManagerAuthority',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
 

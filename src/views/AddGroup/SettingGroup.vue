@@ -26,7 +26,7 @@
                     v-model="item.isCheck"
                     active-color="#fd5f3f"
                     inactive-color="#666666"
-                    @change="chengeSoundNofiy(item)"
+                    
                   >
                   </el-switch>
                 </div>
@@ -66,6 +66,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
+            @click="authoritySettingBtn"
             >储存设定</el-button
           >
         </div>
@@ -96,7 +97,6 @@
                   v-model="item.isCheck"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
                 >
                 </el-switch>
               </div>
@@ -133,7 +133,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup,getGroupAuthoritySetting } from "@/api";
+import { addGroup,getGroupAuthoritySetting,setGroupAuthority } from "@/api";
 
 export default {
   name: "SettingGroup",
@@ -142,17 +142,17 @@ export default {
       messagePermissionData:[
         {
           name:"传送讯息与媒体档案",
-          key:"sendMessageFile",
+          key:"sendMessage",
           isCheck:true,
         },
         {
           name:"查看群组成员资讯",
-          key:"lookGroupInfo",
+          key:"checkUserInfo",
           isCheck:false,
         },
         {
           name:"置顶讯息",
-          key:"topMsg",
+          key:"pin",
           isCheck:false,
         },
       ],
@@ -192,11 +192,37 @@ export default {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
         if(res.code === 200 ){
-          if(res.data === null){
-            
+          this.authorityData = res.data
+          for (let item in this.authorityData) {
+            this.messagePermissionData.forEach((res)=>{
+              if(item === res.key){
+                return res.isCheck = this.authorityData[item]
+              }
+            })
           }
         }
       })
+    },
+    authoritySettingBtn(){
+      this.newAuthorityData ={}
+      this.messagePermissionData.forEach((el)=>{
+        this.newAuthorityData[el.key] = true;
+        let newData = this.messagePermissionData.filter((res) => {
+          return (res.key === el.key);
+        });
+        this.newAuthorityData[el.key] = newData[0].isCheck
+      })
+      let params = {
+        authority: this.newAuthorityData,
+        groupId: this.groupData.groupId
+      }
+      setGroupAuthority(params).then((res)=>{
+        if(res.code === 200){
+          this.getGroupAuthority()
+        }
+      })
+      console.log(this.newAuthorityData)
+      console.log(this.newAuthorityData)
     },
     back() {
       this.$router.back(-1);

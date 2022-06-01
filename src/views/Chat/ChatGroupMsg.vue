@@ -174,15 +174,15 @@ export default {
     topMsgShow(val){
       val ? this.getChatHistoryMessage() : false
     },
-    messageData(val){
-      val.forEach((data) => {
-        this.pinDataList.forEach((list) => {
-          if (data.historyId === list.historyId) {
-            return data.isPing = true;
-          }
-        });
-      });
-    }    
+    // messageData(val){
+    //   val.forEach((data) => {
+    //     this.pinDataList.forEach((list) => {
+    //       if (data.historyId === list.historyId) {
+    //         return data.isPing = true;
+    //       }
+    //     });
+    //   });
+    // }    
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
@@ -411,7 +411,6 @@ export default {
             this.messageList(userInfo);
             this.readMsgShow(userInfo);
             this.messageData.push(this.chatRoomMsg);
-            // if (this.device === "pc") this.getHiChatDataList();
             if(userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")){
               this.audioAction();
             }
@@ -464,8 +463,6 @@ export default {
               if (historyMsgList.length > 0)
                 this.readMsgShow(historyMsgList[0]);
               this.loading = false;
-              // if (this.device === "pc") this.getHiChatDataList();
-                 
             }, this.timeOut);
           });
           break;

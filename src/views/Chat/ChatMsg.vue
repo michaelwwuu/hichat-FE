@@ -406,15 +406,17 @@ export default {
     topMsgShow(val){
       val ? this.getChatHistoryMessage() : false
     },
-    messageData(val){
-      val.forEach((data) => {
-        this.pinDataList.forEach((list) => {
-          if (data.historyId === list.historyId) {
-            return data.isPing = true;
-          }
-        });
-      });
-    }
+    // messageData(val){
+    //   console.log("pinDataList",this.pinDataList)
+    //   val.forEach((data) => {
+    //     this.pinDataList.forEach((list) => {
+    //       if (data.historyId === list.historyId) {
+    //         console.log(data)
+    //         return data.isPing = true;
+    //       }
+    //     });
+    //   });
+    // }
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -477,11 +479,18 @@ export default {
           this.pinDataList = res.data;
           if(this.pinDataList.length !== 0){
             if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
-            this.pinMsg = "語音訊息";
+              this.pinMsg = "語音訊息";
             } else {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
+          this.messageData.forEach((data) => {
+            this.pinDataList.forEach((list) => {
+              if (data.historyId === list.historyId) {
+                return data.isPing = true;
+              } 
+            });
+          });
         }
       });
     },
@@ -650,6 +659,7 @@ export default {
         case "SRV_CHAT_UNPIN":
           this.pinMsg = "";
           this.getPinList();
+          this.getChatHistoryMessage();
           break;      
         // 历史讯息
         case "SRV_HISTORY_RSP":

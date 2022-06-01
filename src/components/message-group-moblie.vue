@@ -352,7 +352,7 @@ export default {
       let newTime = this.timeOut + 3000
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId) 
-      }, 4000);
+      }, newTime);
     }    
   },
   methods: {
