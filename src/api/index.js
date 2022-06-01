@@ -398,6 +398,15 @@ export const getGroupDisabledWord = (params) => {
   }
   return axios.request(postData)
 }
+// 取得群組權限設定
+export const getGroupAuthoritySetting = (params) => {
+  let postData = {
+    url: '/api/group/getGroupAuthoritySetting',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
 
 
 

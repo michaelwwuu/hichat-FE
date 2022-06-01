@@ -118,7 +118,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup } from "@/api";
+import { addGroup,getGroupAuthoritySetting } from "@/api";
 
 export default {
   name: "SettingGroup",
@@ -163,10 +163,31 @@ export default {
   },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
+  created() {
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }
+  },
+  mounted() {
+    this.getGroupAuthority()
+  },
   methods: {
+    getGroupAuthority(){
+      let groupId = this.groupData.groupId;
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          if(res.data === null){
+
+          }
+        }
+      })
+    },
     back() {
       this.$router.back(-1);
     },    
