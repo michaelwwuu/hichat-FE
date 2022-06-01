@@ -10,32 +10,47 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群组成员</div>
-          <div
-            class="setting-button"
-            v-for="(item, index) in messagePermissionData"
-            :key="item + index"
-          >
-            <div class="setting-box">
-              <div class="setting-button-left">
-                <span>{{ item.name }}</span>
+          <template v-if="groupData.isAdmin">
+            <div class="setting-title">群组成员</div>
+            <div
+              class="setting-button"
+              v-for="(item, index) in messagePermissionData"
+              :key="item + index"
+            >
+              <div class="setting-box">
+                <div class="setting-button-left">
+                  <span>{{ item.name }}</span>
+                </div>
+                <div class="setting-button-right">
+                  <el-switch
+                    v-model="item.isCheck"
+                    active-color="#fd5f3f"
+                    inactive-color="#666666"
+                    @change="chengeSoundNofiy(item)"
+                  >
+                  </el-switch>
+                </div>
               </div>
-              <div class="setting-button-right">
-                <el-switch
-                  v-model="item.isCheck"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
-                >
-                </el-switch>
-              </div>
+            </div>
+          </template>
+          <div v-if="groupData.isAdmin">
+            <div class="setting-title">管理員</div>
+            <div class="setting-button mt10">
+              <router-link to="/AdminSetting">
+                <div class="setting-button-left">
+                  <span>管理员设定</span>
+                </div>
+                <div class="setting-button-right">
+                  <img src="./../../../static/images/next.png" alt="" />
+                </div>
+              </router-link>
             </div>
           </div>
           <div
             v-for="(item, index) in settingPermission"
             :key="index"
           >
-            <div class="setting-title">{{item.name}}</div>
+            <div class="setting-title" >{{item.name}}</div>
             <div class="setting-button mt10">
               <router-link :to="item.path">
                 <div class="setting-button-left">
@@ -143,11 +158,6 @@ export default {
       ],
       settingPermission:[
         {
-          name:"管理員",
-          value:"管理员设定",
-          path:"/AdminSetting",
-        },
-        {
           name:"禁言",
           value:"禁言设定",
           path:"/BanSetting",
@@ -183,7 +193,7 @@ export default {
       getGroupAuthoritySetting({groupId}).then((res)=>{
         if(res.code === 200 ){
           if(res.data === null){
-
+            
           }
         }
       })

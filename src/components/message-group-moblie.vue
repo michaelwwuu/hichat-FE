@@ -344,7 +344,7 @@ export default {
           document.querySelector(".message-pabel-box").scrollTop;
         this.showScrollBar =
           (scrollTopBox.scrollHeight - scrollTop) / 4 >
-          (this.device === "pc" ? 150 : 170);
+          (this.device === "pc" ? 150 : 185);
       },
       true
     );
