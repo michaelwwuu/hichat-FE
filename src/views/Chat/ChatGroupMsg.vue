@@ -153,7 +153,7 @@ export default {
       messageData: [],
       userInfoData: {
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
         tokenType: 0,
       },
       pinMsg:"",
@@ -261,7 +261,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       Socket.send(chatMsgKey);
     },        
@@ -381,7 +381,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-            
+        case "SRV_CHAT_PIN":                   
           if (this.groupUser.toChatId === userInfo.toChatId) {
             this.base64Msg = this.isBase64(userInfo.chat.text);
             userInfo.chat.newContent = this.base64Msg.split(" ");

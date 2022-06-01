@@ -209,7 +209,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       Socket.send(chatMsgKey);
     },

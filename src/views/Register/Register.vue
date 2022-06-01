@@ -394,7 +394,7 @@ export default {
   data() {
     return {
       loginForm: {
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
         deviceName: "",
         deviceType: 1,
         email: "",

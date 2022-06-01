@@ -346,7 +346,7 @@ export default {
         targetId: "",
         pageSize: 1000,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       },
 
       //加解密 key iv
@@ -585,7 +585,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       Socket.send(chatMsgKey);
     },

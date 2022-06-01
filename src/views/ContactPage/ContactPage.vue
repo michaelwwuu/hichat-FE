@@ -8,7 +8,7 @@
             <span class="home-header-title"></span>
             <router-link
               :to="'/EditContact'"
-              v-if="chatUser.forChatId !== chatUser.toChatId"
+              v-if="chatUser.name !== 'Hichat 记事本'"
             >
               <div class="home-add-user"></div>
             </router-link>
@@ -24,7 +24,7 @@
             <div>
               <span
                 :style="
-                  chatUser.contactId === chatUser.memberId
+                  chatUser.name === 'Hichat 记事本'
                     ? 'height:2em'
                     : ''
                 "
@@ -32,7 +32,7 @@
               >
               <span
                 class="user-data-id"
-                v-if="chatUser.contactId !== chatUser.memberId"
+                v-if="chatUser.name !== 'Hichat 记事本'"
               >
                 ID :
                 <span
@@ -44,7 +44,7 @@
             </div>
           </div>
           <template
-            v-if="chatUser.contactId === chatUser.memberId"
+            v-if="chatUser.name === 'Hichat 记事本'"
           >
             <div
               class="setting-button"

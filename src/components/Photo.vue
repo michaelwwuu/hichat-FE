@@ -95,7 +95,7 @@ export default {
               let message = {
                 chatType: this.chatType,
                 token: getToken("token"),
-                deviceId: getLocal("UUID"),
+                deviceId: localStorage.getItem("UUID"),
                 tokenType: 0,
                 id: Math.random(),
                 fromChatId: "u" + localStorage.getItem("id"),

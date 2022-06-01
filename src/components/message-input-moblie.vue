@@ -528,7 +528,7 @@ export default {
         ),//TODO 加密
         // text: this.textArea,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       // 发送服务器
       this.soundNofiy.forEach((res)=>{
@@ -572,7 +572,7 @@ export default {
 
         toChatId: this.userData.lastChat.toChatId,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       // 发送服务器
       Socket.send(editMessage);

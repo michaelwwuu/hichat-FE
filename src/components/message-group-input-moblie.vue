@@ -601,7 +601,7 @@ export default {
         text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
         // text: this.textArea,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
         tokenType: 0,
       };
       // 发送服务器
@@ -642,7 +642,7 @@ export default {
         // text: this.textArea,
         toChatId: this.groupData.lastChat.toChatId,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       // 发送服务器
       Socket.send(editMessage);

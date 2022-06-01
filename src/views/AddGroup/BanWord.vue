@@ -6,7 +6,7 @@
           <div class="home-header">
             <div class="home-user" @click="back()"></div>
             <span class="home-header-title">禁用詞設定</span>
-            <div class="home-add-user" @click=" addBanShow = true">＋</div>
+            <div class="home-add-user" @click="addBanShow = true">＋</div>
           </div>
           <div class="home-search" >
             <el-input
@@ -25,7 +25,7 @@
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.value }}</span>
+                <span>{{ item.word }}</span>
               </div>
               <div class="setting-button-right">
                 <span @click="unAdmin(item)">－</span>
@@ -76,7 +76,7 @@
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.value }}</span>
+                <span>{{ item.word }}</span>
               </div>
               <div class="setting-button-right">
                 <span @click="unAdmin(item)">－</span>
@@ -100,10 +100,10 @@
         <el-input v-model="input" placeholder="请输入内容"></el-input>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="addBanShow = false"
+        <el-button class="border-red" @click="closeAddBanShow"
           >取消</el-button
         >
-        <el-button class="background-red">确认</el-button>
+        <el-button class="background-red" @click="addBanAction">确认</el-button>
       </span>
     </el-dialog>     
     <el-dialog
@@ -132,7 +132,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup } from "@/api";
+import { addGroupDisabledWord,getGroupDisabledWord,delGroupDisabledWord } from "@/api";
 
 export default {
   name: "AdminSetting",
@@ -156,18 +156,64 @@ export default {
       device: localStorage.getItem("device"),
     };
   },
+  created() {
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }
+  },
+  mounted() {
+    this.getDisabledWord()
+  },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
   methods: {
+    getDisabledWord(){
+      let groupId = this.groupData.groupId;
+      getGroupDisabledWord({groupId}).then((res)=>{
+        if(res.code === 200){
+          this.banMessage = res.data
+        }
+      })
+    },
     unAdmin(data){
       this.unBanShow = true
       this.banObject = data
     },
     unBanAction(){
-      console.log(this.banObject)
+      let params = this.banObject
+      delGroupDisabledWord(params).then((res)=>{
+        if(res.code === 200){
+          this.unBanShow = false
+          this.getDisabledWord()
+        }
+      })
+    },
+    addBanAction(){
+      if(this.input === ""){
+        this.$message({ message: "不可填入空白", type: "error" });
+        return false
+      }
+      let params = {
+        groupId: this.groupData.groupId,
+        word:this.input
+      }
+      addGroupDisabledWord(params).then((res)=>{
+        if(res.code === 200) {
+          this.input = ""
+          this.addBanShow = false
+          this.getDisabledWord()
+        }
+      })
+    },
+    closeAddBanShow(){
+      this.input = ""
+      this.addBanShow = false
     },
     back() {
       this.$router.back(-1);

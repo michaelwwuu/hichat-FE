@@ -13,7 +13,7 @@
           <div class="setting-title">管理员权限</div>
           <div
             class="setting-button"
-            v-for="(item, index) in adminPermission"
+            v-for="(item, index) in groupManagerAuthorityVO"
             :key="item + index"
           >
             <div class="setting-box">
@@ -25,7 +25,6 @@
                   v-model="item.isCheck"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
                 >
                 </el-switch>
               </div>
@@ -35,6 +34,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
+            @click="addGroupMsg"
             >设定群组资讯</el-button
           >
         </div>
@@ -53,7 +53,7 @@
           <div class="setting-title">管理员权限</div>
           <div
             class="setting-button"
-            v-for="(item, index) in adminPermission"
+            v-for="(item, index) in groupManagerAuthorityVO"
             :key="item + index"
           >
             <div class="setting-box">
@@ -65,7 +65,6 @@
                   v-model="item.isCheck"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
-                  @change="chengeSoundNofiy(item)"
                 >
                 </el-switch>
               </div>
@@ -75,6 +74,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
+            @click="addGroupMsg"
             >设定群组资讯</el-button
           >
         </div>
@@ -86,15 +86,14 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup } from "@/api";
+import { addManager,getAuthority } from "@/api";
 
 export default {
   name: "AdminSetting",
   data() {
     return {
       searchKey:"",
-      device: localStorage.getItem("device"),
-      adminPermission:[
+      groupManagerAuthorityVO:[
         {
           name:"传送讯息与媒体档案",
           key:"sendMessage",
@@ -141,16 +140,52 @@ export default {
           isCheck:true,
         },
       ],
+      device: localStorage.getItem("device"),
     };
+  },
+  created() {
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }    
+  },
+  mounted() {
+    this.getAuthorityList()
   },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,     
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
   methods: {
-    unAdmin(){
+    addGroupMsg(){
+      this.newManagerAuthorityData ={}
+      this.groupManagerAuthorityVO.forEach((el)=>{
+        this.newManagerAuthorityData[el.key] = true;
+        let newData = this.groupManagerAuthorityVO.filter((res) => {
+          return (res.key === el.key);
+        });
+        this.newManagerAuthorityData[el.key] = newData[0].isCheck
+      })
+      let params = {
+        groupId:this.$route.params.groupId,
+        groupManagerAuthorityVO:this.newManagerAuthorityData,
+        memberId:this.$route.params.memberId,
+      }
+      addManager(params).then((res)=>{
+        if(res.code === 200){
+          this.$router.push({ path: "/AdminSetting" });
+        }
+      })
 
+    },
+    getAuthorityList(){
+      let groupId = this.groupData.groupId;
+      getAuthority({ groupId }).then((res) => {
+        console.log(res)
+      })
     },
     back() {
       this.$router.back(-1);

@@ -382,7 +382,7 @@ export default {
       messageData: [],
       userInfoData: {
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
         tokenType: 0,
       },
       userData: {},
@@ -607,6 +607,7 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
+        case "SRV_CHAT_PIN":       
           if (userInfo.toChatId === this.chatUser.toChatId) {
             if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
               userInfo.chat.name = this.chatUser.name;
@@ -837,7 +838,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       Socket.send(chatMsgKey);
     },

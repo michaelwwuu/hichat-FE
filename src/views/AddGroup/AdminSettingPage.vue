@@ -82,7 +82,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { getContactList,addGroup } from "@/api";
+import { groupListMember } from "@/api";
 
 export default {
   name: "SettingGroup",
@@ -90,26 +90,50 @@ export default {
     return {
       contactList: [],
       adminUser: [
-        {
-          name: "Michael",
-          icon: "http://test.hichat.tools/images/icon/68f981ed-c647-4ec1-b24d-dc0c1f2bee49.jpg",
-        },
+        // {
+        //   name: "Michael",
+        //   icon: "http://test.hichat.tools/images/icon/68f981ed-c647-4ec1-b24d-dc0c1f2bee49.jpg",
+        // },
       ],      
       searchKey:"",
       device: localStorage.getItem("device"),
     };
   },
   created() {
-    this.contactList = this.groupPermissionData.peopleData;
+    // this.contactList = this.groupPermissionData.peopleData;
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }    
+  },
+  mounted() {
+    this.getGroupListMember();
   },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,      
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
   methods: {
+    getGroupListMember() {
+      let groupId = this.groupData.groupId;
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined) {
+            res.icon = require("./../../../static/images/image_user_defult.png");
+          }
+        });
+        this.setContactListData(this.contactList);
+        this.checkDataList = this.contactList.filter(
+          (el) => el.memberId !== this.groupData.memberId
+        );
+      });
+    },    
     addAdmin(data){
-       this.$router.push({ path: "/AdminSettingDetail" });
+      this.$router.push({ name: "AdminSettingDetail",params:data });
     },
     back() {
       this.$router.back(-1);

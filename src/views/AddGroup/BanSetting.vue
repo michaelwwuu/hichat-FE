@@ -92,7 +92,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { getContactList,addGroup } from "@/api";
+import { groupListMember } from "@/api";
 
 export default {
   name: "SettingGroup",
@@ -105,14 +105,38 @@ export default {
     };
   },
   created() {
-    this.contactList = this.groupPermissionData.peopleData;
+    // this.contactList = this.groupPermissionData.peopleData;
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }
+  },
+  mounted() {
+    this.getGroupListMember();
   },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
   methods: {
+    getGroupListMember() {
+      let groupId = this.groupData.groupId;
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined) {
+            res.icon = require("./../../../static/images/image_user_defult.png");
+          }
+        });
+        this.setContactListData(this.contactList);
+        this.checkDataList = this.contactList.filter(
+          (el) => el.memberId !== this.groupData.memberId
+        );
+      });
+    },
     searchUserData(data){
 
     },

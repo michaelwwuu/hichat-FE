@@ -20,7 +20,7 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div v-for="(item, index) in adminUser" :key="index">
+          <div v-for="(item, index) in isManagerList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
                 <div class="setting-button-left">
@@ -78,7 +78,7 @@
           </div>
         </div>
         <div class="home-content">
-          <div v-for="(item, index) in adminUser" :key="index">
+          <div v-for="(item, index) in isManagerList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
                 <div class="setting-button-left">
@@ -128,7 +128,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup } from "@/api";
+import { groupListMember,delManager } from "@/api";
 
 export default {
   name: "AdminSetting",
@@ -136,28 +136,58 @@ export default {
     return {
       searchKey: "",
       unAdminShow: false,
-      adminUser: [
-        {
-          name: "Michael",
-          icon: "http://test.hichat.tools/images/icon/68f981ed-c647-4ec1-b24d-dc0c1f2bee49.jpg",
-        },
-      ],
+      isManagerList: [],
       unAdminData: {},
       device: localStorage.getItem("device"),
     };
   },
+  created() {
+    if(this.device === "moblie"){
+      this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    }else{
+      this.groupData = this.groupUser
+    }
+  },
+  mounted() {
+    this.getGroupListMember();
+  },
   computed: {
     ...mapState({
+      groupUser: (state) => state.ws.groupUser,
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },
   methods: {
+    getGroupListMember() {
+      let groupId = this.groupData.groupId;
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((res) => {
+          if (res.icon === undefined) {
+            res.icon = require("./../../../static/images/image_user_defult.png");
+          }
+        });
+        this.isManagerList = this.contactList.filter(
+          (el) => el.isManager
+        );
+      });
+    },    
     unAdmin(data) {
       this.unAdminShow = true;
       this.unAdminData = data;
     },
     unAdminAction() {
-      console.log(this.unAdminData);
+      let params = {
+        groupId:this.unAdminData.groupId,
+        memberId:this.unAdminData.memberId,
+      }
+      delManager(params).then((res)=>{
+        if(res.code === 200){
+          this.unAdminShow = false;
+
+          this.getGroupListMember()
+        }
+      })  
     },
     back() {
       this.$router.back(-1);

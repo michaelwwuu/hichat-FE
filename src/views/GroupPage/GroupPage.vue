@@ -57,7 +57,7 @@
             >
             </el-switch>
           </div> -->
-          <!-- <div class="setting-button mt10" v-if="groupData.isAdmin || groupData.isManager">
+          <div class="setting-button mt10" v-if="groupData.isAdmin || groupData.isManager">
             <a @click="goChatRoom(groupData, 'SettingGroup')">
               <div class="setting-button-left">
                 <img src="./../../../static/images/key.png" alt="" />
@@ -72,7 +72,7 @@
                 <span>轉移管理者權限</span>
               </div>
             </a>
-          </div> -->
+          </div>
           <div class="setting-button" @click="leaveGroupDialogShow = true">
             <a>
               <div class="setting-button-left">

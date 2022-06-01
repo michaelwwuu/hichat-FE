@@ -18,7 +18,7 @@
                   <span>資訊</span>
                 </div>
               </span>
-              <div :style="chatUser.contactId === JSON.stringify(this.myUserInfo.id)?'visibility: hidden':''">
+              <div :style="chatUser.name === 'Hichat 记事本' ?'visibility: hidden':''">
                 <template v-if="infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact">
                   <div
                     class="home-add-user"
@@ -46,7 +46,7 @@
                   :preview-src-list="[noIconShow(chatUser,'user')]"
                 />
                 <span>{{chatUser.name}}</span>
-                <span class="user-data-id" v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)">
+                <span class="user-data-id" v-if="chatUser.name !== 'Hichat 记事本'">
                   ID :
                   <span
                     class="user-paste"
@@ -56,7 +56,7 @@
                 >
               </div>
               <div
-               v-if="chatUser.contactId !== JSON.stringify(this.myUserInfo.id)"
+               v-if="chatUser.name !== 'Hichat 记事本'"
                 class="setting-notification"
                 @click="developmentMessage('提醒通知')"
               >
@@ -210,7 +210,7 @@ export default {
         targetId: "",
         pageSize: 1000,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       },
       chatUserId:"",
       contactList:[],

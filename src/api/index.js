@@ -331,3 +331,74 @@ export const blockListMember = (params) => {
   return axios.request(postData)
 }
 
+// 設定管理這權限
+export const setAdminAuthority = data => {
+  let postData = {
+    url: '/api/group/setAdminAuthority',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 新增管理員
+export const addManager = data => {
+  let postData = {
+    url: '/api/group/addManager',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+// 新增管理員
+export const delManager = data => {
+  let postData = {
+    url: '/api/group/delManager',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 取得群組權限
+export const getAuthority = (params) => {
+  let postData = {
+    url: '/api/group/getAuthority',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+// 新增群組禁用字詞
+export const addGroupDisabledWord = data => {
+  let postData = {
+    url: '/api/group/addGroupDisabledWord',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 刪除禁用詞
+export const delGroupDisabledWord = data => {
+  let postData = {
+    url: '/api/group/delGroupDisabledWord',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 取得群組權限
+export const getGroupDisabledWord = (params) => {
+  let postData = {
+    url: '/api/group/getGroupDisabledWord',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+
+
+

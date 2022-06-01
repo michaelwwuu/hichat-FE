@@ -188,7 +188,7 @@ export default {
         targetId: "",
         pageSize: 1000,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       },
       device: localStorage.getItem("device"),
       activeName: "address",
@@ -291,7 +291,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         token: getToken("token"),
-        deviceId: getLocal("UUID"),
+        deviceId: localStorage.getItem("UUID"),
       };
       Socket.send(chatMsgKey);
     },
@@ -379,6 +379,7 @@ export default {
       this.setTopMsgShow(true)
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
+        data.memberId = data.toChatId.replace("u", "");
         this.setChatUser(data);
         // this.getUserId(data)
       } else if (path === "ChatContact") {
