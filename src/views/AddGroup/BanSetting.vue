@@ -13,7 +13,6 @@
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="searchUserData(searchKey)"
             >
             </el-input>
           </div>
@@ -21,8 +20,8 @@
         <div class="home-content">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              :label="item"
               v-for="(item, index) in contactList"
+              :label="item.memberId"
               :key="index"
             >
               <div class="address-box">
@@ -37,6 +36,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
+            @click="setBan"
             >储存设定</el-button
           >
         </div>
@@ -65,10 +65,11 @@
         <div class="home-content">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              :label="item"
               v-for="(item, index) in contactList"
+              :label="item.memberId"
               :key="index"
             >
+            
               <div class="address-box">
                 <el-image :src="item.icon"/>
                 <div class="msg-box">
@@ -81,6 +82,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
+            @click="setBan"
             >储存设定</el-button
           >
         </div>
@@ -92,7 +94,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember } from "@/api";
+import { groupListMember,setBanPost,listMember } from "@/api";
 
 export default {
   name: "SettingGroup",
@@ -104,6 +106,7 @@ export default {
       device: localStorage.getItem("device"),
     };
   },
+
   created() {
     // this.contactList = this.groupPermissionData.peopleData;
     if(this.device === "moblie"){
@@ -130,15 +133,28 @@ export default {
           if (res.icon === undefined) {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
+          if(res.isBanPost){
+            this.checkList.push(res.memberId)
+          }
         });
-        this.setContactListData(this.contactList);
-        this.checkDataList = this.contactList.filter(
-          (el) => el.memberId !== this.groupData.memberId
-        );
+
       });
     },
-    searchUserData(data){
-
+    setBan(){
+      let memberData = []
+      this.checkList.forEach((el)=>{
+        memberData.push(el.memberId)
+      })
+      console.log(memberData)
+      let params ={
+        groupId: this.groupData.groupId,
+        memberId: memberData
+      }
+      setBanPost(params).then((res)=>{
+        if(res.code === 200) {
+          this.$router.push({ name: "SettingGroup"});
+        }
+      })
     },
     back() {
       this.$router.back(-1);

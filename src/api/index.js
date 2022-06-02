@@ -389,12 +389,14 @@ export const getGroupDisabledWord = (params) => {
   }
   return axios.request(postData)
 }
-// 取得管理員權限
-export const listMember = (params) => {
+
+
+// 設定禁言
+export const setBanPost = data => {
   let postData = {
-    url: '/api/group/listMember',
-    method: 'get',
-    params
+    url: '/api/group/setBanPost',
+    method: 'post',
+    data
   }
   return axios.request(postData)
 }

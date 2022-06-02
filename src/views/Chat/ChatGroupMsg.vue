@@ -174,15 +174,15 @@ export default {
     topMsgShow(val){
       val ? this.getChatHistoryMessage() : false
     },
-    // messageData(val){
-    //   val.forEach((data) => {
-    //     this.pinDataList.forEach((list) => {
-    //       if (data.historyId === list.historyId) {
-    //         return data.isPing = true;
-    //       }
-    //     });
-    //   });
-    // }    
+    messageData(val){
+      val.forEach((data) => {
+        this.pinDataList.forEach((list) => {
+          if (data.historyId === list.historyId) {
+            return data.isPing = true;
+          }
+        });
+      });
+    }    
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));

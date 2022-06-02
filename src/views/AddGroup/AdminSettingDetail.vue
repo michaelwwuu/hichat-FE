@@ -86,7 +86,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addManager,listMember } from "@/api";
+import { addManager,groupListMember } from "@/api";
 
 export default {
   name: "AdminSetting",
@@ -151,7 +151,7 @@ export default {
     }    
   },
   mounted() {
-    this.getManagerList()
+    this.getGroupListMember()
   },
   computed: {
     ...mapState({
@@ -181,13 +181,13 @@ export default {
       })
 
     },
-    getManagerList(){
+    getGroupListMember(){
       let groupId = this.groupData.groupId;
-      listMember({ groupId }).then((res) => {
+      groupListMember({ groupId }).then((res) => {
         this.newData = res.data.list.filter((el)=>{
           return el.memberId === this.$route.params.memberId
         })
-        for (let item in this.newData[0].authority) {
+        for (let item of this.newData[0].authority) {
           this.groupManagerAuthorityVO.forEach((res)=>{
             if(item === res.key){
               return res.isCheck = this.newData[0].authority[item]
