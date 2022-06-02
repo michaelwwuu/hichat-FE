@@ -80,6 +80,7 @@ export const state = {
   groupPermissionData:{
     name:"",
     peopleData:[],
+    addGroup:false,
   },
   goAnchorMessage:{},
   device: localStorage.getItem("device"),

@@ -155,7 +155,7 @@ export default {
     }
   },
   mounted() {
-    this.getDisabledWord()
+    if(!this.groupPermissionData.addGroup) this.getDisabledWord()
   },
   computed: {
     ...mapState({

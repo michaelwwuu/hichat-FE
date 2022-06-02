@@ -151,7 +151,7 @@ export default {
     }    
   },
   mounted() {
-    this.getGroupListMember()
+    if(!this.groupPermissionData.addGroup) this.getGroupListMember()
   },
   computed: {
     ...mapState({

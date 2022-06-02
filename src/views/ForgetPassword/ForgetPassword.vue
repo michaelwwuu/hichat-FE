@@ -318,7 +318,12 @@ export default {
       disabled: true,
       dialogShow: false,
       disabledTime: false,
-      device: localStorage.getItem("device"),
+      device: localStorage.getItem("device"),     
+       
+      //加解密 key iv
+      aesKey: "142c7ec1b64ae0c6",
+      aesIv: "0000000000000000",
+
     };
   },
   watch: {
@@ -398,16 +403,15 @@ export default {
           return;
         }
         delete this.loginForm.passwordAganin;
-        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)        
+        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv) 
         this.disabled = true;
         forgetPassword(this.loginForm)
           .then((res) => {
+            this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             if (res.code === 200) {
               this.dialogShow = true;
-              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             } else {
               this.loginForm.authCode = "";
-              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             }
           })
           .catch((err) => {

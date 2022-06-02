@@ -116,7 +116,7 @@
                       lazy
                     />
                     <div class="msg-box">
-                      <span>{{ item.name }}</span>
+                      <span>{{ item.name }} <template v-if="item.isManager">★</template><template v-if="item.isAdmin">♔</template></span>
                     </div>
                   </div>
                 </span>
@@ -135,7 +135,7 @@
                 <div class="address-box">
                   <el-image :src="item.icon" />
                   <div class="msg-box">
-                    <span>{{ item.name }}</span>
+                    <span>{{ item.name }}  <template v-if="item.isManager">★</template><template v-if="item.isAdmin">♔</template></span>
                   </div>
                 </div>
               </el-checkbox>

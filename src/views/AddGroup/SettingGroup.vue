@@ -183,9 +183,10 @@ export default {
     }else{
       this.groupData = this.groupUser
     }
+    console.log("123",this.groupPermissionData.addGroup)
   },
   mounted() {
-    this.getGroupAuthority()
+    if(!this.groupPermissionData.addGroup) this.getGroupAuthority()
   },
   methods: {
     getGroupAuthority(){

@@ -235,7 +235,8 @@ export default {
       this.$router.push({ path: '/SettingGroup'})
       let parmas={
         name:this.groupForm.name,
-        peopleData:this.groupPermissionData.peopleData
+        peopleData:this.groupPermissionData.peopleData,
+        addGroup:true
       }
       this.setGroupPermissionData(parmas)
     },
