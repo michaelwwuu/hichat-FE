@@ -370,7 +370,7 @@ import {
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import MessagePin from "@/components/message-pin";
@@ -411,7 +411,7 @@ export default {
         this.pinDataList.forEach((list) => {  
           if (data.historyId === list.historyId) {
             return data.isPing = true;
-          }
+          } 
         });
       });
     }
@@ -485,7 +485,7 @@ export default {
           this.messageData.forEach((data) => {
             this.pinDataList.forEach((list) => {
               if (data.historyId === list.historyId) {
-                return data.isPing = true;
+                data.isPing = true;
               } 
             });
           });
@@ -657,7 +657,7 @@ export default {
         case "SRV_CHAT_UNPIN":
           this.pinMsg = "";
           this.getPinList();
-          this.getChatHistoryMessage();
+          this.getChatHistoryMessage()
           break;      
         // 历史讯息
         case "SRV_HISTORY_RSP":

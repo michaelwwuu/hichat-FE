@@ -558,6 +558,7 @@ export default {
         case "SRV_CHAT_UNPIN":
           this.pinMsg = "";
           this.getPinList();
+          this.getChatHistoryMessage()
           break;          
         // 历史讯息
         case "SRV_HISTORY_RSP":
