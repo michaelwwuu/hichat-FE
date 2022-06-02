@@ -83,25 +83,41 @@
         </el-header>
         <div class="home-content">
           <div class="setting-title">群组成员</div>
-          <div
-            class="setting-button"
-            v-for="(item, index) in messagePermissionData"
-            :key="item + index"
-          >
-            <div class="setting-box">
-              <div class="setting-button-left">
-                <span>{{ item.name }}</span>
-              </div>
-              <div class="setting-button-right">
-                <el-switch
-                  v-model="item.isCheck"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                >
-                </el-switch>
+          <template v-if="groupData.isAdmin || groupPermissionData.addGroup">
+            <div
+              class="setting-button"
+              v-for="(item, index) in messagePermissionData"
+              :key="item + index"
+            >
+              <div class="setting-box">
+                <div class="setting-button-left">
+                  <span>{{ item.name }}</span>
+                </div>
+                <div class="setting-button-right">
+                  <el-switch
+                    v-model="item.isCheck"
+                    active-color="#fd5f3f"
+                    inactive-color="#666666"
+                  >
+                  </el-switch>
+                </div>
               </div>
             </div>
-          </div>
+          </template>
+
+          <div v-if="groupData.isAdmin || groupPermissionData.addGroup">
+            <div class="setting-title">管理員</div>
+            <div class="setting-button mt10">
+              <router-link to="/AdminSetting">
+                <div class="setting-button-left">
+                  <span>管理员设定</span>
+                </div>
+                <div class="setting-button-right">
+                  <img src="./../../../static/images/next.png" alt="" />
+                </div>
+              </router-link>
+            </div>
+          </div>          
           <div
             v-for="(item, index) in settingPermission"
             :key="index"
@@ -183,7 +199,6 @@ export default {
     }else{
       this.groupData = this.groupUser
     }
-    console.log("123",this.groupPermissionData.addGroup)
   },
   mounted() {
     if(!this.groupPermissionData.addGroup) this.getGroupAuthority()

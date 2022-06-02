@@ -70,14 +70,14 @@
             <el-input
               ref="password"
               placeholder="登录密码"
-              v-model.trim="loginForm.password"
-              name="password"
+              v-model.trim="loginForm.newPassword"
+              name="newPassword"
               :type="passwordType === 'password' ? 'password' : 'text'"
               tabindex="2"
               maxLength="12"
               @input="
                 (v) =>
-                  (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                  (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -192,14 +192,14 @@
             <span class="svg-container">登录密码</span>
             <el-input
               ref="password"
-              v-model.trim="loginForm.password"
+              v-model.trim="loginForm.newPassword"
               name="password"
               :type="passwordType === 'password' ? 'password' : 'text'"
               tabindex="2"
               maxLength="12"
               @input="
                 (v) =>
-                  (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                  (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -307,7 +307,7 @@ export default {
       loginForm: {
         email: "",
         authCode: "",
-        password: "",
+        newPassword: "",
         passwordAganin: "",
         version:1,
       },
@@ -329,10 +329,10 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        if (val.password === val.passwordAganin) {
+        if (val.newPassword === val.passwordAganin) {
           if (
             Object.values(val).every((el) => el !== "") &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPassword) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
               val.passwordAganin
             ) &&
@@ -403,11 +403,11 @@ export default {
           return;
         }
         delete this.loginForm.passwordAganin;
-        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv) 
+        this.loginForm.newPassword = Encrypt(this.loginForm.newPassword,this.aesKey,this.aesIv) 
         this.disabled = true;
         forgetPassword(this.loginForm)
           .then((res) => {
-            this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+            this.loginForm.newPassword = Decrypt(this.loginForm.newPassword,this.aesKey,this.aesIv)
             if (res.code === 200) {
               this.dialogShow = true;
             } else {
