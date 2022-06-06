@@ -23,8 +23,8 @@
         <template v-else>
           <el-header height="70px">
             <div class="home-header flex-start">
-              <div class="home-user-pc" @click="back"></div>
-              <span class="home-header-title">邀请联络人</span>
+              <div class="home-user-pc" @click="back" style="position: relative; left: 1px; top: -1px;"></div>
+              <span class="home-header-title" >邀请联络人</span>
             </div>
           </el-header>
           <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
@@ -51,7 +51,7 @@
               <div class="address-box">
                 <el-image :src="item.icon" />
                 <div class="msg-box">
-                  <span>{{ item.name }}</span>
+                  <span>{{ item.name }} <template v-if="item.isManager">★</template><template v-if="item.isAdmin">♔</template></span>
                 </div>
               </div>
             </el-checkbox>
@@ -111,9 +111,7 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.myContactDataList = JSON.parse(
-      localStorage.getItem("myContactDataList")
-    );
+    this.myContactDataList = JSON.parse(localStorage.getItem("myContactDataList"));
   },
   mounted() {
     this.getGroupListMember();
@@ -135,11 +133,20 @@ export default {
         this.newContactDataList = this.myContactDataList;
         this.newContactDataList.forEach((el) => {
           this.contactList.forEach((item) => {
-            if (el.username === item.username) el.disabled = true;
-            if (item.icon === undefined)
+            if (el.username === item.username) {
+              el.disabled = true;
+              el.isAdmin = item.isAdmin
+              el.isBanPost = item.isBanPost
+              el.isManager = item.isManager
+            }
+            if (item.icon === undefined){
               item.icon = require("./../../../static/images/image_user_defult.png");
+            }
           });
         });
+        this.newContactDataList = this.newContactDataList.filter((el)=>{
+          return el.contactId !== el.memberId
+        })
       });
     },
     addMemberSubmitBtn() {
@@ -158,7 +165,6 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: true });
         this.setMsgInfoPage({ pageShow: false, type: "GroupPeople" });
       }
     },

@@ -167,7 +167,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { getContactList, uploadGroupIcon, addGroup } from "@/api";
+import { uploadGroupIcon } from "@/api";
 
 export default {
   name: "AddGroupList",
@@ -191,6 +191,8 @@ export default {
   },
   created() {
     this.checkList = this.groupPermissionData.peopleData;
+    this.groupForm.name = this.groupPermissionData.groupName
+    this.groupIcon = this.groupPermissionData.icon
   },
   watch: {
     checkList(val) {
@@ -228,17 +230,20 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.groupIcon = res.data;
+          this.groupPermissionData.icon = res.data
         }
       });
     },
     settingGroup(){
+      this.groupPermissionData.groupName = this.groupForm.name
+      this.groupPermissionData.icon = this.groupIcon
+      this.groupPermissionData.peopleData.forEach(el => {
+        this.groupPermissionData.memberList.push(el.contactId)
+      });
+      let uniqueArr = [...new Set(this.groupPermissionData.memberList)]
+      this.groupPermissionData.memberList = uniqueArr
+      this.setGroupPermissionData(this.groupPermissionData)
       this.$router.push({ path: '/SettingGroup'})
-      let parmas={
-        name:this.groupForm.name,
-        peopleData:this.groupPermissionData.peopleData,
-        addGroup:true
-      }
-      this.setGroupPermissionData(parmas)
     },
     // editSubmit() {
     //   let memberList = [];

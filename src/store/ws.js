@@ -78,9 +78,18 @@ export const state = {
     // },
   ],
   groupPermissionData:{
-    name:"",
-    peopleData:[],
     addGroup:false,
+    groupName:"",
+    memberList:[],
+    icon: "",
+    banPostMemberList: [],
+    groupAdminAuthority: {
+      checkUserInfo: false,
+      pin: false,
+      sendMessage: false
+    },
+    groupDisabledWordList: [],
+    groupManagerAuthority: [],    
   },
   goAnchorMessage:{},
   device: localStorage.getItem("device"),
@@ -119,7 +128,6 @@ export const mutations = {
     state.badgeNum = num
   },
   setMsgInfoPage(state, payload){
-    console.log(payload)
     state.msgInfoPage = payload;
   },
   setHichatNav(state, payload) {

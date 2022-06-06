@@ -42,10 +42,10 @@
     </el-container>
     <el-container v-else>
       <el-aside width="300px">
-        <el-header height="60px">
-          <div class="home-header flex-start">
+        <el-header height="70px">
+          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
             <div class="home-user-pc" @click="back()"></div>
-            <span class="home-header-title">管理员权限设定</span>
+            <span class="home-header-title" style="position: relative; left: 1px; top: 1px;">管理员权限设定</span>
             <div class="home-add-user"></div>
           </div>
         </el-header>
@@ -151,15 +151,20 @@ export default {
     }    
   },
   mounted() {
-    if(!this.groupPermissionData.addGroup) this.getGroupListMember()
+    this.getGroupListMember()
   },
   computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,     
+      msgInfoPage: (state) => state.ws.msgInfoPage,     
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
   methods: {
+    ...mapMutations({
+      setMsgInfoPage:"ws/setMsgInfoPage",
+      setGroupPermissionData:"ws/setGroupPermissionData",
+    }),
     addGroupMsg(){
       this.newManagerAuthorityData ={}
       this.groupManagerAuthorityVO.forEach((el)=>{
@@ -169,36 +174,101 @@ export default {
         });
         this.newManagerAuthorityData[el.key] = newData[0].isCheck
       })
-      let params = {
-        groupId:this.$route.params.groupId,
-        groupManagerAuthorityVO:this.newManagerAuthorityData,
-        memberId:this.$route.params.memberId,
-      }
-      addManager(params).then((res)=>{
-        if(res.code === 200){
-          this.$router.push({ path: "/AdminSetting" });
-        }
-      })
+      if(!this.groupPermissionData.addGroup) {
+        let parmaGroupId = this.device==="moblie" ? this.$route.params.groupId : this.msgInfoPage.data.groupId
+        let parmaMemberId = this.device==="moblie" ? this.$route.params.memberId : this.msgInfoPage.data.memberId
 
-    },
-    getGroupListMember(){
-      let groupId = this.groupData.groupId;
-      groupListMember({ groupId }).then((res) => {
-        this.newData = res.data.list.filter((el)=>{
-          return el.memberId === this.$route.params.memberId
+        let params = {
+          groupId:parmaGroupId,
+          groupManagerAuthorityVO:this.newManagerAuthorityData,
+          memberId:parmaMemberId,
+        }
+        addManager(params).then((res)=>{
+          if(res.code === 200){
+            if (this.device === "moblie") {
+              this.$router.push({ path: "/AdminSetting" });
+            } else {
+              if(this.msgInfoPage.pageAdd) {
+                this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
+              }else{
+                this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+              }
+            } 
+          }
         })
-        for (let item of this.newData[0].authority) {
-          this.groupManagerAuthorityVO.forEach((res)=>{
-            if(item === res.key){
-              return res.isCheck = this.newData[0].authority[item]
+      }else{
+        this.newManagerAuthorityData["memberId"] = this.$route.params.contactId
+        if(this.$route.params.isManager){
+          this.groupPermissionData.groupManagerAuthority.forEach((el)=>{
+            if(el.memberId === this.$route.params.contactId){
+              el.addUser = this.newManagerAuthorityDataaddUser
+              el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo
+              el.delUser = this.newManagerAuthorityData.delUser
+              el.disableUser = this.newManagerAuthorityData.disableUser
+              el.disabledWord = this.newManagerAuthorityData.disabledWord
+              el.addUser = this.newManagerAuthorityData.addUser
+              el.pin = this.newManagerAuthorityData.pin
+              el.sendMessage = this.newManagerAuthorityData.sendMessage
+              el.updateGroupInfo = this.newManagerAuthorityData.updateGroupInfo
             }
           })
+        }else{
+          this.groupPermissionData.groupManagerAuthority.push(this.newManagerAuthorityData)
+        } 
+        this.groupPermissionData.peopleData.forEach((res)=>{
+          if(res.contactId === this.$route.params.contactId){
+            res.isManager = true
+            res.authority = this.newManagerAuthorityData
+           }
+        })
+        this.$router.push({ path: "/AdminSetting" });
+      }
+    },
+
+    getGroupListMember(){
+      if(!this.groupPermissionData.addGroup){
+        let groupId = this.groupData.groupId;
+        groupListMember({ groupId }).then((res) => {
+          let parmaMemberId = this.device==="moblie" ? this.$route.params.memberId : this.msgInfoPage.data.memberId
+          this.newData = res.data.list.filter((el)=>{
+            return el.memberId === parmaMemberId
+          })
+          let managerAuthority = this.newData[0].authority
+          if(managerAuthority !== undefined){
+            for (let item in managerAuthority) {
+              this.groupManagerAuthorityVO.forEach((res)=>{
+                if(item === res.key){
+                  return res.isCheck = managerAuthority[item]
+                }
+              })
+            }
+          }
+        })
+      }else{
+        let managerAuthority = this.$route.params.authority
+        if(managerAuthority !== undefined){
+          for (let item in managerAuthority) {
+            this.groupManagerAuthorityVO.forEach((res)=>{
+              if(item === res.key){
+                return res.isCheck = managerAuthority[item]
+              }
+            })
+          }
         }
-      })
+      }
+      
     },
     back() {
-      this.$router.back(-1);
-    },    
+      if (this.device === "moblie") {
+        this.$router.back(-1);
+      } else {
+        if(this.msgInfoPage.pageAdd) {
+          this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
+        }else{
+          this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+        }
+      } 
+    },
   },
 };
 </script>

@@ -93,9 +93,23 @@
               </el-switch>
             </div>
             -->
-
             <div
+              v-if="groupUser.isAdmin"
               class="setting-button mt10"
+              @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
+            >
+              <a>
+                <div class="setting-button-left">
+                  <img src="./../../../static/images/octagon.png" alt="" />
+                  <span>{{
+                    !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
+                  }}</span>
+                </div>
+              </a>
+            </div>
+            
+            <div
+              class="setting-button"
               @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
             >
               <a>
@@ -238,6 +252,8 @@ export default {
   computed: {
     ...mapState({
       // chatUser: (state) => state.ws.chatUser,
+      groupUser: (state) => state.ws.groupUser,
+
       myUserInfo: (state) => state.ws.myUserInfo,
     }),
   },

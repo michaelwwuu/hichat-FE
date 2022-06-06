@@ -56,14 +56,14 @@
                 <div
                   class="home-user"
                   @click="back"
-                  style="position: absolute; left: 12px; top: 19px;"
+                  style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
               <template v-else-if="groupData.isAdmin">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
-                  style="position: absolute; left: 12px; top: 19px;"
+                  style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
 
@@ -301,22 +301,23 @@ export default {
         if (this.device === "moblie") {
           this.$router.push({ name: "ContactPage" });
         } else {
-          this.contactDataList = JSON.parse(
-            localStorage.getItem("myContactDataList")
-          );
-          this.contactDataList.forEach((res) => {
-            if (Number(res.contactId) === data.memberId) {
-              data.isContact = true;
-            }else{
-              data.isContact = false;
-            }
-          });
+          // this.contactDataList = JSON.parse(
+          //   localStorage.getItem("myContactDataList")
+          // );
+          // console.log(data)
+          // this.contactDataList.forEach((res) => {
+          //   if (Number(res.contactId) === data.memberId) {
+          //     data.isContact = true;
+          //   }else{
+          //     data.isContact = false;
+          //   }
+          // });
           this.setInfoMsg({
             infoMsgShow: true,
             infoMsgChat: true,
             infoMsgNav: "ContactPage",
           });
-          this.setMsgInfoPage({ pageShow: true, type: "ContactPage" });
+          this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
         }
         this.setChatUser(data);
       }

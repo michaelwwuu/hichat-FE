@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getContactList,uploadGroupIcon,addGroup } from "@/api";
 
@@ -167,6 +167,11 @@ export default {
       deep: true,
     }
   },
+  computed: {
+    ...mapState({
+      groupPermissionData: (state) => state.ws.groupPermissionData,
+    }),
+  },  
   methods: {
     ...mapMutations({
       setChatUser:"ws/setChatUser",
@@ -184,12 +189,10 @@ export default {
       });
     },
     createGroup(){
+      this.groupPermissionData.addGroup = true
+      this.groupPermissionData.peopleData = this.checkList
+      this.setGroupPermissionData(this.groupPermissionData)
       this.$router.push({ path: '/AddGroupList'})
-      let parmas = {
-        name:"",
-        peopleData:this.checkList
-      }
-      this.setGroupPermissionData(parmas)
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;

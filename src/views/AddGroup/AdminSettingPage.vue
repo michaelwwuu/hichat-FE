@@ -40,9 +40,9 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start">
+          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
             <div class="home-user-pc" @click="back()"></div>
-            <span class="home-header-title">禁言设定</span>
+            <span class="home-header-title" style="position: relative; left: 1px; top: 1px;">管理员设定</span>
             <div class="home-add-user"></div>
           </div>
         </el-header>
@@ -89,18 +89,12 @@ export default {
   data() {
     return {
       contactList: [],
-      adminUser: [
-        // {
-        //   name: "Michael",
-        //   icon: "http://test.hichat.tools/images/icon/68f981ed-c647-4ec1-b24d-dc0c1f2bee49.jpg",
-        // },
-      ],      
+      adminUser: [],      
       searchKey:"",
       device: localStorage.getItem("device"),
     };
   },
   created() {
-    // this.contactList = this.groupPermissionData.peopleData;
     if(this.device === "moblie"){
       this.groupData = JSON.parse(localStorage.getItem("groupData"));
     }else{
@@ -108,7 +102,7 @@ export default {
     }    
   },
   mounted() {
-    if(!this.groupPermissionData.addGroup) this.getGroupListMember();
+    this.getGroupListMember()
   },
   computed: {
     ...mapState({
@@ -117,26 +111,44 @@ export default {
     }),
   },  
   methods: {
+    ...mapMutations({
+      setMsgInfoPage:"ws/setMsgInfoPage",
+    }),
     getGroupListMember() {
-      let groupId = this.groupData.groupId;
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined) {
-            res.icon = require("./../../../static/images/image_user_defult.png");
-          }
+      if(!this.groupPermissionData.addGroup){
+        let groupId = this.groupData.groupId;
+        groupListMember({ groupId }).then((res) => {
+          this.contactList = res.data.list;
+          this.contactList.forEach((res) => {
+            if (res.icon === undefined) {
+              res.icon = require("./../../../static/images/image_user_defult.png");
+            }
+          });
+          this.checkDataList = this.contactList.filter(
+            (el) => el.memberId !== this.groupData.memberId
+          );
+          this.contactList = this.contactList.filter((el)=>el.isManager === undefined || (!el.isAdmin && !el.isManager))
         });
-        this.setContactListData(this.contactList);
-        this.checkDataList = this.contactList.filter(
-          (el) => el.memberId !== this.groupData.memberId
-        );
-      });
+      }else{
+        this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
+          return el.isManager === undefined
+        })
+      }
+      
     },    
     addAdmin(data){
+      if (this.device === "moblie") {
       this.$router.push({ name: "AdminSettingDetail",params:data });
+      }else{
+        this.setMsgInfoPage({ pageShow: false, type: "AdminSettingDetail",pageAdd:true,data });
+      }
     },
     back() {
-      this.$router.back(-1);
+      if (this.device === "moblie") {
+        this.$router.back(-1);
+      } else {
+        this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+      } 
     },
   },
 };

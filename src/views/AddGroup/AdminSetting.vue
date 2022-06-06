@@ -46,24 +46,16 @@
         <el-header height="70px">
           <div class="home-header">
             <span class="home-header-title">
-              <div
-                style="
-                  display: flex;
-                  align-items: center;
-                  cursor: pointer;
-                  margin-left: 5px;
-                  margin-top: 1px;
-                "
-              >
+              <div style="display: flex; align-items: center; cursor: pointer; ">
                 <span style="padding-right: 10px" @click="back()"
-                  ><img src="./../../../static/images/pc/arrow-left.png" alt="" style="height: 1.4em;"
+                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
                 /></span>
                 <span>管理员设定</span>
               </div>
             </span>
-            <router-link to="/AdminSettingPage">
+            <div @click="goAdminSetting(item,'AdminSettingPage')">
               <div class="home-add-user"></div>
-            </router-link>
+            </div>
           </div>
         </el-header>
         <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)">
@@ -88,10 +80,9 @@
                   <span>{{ item.name }}</span>
                 </div>
                 <div class="setting-button-right">
-                  <router-link to="/AdminSettingDetail">
+                  <a @click="goAdminSetting(item,'AdminSettingDetail')">
                     <img src="./../../../static/images/next.png" alt="" />
-                  </router-link>
-
+                  </a>
                   <span @click="unAdmin(item)">－</span>
                 </div>
               </div>
@@ -101,20 +92,20 @@
       </el-aside>
     </el-container>
     <el-dialog
+      :title="device === 'pc' ? '刪除管理員' : ''"
       :visible.sync="unAdminShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
       :close-on-click-modal="false"
       center
-      append-to-body
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span>是否確定要移除 {{ unAdminData.name }} 管理員</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="unAdminShow = false"
+        <el-button :class="device === 'moblie' ? 'border-red' : 'background-gray'" @click="unAdminShow = false"
           >取消</el-button
         >
         <el-button class="background-red" @click="unAdminAction"
@@ -149,7 +140,8 @@ export default {
     }
   },
   mounted() {
-    if(!this.groupPermissionData.addGroup) this.getGroupListMember();
+    this.getGroupListMember()
+    
   },
   computed: {
     ...mapState({
@@ -158,41 +150,76 @@ export default {
     }),
   },
   methods: {
+    ...mapMutations({
+      setMsgInfoPage:"ws/setMsgInfoPage",
+    }),
+    goAdminSetting(data,key){
+      this.setMsgInfoPage({ pageShow: false, type: key, data });
+    },
     getGroupListMember() {
-      let groupId = this.groupData.groupId;
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined) {
-            res.icon = require("./../../../static/images/image_user_defult.png");
-          }
+      if(!this.groupPermissionData.addGroup){
+        let groupId = this.groupData.groupId;
+        groupListMember({ groupId }).then((res) => {
+          this.contactList = res.data.list;
+          this.contactList.forEach((res) => {
+            if (res.icon === undefined) {
+              res.icon = require("./../../../static/images/image_user_defult.png");
+            }
+          });
+          this.isManagerList = this.contactList.filter(
+            (el) => el.isManager
+          );
         });
+      } else{
+        this.contactList = this.groupPermissionData.peopleData
         this.isManagerList = this.contactList.filter(
           (el) => el.isManager
         );
-      });
+      }
+      
     },    
     unAdmin(data) {
       this.unAdminShow = true;
       this.unAdminData = data;
     },
     unAdminAction() {
-      let params = {
-        groupId:this.unAdminData.groupId,
-        memberId:this.unAdminData.memberId,
-      }
-      delManager(params).then((res)=>{
-        if(res.code === 200){
-          this.unAdminShow = false;
-          this.getGroupListMember()
+      if(!this.groupPermissionData.addGroup){
+        let params = {
+          groupId:this.unAdminData.groupId,
+          memberId:this.unAdminData.memberId,
         }
-      })  
+        delManager(params).then((res)=>{
+          if(res.code === 200){
+            this.unAdminShow = false;
+            this.getGroupListMember()
+          }
+        })
+      }else{
+        this.groupPermissionData.peopleData.forEach((res)=>{
+          if(res.contactId === this.unAdminData.contactId){
+            delete res.authority
+            delete res.isManager
+          }
+        })
+        this.newAuthorityVOData = this.groupPermissionData.groupManagerAuthority.filter((el)=>{
+          return el.memberId !== this.unAdminData.contactId
+        })
+        this.groupPermissionData.groupManagerAuthority = this.newAuthorityVOData
+        this.unAdminShow = false;
+        this.getGroupListMember()
+        console.log(this.groupPermissionData)
+      }
+        
     },
     addAdmin(data){
       this.$router.push({ name: "AdminSettingDetail",params:data });
     },
     back() {
-      this.$router.back(-1);
+      if (this.device === "moblie") {
+        this.$router.push({ name: "SettingGroup"});
+      } else {
+        this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+      } 
     },
   },
 };
@@ -280,10 +307,60 @@ export default {
           border: 1px solid #fe5f3f;
           cursor: pointer;
         }
+        a{
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  /deep/.el-dialog-loginOut {
+    overflow: auto;
+    .el-dialog {
+      margin: 0 auto 50px;
+      background: #ffffff;
+      border-radius: 10px;
+      position: relative;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 10px;
+      }
+      .el-dialog__body {
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
+        }
       }
     }
   }
 }
+
 .hichat-pc {
   .home-wrapper {
     .home-header {
@@ -297,53 +374,20 @@ export default {
         width: 95%;
       }
     }
+    .el-dialog-loginOut {
+      /deep/.el-dialog {
+        .el-dialog__footer {
+          padding: 0;
+          .el-button {
+            &:nth-child(2) {
+              border-left: 1px solid rgb(239, 239, 239);
+            }
+          }
+        }
+      }
+    }
   }
 }
 
-.el-dialog-loginOut {
-  overflow: auto;
-  /deep/.el-dialog {
-    margin: 0 auto 50px;
-    background: #ffffff;
-    border-radius: 10px;
-    position: relative;
-    box-sizing: border-box;
-    width: 50%;
-    .el-dialog__header {
-      padding: 10px;
-    }
-    .el-dialog__body {
-      text-align: center;
-      padding: 25px 25px 15px;
-      .loginOut-box {
-        img {
-          height: 5em;
-          margin-bottom: 1.2em;
-        }
-      }
-    }
-    .el-dialog__footer {
-      padding: 20px;
-      padding-top: 10px;
-      text-align: right;
-      box-sizing: border-box;
-      .dialog-footer {
-        display: flex;
-        justify-content: space-between;
-        .el-button {
-          width: 100%;
-          border-radius: 8px;
-        }
-        .background-red {
-          background-color: #ee5253;
-          color: #fff;
-        }
-        .border-red {
-          border: 1px solid #fe5f3f;
-          color: #fe5f3f;
-        }
-      }
-    }
-  }
-}
+
 </style>

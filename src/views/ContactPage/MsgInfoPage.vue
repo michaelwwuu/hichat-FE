@@ -55,6 +55,7 @@
                   ></span
                 >
               </div>
+
               <div
                v-if="chatUser.name !== 'Hichat 记事本'"
                 class="setting-notification"
@@ -71,6 +72,54 @@
                 >
                 </el-switch>
               </div>
+              <div
+                v-if="groupUser.isAdmin"
+                class="setting-button mt10"
+                @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
+              >
+                <a>
+                  <div class="setting-button-left">
+                    <img src="./../../../static/images/octagon.png" alt="" />
+                    <span>{{
+                      !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
+                    }}</span>
+                  </div>
+                </a>
+              </div>
+              
+              <div
+                class="setting-button"
+                @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
+              >
+                <a>
+                  <div class="setting-button-left">
+                    <img src="./../../../static/images/blockade.png" alt="" />
+                    <span>{{
+                      !chatUser.isBlock ? "封锁联络人" : "解除封锁"
+                    }}</span>
+                  </div>
+                </a>
+              </div>
+              <div
+                class="setting-button"
+                @click="dialogShow(!chatUser.isContact ? 'add' : 'delete')"
+              >
+                <a>
+                  <div class="setting-button-left">
+                    <img
+                      :src="
+                        require(`./../../../static/images/${
+                          chatUser.isContact === false ? 'add_user' : 'trash'
+                        }.png`)
+                      "
+                      alt=""
+                    />
+                    <span class="red-text">{{
+                      chatUser.isContact === false ? "加入联络人" : "刪除联络人"
+                    }}</span>
+                  </div>
+                </a>
+              </div>             
               <div
                 v-for="(item, index) in settingContactData"
                 :key="index"
@@ -129,7 +178,7 @@
                 </a>
               </div>
               <div class="setting-button mt10-border" v-if="groupData.isAdmin || groupData.isManager">
-                <a @click="goChatRoom(groupData, 'SettingGroup')">
+                <a @click="changeSettingGroupShow">
                   <div class="setting-button-left">
                     <img src="./../../../static/images/key.png" alt="" />
                     <span>權限</span>
@@ -137,7 +186,7 @@
                 </a>
               </div>
               <div class="setting-button" v-if="groupData.isAdmin">
-                <a @click="goChatRoom(groupData, 'GroupAdminChange')">
+                <a @click="changeGroupAdminShow">
                   <div class="setting-button-left">
                     <img src="./../../../static/images/shield.png" alt="" />
                     <span>轉移管理者權限</span>
@@ -154,6 +203,50 @@
     <group-people v-if="msgInfoPage.type === 'GroupPeople'" />
     <group-add-people v-if="msgInfoPage.type === 'AddGroupPeople'" />
     <edit-group v-if="msgInfoPage.type === 'GroupPage'" />
+
+    <setting-group v-if="msgInfoPage.type === 'SettingGroup'" />
+    <admin-setting v-if="msgInfoPage.type === 'AdminSetting'" />
+    <admin-setting-page v-if="msgInfoPage.type === 'AdminSettingPage'" />
+    <admin-setting-detail v-if="msgInfoPage.type === 'AdminSettingDetail'" />
+    <ban-setting v-if="msgInfoPage.type === 'BanSetting'" />
+    <ban-word v-if="msgInfoPage.type === 'BanWord'" />
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="settingDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span>{{ dialogContent }}</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="settingDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="submitBtn(dialogContent)"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>    
+    <el-dialog
+      :visible.sync="successDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/success.png" alt="" /></div>
+        <span>操作成功</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-orange" @click="successDialogShow = false">確認</el-button>
+      </span>
+    </el-dialog>    
   </div>
 </template>
 
@@ -161,13 +254,24 @@
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { getLocal, getToken } from "_util/utils.js";
-import { getSearchById,groupListMember } from "@/api";
+import { getToken } from "_util/utils.js";
+import { getSearchById,groupListMember,  addContactUser,
+  addBlockContactUser,
+  unBlockContactUser,
+  deleteContactUser, } from "@/api";
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
 import GroupPeople from "../GroupPage/GroupPeople.vue";
 import GroupAddPeople from "../GroupPage/GroupAddPeople.vue";
 import GroupAdminChange from "./../GroupPage/GroupAdminChange.vue";
+
+import SettingGroup from "./../AddGroup/SettingGroup.vue";
+import AdminSetting from "../AddGroup/AdminSetting.vue";
+import AdminSettingPage from "../AddGroup/AdminSettingPage.vue";
+import AdminSettingDetail from "../AddGroup/AdminSettingDetail.vue";
+import BanSetting from '../AddGroup/BanSetting.vue';
+import BanWord from '../AddGroup/BanWord.vue';
+
 export default {
   name: "MsgInfoPage",
   data() {
@@ -179,11 +283,11 @@ export default {
         //   icon: require("./../../../static/images/pc/message.png"),
         //   path: "HiChat",
         // },
-        {
-          name: "查看相片和影片",
-          icon: require("./../../../static/images/pc/image.png"),
-          path: "",
-        },
+        // {
+        //   name: "查看相片和影片",
+        //   icon: require("./../../../static/images/pc/image.png"),
+        //   path: "",
+        // },
       ],
       settingGroupData: [
         // {
@@ -191,11 +295,11 @@ export default {
         //   icon: require("./../../../static/images/pc/message.png"),
         //   path: "HiChat",
         // },
-        {
-          name: "查看相片和影片",
-          icon: require("./../../../static/images/pc/image.png"),
-          path: "",
-        },
+        // {
+        //   name: "查看相片和影片",
+        //   icon: require("./../../../static/images/pc/image.png"),
+        //   path: "",
+        // },
         {
           name: "成員",
           icon: require("./../../../static/images/pc/users.png"),
@@ -213,9 +317,13 @@ export default {
         deviceId: localStorage.getItem("UUID"),
       },
       chatUserId:"",
+      dialogTitle:"",
+      dialogContent: "",
       contactList:[],
       groupDataList: [],
       notification:true,
+      successDialogShow: false,
+      settingDialogShow: false,
       developmentMessage: developmentMessage,
     };
   },
@@ -246,6 +354,22 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData:"ws/setContactListData",
     }),
+    changeSettingGroupShow() {
+      this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "GroupPage",
+        infoMsgChat: true,
+      });
+    },
+    changeGroupAdminShow() {
+      this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "GroupPage",
+        infoMsgChat: true,
+      });
+    },
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
@@ -274,7 +398,90 @@ export default {
         }
         this.setChatUser(this.chatUser);
       });
-    },     
+    },    
+    dialogShow(type) {
+      this.settingDialogShow = true;
+      switch (type) {
+        case "block":
+        case "unBlock":
+          this.dialogTitle = `${
+            type === "block" ? "封锁" : "解除封锁"
+          }联络人`;
+          this.dialogContent = `确认是否${
+            type === "block" ? "封锁" : "解除封锁"
+          }联络人${this.chatUser.name}？`;
+          break;
+        case "delete":
+          this.dialogTitle = `${
+            type === "delete" ? "删除" : ""
+          }联络人`;
+          this.dialogContent = `确认是否${type === "delete" ? "删除" : ""}联络人${
+            this.chatUser.name
+          }？`;
+          break;
+        case "add":
+          this.dialogTitle = "加入联络人";
+          this.dialogContent = `确认是否将${this.chatUser.name}加入联络人`;
+          break;
+      }
+    }, 
+    submitBtn(dialogContent) {
+      switch (dialogContent) {
+        case `确认是否封锁联络人${this.chatUser.name}？`:
+          let blockId = this.chatUser.toChatId.replace("u", "");
+          addBlockContactUser({ blockId }).then((res) => {
+            if (res.code === 200) {
+              this.successDialogShow = true;
+              this.chatUser.isBlock = true;
+              this.setChatUser(this.chatUser);
+            }
+          });
+          break;
+        case `确认是否解除封锁联络人${this.chatUser.name}？`:
+          let blockIdList = [this.chatUser.toChatId.replace("u", "")];
+          unBlockContactUser({ blockIdList })
+            .then((res) => {
+              if (res.code === 200) {
+                this.successDialogShow = true;
+                this.chatUser.isBlock = false;
+                this.setChatUser(this.chatUser);
+              }
+            })
+            .catch((err) => {
+              this.$message({ message: err, type: "error" });
+              return false;
+            });
+          break;
+        case `确认是否删除联络人${this.chatUser.name}？`:
+          let contactId = this.chatUser.toChatId.replace("u", "");
+          deleteContactUser(contactId)
+            .then((res) => {
+              if (res.code === 200) {
+                this.successDialogShow = true;
+                this.chatUser.isContact = false;
+                this.setChatUser(this.chatUser);
+              }
+            })
+            .catch((err) => {
+              this.$message({ message: err, type: "error" });
+              return false;
+            });
+          break;
+        case `确认是否将${this.chatUser.name}加入联络人`:
+          let parmas = {
+            contactId: this.chatUser.memberId,
+            name: this.chatUser.username,
+          };
+          addContactUser(parmas).then((res) => {
+            if (res.code === 200) {
+              this.settingDialogShow = false;
+              this.chatUser.isContact = true;
+              this.addContactDialogShow = true;
+              this.setChatUser(this.chatUser);
+            }
+          });
+      }
+    },    
     editShowBtn(data) {
       this.setMsgInfoPage({ pageShow: false, type: data });
     },
@@ -285,7 +492,12 @@ export default {
     //   }
     // },
     closeInfoMsgShow() {
-      this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
+      console.log(this.msgInfoPage)
+      if(this.msgInfoPage.page === "GroupPeople"){
+        this.setMsgInfoPage({ pageShow: false, type: this.msgInfoPage.page }); 
+      }else{
+        this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
+      }
     },
     noIconShow(iconData, key) {
       if (
@@ -315,7 +527,6 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
-      console.log(data, path, type)
       if (path === "HiChat") {
         this.setInfoMsg({
           infoMsgShow: false,
@@ -334,9 +545,7 @@ export default {
         this.$router.push({ name: path, params: data });
       } else if (path === "GroupPeople") {
         this.setMsgInfoPage({ pageShow: false, type: path }); 
-      } else if(path === "GroupPeople"){
-
-      }
+      } 
     },
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
@@ -360,6 +569,12 @@ export default {
     GroupAdminChange,
     GroupPeople,
     GroupAddPeople,
+    SettingGroup,
+    AdminSetting,
+    AdminSettingPage,
+    AdminSettingDetail,
+    BanSetting,
+    BanWord,
   },
 };
 </script>
@@ -510,5 +725,21 @@ export default {
 }
 .mt10-border{
   border-top: 3px solid rgba(0, 0, 0, 0.05);
+}
+.hichat-pc {
+  .home-wrapper {
+    .el-dialog-loginOut {
+      /deep/.el-dialog {
+        .el-dialog__footer {
+          padding: 0;
+          .el-button {
+            &:nth-child(2) {
+              border-left: 1px solid rgb(239, 239, 239);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>

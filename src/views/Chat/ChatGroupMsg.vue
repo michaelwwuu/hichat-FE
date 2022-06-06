@@ -176,9 +176,11 @@ export default {
     },
     messageData(val){
       val.forEach((data) => {
-        this.pinDataList.forEach((list) => {
-          if (data.historyId === list.historyId) {
-            return data.isPing = true;
+        this.pinDataList.forEach((list) => {  
+          if(data.chatType !== "SRV_CHAT_PIN"){
+            if (data.historyId === list.historyId) {
+              data.isPing = true;
+            } 
           }
         });
       });
@@ -273,6 +275,15 @@ export default {
       pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
+          this.pinDataList.forEach((list)=>{
+            this.messageData.forEach((data)=>{
+              if(data.chatType !== "SRV_CHAT_PIN"){
+                if(list.historyId === data.historyId){
+                  data.isPing = true;
+                }
+              }
+            })
+          })
           if(this.pinDataList.length !== 0){
             if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
               this.pinMsg = "語音訊息";
@@ -280,13 +291,6 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          this.messageData.forEach((data) => {
-            this.pinDataList.forEach((list) => {
-              if (data.historyId === list.historyId) {
-                data.isPing = true;
-              }
-            });
-          });
         }
       });
     },    
@@ -416,10 +420,10 @@ export default {
             }
           }
           break;
-        case "SRV_CHAT_PIN":       
+        // case "SRV_CHAT_PIN":       
         case "SRV_CHAT_UNPIN":
-          this.pinMsg = "";
-          this.getPinList();
+          // this.pinMsg = "";
+          // this.getPinList();
           this.getChatHistoryMessage()
           break;          
         // 历史讯息

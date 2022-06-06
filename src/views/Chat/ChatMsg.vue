@@ -409,9 +409,11 @@ export default {
     messageData(val){
       val.forEach((data) => {
         this.pinDataList.forEach((list) => {  
-          if (data.historyId === list.historyId) {
-            return data.isPing = true;
-          } 
+          if(data.chatType !== "SRV_CHAT_PIN"){
+            if (data.historyId === list.historyId) {
+              data.isPing = true;
+            } 
+          }
         });
       });
     }
@@ -475,6 +477,15 @@ export default {
       pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
+          this.pinDataList.forEach((list)=>{
+            this.messageData.forEach((data)=>{
+              if(data.chatType !== "SRV_CHAT_PIN"){
+                if(list.historyId === data.historyId){
+                  data.isPing = true;
+                }
+              }
+            })
+          })
           if(this.pinDataList.length !== 0){
             if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
               this.pinMsg = "語音訊息";
@@ -482,13 +493,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          this.messageData.forEach((data) => {
-            this.pinDataList.forEach((list) => {
-              if (data.historyId === list.historyId) {
-                data.isPing = true;
-              } 
-            });
-          });
+          
         }
       });
     },
@@ -544,7 +549,7 @@ export default {
         name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
-        isPing: false,
+        isPing:false,
       };
     },
     //判斷是否base64
@@ -653,16 +658,14 @@ export default {
             }
           }
           break;
-        case "SRV_CHAT_PIN":       
         case "SRV_CHAT_UNPIN":
-          this.pinMsg = "";
-          this.getPinList();
+          // this.pinMsg = "";
+          // this.getPinList();
           this.getChatHistoryMessage()
           break;      
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";
-          this.getPinList();   
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -709,6 +712,7 @@ export default {
               this.loading = false;
             }, this.timeOut);
           });
+          this.getPinList();   
           break;
         // 已讀
         case "SRV_MSG_READ":

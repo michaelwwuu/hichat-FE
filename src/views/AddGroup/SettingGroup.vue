@@ -74,8 +74,8 @@
     </el-container>
     <el-container v-else>
       <el-aside width="300px">
-        <el-header height="60px">
-          <div class="home-header flex-start">
+        <el-header height="70px">
+          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
             <div class="home-user-pc" @click="back()"></div>
             <span class="home-header-title">权限</span>
             <div class="home-add-user"></div>
@@ -83,7 +83,7 @@
         </el-header>
         <div class="home-content">
           <div class="setting-title">群组成员</div>
-          <template v-if="groupData.isAdmin || groupPermissionData.addGroup">
+          <template v-if="groupData.isAdmin">
             <div
               class="setting-button"
               v-for="(item, index) in messagePermissionData"
@@ -105,17 +105,17 @@
             </div>
           </template>
 
-          <div v-if="groupData.isAdmin || groupPermissionData.addGroup">
+          <div v-if="groupData.isAdmin">
             <div class="setting-title">管理員</div>
             <div class="setting-button mt10">
-              <router-link to="/AdminSetting">
+              <a @click="changeSettingGroupShow">
                 <div class="setting-button-left">
                   <span>管理员设定</span>
                 </div>
                 <div class="setting-button-right">
                   <img src="./../../../static/images/next.png" alt="" />
                 </div>
-              </router-link>
+              </a>
             </div>
           </div>          
           <div
@@ -124,14 +124,14 @@
           >
             <div class="setting-title">{{item.name}}</div>
             <div class="setting-button mt10">
-              <router-link :to="item.path">
+              <a @click="goBanSetting(item)">
                 <div class="setting-button-left">
                   <span>{{item.value}}</span>
                 </div>
                 <div class="setting-button-right">
                   <img src="./../../../static/images/next.png" alt="" />
                 </div>
-              </router-link>
+              </a>
             </div>
           </div>
         </div>
@@ -204,6 +204,17 @@ export default {
     if(!this.groupPermissionData.addGroup) this.getGroupAuthority()
   },
   methods: {
+    ...mapMutations({
+      setInfoMsg:"ws/setInfoMsg",
+      setChatGroup: "ws/setChatGroup",
+      setMsgInfoPage:"ws/setMsgInfoPage",
+    }),
+    changeSettingGroupShow() {
+      this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+    },
+    goBanSetting(data){
+      this.setMsgInfoPage({ pageShow: false, type: data.path.replace("/", "") });
+    },
     getGroupAuthority(){
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
@@ -228,20 +239,50 @@ export default {
         });
         this.newAuthorityData[el.key] = newData[0].isCheck
       })
-      let params = {
-        authority: this.newAuthorityData,
-        groupId: this.groupData.groupId
-      }
-      setGroupAuthority(params).then((res)=>{
-        if(res.code === 200){
-          this.getGroupAuthority()
+      if(!this.groupPermissionData.addGroup){
+        let params = {
+          authority: this.newAuthorityData,
+          groupId: this.groupData.groupId
         }
-      })
-      console.log(this.newAuthorityData)
-      console.log(this.newAuthorityData)
+        setGroupAuthority(params).then((res)=>{
+          if(res.code === 200){
+            this.getGroupAuthority()
+          }
+        })
+      }else{
+        delete this.groupPermissionData.addGroup
+        delete this.groupPermissionData.peopleData
+        this.groupPermissionData.groupAdminAuthority = this.newAuthorityData
+        addGroup(this.groupPermissionData).then((res)=>{
+          if(res.code === 200){
+            console.log(res.data)
+            let groupData = {
+              groupId: res.data.id,
+              groupName: res.data.groupName,
+              icon: res.data.icon,
+              isAdmin: true,
+              toChatId: "g" + res.data.id,
+              memberId: JSON.parse(localStorage.getItem("id")),
+            };
+            this.setChatGroup(groupData);
+            this.$router.push({
+              path: this.device === "moblie" ? "/ChatGroupMsg" : "home",
+            });
+          }
+        })
+      }
     },
     back() {
-      this.$router.back(-1);
+      if (this.device === "moblie") {
+        if(this.groupPermissionData.addGroup){
+          this.$router.push({ path: "/AddGroupList",});
+        }else{
+          this.$router.push({ path: "/GroupPage",});
+        }
+      } else {
+        this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
+        this.setMsgInfoPage({ pageShow: true });
+      } 
     },    
   },
 };
@@ -285,6 +326,7 @@ export default {
         align-content: center;
         padding: 0.5em 0.7em 0.5em 0;
         margin-left: 10px;
+        cursor: pointer;
       }
       img {
         height: 1.2em;

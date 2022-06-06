@@ -186,7 +186,7 @@ export const getSearchById = (params) => {
   return axios.request(postData)
 }
 
-// 修改密碼
+// 新增群組
 export const addGroup = data => {
   let postData = {
     url: '/api/group/add',
@@ -431,4 +431,5 @@ export const getManagerAuthority = (params) => {
   }
   return axios.request(postData)
 }
+
 

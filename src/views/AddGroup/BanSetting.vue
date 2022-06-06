@@ -21,7 +21,7 @@
           <el-checkbox-group v-model="checkList">
             <el-checkbox
               v-for="(item, index) in contactList"
-              :label="item.memberId"
+              :label="!groupPermissionData.addGroup ? item.memberId:item.contactId"
               :key="index"
             >
               <div class="address-box">
@@ -45,7 +45,7 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start">
+          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
             <div class="home-user-pc" @click="back()"></div>
             <span class="home-header-title">禁言设定</span>
             <div class="home-add-user"></div>
@@ -66,10 +66,9 @@
           <el-checkbox-group v-model="checkList">
             <el-checkbox
               v-for="(item, index) in contactList"
-              :label="item.memberId"
+              :label="!groupPermissionData.addGroup ? item.memberId : item.contactId"
               :key="index"
             >
-            
               <div class="address-box">
                 <el-image :src="item.icon"/>
                 <div class="msg-box">
@@ -108,7 +107,6 @@ export default {
   },
 
   created() {
-    // this.contactList = this.groupPermissionData.peopleData;
     if(this.device === "moblie"){
       this.groupData = JSON.parse(localStorage.getItem("groupData"));
     }else{
@@ -116,7 +114,7 @@ export default {
     }
   },
   mounted() {
-    if(!this.groupPermissionData.addGroup) this.getGroupListMember();
+     this.getGroupListMember();
   },
   computed: {
     ...mapState({
@@ -125,39 +123,69 @@ export default {
     }),
   },  
   methods: {
+    ...mapMutations({
+      setMsgInfoPage:"ws/setMsgInfoPage",
+    }),    
     getGroupListMember() {
-      let groupId = this.groupData.groupId;
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined) {
-            res.icon = require("./../../../static/images/image_user_defult.png");
-          }
-          if(res.isBanPost){
-            this.checkList.push(res.memberId)
-          }
+      if(!this.groupPermissionData.addGroup){
+        let groupId = this.groupData.groupId;
+        groupListMember({ groupId }).then((res) => {
+          this.contactList = res.data.list;
+          this.contactList.forEach((res) => {
+            console.log(res)
+            if (res.icon === undefined) {
+              res.icon = require("./../../../static/images/image_user_defult.png");
+            }
+            if(res.isBanPost){
+              this.checkList.push(res.memberId)
+            }
+          });
+          this.contactList = this.contactList.filter((el)=>{
+            return !el.isAdmin
+          })
         });
-
-      });
+      }else{
+        this.contactList = this.groupPermissionData.peopleData
+        this.contactList.forEach((res) => {
+          this.groupPermissionData.banPostMemberList.forEach((el)=>{
+             if(res.contactId === el){
+              this.checkList.push(res.contactId)
+            }
+          })
+        })
+      }
     },
     setBan(){
-      let memberData = []
-      this.checkList.forEach((el)=>{
-        memberData.push(el.memberId)
-      })
-      console.log(memberData)
-      let params ={
-        groupId: this.groupData.groupId,
-        memberId: memberData
-      }
-      setBanPost(params).then((res)=>{
-        if(res.code === 200) {
-          this.$router.push({ name: "SettingGroup"});
+      if(!this.groupPermissionData.addGroup){
+        let memberData = []
+        this.checkList.forEach((el)=>{
+          memberData.push(el)
+        })
+        let params ={
+          groupId: this.groupData.groupId,
+          memberId: memberData
         }
-      })
+        setBanPost(params).then((res)=>{
+          if(res.code === 200) {
+            if (this.device === "moblie") {
+              this.$router.push({ name: "SettingGroup"});
+            } else {
+              this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+            } 
+            
+          }
+        })
+      }else{
+        this.groupPermissionData.banPostMemberList = this.checkList
+        this.$router.push({ name: "SettingGroup"});
+      }
     },
     back() {
-      this.$router.back(-1);
+      if (this.device === "moblie") {
+        this.$router.back(-1);
+      } else {
+        this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+      } 
     },
   },
 };

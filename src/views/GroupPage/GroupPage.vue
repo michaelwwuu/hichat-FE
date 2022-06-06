@@ -177,7 +177,8 @@ export default {
         });
     },
     back() {
-      this.$router.back(-1);
+
+      this.$router.push({ path: "/ChatGroupMsg" });
     },
   },
 };

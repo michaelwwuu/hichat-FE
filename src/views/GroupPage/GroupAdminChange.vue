@@ -22,8 +22,8 @@
         </template>
         <template v-else>
           <el-header height="70px">
-            <div class="home-header flex-start">
-              <div class="home-user-pc" @click="back"></div>
+            <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
+              <div class="home-user-pc" @click="back" ></div>
               <span class="home-header-title">转移管理者权限</span>
             </div>
           </el-header>
@@ -198,7 +198,7 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: false });
+        this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
         this.setMsgInfoPage({ pageShow: true });
       }
     },

@@ -294,15 +294,8 @@ export default {
     window.addEventListener(
       "scroll",
       () => {
-        let scrollTopBox =
-          document.getElementsByClassName("message-pabel-box")[0];
-        let scrollTop =
-          document.documentElement.scrollTop ||
-          document.body.scrollTop ||
-          document.querySelector(".message-pabel-box").scrollTop;
-        this.showScrollBar =
-          (scrollTopBox.scrollHeight - scrollTop) / 4 >
-          (this.device === "pc" ? 150 : 185);
+        let scrollTop =  document.querySelector(".message-pabel-box")
+        this.showScrollBar = !(scrollTop.scrollHeight -  scrollTop.scrollTop ===  scrollTop.clientHeight)
       },
       true
     );

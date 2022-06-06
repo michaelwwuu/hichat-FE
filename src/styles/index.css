@@ -12,6 +12,7 @@
 /* fade */
 .fade-enter-active,
 .fade-leave-active {
+  -webkit-transition: opacity 0.28s;
   transition: opacity 0.28s;
 }
 
@@ -23,32 +24,38 @@
 /* fade-transform */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
+  -webkit-transition: all .5s;
   transition: all .5s;
 }
 
 .fade-transform-enter {
   opacity: 0;
-  transform: translateX(-30px);
+  -webkit-transform: translateX(-30px);
+          transform: translateX(-30px);
 }
 
 .fade-transform-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  -webkit-transform: translateX(30px);
+          transform: translateX(30px);
 }
 
 /* breadcrumb transition */
 .breadcrumb-enter-active,
 .breadcrumb-leave-active {
+  -webkit-transition: all .5s;
   transition: all .5s;
 }
 
 .breadcrumb-enter,
 .breadcrumb-leave-active {
   opacity: 0;
-  transform: translateX(20px);
+  -webkit-transform: translateX(20px);
+          transform: translateX(20px);
 }
 
 .breadcrumb-move {
+  -webkit-transition: all .5s;
   transition: all .5s;
 }
 
@@ -93,7 +100,8 @@
 }
 
 .el-dialog {
-  transform: none;
+  -webkit-transform: none;
+          transform: none;
   left: 0;
   position: relative;
   margin: 0 auto;
@@ -113,21 +121,26 @@
 }
 
 .el-range-editor.el-input__inner {
+  display: -webkit-inline-box !important;
+  display: -ms-inline-flexbox !important;
   display: inline-flex !important;
 }
 
 .el-range-separator {
-  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
 }
 
 #app .main-container {
   min-height: 100%;
+  -webkit-transition: margin-left .28s;
   transition: margin-left .28s;
   margin-left: 210px;
   position: relative;
 }
 
 #app .sidebar-container {
+  -webkit-transition: width 0.28s;
   transition: width 0.28s;
   width: 210px !important;
   background-color: #304156;
@@ -142,6 +155,7 @@
 }
 
 #app .sidebar-container .horizontal-collapse-transition {
+  -webkit-transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
   transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
 }
 
@@ -268,18 +282,24 @@
 }
 
 #app .mobile .sidebar-container {
+  -webkit-transition: -webkit-transform .28s;
+  transition: -webkit-transform .28s;
   transition: transform .28s;
+  transition: transform .28s, -webkit-transform .28s;
   width: 210px !important;
 }
 
 #app .mobile.hideSidebar .sidebar-container {
   pointer-events: none;
-  transition-duration: 0.3s;
-  transform: translate3d(-210px, 0, 0);
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+  -webkit-transform: translate3d(-210px, 0, 0);
+          transform: translate3d(-210px, 0, 0);
 }
 
 #app .withoutAnimation .main-container,
 #app .withoutAnimation .sidebar-container {
+  -webkit-transition: none;
   transition: none;
 }
 
@@ -417,6 +437,7 @@
   border-radius: 8px;
   border: none;
   outline: none;
+  -webkit-transition: 600ms ease all;
   transition: 600ms ease all;
   position: relative;
   display: inline-block;
@@ -428,6 +449,7 @@
 
 .pan-btn:hover:before, .pan-btn:hover:after {
   width: 100%;
+  -webkit-transition: 600ms ease all;
   transition: 600ms ease all;
 }
 
@@ -438,6 +460,7 @@
   right: 0;
   height: 2px;
   width: 0;
+  -webkit-transition: 400ms ease all;
   transition: 400ms ease all;
 }
 
@@ -457,7 +480,8 @@
   color: #fff;
   -webkit-appearance: none;
   text-align: center;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   outline: 0;
   margin: 0;
   padding: 10px 15px;
@@ -479,7 +503,8 @@ label {
 
 html {
   height: 100%;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 #app {
@@ -489,7 +514,8 @@ html {
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+  -webkit-box-sizing: inherit;
+          box-sizing: inherit;
 }
 
 .no-padding {
@@ -601,7 +627,9 @@ aside a:hover {
   width: 100%;
   text-align: right;
   padding-right: 20px;
+  -webkit-transition: 600ms ease position;
   transition: 600ms ease position;
+  background: -webkit-gradient(linear, left top, right top, from(#20b6f9), color-stop(0%, #20b6f9), color-stop(100%, #2178f1), to(#2178f1));
   background: linear-gradient(90deg, #20b6f9 0%, #20b6f9 0%, #2178f1 100%, #2178f1 100%);
 }
 
@@ -646,3 +674,4 @@ aside a:hover {
 .multiselect--active {
   z-index: 1000 !important;
 }
+/*# sourceMappingURL=index.css.map */

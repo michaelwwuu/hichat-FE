@@ -25,7 +25,7 @@
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.word }}</span>
+                <span>{{ !groupPermissionData.addGroup ? item.word: item }}</span>
               </div>
               <div class="setting-button-right">
                 <span @click="unAdmin(item)">－</span>
@@ -37,7 +37,7 @@
     </el-container>
     <el-container v-else>
       <el-aside width="300px">
-        <el-header height="125px">
+        <el-header height="70px">
           <div class="home-header">
             <span class="home-header-title">
               <div
@@ -45,29 +45,28 @@
                   display: flex;
                   align-items: center;
                   cursor: pointer;
-                  margin-left: 5px;
-                  margin-top: 1px;
                 "
               >
                 <span style="padding-right: 10px" @click="back()"
-                  ><img src="./../../../static/images/pc/arrow-left.png" alt="" style="height: 1.4em;"
+                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
                 /></span>
                 <span>禁用詞設定</span>
               </div>
             </span>
-            <router-link :to="''">
-              <div class="home-add-user">＋</div>
-            </router-link>
+            <div class="home-add-user" @click="addBanShow = true">＋</div>
           </div>
+        </el-header>
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
           <div class="home-search" >
             <el-input
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
+              @keyup.native.enter="developmentMessage(searchKey)"
             >
             </el-input>
           </div>
-        </el-header>
+        </div>                
         <div class="home-content">
           <div
             class="setting-button"
@@ -76,7 +75,7 @@
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.word }}</span>
+                <span>{{ !groupPermissionData.addGroup ? item.word: item }}</span>
               </div>
               <div class="setting-button-right">
                 <span @click="unAdmin(item)">－</span>
@@ -94,33 +93,32 @@
       :show-close="false"
       :close-on-click-modal="false"
       center
-      append-to-body
     >
       <div class="loginOut-box">
         <el-input v-model="input" placeholder="请输入内容"></el-input>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="closeAddBanShow"
+        <el-button :class="device === 'moblie' ? 'border-red' : 'background-gray'" @click="closeAddBanShow"
           >取消</el-button
         >
         <el-button class="background-red" @click="addBanAction">确认</el-button>
       </span>
     </el-dialog>     
     <el-dialog
+      :title="device === 'pc' ? '刪除禁用字詞' : ''"
       :visible.sync="unBanShow"
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
       :close-on-click-modal="false"
       center
-      append-to-body
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div v-if="device === 'moblie'"><img src="./../../../static/images/warn.png" alt="" /></div>
         <span>是否確定要刪除該則禁用字詞？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="border-red" @click="unBanShow = false"
+        <el-button :class="device === 'moblie' ? 'border-red' : 'background-gray'" @click="unBanShow = false"
           >取消</el-button
         >
         <el-button class="background-red" @click="unBanAction">确认</el-button>
@@ -155,7 +153,7 @@ export default {
     }
   },
   mounted() {
-    if(!this.groupPermissionData.addGroup) this.getDisabledWord()
+    this.getDisabledWord()
   },
   computed: {
     ...mapState({
@@ -164,51 +162,78 @@ export default {
     }),
   },  
   methods: {
+    ...mapMutations({
+      setMsgInfoPage:"ws/setMsgInfoPage",
+    }), 
     getDisabledWord(){
-      let groupId = this.groupData.groupId;
-      getGroupDisabledWord({groupId}).then((res)=>{
-        if(res.code === 200){
-          this.banMessage = res.data
-        }
-      })
+      if(!this.groupPermissionData.addGroup){
+        let groupId = this.groupData.groupId;
+        getGroupDisabledWord({groupId}).then((res)=>{
+          if(res.code === 200){
+            this.banMessage = res.data
+          }
+        })
+      }else{
+        this.banMessage = this.groupPermissionData.groupDisabledWordList
+      }
     },
     unAdmin(data){
       this.unBanShow = true
       this.banObject = data
     },
     unBanAction(){
-      let params = this.banObject
-      delGroupDisabledWord(params).then((res)=>{
-        if(res.code === 200){
-          this.unBanShow = false
-          this.getDisabledWord()
-        }
-      })
+      if(!this.groupPermissionData.addGroup){
+        let params = this.banObject
+        delGroupDisabledWord(params).then((res)=>{
+          if(res.code === 200){
+            this.unBanShow = false
+            this.getDisabledWord()
+          }
+        })
+      }else{
+        let newObjArr = this.groupPermissionData.groupDisabledWordList.filter((el)=>{
+          return el !== this.banObject
+        })
+        this.groupPermissionData.groupDisabledWordList = newObjArr
+        this.unBanShow = false
+        this.getDisabledWord()
+      }
     },
     addBanAction(){
       if(this.input === ""){
         this.$message({ message: "不可填入空白", type: "error" });
         return false
       }
-      let params = {
-        groupId: this.groupData.groupId,
-        word:this.input
-      }
-      addGroupDisabledWord(params).then((res)=>{
-        if(res.code === 200) {
-          this.input = ""
-          this.addBanShow = false
-          this.getDisabledWord()
+      if(!this.groupPermissionData.addGroup){
+        let params = {
+          groupId: this.groupData.groupId,
+          word:this.input
         }
-      })
+        addGroupDisabledWord(params).then((res)=>{
+          if(res.code === 200) {
+            this.input = ""
+            this.addBanShow = false
+            this.getDisabledWord()
+          }
+        })
+      }else{
+        this.groupPermissionData.groupDisabledWordList.push(this.input)
+        this.input = ""
+        this.addBanShow = false
+      }
+
     },
     closeAddBanShow(){
       this.input = ""
       this.addBanShow = false
     },
     back() {
-      this.$router.back(-1);
-    },    
+      if (this.device === "moblie") {
+        this.$router.back(-1);
+      } else {
+        this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+      } 
+    },
   },
 };
 </script>
@@ -281,52 +306,69 @@ export default {
           font-size: 15px;
           color: #fe5f3f;
           border: 1px solid #fe5f3f;
+          cursor: pointer;
         }
       }
     }    
   }
-}
-.el-dialog-loginOut {
-  overflow: auto;
-  /deep/.el-dialog {
-    margin: 0 auto 50px;
-    background: #ffffff;
-    border-radius: 10px;
-    position: relative;
-    box-sizing: border-box;
-    width: 50%;
-    .el-dialog__header {
-      padding: 30px 10px 0 10px;
-    }
-    .el-dialog__body {
-      text-align: center;
-      padding: 25px 25px 15px;
-      .loginOut-box {
-        img {
-          height: 5em;
-          margin-bottom: 1.2em;
+  .el-dialog-loginOut {
+    overflow: auto;
+    /deep/.el-dialog {
+      margin: 0 auto 50px;
+      background: #ffffff;
+      border-radius: 10px;
+      position: relative;
+      box-sizing: border-box;
+      width: 50%;
+      .el-dialog__header {
+        padding: 30px 10px 0 10px;
+      }
+      .el-dialog__body {
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px;
+        padding-top: 10px;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer {
+          display: flex;
+          justify-content: space-between;
+          .el-button {
+            width: 100%;
+            border-radius: 8px;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
         }
       }
     }
-    .el-dialog__footer {
-      padding: 20px;
-      padding-top: 10px;
-      text-align: right;
-      box-sizing: border-box;
-      .dialog-footer {
-        display: flex;
-        justify-content: space-between;
-        .el-button {
-          width: 100%;
-          border-radius: 8px;
-        }
-        .background-red {
-          background-color: #ee5253;
-          color: #fff;
-        }
-        .border-red {
-          border: 1px solid #fe5f3f;
-          color: #fe5f3f;
+  }  
+}
+.hichat-pc {
+  .home-wrapper {
+    .el-dialog-loginOut {
+      /deep/.el-dialog {
+        .el-dialog__footer {
+          padding: 0;
+          .el-button {
+            &:nth-child(2) {
+              border-left: 1px solid rgb(239, 239, 239);
+            }
+          }
         }
       }
     }
