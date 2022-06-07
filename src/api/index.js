@@ -350,7 +350,17 @@ export const addManager = data => {
   }
   return axios.request(postData)
 }
-// 新增管理員
+// 設定管理員權限
+export const setManagerAuthority = data => {
+  let postData = {
+    url: '/api/group/setManagerAuthority',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 刪除管理員
 export const delManager = data => {
   let postData = {
     url: '/api/group/delManager',
@@ -401,6 +411,16 @@ export const setBanPost = data => {
   return axios.request(postData)
 }
 
+// 設定個人禁言
+export const setBanPostByPersonal = data => {
+  let postData = {
+    url: '/api/group/setBanPostByPersonal',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
 
 // 取得群組權限設定
 export const getGroupAuthoritySetting = (params) => {
@@ -421,6 +441,7 @@ export const setGroupAuthority = data => {
   }
   return axios.request(postData)
 }
+
 
 // 取得群組管理者權限設定
 export const getManagerAuthority = (params) => {

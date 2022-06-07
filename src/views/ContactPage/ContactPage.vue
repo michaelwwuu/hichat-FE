@@ -210,6 +210,7 @@ import {
   addBlockContactUser,
   unBlockContactUser,
   deleteContactUser,
+  setBanPostByPersonal,
 } from "@/api";
 
 export default {
@@ -253,7 +254,6 @@ export default {
     ...mapState({
       // chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
-
       myUserInfo: (state) => state.ws.myUserInfo,
     }),
   },
@@ -313,6 +313,12 @@ export default {
     dialogShow(type) {
       this.settingDialogShow = true;
       switch (type) {
+        case "banPost":
+        case "unBanPost":
+          this.dialogContent = `确认是否${
+            type === "block" ? "禁言" : "解除禁言"
+          }联络人${this.chatUser.name}？`;
+          break;
         case "block":
         case "unBlock":
           this.dialogContent = `确认是否${
@@ -330,6 +336,7 @@ export default {
       }
     },
     submitBtn(dialogContent) {
+      console.log(dialogContent)
       switch (dialogContent) {
         case `确认是否封锁联络人${this.chatUser.name}？`:
           let blockId = this.chatUser.toChatId.replace("u", "");
@@ -343,18 +350,13 @@ export default {
           break;
         case `确认是否解除封锁联络人${this.chatUser.name}？`:
           let blockIdList = [this.chatUser.toChatId.replace("u", "")];
-          unBlockContactUser({ blockIdList })
-            .then((res) => {
+          unBlockContactUser({ blockIdList }).then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
                 this.chatUser.isBlock = false;
                 this.setChatUser(this.chatUser);
               }
             })
-            .catch((err) => {
-              this.$message({ message: err, type: "error" });
-              return false;
-            });
           break;
         case `确认是否删除联络人${this.chatUser.name}？`:
           let contactId = this.chatUser.toChatId.replace("u", "");
@@ -384,6 +386,35 @@ export default {
               this.setChatUser(this.chatUser);
             }
           });
+          break
+        case `确认是否禁言联络人${this.chatUser.name}？`:
+          let banPost ={
+            groupId: this.chatUser.groupId,
+            isBanPost: true,
+            memberId: this.chatUser.memberId,
+          }
+          setBanPostByPersonal(banPost).then((res) => {
+            if (res.code === 200) {
+              this.successDialogShow = true;
+              this.chatUser.isBanPost = false;
+              this.setChatUser(this.chatUser);
+            }
+          });
+          break;   
+        case `确认是否解除禁言联络人${this.chatUser.name}？`:
+          let unBanPost ={
+            groupId: this.chatUser.groupId,
+            isBanPost: false,
+            memberId: this.chatUser.memberId,
+          }
+          setBanPostByPersonal(unBanPost).then((res) => {
+              if (res.code === 200) {
+                this.successDialogShow = true;
+                this.chatUser.isBanPost = true;
+                this.setChatUser(this.chatUser);
+              }
+            })
+          break;                 
       }
     },
   },

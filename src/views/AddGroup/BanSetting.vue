@@ -132,7 +132,6 @@ export default {
         groupListMember({ groupId }).then((res) => {
           this.contactList = res.data.list;
           this.contactList.forEach((res) => {
-            console.log(res)
             if (res.icon === undefined) {
               res.icon = require("./../../../static/images/image_user_defult.png");
             }

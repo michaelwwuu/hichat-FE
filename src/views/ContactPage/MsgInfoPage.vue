@@ -492,7 +492,6 @@ export default {
     //   }
     // },
     closeInfoMsgShow() {
-      console.log(this.msgInfoPage)
       if(this.msgInfoPage.page === "GroupPeople"){
         this.setMsgInfoPage({ pageShow: false, type: this.msgInfoPage.page }); 
       }else{

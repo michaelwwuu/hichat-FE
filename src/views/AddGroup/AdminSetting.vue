@@ -206,12 +206,11 @@ export default {
         })
         this.groupPermissionData.groupManagerAuthority = this.newAuthorityVOData
         this.unAdminShow = false;
-        this.getGroupListMember()
-        console.log(this.groupPermissionData)
+        this.getGroupListMember() 
       }
-        
     },
     addAdmin(data){
+      console.log(data)
       this.$router.push({ name: "AdminSettingDetail",params:data });
     },
     back() {

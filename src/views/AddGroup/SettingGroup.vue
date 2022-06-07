@@ -255,7 +255,6 @@ export default {
         this.groupPermissionData.groupAdminAuthority = this.newAuthorityData
         addGroup(this.groupPermissionData).then((res)=>{
           if(res.code === 200){
-            console.log(res.data)
             let groupData = {
               groupId: res.data.id,
               groupName: res.data.groupName,

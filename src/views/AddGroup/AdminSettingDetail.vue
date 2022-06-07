@@ -86,7 +86,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addManager,groupListMember } from "@/api";
+import { addManager,groupListMember,setManagerAuthority } from "@/api";
 
 export default {
   name: "AdminSetting",
@@ -175,27 +175,43 @@ export default {
         this.newManagerAuthorityData[el.key] = newData[0].isCheck
       })
       if(!this.groupPermissionData.addGroup) {
-        let parmaGroupId = this.device==="moblie" ? this.$route.params.groupId : this.msgInfoPage.data.groupId
-        let parmaMemberId = this.device==="moblie" ? this.$route.params.memberId : this.msgInfoPage.data.memberId
-
+        let parmaGroupId = this.device==="moblie" ? this.$route.params : this.msgInfoPage.data
+        let parmaMemberId = this.device==="moblie" ? this.$route.params : this.msgInfoPage.data
+        
         let params = {
-          groupId:parmaGroupId,
+          groupId:parmaGroupId.groupId,
           groupManagerAuthorityVO:this.newManagerAuthorityData,
-          memberId:parmaMemberId,
+          memberId:parmaMemberId.memberId,
         }
-        addManager(params).then((res)=>{
-          if(res.code === 200){
-            if (this.device === "moblie") {
-              this.$router.push({ path: "/AdminSetting" });
-            } else {
-              if(this.msgInfoPage.pageAdd) {
-                this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
-              }else{
-                this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
-              }
-            } 
-          }
-        })
+        if(!parmaGroupId.isManager || parmaGroupId.isManager === undefined){
+          addManager(params).then((res)=>{
+            if(res.code === 200){
+              if (this.device === "moblie") {
+                this.$router.push({ path: "/AdminSetting" });
+              } else {
+                if(this.msgInfoPage.pageAdd) {
+                  this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
+                }else{
+                  this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+                }
+              } 
+            }
+          })
+        }else{
+          setManagerAuthority(params).then((res)=>{
+            if(res.code === 200){
+              if (this.device === "moblie") {
+                this.$router.push({ path: "/AdminSetting" });
+              } else {
+                if(this.msgInfoPage.pageAdd) {
+                  this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
+                }else{
+                  this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+                }
+              } 
+            }
+          })
+        }
       }else{
         this.newManagerAuthorityData["memberId"] = this.$route.params.contactId
         if(this.$route.params.isManager){
