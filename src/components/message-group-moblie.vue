@@ -10,7 +10,11 @@
           :key="index"
           :class="judgeClass(item[index])"
         >
-          <template v-if="el.chatType !== 'SRV_CHAT_PIN' && el.chatType !== 'SRV_GROUP_DEL'">
+          <template
+            v-if="
+              el.chatType !== 'SRV_CHAT_PIN' && el.chatType !== 'SRV_GROUP_DEL'
+            "
+          >
             <img class="message-avatar" :src="el.icon" />
             <p
               :class="[
@@ -198,7 +202,7 @@
                 $root.formatTimeSecound(el.message.time)
               }}</span>
             </p>
-            
+
             <div class="read-check-box">
               <span class="read-check" v-if="el.isRead"
                 ><img src="./../../static/images/check.png" alt=""
@@ -209,13 +213,13 @@
             </div>
           </template>
           <template v-else-if="el.chatType === 'SRV_CHAT_PIN'">
-            <div class="top-msg-style"> 
-              <span>{{pinUserName(el.message.content)}}置顶了一則訊息</span>
+            <div class="top-msg-style">
+              <span>{{ pinUserName(el.message.content) }}置顶了一則訊息</span>
             </div>
           </template>
           <template v-else-if="el.chatType === 'SRV_GROUP_DEL'">
-            <div class="top-msg-style"> 
-              <span>{{pinUserName(el.message.content)}}離開了聊天室</span>
+            <div class="top-msg-style">
+              <span>{{ pinUserName(el.message.content) }}離開了聊天室</span>
             </div>
           </template>
         </li>
@@ -261,14 +265,20 @@
         <el-button class="background-orange" @click="submitAvatarUpload"
           >确认</el-button
         >
-      </span>      
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { deleteRecentChat,uploadMessageImage,pinHistory,unpinHistory } from "@/api";
+import {
+  deleteRecentChat,
+  uploadMessageImage,
+  pinHistory,
+  unpinHistory,
+  getGroupAuthoritySetting,
+} from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 
 export default {
@@ -282,15 +292,15 @@ export default {
     },
     timeOut: {
       type: Number,
-    },    
+    },
   },
   data() {
     return {
       newData: [],
       message: [],
       newMessageData: {},
-      fullscreenLoading:false,
-      fileList: [],      
+      fullscreenLoading: false,
+      fileList: [],
       device: localStorage.getItem("device"),
       showScrollBar: false,
       uploadShow: false,
@@ -302,6 +312,7 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.getGroupAuthority()
   },
   computed: {
     ...mapState({
@@ -336,17 +347,20 @@ export default {
     window.addEventListener(
       "scroll",
       () => {
-        let scrollTop =  document.querySelector(".message-pabel-box")
-        this.showScrollBar = !(scrollTop.scrollHeight -  scrollTop.scrollTop ===  scrollTop.clientHeight)
+        let scrollTop = document.querySelector(".message-pabel-box");
+        this.showScrollBar = !(
+          scrollTop.scrollHeight - scrollTop.scrollTop ===
+          scrollTop.clientHeight
+        );
       },
       true
     );
-    if(this.goAnchorMessage.historyId !== undefined){
-      let newTime = this.timeOut + 3000
+    if (this.goAnchorMessage.historyId !== undefined) {
+      let newTime = this.timeOut + 3000;
       setTimeout(() => {
-        this.goAnchor(this.goAnchorMessage.historyId) 
+        this.goAnchor(this.goAnchorMessage.historyId);
       }, newTime);
-    }    
+    }
   },
   methods: {
     ...mapMutations({
@@ -357,14 +371,22 @@ export default {
     }),
     uploadImg(file, fileList) {
       this.fileList = fileList;
-    },  
-    pinUserName(data){
-      if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
-        return data = "你"
-      } else{
-        return data
+    },
+    getGroupAuthority(){
+      let groupId = this.groupData.groupId;
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          this.checkGroupPeople = res.data.checkUserInfo
+        }
+      })
+    },    
+    pinUserName(data) {
+      if (data === JSON.parse(localStorage.getItem("myUserInfo")).username) {
+        return (data = "你");
+      } else {
+        return data;
       }
-    },  
+    },
     goAnchor(data) {
       document.getElementById(data).classList.add("blink");
       document.getElementById(data).scrollIntoView(true);
@@ -403,37 +425,38 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = this.chatUser.toChatId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          // message.text = res.data,
-          this.soundNofiy.forEach((res)=>{
-            if(res.key === "group" && res.isNofity) this.audioAction()
-          })        
+          (message.text = Encrypt(res.data, this.aesKey, this.aesIv)), //TODO 加密
+            // message.text = res.data,
+            this.soundNofiy.forEach((res) => {
+              if (res.key === "group" && res.isNofity) this.audioAction();
+            });
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
-        }else if(res.code === 40001){
+        } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
         }
-      })
-    },  
-    audioAction(){
-      let audioEl = document.getElementById("notify-send-audio")  
+      });
+    },
+    audioAction() {
+      let audioEl = document.getElementById("notify-send-audio");
       var playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.pause();
-        })
-        .catch(error => {
-        });
+        playPromise
+          .then((_) => {
+            audioEl.pause();
+          })
+          .catch((error) => {});
       }
-      audioEl.src= "" // 移除src, 防止之后播放空白音频  
-      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-        audioEl.src = require("./../../static/wav/send.mp3")
+      audioEl.src = ""; // 移除src, 防止之后播放空白音频
+      setTimeout(() => {
+        // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../static/wav/send.mp3");
         audioEl.play();
       }, 150);
-    },      
+    },
     // 判断讯息Class名称
     judgeClass(item) {
       if (item.userChatId === "u" + localStorage.getItem("id")) {
@@ -522,9 +545,9 @@ export default {
         },
         {
           name: "upDown",
-          label: data.isPing ? "取消置頂":"置顶訊息",
+          label: data.isPing ? "取消置頂" : "置顶訊息",
           onClick: () => {
-            this.topMsgAction(data,data.isPing)
+            this.topMsgAction(data, data.isPing);
           },
         },
         {
@@ -567,6 +590,15 @@ export default {
               );
             });
           }
+        } else if(JSON.parse(localStorage.getItem("groupData")).isManager){
+          if(JSON.parse(localStorage.getItem("authority")).delUserMessage){
+            this.newItem = item.filter((list)=>{
+              return (
+                  list.name !== "edit" &&
+                  list.name !== "download"
+                );
+            })
+          }
         } else {
           this.newItem = item.filter((list) => {
             return (
@@ -600,6 +632,24 @@ export default {
           });
         }
       }
+      if(!JSON.parse(localStorage.getItem("groupData")).isAdmin && !JSON.parse(localStorage.getItem("groupData")).isManager){
+        if(!JSON.parse(localStorage.getItem("groupAuthority")).pin){
+          this.newItem = this.newItem.filter((list)=>{
+            return (
+                list.name !== "upDown"
+              );
+          })
+        }
+      }
+      if(JSON.parse(localStorage.getItem("groupData")).isManager){
+        if(!JSON.parse(localStorage.getItem("authority")).pin){
+          this.newItem = this.newItem.filter((list)=>{
+            return (
+                list.name !== "upDown"
+              );
+          })
+        }
+      }
       this.$contextmenu({
         items: this.newItem,
         // event,
@@ -611,23 +661,23 @@ export default {
       });
       return false;
     },
-    topMsgAction(data,key){
-      let param ={
+    topMsgAction(data, key) {
+      let param = {
         historyId: data.historyId,
-        toChatId: data.toChatId
-      }
-      if(key){
+        toChatId: data.toChatId,
+      };
+      if (key) {
         unpinHistory(param).then((res) => {
           if (res.code === 200) {
             this.$emit("resetPinMsg");
           }
-        })
-      }else{
+        });
+      } else {
         pinHistory(param).then((res) => {
           if (res.code === 200) {
             this.$emit("resetPinMsg");
-          } 
-        })
+          }
+        });
       }
     },
     downloadImages(data) {
@@ -726,7 +776,6 @@ export default {
         display: flex;
         align-items: flex-end;
         .message-audio {
-          
           border-radius: 0 10px 10px 10px;
           background-color: rgba(0, 0, 0, 0.05);
           height: auto;
@@ -744,7 +793,6 @@ export default {
         }
         .images-more-btn {
           top: 10px;
-          
         }
       }
       .reply {
@@ -924,11 +972,11 @@ export default {
       height: 2.5em;
       // margin-top: 1em;
       display: inline-block;
-              position: relative;
-        // margin-top: 1em;
-        display: inline-block;
+      position: relative;
+      // margin-top: 1em;
+      display: inline-block;
       // border: 1px solid #eeeeee;
-      .images-more-btn{
+      .images-more-btn {
         top: 10px !important;
       }
     }
@@ -957,13 +1005,12 @@ export default {
   }
 }
 .hichat-pc {
-  
   .message-pabel-box {
     .message-styles-box {
       .message-layout-left {
         p {
-          .message-image{
-            .message-box{
+          .message-image {
+            .message-box {
               .el-image {
                 width: 15em !important;
                 height: 9em !important;
@@ -974,7 +1021,6 @@ export default {
               }
             }
           }
-
         }
       }
       .message-layout-right {
@@ -1024,7 +1070,7 @@ export default {
   z-index: 9;
   // border:1px solid #ebebeb;
   text-align: center;
-  background-color: #FFF;
+  background-color: #fff;
   .el-icon-more {
     font-size: 20px;
   }
@@ -1159,12 +1205,12 @@ export default {
   color: #10686e;
   text-decoration: none;
 }
-.top-msg-style{
+.top-msg-style {
   width: 100%;
   font-size: 12px;
   text-align: center;
   margin: 2em 0;
-  span{
+  span {
     background-color: rgba(0, 0, 0, 0.05);
     padding: 4px 15px;
     border-radius: 10px;

@@ -518,7 +518,7 @@ export default {
               );
             });
           }
-        } else {
+        } else  {
           this.newItem = item.filter((list) => {
             return (
               list.name !== "deleteAllChat" &&
@@ -551,6 +551,7 @@ export default {
           });
         }
       }
+
       this.$contextmenu({
         items: this.newItem,
         // event,

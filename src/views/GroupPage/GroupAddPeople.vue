@@ -51,7 +51,12 @@
               <div class="address-box">
                 <el-image :src="item.icon" />
                 <div class="msg-box">
-                  <span>{{ item.name }} <template v-if="item.isManager">★</template><template v-if="item.isAdmin">♔</template></span>
+                  <span>
+                    <div style="display: flex;">{{ item.name }}
+                      <span v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★</span>
+                      <span v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔</span>
+                    </div>
+                  </span>
                 </div>
               </div>
             </el-checkbox>

@@ -6,9 +6,16 @@
           <div class="home-header">
             <div class="home-user" @click="back"></div>
             <span class="home-header-title"></span>
-            <router-link :to="'/EditGroup'" v-if="groupData.isAdmin">
-              <div class="home-add-user edit"></div>
-            </router-link>
+            <template v-if="groupData.isAdmin">
+              <router-link :to="'/EditGroup'" >
+                <div class="home-add-user edit"></div>
+              </router-link>
+            </template>
+            <template v-else-if="groupData.isManager">
+              <router-link :to="'/EditGroup'" v-if="authority.updateGroupInfo">
+                <div class="home-add-user edit"></div>
+              </router-link>
+            </template>
             <div class="home-add-user" v-else></div>
           </div>
         </el-header>
@@ -31,6 +38,7 @@
             v-for="(item, index) in settingData"
             :key="index"
             @click="developmentMessage(item.name)"
+            :class="{'mb10':item.name ==='成員'}"
           >
             <a @click="goChatRoom(groupData, item.path)">
               <div class="setting-button-left">
@@ -57,14 +65,26 @@
             >
             </el-switch>
           </div> -->
-          <div class="setting-button mt10" v-if="groupData.isAdmin || groupData.isManager">
-            <a @click="goChatRoom(groupData, 'SettingGroup')">
-              <div class="setting-button-left">
-                <img src="./../../../static/images/key.png" alt="" />
-                <span>權限</span>
-              </div>
-            </a>
-          </div>
+          <template v-if="groupData.isAdmin">
+            <div class="setting-button mt10" >
+              <a @click="goChatRoom(groupData, 'SettingGroup')">
+                <div class="setting-button-left">
+                  <img src="./../../../static/images/key.png" alt="" />
+                  <span>權限</span>
+                </div>
+              </a>
+            </div>
+          </template>
+          <template v-else-if="groupData.isManager">
+            <div class="setting-button mt10" v-if="authority.banUserPost || authority.disabledWord ">
+              <a @click="goChatRoom(groupData, 'SettingGroup')">
+                <div class="setting-button-left">
+                  <img src="./../../../static/images/key.png" alt="" />
+                  <span>權限</span>
+                </div>
+              </a>
+            </div>
+          </template>
           <div class="setting-button" v-if="groupData.isAdmin">
             <a @click="goChatRoom(groupData, 'GroupAdminChange')">
               <div class="setting-button-left">
@@ -120,6 +140,7 @@ export default {
   data() {
     return {
       groupData: {},
+      authority:{},
       settingData: [
         {
           name: "传送讯息",
@@ -151,6 +172,9 @@ export default {
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
+    if(this.groupData.isManager){
+      this.authority = JSON.parse(localStorage.getItem("authority"));
+    }    
   },
   methods: {
     ...mapMutations({
@@ -323,5 +347,8 @@ export default {
 }
 .mt10 {
   margin-top: 1em;
+}
+.mb10 {
+  margin-bottom: 1em;
 }
 </style>

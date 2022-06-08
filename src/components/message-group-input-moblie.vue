@@ -251,8 +251,8 @@ import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
 import { getLocal, getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import { uploadMessageImage, uploadMessageFile } from "@/api";
-import { Encrypt} from '@/utils/AESUtils.js'
+import { uploadMessageImage, uploadMessageFile,getGroupDisabledWord } from "@/api";
+import { Decrypt,Encrypt} from '@/utils/AESUtils.js'
 
 export default {
   name: "MessageInput",
@@ -264,7 +264,8 @@ export default {
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
-      fullscreenLoading:false,      
+      fullscreenLoading:false, 
+      banMessage:[],     
       checkName: [],
       fileList: [],
       targetArray: [],
@@ -329,11 +330,22 @@ export default {
       this.textArea = val.innerText;
     },
   },
+  created() {
+    this.getDisabledWord()
+  },
   methods: {
     ...mapMutations({
       setEditMsg:"ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    getDisabledWord(){
+      let groupId = this.groupData.groupId;
+      getGroupDisabledWord({groupId}).then((res)=>{
+        if(res.code === 200){
+          this.banMessage = res.data
+        }
+      })
+    },    
     pictureShow(val) {
       this.takePictureShow = val;
     },
@@ -589,31 +601,38 @@ export default {
     },
     // 发送消息
     sendMessage() {
-      let message = {
-        chatType: "CLI_GROUP_SEND",
-        id: Math.random(),
-        toChatId: this.groupData.toChatId,
-        replyHistoryId:
-          this.replyMsg.replyHistoryId !== ""
-            ? this.replyMsg.replyHistoryId
-            : "",
-        targetArray: this.targetArray,
-        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
-        // text: this.textArea,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-        tokenType: 0,
-      };
-      // 发送服务器
-      this.soundNofiy.forEach((res)=>{
-        if(res.key === "group" && res.isNofity) this.audioAction()
-      })
-      Socket.send(message);
-      this.closeReplyMessage();
-      // 消息清空
-      this.targetArray = [];
-      this.checkName = [];
-      this.textArea = "";
+      this.banMessageData = this.banMessage.filter((el)=>this.textArea.replace(/(\s*$)/g, "").includes(el.word))
+      if(this.banMessageData.length !== 0){
+        this.$message({ message: "訊息含有禁用字詞，無法傳送", type: "error" });
+        return false
+      }else{
+        let message = {
+          chatType: "CLI_GROUP_SEND",
+          id: Math.random(),
+          toChatId: this.groupData.toChatId,
+          replyHistoryId:
+            this.replyMsg.replyHistoryId !== ""
+              ? this.replyMsg.replyHistoryId
+              : "",
+          targetArray: this.targetArray,
+          text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
+          // text: this.textArea,
+          token: getToken("token"),
+          deviceId: localStorage.getItem("UUID"),
+          tokenType: 0,
+        };
+        // 发送服务器
+        this.soundNofiy.forEach((res)=>{
+          if(res.key === "group" && res.isNofity) this.audioAction()
+        })
+        Socket.send(message);
+        this.closeReplyMessage();
+        // 消息清空
+        this.targetArray = [];
+        this.checkName = [];
+        this.textArea = "";
+      }
+      
     },
     audioAction(){
       let audioEl = document.getElementById("notify-send-audio")  

@@ -133,21 +133,30 @@ export default {
         this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
           return el.isManager === undefined
         })
+        console.log(this.contactList)
       }
       
     },    
     addAdmin(data){
       if (this.device === "moblie") {
-      this.$router.push({ name: "AdminSettingDetail",params:data });
+        this.$router.push({ name: "AdminSettingDetail",params:data });
       }else{
-        this.setMsgInfoPage({ pageShow: false, type: "AdminSettingDetail",pageAdd:true,data });
+        if(this.groupPermissionData.addGroup){
+          this.$router.push({ name: "AdminSettingDetail",params:data });
+        }else{
+          this.setMsgInfoPage({ pageShow: false, type: "AdminSettingDetail",pageAdd:true,data });
+        }
       }
     },
     back() {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+        if(this.groupPermissionData.addGroup){
+          this.$router.back(-1);
+        }else{
+          this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+        }
       } 
     },
   },

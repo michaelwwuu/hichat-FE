@@ -140,14 +140,16 @@ export default {
             }
           });
           this.contactList = this.contactList.filter((el)=>{
-            return !el.isAdmin
+            return !el.isAdmin && !el.isManager
           })
         });
       }else{
-        this.contactList = this.groupPermissionData.peopleData
+        this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
+          return el.isManager === undefined
+        })
         this.contactList.forEach((res) => {
-          this.groupPermissionData.banPostMemberList.forEach((el)=>{
-             if(res.contactId === el){
+        this.groupPermissionData.banPostMemberList.forEach((el)=>{
+            if(res.contactId === el){
               this.checkList.push(res.contactId)
             }
           })
@@ -183,7 +185,11 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+        if(this.groupPermissionData.addGroup){
+          this.$router.back(-1);
+        }else{
+          this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+        }
       } 
     },
   },

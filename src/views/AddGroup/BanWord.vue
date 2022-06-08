@@ -231,7 +231,11 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+        if(this.groupPermissionData.addGroup){
+          this.$router.back(-1);
+        }else{
+          this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+        }
       } 
     },
   },

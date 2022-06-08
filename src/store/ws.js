@@ -94,10 +94,15 @@ export const state = {
   goAnchorMessage:{},
   device: localStorage.getItem("device"),
   topMsgShow:true,
+  authorityGroupData:{}
 };
 export const actions = {};
 
 export const mutations = {
+  setAuthorityGroupData(state, payload) {
+    state.authorityGroupData = payload;
+    localStorage.setItem("groupAuthority",JSON.stringify(payload))
+  },  
   setGroupPermissionData(state, payload) {
     state.groupPermissionData = payload;
   },  

@@ -95,7 +95,21 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <message-input :userInfoData="userInfoData" :groupData="groupUser" />
+          <template v-if="groupUser.isAdmin">
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
+          </template>
+          <template v-else-if="groupUser.isManager">
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="authority.sendMessage"/>
+            <div class="top-msg-bottom" v-else>
+              <span>禁言狀態無法發送訊息</span>
+            </div>
+          </template>
+          <template v-else>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
+            <div class="top-msg-bottom" v-else>
+              <span>禁言狀態無法發送訊息</span>
+            </div>
+          </template>
         </el-main>
       </el-main>
     </el-container>
@@ -203,6 +217,7 @@ export default {
       },
       pinMsg:"",
       timeOut:0,      
+      authority:{},
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -235,6 +250,12 @@ export default {
     if (this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
     this.getPinList()
+    if(this.groupData.isManager){
+      this.authority = JSON.parse(localStorage.getItem("authority"));
+    }        
+  },
+  mounted() {
+    this.getGroupListMember();
   },
   computed: {
     ...mapState({
@@ -245,6 +266,7 @@ export default {
       calloutShow: (state) => state.ws.calloutShow,
       topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
+      authorityGroupData: (state) => state.ws.authorityGroupData,
     }),
   },
   methods: {
@@ -259,6 +281,7 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
     }),
+
     resetPinMsg(){
      this.getPinList()
     },    
@@ -361,6 +384,13 @@ export default {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
+        
+        this.authorityData = this.contactList.filter((el)=>{
+          return el.isManager && (el.memberId === Number(localStorage.getItem("id")))
+        })
+        if(this.authorityData.length !==0){
+          localStorage.setItem("authority",JSON.stringify(this.authorityData[0].authority))
+        }        
         this.setContactListData(this.contactList);
       });
     },

@@ -12,7 +12,7 @@
                   style="position: absolute"
                 ></div>
               </template>
-              <template v-else-if="groupData.isAdmin">
+              <template v-else-if="(groupData.isAdmin || groupData.isManager) ">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
@@ -32,6 +32,20 @@
                   <div class="home-add-user"></div>
                 </router-link>
                 <div
+                  class="home-user-edit"
+                  @click="(editBtnShow = true) && (checkList = [])"
+                ></div>
+              </template>
+              <template v-if="groupData.isManager && !editBtnShow">
+                <router-link
+                  v-if="authority.addUser"
+                  :to="'GroupAddPeople'"
+                  style="position: absolute; right: 50px"
+                >
+                  <div class="home-add-user"></div>
+                </router-link>
+                <div
+                  v-if="authority.delUser"
                   class="home-user-edit"
                   @click="(editBtnShow = true) && (checkList = [])"
                 ></div>
@@ -116,7 +130,12 @@
                       lazy
                     />
                     <div class="msg-box">
-                      <span>{{ item.name }} <template v-if="item.isManager">★</template><template v-if="item.isAdmin">♔</template></span>
+                      <span>
+                        <div style="display: flex;">{{ item.name }}
+                          <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★</div>
+                          <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔</div>
+                        </div>
+                      </span>
                     </div>
                   </div>
                 </span>
@@ -135,7 +154,12 @@
                 <div class="address-box">
                   <el-image :src="item.icon" />
                   <div class="msg-box">
-                    <span>{{ item.name }}  <template v-if="item.isManager">★</template><template v-if="item.isAdmin">♔</template></span>
+                    <span>
+                      <div style="display: flex;">{{ item.name }}
+                        <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★</div>
+                        <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔</div>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </el-checkbox>
@@ -201,13 +225,17 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { groupListMember, removeMember } from "@/api";
+import { groupListMember, removeMember,getGroupAuthoritySetting } from "@/api";
 import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "GroupPeople",
   data() {
     return {
+      authority:{
+        addUser: true,
+        delUser: true,
+      },
       groupData: {},
       checkList: [],
       contactList: [],
@@ -227,9 +255,13 @@ export default {
     }else{
       this.groupData = this.groupUser
     }
+    if(JSON.parse(localStorage.getItem("authority")) !== undefined){
+      this.authority = JSON.parse(localStorage.getItem("authority"));
+    }
   },
   mounted() {
     this.getGroupListMember();
+    this.getGroupAuthority()
   },
   watch: {
     checkList(val) {
@@ -264,6 +296,14 @@ export default {
         );
       });
     },
+    getGroupAuthority(){
+      let groupId = this.groupData.groupId;
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          this.checkGroupPeople = res.data.checkUserInfo
+        }
+      })
+    },
     addGroupPeople() {
       this.setMsgInfoPage({ pageShow: false, type: "AddGroupPeople" });
     },
@@ -294,33 +334,86 @@ export default {
       }
     },
     goContactPage(data) {
-      if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-        this.$message({ message: "此即为您的帐号", type: "warning" });
-      } else {
-        data.toChatId = "u" + data.memberId;
-        if (this.device === "moblie") {
-          this.$router.push({ name: "ContactPage" });
-        } else {
-          // this.contactDataList = JSON.parse(
-          //   localStorage.getItem("myContactDataList")
-          // );
-          // console.log(data)
-          // this.contactDataList.forEach((res) => {
-          //   if (Number(res.contactId) === data.memberId) {
-          //     data.isContact = true;
-          //   }else{
-          //     data.isContact = false;
-          //   }
-          // });
-          this.setInfoMsg({
-            infoMsgShow: true,
-            infoMsgChat: true,
-            infoMsgNav: "ContactPage",
-          });
-          this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+      if(!this.checkGroupPeople){
+        if(this.groupData.isAdmin){
+          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
+            this.$message({ message: "此即为您的帐号", type: "warning" });
+          } else {
+            data.toChatId = "u" + data.memberId;
+            if (this.device === "moblie") {
+              this.$router.push({ name: "ContactPage" });
+            } else {
+              this.setInfoMsg({
+                infoMsgShow: true,
+                infoMsgChat: true,
+                infoMsgNav: "ContactPage",
+              });
+              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+            }
+            this.setChatUser(data);
+          }
+        } else if(this.groupData.isManager && JSON.parse(localStorage.getItem("authority")).checkUserInfo){
+          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
+            this.$message({ message: "此即为您的帐号", type: "warning" });
+          } else {
+            data.toChatId = "u" + data.memberId;
+            if (this.device === "moblie") {
+              this.$router.push({ name: "ContactPage" });
+            } else {
+              this.setInfoMsg({
+                infoMsgShow: true,
+                infoMsgChat: true,
+                infoMsgNav: "ContactPage",
+              });
+              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+            }
+            this.setChatUser(data);
+          }
+        } else if(!this.groupData.isAdmin && !this.groupData.isManager){
+          if(data.isAdmin || data.isManager){
+            data.toChatId = "u" + data.memberId;
+            if (this.device === "moblie") {
+              this.$router.push({ name: "ContactPage" });
+            } else {
+              this.setInfoMsg({
+                infoMsgShow: true,
+                infoMsgChat: true,
+                infoMsgNav: "ContactPage",
+              });
+              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+            }
+            this.setChatUser(data);
+          }
         }
-        this.setChatUser(data);
-      }
+      } else{
+        if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
+          this.$message({ message: "此即为您的帐号", type: "warning" });
+        } else {
+          data.toChatId = "u" + data.memberId;
+          if (this.device === "moblie") {
+            this.$router.push({ name: "ContactPage" });
+          } else {
+            // this.contactDataList = JSON.parse(
+            //   localStorage.getItem("myContactDataList")
+            // );
+            // console.log(data)
+            // this.contactDataList.forEach((res) => {
+            //   if (Number(res.contactId) === data.memberId) {
+            //     data.isContact = true;
+            //   }else{
+            //     data.isContact = false;
+            //   }
+            // });
+            this.setInfoMsg({
+              infoMsgShow: true,
+              infoMsgChat: true,
+              infoMsgNav: "ContactPage",
+            });
+            this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+          }
+          this.setChatUser(data);
+        }
+      } 
     },
   },
 };

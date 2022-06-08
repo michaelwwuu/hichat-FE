@@ -168,7 +168,7 @@ import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
-import { getGroupList, groupListMember, getSearchById } from "@/api";
+import { getGroupList, groupListMember, getSearchById,getGroupAuthoritySetting } from "@/api";
 
 export default {
   name: "HiChat",
@@ -176,6 +176,7 @@ export default {
     return {
       searchKey: "",
       groupList: [],
+      authorityData:{},
       groupDataList: [],
       hiChatDataList: [],
       contactDataList: [],
@@ -239,6 +240,7 @@ export default {
       setContactUser: "ws/setContactUser",
       setActiveName: "ws/setActiveName",
       setTopMsgShow:"ws/setTopMsgShow",
+      setAuthorityGroupData:"ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
     }),
     noIconShow(iconData, key) {
@@ -350,6 +352,15 @@ export default {
         this.setGroupList(this.groupList);
       });
     },
+    getGroupAuthority(data){
+      let groupId = data.toChatId.replace("g", "");
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          this.authorityGroupData = res.data
+          this.setAuthorityGroupData(this.authorityGroupData)
+        }
+      })
+    },    
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
@@ -359,6 +370,12 @@ export default {
             item.icon = require("./../../../../static/images/image_user_defult.png");
           }
         });
+        this.authorityData = this.contactList.filter((el)=>{
+          return el.isManager && (el.memberId === Number(localStorage.getItem("id")))
+        })
+        if(this.authorityData.length !==0){
+          localStorage.setItem("authority",JSON.stringify(this.authorityData[0].authority))
+        }        
         this.setContactListData(this.contactList);
       });
     },
@@ -377,6 +394,7 @@ export default {
     },
     goChatRoom(data, path) {
       this.setTopMsgShow(true)
+      this.getGroupDataList()
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
@@ -391,12 +409,14 @@ export default {
         data.memberId = JSON.parse(data.forChatId.replace("u", ""));
         this.groupList.forEach((item) => {
           if (item.groupName === data.groupName) {
+            data.isBanPost = item.isBanPost
             data.isAdmin = item.isAdmin
             data.isManager = item.isManager
           }
         });
         this.setChatGroup(data);
         this.getGroupListMember(data);
+        this.getGroupAuthority(data)
       }
       if (this.device === "moblie") {
         this.$router.push({ name: path });

@@ -75,7 +75,7 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
+          <div class="home-header flex-start" :style="!groupPermissionData.addGroup ? 'position: relative; left: -4px; top: -1px;':''">
             <div class="home-user-pc" @click="back()"></div>
             <span class="home-header-title">权限</span>
             <div class="home-add-user"></div>
@@ -149,7 +149,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { addGroup,getGroupAuthoritySetting,setGroupAuthority } from "@/api";
+import { addGroup,getGroupAuthoritySetting,setGroupAuthority} from "@/api";
 
 export default {
   name: "SettingGroup",
@@ -194,14 +194,11 @@ export default {
     }),
   },  
   created() {
-    if(this.device === "moblie"){
-      this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    }else{
-      this.groupData = this.groupUser
-    }
+    this.groupData = JSON.parse(localStorage.getItem("groupData"))
   },
   mounted() {
     if(!this.groupPermissionData.addGroup) this.getGroupAuthority()
+    this.mangerAuthority()
   },
   methods: {
     ...mapMutations({
@@ -210,11 +207,38 @@ export default {
       setMsgInfoPage:"ws/setMsgInfoPage",
     }),
     changeSettingGroupShow() {
-      this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+      if(this.groupPermissionData.addGroup){
+        this.$router.push({ path: "/AdminSetting"});
+      }else{
+        this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+      }
+    },
+    mangerAuthority(){
+      if(this.groupData.isManager){
+        if(!JSON.parse(localStorage.getItem("authority")).banUserPost){
+          this.settingPermission = this.settingPermission.filter((list)=>{
+            console.log(list)
+            return list.path !== "/BanSetting"
+          })
+        }
+        if(!JSON.parse(localStorage.getItem("authority")).disabledWord){
+          this.settingPermission = this.settingPermission.filter((list)=>{
+            console.log(list)
+            return list.path !== "/BanWord"
+          })
+        }
+        console.log(this.settingPermission)
+        console.log(JSON.parse(localStorage.getItem("authority")))
+      } 
     },
     goBanSetting(data){
-      this.setMsgInfoPage({ pageShow: false, type: data.path.replace("/", "") });
+      if(this.groupPermissionData.addGroup){
+        this.$router.push({ path: data.path});
+      }else{
+        this.setMsgInfoPage({ pageShow: false, type: data.path.replace("/", "") });
+      }
     },
+
     getGroupAuthority(){
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
@@ -246,7 +270,12 @@ export default {
         }
         setGroupAuthority(params).then((res)=>{
           if(res.code === 200){
-            this.getGroupAuthority()
+            if(this.device === "moblie"){
+              this.$router.push({ path: "/GroupPage",});
+            }else{
+              this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
+              this.setMsgInfoPage({ pageShow: true });
+            }  
           }
         })
       }else{
@@ -279,8 +308,13 @@ export default {
           this.$router.push({ path: "/GroupPage",});
         }
       } else {
-        this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
-        this.setMsgInfoPage({ pageShow: true });
+        if(this.groupPermissionData.addGroup){
+          this.$router.push({ path: "/AddGroupList",});
+        }else{
+          this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
+          this.setMsgInfoPage({ pageShow: true });
+        }
+        
       } 
     },    
   },

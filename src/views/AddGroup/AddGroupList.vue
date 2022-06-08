@@ -242,6 +242,13 @@ export default {
       });
       let uniqueArr = [...new Set(this.groupPermissionData.memberList)]
       this.groupPermissionData.memberList = uniqueArr
+      this.groupPermissionData.addGroup = true
+      let list = {
+        groupName:this.groupForm.name,
+        icon:this.groupIcon,
+        isAdmin:true,
+      }
+      localStorage.setItem("groupData",JSON.stringify(list))
       this.setGroupPermissionData(this.groupPermissionData)
       this.$router.push({ path: '/SettingGroup'})
     },
@@ -279,7 +286,9 @@ export default {
     //     });
     // },
     back() {
-      this.$router.back(-1);
+      this.groupForm.name=""
+      this.groupIcon=""
+      this.$router.push({ path: "/AddGroup",});
     },
   },
 };

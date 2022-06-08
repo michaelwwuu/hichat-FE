@@ -106,7 +106,7 @@ export default {
         },
         {
           name:"禁言设定",
-          key:"disableUser",
+          key:"banUserPost",
           isCheck:true,
         },
         {
@@ -220,7 +220,7 @@ export default {
               el.addUser = this.newManagerAuthorityDataaddUser
               el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo
               el.delUser = this.newManagerAuthorityData.delUser
-              el.disableUser = this.newManagerAuthorityData.disableUser
+              el.banUserPost = this.newManagerAuthorityData.banUserPost
               el.disabledWord = this.newManagerAuthorityData.disabledWord
               el.addUser = this.newManagerAuthorityData.addUser
               el.pin = this.newManagerAuthorityData.pin
@@ -278,11 +278,16 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        if(this.msgInfoPage.pageAdd) {
-          this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
+        if(this.groupPermissionData.addGroup){
+          this.$router.back(-1);
         }else{
-          this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+          if(this.msgInfoPage.pageAdd) {
+            this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
+          }else{
+            this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
+          }
         }
+       
       } 
     },
   },

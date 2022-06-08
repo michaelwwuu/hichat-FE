@@ -53,7 +53,7 @@
                 <span>管理员设定</span>
               </div>
             </span>
-            <div @click="goAdminSetting(item,'AdminSettingPage')">
+            <div @click="goAdminSetting('AdminSettingPage')">
               <div class="home-add-user"></div>
             </div>
           </div>
@@ -154,7 +154,11 @@ export default {
       setMsgInfoPage:"ws/setMsgInfoPage",
     }),
     goAdminSetting(data,key){
-      this.setMsgInfoPage({ pageShow: false, type: key, data });
+      if(this.groupPermissionData.addGroup){
+        this.$router.push({ path: "/AdminSettingPage",});
+      }else{
+        this.setMsgInfoPage({ pageShow: false, type: key, data });
+      }   
     },
     getGroupListMember() {
       if(!this.groupPermissionData.addGroup){
@@ -210,14 +214,17 @@ export default {
       }
     },
     addAdmin(data){
-      console.log(data)
       this.$router.push({ name: "AdminSettingDetail",params:data });
     },
     back() {
       if (this.device === "moblie") {
         this.$router.push({ name: "SettingGroup"});
       } else {
-        this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+        if(this.groupPermissionData.addGroup){
+          this.$router.push({ path: "/SettingGroup",});
+        }else{
+          this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
+        }
       } 
     },
   },
@@ -238,7 +245,7 @@ export default {
     }
     .home-add-user {
       background-color: #fff;
-      background-image: url("./../../../static/images/edit.png");
+      background-image: url("./../../../static/images/add.png");
     }
     .home-add-user-pc {
       background-color: #fff;
@@ -365,7 +372,7 @@ export default {
     .home-header {
       .home-add-user {
         background-color: #fff;
-        background-image: url("./../../../static/images/pc/edit_info.png");
+        background-image: url("./../../../static/images/pc/add.png");
       }
     }
     .home-search {

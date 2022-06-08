@@ -96,7 +96,21 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <message-input :userInfoData="userInfoData" :groupData="groupUser" />
+          <template v-if="groupUser.isAdmin">
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
+          </template>
+          <template v-else-if="groupUser.isManager">
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="authority.sendMessage"/>
+            <div class="top-msg-bottom" v-else>
+              <span>禁言狀態無法發送訊息</span>
+            </div>
+          </template>
+          <template v-else>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="!groupUser.isBanPost && authorityData.sendMessage"/>
+            <div class="top-msg-bottom" v-else>
+              <span>禁言狀態無法發送訊息</span>
+            </div>
+          </template>
         </el-main>
       </el-main>
     </el-container>
@@ -137,7 +151,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { groupListMember,pinList,unpinHistory } from "@/api";
+import { groupListMember,pinList,unpinHistory,getGroupAuthoritySetting } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
@@ -158,7 +172,9 @@ export default {
       },
       pinMsg:"",
       timeOut:0,      
+      authority:{},
       groupData: {},
+      authorityData:{},
       readMsgData: [],
       contactList: [],
       pinDataList: [],
@@ -191,10 +207,14 @@ export default {
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
     // this.getPinList()
+    if(JSON.parse(localStorage.getItem("authority")) !== undefined){
+      this.authority = JSON.parse(localStorage.getItem("authority"));
+    }
   },
   mounted() {
     this.getChatHistoryMessage();
     this.getGroupListMember();
+    this.getGroupAuthority()
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -215,8 +235,18 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setTopMsgShow:"ws/setTopMsgShow",
+      setAuthorityGroupData:"ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
     }),
+    getGroupAuthority(){
+      let groupId = this.groupData.groupId;
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          this.authorityGroupData = res.data
+          this.setAuthorityGroupData(this.authorityGroupData)
+        }
+      })
+    },
     resetPinMsg(){
      this.getPinList()
     },    
@@ -303,6 +333,13 @@ export default {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
+        
+        this.authorityData = this.contactList.filter((el)=>{
+          return el.isManager && (el.memberId === Number(localStorage.getItem("id")))
+        })
+        if(this.authorityData.length !==0){
+          localStorage.setItem("authority",JSON.stringify(this.authorityData[0].authority))
+        }
         this.setContactListData(this.contactList);
       });
     },
