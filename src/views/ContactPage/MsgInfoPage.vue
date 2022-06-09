@@ -72,8 +72,8 @@
                 >
                 </el-switch>
               </div>
+              <template v-if="groupUser.isAdmin">
               <div
-                v-if="groupUser.isAdmin"
                 class="setting-button mt10"
                 @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
               >
@@ -86,6 +86,23 @@
                   </div>
                 </a>
               </div>
+            </template>
+            <template v-if="groupUser.isManager">
+              <div
+                v-if="!chatUser.isAdmin && !chatUser.isManager"
+                class="setting-button mt10"
+                @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
+              >
+                <a>
+                  <div class="setting-button-left">
+                    <img src="./../../../static/images/octagon.png" alt="" />
+                    <span>{{
+                      !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
+                    }}</span>
+                  </div>
+                </a>
+              </div>
+            </template>
               
               <div
                 class="setting-button"

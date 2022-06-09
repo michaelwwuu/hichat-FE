@@ -352,6 +352,21 @@ export default {
             }
             this.setChatUser(data);
           }
+        } else if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
+          if(data.isAdmin || data.isManager){
+            data.toChatId = "u" + data.memberId;
+            if (this.device === "moblie") {
+              this.$router.push({ name: "ContactPage" });
+            } else {
+              this.setInfoMsg({
+                infoMsgShow: true,
+                infoMsgChat: true,
+                infoMsgNav: "ContactPage",
+              });
+              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+            }
+            this.setChatUser(data);
+          }
         } else if(this.groupData.isManager && JSON.parse(localStorage.getItem("authority")).checkUserInfo){
           if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
@@ -393,17 +408,6 @@ export default {
           if (this.device === "moblie") {
             this.$router.push({ name: "ContactPage" });
           } else {
-            // this.contactDataList = JSON.parse(
-            //   localStorage.getItem("myContactDataList")
-            // );
-            // console.log(data)
-            // this.contactDataList.forEach((res) => {
-            //   if (Number(res.contactId) === data.memberId) {
-            //     data.isContact = true;
-            //   }else{
-            //     data.isContact = false;
-            //   }
-            // });
             this.setInfoMsg({
               infoMsgShow: true,
               infoMsgChat: true,

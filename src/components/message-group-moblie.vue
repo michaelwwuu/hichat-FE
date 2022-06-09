@@ -591,14 +591,23 @@ export default {
             });
           }
         } else if(JSON.parse(localStorage.getItem("groupData")).isManager){
+          console.log(123)
           if(JSON.parse(localStorage.getItem("authority")).delUserMessage){
             this.newItem = item.filter((list)=>{
               return (
-                  list.name !== "edit" &&
-                  list.name !== "download"
-                );
+                list.name !== "edit" &&
+                list.name !== "download" 
+              );
             })
-          }
+          }else{
+             this.newItem = item.filter((list)=>{
+              return (
+                list.name !== "edit" &&
+                list.name !== "download" &&
+                list.name !== "deleteAllChat" 
+              );
+            })
+          } 
         } else {
           this.newItem = item.filter((list) => {
             return (
@@ -645,6 +654,7 @@ export default {
         if(!JSON.parse(localStorage.getItem("authority")).pin){
           this.newItem = this.newItem.filter((list)=>{
             return (
+                list.name !== "edit" &&
                 list.name !== "upDown"
               );
           })
