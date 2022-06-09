@@ -217,7 +217,6 @@ export default {
       },
       pinMsg:"",
       timeOut:0,      
-      authority:{},
       groupData: {},
       readMsgData: [],
       contactList: [],
@@ -250,9 +249,9 @@ export default {
     if (this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
     this.getPinList()
-    if(this.groupData.isManager){
-      this.authority = JSON.parse(localStorage.getItem("authority"));
-    }        
+    // if(this.groupData.isManager){
+    //   this.authority = JSON.parse(localStorage.getItem("authority"));
+    // }        
   },
   mounted() {
     this.getGroupListMember();
@@ -266,6 +265,7 @@ export default {
       calloutShow: (state) => state.ws.calloutShow,
       topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
+      authority: (state) => state.ws.authority,
       authorityGroupData: (state) => state.ws.authorityGroupData,
     }),
   },
@@ -279,6 +279,7 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setTopMsgShow:"ws/setTopMsgShow",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setAuthority:"ws/setAuthority",
       setContactListData: "ws/setContactListData",
     }),
 
@@ -383,14 +384,14 @@ export default {
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
+          if (item.memberId === Number(localStorage.getItem("id"))){
+            if(item.isAdmin){
+              localStorage.removeItem("authority")
+            }else if(item.isManager){
+              this.setAuthority(item.authority)
+            }
+          }
         });
-        
-        this.authorityData = this.contactList.filter((el)=>{
-          return el.isManager && (el.memberId === Number(localStorage.getItem("id")))
-        })
-        if(this.authorityData.length !==0){
-          localStorage.setItem("authority",JSON.stringify(this.authorityData[0].authority))
-        }        
         this.setContactListData(this.contactList);
       });
     },
@@ -487,8 +488,10 @@ export default {
         case "SRV_GROUP_DEL": 
         case "SRV_CHAT_PIN":                  
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            this.base64Msg = this.isBase64(userInfo.chat.text);
-            userInfo.chat.newContent = this.base64Msg.split(" ");
+            if(userInfo.chat.text !== null){
+              this.base64Msg = this.isBase64(userInfo.chat.text);
+              userInfo.chat.newContent = this.base64Msg.split(" ");
+            }
             // this.groupListData.forEach((item) => {
             //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
             //     userInfo.chat.icon = item.icon;

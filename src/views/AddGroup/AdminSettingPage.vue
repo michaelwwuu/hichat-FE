@@ -40,9 +40,9 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
+          <div class="home-header flex-start" :style="!groupPermissionData.addGroup ? 'position: relative; left: -4px; top: -1px;':''">
             <div class="home-user-pc" @click="back()"></div>
-            <span class="home-header-title" style="position: relative; left: 1px; top: 1px;">管理员设定</span>
+            <span class="home-header-title" :style="!groupPermissionData.addGroup ? 'position: relative; left: 1px; top: 1px;':'position: relative; left: 1px;'">管理员设定</span>
             <div class="home-add-user"></div>
           </div>
         </el-header>

@@ -47,7 +47,7 @@
           <div class="home-header">
             <span class="home-header-title">
               <div style="display: flex; align-items: center; cursor: pointer; ">
-                <span style="padding-right: 10px" @click="back()"
+                <span style="padding-right: 10px" :style="groupPermissionData.addGroup ? 'margin-top:2px; margin-left:4px':''" @click="back()"
                   ><img src="./../../../static/images/pc/arrow-left.png" alt=""
                 /></span>
                 <span>管理员设定</span>

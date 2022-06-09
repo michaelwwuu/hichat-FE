@@ -56,7 +56,7 @@
                 >
               </div>
 
-              <div
+              <!-- <div
                v-if="chatUser.name !== 'Hichat 记事本'"
                 class="setting-notification"
                 @click="developmentMessage('提醒通知')"
@@ -71,7 +71,7 @@
                   disabled
                 >
                 </el-switch>
-              </div>
+              </div> -->
               <template v-if="groupUser.isAdmin">
               <div
                 class="setting-button mt10"
@@ -165,7 +165,7 @@
                     : groupUser.groupName
                 }}</span>
               </div>
-              <div
+              <!-- <div
                 class="setting-notification"
                 @click="developmentMessage('提醒通知')"
               >
@@ -179,7 +179,7 @@
                   disabled
                 >
                 </el-switch>
-              </div>
+              </div> -->
               <div
                 class="setting-button"
                 v-for="(item, index) in settingGroupData"
@@ -500,6 +500,7 @@ export default {
       }
     },    
     editShowBtn(data) {
+      console.log(data)
       this.setMsgInfoPage({ pageShow: false, type: data });
     },
     // infoMsgSettingData() {

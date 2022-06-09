@@ -376,7 +376,10 @@ export default {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
         if(res.code === 200 ){
-          this.checkGroupPeople = res.data.checkUserInfo
+          console.log(res.data)
+          if(res.data !== undefined){
+            this.checkGroupPeople = res.data.checkUserInfo
+          }
         }
       })
     },    

@@ -138,6 +138,7 @@
         <div class="home-footer-btn">
           <el-button
             class="orange-btn"
+            @click="authoritySettingBtn" 
             >储存设定</el-button
           >
         </div>
@@ -227,8 +228,6 @@ export default {
             return list.path !== "/BanWord"
           })
         }
-        console.log(this.settingPermission)
-        console.log(JSON.parse(localStorage.getItem("authority")))
       } 
     },
     goBanSetting(data){

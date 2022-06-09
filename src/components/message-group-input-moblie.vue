@@ -604,6 +604,7 @@ export default {
       this.banMessageData = this.banMessage.filter((el)=>this.textArea.replace(/(\s*$)/g, "").includes(el.word))
       if(this.banMessageData.length !== 0){
         this.$message({ message: "訊息含有禁用字詞，無法傳送", type: "error" });
+        this.textArea = this.textArea.replace(/(\s*$)/g, "")
         return false
       }else{
         let message = {

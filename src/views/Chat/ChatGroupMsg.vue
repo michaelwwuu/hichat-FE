@@ -106,7 +106,7 @@
             </div>
           </template>
           <template v-else>
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="!groupUser.isBanPost && authorityData.sendMessage"/>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
@@ -172,9 +172,8 @@ export default {
       },
       pinMsg:"",
       timeOut:0,      
-      authority:{},
       groupData: {},
-      authorityData:{},
+      // authorityData:{},
       readMsgData: [],
       contactList: [],
       pinDataList: [],
@@ -207,14 +206,14 @@ export default {
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
     // this.getPinList()
-    if(JSON.parse(localStorage.getItem("authority")) !== undefined){
-      this.authority = JSON.parse(localStorage.getItem("authority"));
-    }
+    // if(JSON.parse(localStorage.getItem("authority")) !== undefined){
+    //   this.authority = JSON.parse(localStorage.getItem("authority"));
+    // }
   },
   mounted() {
     this.getChatHistoryMessage();
     this.getGroupListMember();
-    this.getGroupAuthority()
+    // this.getGroupAuthority()
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -225,6 +224,8 @@ export default {
       groupUser: (state) => state.ws.groupUser,
       replyMsg: (state) => state.ws.replyMsg,
       topMsgShow: (state) => state.ws.topMsgShow,
+      authority: (state) => state.ws.authority,
+      authorityGroupData: (state) => state.ws.authorityGroupData,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -235,18 +236,27 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setTopMsgShow:"ws/setTopMsgShow",
-      setAuthorityGroupData:"ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
+      setAuthority:"ws/setAuthority",
+      setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
-    getGroupAuthority(){
-      let groupId = this.groupData.groupId;
-      getGroupAuthoritySetting({groupId}).then((res)=>{
-        if(res.code === 200 ){
-          this.authorityGroupData = res.data
-          this.setAuthorityGroupData(this.authorityGroupData)
-        }
-      })
-    },
+    // getGroupAuthority(){
+    //   let groupId = this.groupData.groupId;
+    //   getGroupAuthoritySetting({groupId}).then((res)=>{
+    //     if(res.code === 200 ){
+    //       if(res.data === undefined){
+    //         this.authorityGroupData={
+    //           checkUserInfo: true,
+    //           pin: true,
+    //           sendMessage: true,
+    //         }
+    //       }else{
+    //         this.authorityGroupData = res.data
+    //       }
+    //       this.setAuthorityGroupData(this.authorityGroupData)
+    //     }
+    //   })
+    // },
     resetPinMsg(){
      this.getPinList()
     },    
@@ -332,14 +342,14 @@ export default {
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
+          if (item.memberId === Number(localStorage.getItem("id"))){
+            if(item.isAdmin){
+              localStorage.removeItem("authority")
+            }else if(item.isManager){
+              this.setAuthority(item.authority)
+            }
+          }
         });
-        
-        this.authorityData = this.contactList.filter((el)=>{
-          return el.isManager && (el.memberId === Number(localStorage.getItem("id")))
-        })
-        if(this.authorityData.length !==0){
-          localStorage.setItem("authority",JSON.stringify(this.authorityData[0].authority))
-        }
         this.setContactListData(this.contactList);
       });
     },
@@ -424,8 +434,10 @@ export default {
         case "SRV_GROUP_SEND":
         case "SRV_CHAT_PIN":                   
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            this.base64Msg = this.isBase64(userInfo.chat.text);
-            userInfo.chat.newContent = this.base64Msg.split(" ");
+            if(userInfo.chat.text !== null){
+              this.base64Msg = this.isBase64(userInfo.chat.text);
+              userInfo.chat.newContent = this.base64Msg.split(" ");
+            }
             this.groupListData = JSON.parse(
               localStorage.getItem("groupListMember")
             );

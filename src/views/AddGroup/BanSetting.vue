@@ -45,7 +45,7 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
+          <div class="home-header flex-start" :style="!groupPermissionData.addGroup ? 'position: relative; left: -4px; top: -1px;':''">
             <div class="home-user-pc" @click="back()"></div>
             <span class="home-header-title">禁言设定</span>
             <div class="home-add-user"></div>

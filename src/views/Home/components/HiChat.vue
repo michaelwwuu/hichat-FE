@@ -237,11 +237,12 @@ export default {
       setHichatNav: "ws/setHichatNav",
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
-      setContactUser: "ws/setContactUser",
-      setActiveName: "ws/setActiveName",
       setTopMsgShow:"ws/setTopMsgShow",
-      setAuthorityGroupData:"ws/setAuthorityGroupData",
+      setActiveName: "ws/setActiveName",
+      setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
+      setAuthority:"ws/setAuthority",
+      setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
     noIconShow(iconData, key) {
       if (
@@ -369,13 +370,14 @@ export default {
           if (item.icon === undefined) {
             item.icon = require("./../../../../static/images/image_user_defult.png");
           }
-        });
-        this.authorityData = this.contactList.filter((el)=>{
-          return el.isManager && (el.memberId === Number(localStorage.getItem("id")))
-        })
-        if(this.authorityData.length !==0){
-          localStorage.setItem("authority",JSON.stringify(this.authorityData[0].authority))
-        }        
+          if (item.memberId === Number(localStorage.getItem("id"))){
+            if(item.isAdmin){
+              localStorage.removeItem("authority")
+            }else if(item.isManager){
+              this.setAuthority(item.authority)
+            }
+          }
+        });      
         this.setContactListData(this.contactList);
       });
     },

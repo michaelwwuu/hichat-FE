@@ -94,11 +94,16 @@ export const state = {
   goAnchorMessage:{},
   device: localStorage.getItem("device"),
   topMsgShow:true,
+  authority:{},
   authorityGroupData:{}
 };
 export const actions = {};
 
 export const mutations = {
+  setAuthority(state, payload) {
+    state.authority = payload;
+    localStorage.setItem("authority",JSON.stringify(payload))
+  },    
   setAuthorityGroupData(state, payload) {
     state.authorityGroupData = payload;
     localStorage.setItem("groupAuthority",JSON.stringify(payload))
