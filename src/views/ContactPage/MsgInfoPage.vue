@@ -18,43 +18,52 @@
                   <span>資訊</span>
                 </div>
               </span>
+
               <div
                 :style="
                   chatUser.name === 'Hichat 记事本' ? 'visibility: hidden' : ''
                 "
               >
-                <template
-                  v-if="
+                <div
+                v-if="
                     infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact
                   "
-                >
-                  <div
                     class="home-add-user"
                     @click="editShowBtn(infoMsg.infoMsgNav)"
                   ></div>
-                </template>
-                <template v-else>
-                  <div
-                    v-if="groupUser.isAdmin"
-                    class="home-add-user"
-                    @click="
-                      groupUser.isAdmin
-                        ? editShowBtn(infoMsg.infoMsgNav)
-                        : false
-                    "
-                  ></div>
-                  <div
-                    v-else-if="groupData.isManager"
-                    class="home-add-user"
-                    :class="{ notAdmin: !authority.updateGroupInfo }"
-                    @click="
-                      groupUser.isAdmin
-                        ? editShowBtn(infoMsg.infoMsgNav)
-                        : false
-                    "
-                  ></div>
-                </template>
               </div>
+              <div
+                v-if="groupUser.isAdmin"
+                class="home-add-user"
+                @click="
+                  groupUser.isAdmin
+                    ? editShowBtn(infoMsg.infoMsgNav)
+                    : false
+                "
+              ></div>
+              <div
+                v-else-if="groupData.isManager"
+                class="home-add-user"
+                :class="{ notAdmin: !authority.updateGroupInfo }"
+                @click="
+                  groupUser.isAdmin
+                    ? editShowBtn(infoMsg.infoMsgNav)
+                    : false
+                "
+              ></div>
+              <div
+                v-else-if="!groupUser.isAdmin && !groupData.isManager"
+                class="home-add-user"
+                :class="{ notAdmin: !authority.updateGroupInfo }"
+                :style="
+                  !groupUser.isAdmin && !groupData.isManager ? 'visibility: hidden' : ''
+                "
+                @click="
+                  groupUser.isAdmin
+                    ? editShowBtn(infoMsg.infoMsgNav)
+                    : false
+                "
+              ></div>
             </div>
           </el-header>
           <div class="home-content">
@@ -427,6 +436,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setAuthority:"ws/setAuthority",
       setContactListData: "ws/setContactListData",
     }),
     changeSettingGroupShow() {
@@ -598,6 +608,7 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
+      console.log(data, path, type)
       if (path === "HiChat") {
         this.setInfoMsg({
           infoMsgShow: false,
@@ -615,6 +626,9 @@ export default {
         this.getHistory(type);
         this.$router.push({ name: path, params: data });
       } else if (path === "GroupPeople") {
+        if(data.authority !==undefined){
+          this.setAuthority(data.authority)
+        }
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },

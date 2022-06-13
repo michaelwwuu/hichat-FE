@@ -22,12 +22,15 @@
         </template>
         <template v-else>
           <el-header height="70px">
-            <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
-              <div class="home-user-pc" @click="back" ></div>
+            <div
+              class="home-header flex-start"
+              style="position: relative; left: -4px; top: -1px"
+            >
+              <div class="home-user-pc" @click="back"></div>
               <span class="home-header-title">转移群主权限</span>
             </div>
           </el-header>
-          <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+          <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)">
             <div class="home-search-pc">
               <el-input
                 placeholder="搜寻"
@@ -72,7 +75,7 @@
       class="el-dialog-loginOut"
       width="75%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -98,7 +101,7 @@
       class="el-dialog-loginOut"
       width="70%"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       center
     >
       <div class="loginOut-box">
@@ -168,7 +171,7 @@ export default {
             }
             if (res.memberId === this.groupData.memberId) {
               this.checkList = res.memberId;
-              consle.log(this.checkList)
+              consle.log(this.checkList);
             }
           });
         })
@@ -198,7 +201,7 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
+        this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true });
         this.setMsgInfoPage({ pageShow: true });
       }
     },
@@ -265,7 +268,7 @@ export default {
                 position: absolute;
                 margin-top: 0.5em;
                 width: 100%;
-                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05) ;
+                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05);
               }
             }
           }
