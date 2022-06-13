@@ -53,8 +53,8 @@
                 <div class="msg-box">
                   <span>
                     <div style="display: flex;">{{ item.name }}
-                      <span v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★</span>
-                      <span v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔</span>
+                      <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★ 管理员</div>
+                      <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔ 群主</div>
                     </div>
                   </span>
                 </div>

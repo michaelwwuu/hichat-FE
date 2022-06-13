@@ -133,7 +133,6 @@ export default {
         this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
           return el.isManager === undefined
         })
-        console.log(this.contactList)
       }
       
     },    

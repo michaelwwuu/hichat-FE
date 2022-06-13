@@ -63,7 +63,7 @@
             </div>
           </div>
         </div>
-        <div class="home-footer-btn">
+        <div class="home-footer-btn" v-if="groupData.isAdmin">
           <el-button
             class="orange-btn"
             @click="authoritySettingBtn"
@@ -90,12 +90,13 @@
               :key="item + index"
             >
               <div class="setting-box">
-                <div class="setting-button-left">
+                <!-- <div class="setting-button-left">
                   <span>{{ item.name }}</span>
-                </div>
-                <div class="setting-button-right">
+                </div> -->
+                <div class="setting-button-left">
                   <el-switch
                     v-model="item.isCheck"
+                    :inactive-text="item.name"
                     active-color="#fd5f3f"
                     inactive-color="#666666"
                   >
@@ -135,7 +136,7 @@
             </div>
           </div>
         </div>
-        <div class="home-footer-btn">
+        <div class="home-footer-btn" v-if="groupData.isAdmin">
           <el-button
             class="orange-btn"
             @click="authoritySettingBtn" 
@@ -293,28 +294,23 @@ export default {
             };
             this.setChatGroup(groupData);
             this.$router.push({
-              path: this.device === "moblie" ? "/ChatGroupMsg" : "home",
+              path: this.device === "moblie" ? "/ChatGroupMsg" : "Home",
             });
           }
         })
       }
     },
     back() {
-      if (this.device === "moblie") {
-        if(this.groupPermissionData.addGroup){
-          this.$router.push({ path: "/AddGroupList",});
-        }else{
+      if(this.groupPermissionData.addGroup){
+        this.$router.push({ path: "/AddGroupList",});
+      }else{
+        if (this.device === "moblie"){
           this.$router.push({ path: "/GroupPage",});
-        }
-      } else {
-        if(this.groupPermissionData.addGroup){
-          this.$router.push({ path: "/AddGroupList",});
         }else{
           this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
           this.setMsgInfoPage({ pageShow: true });
         }
-        
-      } 
+      }
     },    
   },
 };
@@ -370,6 +366,15 @@ export default {
         span {
           font-size: 15px;
           color: #333333;
+        }
+        .el-switch{
+          width: 19em;
+          display: flex;
+          justify-content: space-between;
+        }
+        /deep/.el-switch__label.is-active{
+          color: #333333;
+
         }
       }
       .setting-button-right {

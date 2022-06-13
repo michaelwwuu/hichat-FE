@@ -70,7 +70,7 @@
               <a @click="goChatRoom(groupData, 'SettingGroup')">
                 <div class="setting-button-left">
                   <img src="./../../../static/images/key.png" alt="" />
-                  <span>權限</span>
+                  <span>权限</span>
                 </div>
               </a>
             </div>
@@ -80,7 +80,7 @@
               <a @click="goChatRoom(groupData, 'SettingGroup')">
                 <div class="setting-button-left">
                   <img src="./../../../static/images/key.png" alt="" />
-                  <span>權限</span>
+                  <span>权限</span>
                 </div>
               </a>
             </div>
@@ -89,7 +89,7 @@
             <a @click="goChatRoom(groupData, 'GroupAdminChange')">
               <div class="setting-button-left">
                 <img src="./../../../static/images/shield.png" alt="" />
-                <span>轉移管理者權限</span>
+                <span>转移群主权限</span>
               </div>
             </a>
           </div>

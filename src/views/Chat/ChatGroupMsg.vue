@@ -46,7 +46,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !==''">
+          <div class="top-msg" v-if="pinMsg !==''" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="">
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
@@ -54,7 +54,7 @@
               </span>
               <span v-else>{{ isBase64(pinMsg) }}</span>
             </div>
-            <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
+            <img class="top-msg-right" src="./../../../static/images/next.png" alt="" />
           </div>        
           <message-pabel
             :timeOut="timeOut"
@@ -906,6 +906,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-bottom: 0.01em solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
   .top-msg-left {
     display: flex;
     align-items: center;
@@ -915,7 +916,6 @@ export default {
   }
   .top-msg-right {
     height: 1.2em;
-    cursor: pointer;
   }
 }
 </style>

@@ -18,8 +18,16 @@
                   <span>資訊</span>
                 </div>
               </span>
-              <div :style="chatUser.name === 'Hichat 记事本' ?'visibility: hidden':''">
-                <template v-if="infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact">
+              <div
+                :style="
+                  chatUser.name === 'Hichat 记事本' ? 'visibility: hidden' : ''
+                "
+              >
+                <template
+                  v-if="
+                    infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact
+                  "
+                >
                   <div
                     class="home-add-user"
                     @click="editShowBtn(infoMsg.infoMsgNav)"
@@ -27,10 +35,22 @@
                 </template>
                 <template v-else>
                   <div
+                    v-if="groupUser.isAdmin"
                     class="home-add-user"
-                    :class="{ notAdmin: !groupUser.isAdmin }"
                     @click="
-                      groupUser.isAdmin ? editShowBtn(infoMsg.infoMsgNav) : false
+                      groupUser.isAdmin
+                        ? editShowBtn(infoMsg.infoMsgNav)
+                        : false
+                    "
+                  ></div>
+                  <div
+                    v-else-if="groupData.isManager"
+                    class="home-add-user"
+                    :class="{ notAdmin: !authority.updateGroupInfo }"
+                    @click="
+                      groupUser.isAdmin
+                        ? editShowBtn(infoMsg.infoMsgNav)
+                        : false
                     "
                   ></div>
                 </template>
@@ -42,20 +62,42 @@
               <div class="user-data">
                 <el-image
                   v-if="chatUser.icon !== undefined"
-                  :src="noIconShow(chatUser,'user')"
-                  :preview-src-list="[noIconShow(chatUser,'user')]"
+                  :src="noIconShow(chatUser, 'user')"
+                  :preview-src-list="[noIconShow(chatUser, 'user')]"
                 />
-                <span>{{chatUser.name}}</span>
-                <span class="user-data-id" v-if="chatUser.name !== 'Hichat 记事本'">
+                <span>{{ chatUser.name }}</span>
+                <span
+                  class="user-data-id"
+                  v-if="chatUser.name !== 'Hichat 记事本'"
+                >
                   ID :
                   <span
                     class="user-paste"
-                    @click="copyPaste(chatUserId ===''?chatUser.username:chatUserId)"
-                    >{{ chatUserId ===''?chatUser.username:chatUserId }}</span
+                    @click="
+                      copyPaste(
+                        chatUserId === '' ? chatUser.username : chatUserId
+                      )
+                    "
+                    >{{
+                      chatUserId === "" ? chatUser.username : chatUserId
+                    }}</span
                   ></span
                 >
               </div>
-
+              <div
+                v-for="(item, index) in settingContactData"
+                :key="index"
+                class="setting-button"
+                @click="developmentMessage(item.name)"
+              >
+                <a @click="goChatRoom(userData, item.path, 'address')">
+                  <div class="setting-button-left">
+                    <img :src="item.icon" alt="" />
+                    <span>{{ item.name }}</span>
+                  </div>
+                  <img src="./../../../static/images/next.png" alt="" />
+                </a>
+              </div>
               <!-- <div
                v-if="chatUser.name !== 'Hichat 记事本'"
                 class="setting-notification"
@@ -72,92 +114,86 @@
                 >
                 </el-switch>
               </div> -->
-              <template v-if="groupUser.isAdmin">
-              <div
-                class="setting-button mt10"
-                @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
-              >
-                <a>
-                  <div class="setting-button-left">
-                    <img src="./../../../static/images/octagon.png" alt="" />
-                    <span>{{
-                      !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
-                    }}</span>
-                  </div>
-                </a>
-              </div>
-            </template>
-            <template v-if="groupUser.isManager">
-              <div
-                v-if="!chatUser.isAdmin && !chatUser.isManager"
-                class="setting-button mt10"
-                @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
-              >
-                <a>
-                  <div class="setting-button-left">
-                    <img src="./../../../static/images/octagon.png" alt="" />
-                    <span>{{
-                      !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
-                    }}</span>
-                  </div>
-                </a>
-              </div>
-            </template>
-              
-              <div
-                class="setting-button"
-                @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
-              >
-                <a>
-                  <div class="setting-button-left">
-                    <img src="./../../../static/images/blockade.png" alt="" />
-                    <span>{{
-                      !chatUser.isBlock ? "封锁联络人" : "解除封锁"
-                    }}</span>
-                  </div>
-                </a>
-              </div>
-              <div
-                class="setting-button"
-                @click="dialogShow(!chatUser.isContact ? 'add' : 'delete')"
-              >
-                <a>
-                  <div class="setting-button-left">
-                    <img
-                      :src="
-                        require(`./../../../static/images/${
-                          chatUser.isContact === false ? 'add_user' : 'trash'
-                        }.png`)
-                      "
-                      alt=""
-                    />
-                    <span class="red-text">{{
-                      chatUser.isContact === false ? "加入联络人" : "刪除联络人"
-                    }}</span>
-                  </div>
-                </a>
-              </div>             
-              <div
-                v-for="(item, index) in settingContactData"
-                :key="index"
-                class="setting-button"
-                @click="developmentMessage(item.name)"
-              >
-                <a @click="goChatRoom(userData, item.path, 'address')">
-                  <div class="setting-button-left">
-                    <img :src="item.icon" alt="" />
-                    <span>{{ item.name }}</span>
-                  </div>
-                  <img src="./../../../static/images/next.png" alt="" />
-                </a>
-              </div>
+              <template v-if="groupUser.isAdmin && infoMsg.infoMsgChat">
+                <div
+                  class="setting-button mt10"
+                  @click="
+                    dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')
+                  "
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img src="./../../../static/images/octagon.png" alt="" />
+                      <span>{{
+                        !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
+              <template v-if="groupUser.isManager">
+                <div
+                  v-if="!chatUser.isAdmin && !chatUser.isManager"
+                  class="setting-button mt10"
+                  @click="
+                    dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')
+                  "
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img src="./../../../static/images/octagon.png" alt="" />
+                      <span>{{
+                        !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
+              <template v-if="chatUser.name !== 'Hichat 记事本'">
+                <div
+                  class="setting-button"
+                  @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img src="./../../../static/images/blockade.png" alt="" />
+                      <span>{{
+                        !chatUser.isBlock ? "封锁联络人" : "解除封锁"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
+                <div
+                  class="setting-button"
+                  @click="dialogShow(!chatUser.isContact ? 'add' : 'delete')"
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img
+                        :src="
+                          require(`./../../../static/images/${
+                            chatUser.isContact === false ? 'add_user' : 'trash'
+                          }.png`)
+                        "
+                        alt=""
+                      />
+                      <span class="red-text">{{
+                        chatUser.isContact === false
+                          ? "加入联络人"
+                          : "刪除联络人"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
+
             </template>
             <template v-else>
               <div class="user-data">
                 <el-image
                   v-if="groupUser.icon !== undefined"
-                  :src="noIconShow(groupUser,'group')"
-                  :preview-src-list="[noIconShow(groupUser,'group')]"
+                  :src="noIconShow(groupUser, 'group')"
+                  :preview-src-list="[noIconShow(groupUser, 'group')]"
                 />
                 <span>{{
                   groupUser.groupName === null
@@ -194,19 +230,34 @@
                   <img src="./../../../static/images/next.png" alt="" />
                 </a>
               </div>
-              <div class="setting-button mt10-border" v-if="groupData.isAdmin || groupData.isManager">
-                <a @click="changeSettingGroupShow">
-                  <div class="setting-button-left">
-                    <img src="./../../../static/images/key.png" alt="" />
-                    <span>權限</span>
-                  </div>
-                </a>
-              </div>
+              <template v-if="groupData.isAdmin">
+                <div class="setting-button mt10-border">
+                  <a @click="changeSettingGroupShow">
+                    <div class="setting-button-left">
+                      <img src="./../../../static/images/key.png" alt="" />
+                      <span>权限</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
+              <template v-else-if="groupData.isManager">
+                <div
+                  class="setting-button mt10-border"
+                  v-if="authority.banUserPost || authority.disabledWord"
+                >
+                  <a @click="changeSettingGroupShow">
+                    <div class="setting-button-left">
+                      <img src="./../../../static/images/key.png" alt="" />
+                      <span>权限</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
               <div class="setting-button" v-if="groupData.isAdmin">
                 <a @click="changeGroupAdminShow">
                   <div class="setting-button-left">
                     <img src="./../../../static/images/shield.png" alt="" />
-                    <span>轉移管理者權限</span>
+                    <span>转移群主权限</span>
                   </div>
                 </a>
               </div>
@@ -247,7 +298,7 @@
           >确认</el-button
         >
       </span>
-    </el-dialog>    
+    </el-dialog>
     <el-dialog
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
@@ -261,9 +312,11 @@
         <span>操作成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="successDialogShow = false">確認</el-button>
+        <el-button class="background-orange" @click="successDialogShow = false"
+          >確認</el-button
+        >
       </span>
-    </el-dialog>    
+    </el-dialog>
   </div>
 </template>
 
@@ -272,10 +325,14 @@ import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getToken } from "_util/utils.js";
-import { getSearchById,groupListMember,  addContactUser,
+import {
+  getSearchById,
+  groupListMember,
+  addContactUser,
   addBlockContactUser,
   unBlockContactUser,
-  deleteContactUser, } from "@/api";
+  deleteContactUser,
+} from "@/api";
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
 import GroupPeople from "../GroupPage/GroupPeople.vue";
@@ -286,8 +343,8 @@ import SettingGroup from "./../AddGroup/SettingGroup.vue";
 import AdminSetting from "../AddGroup/AdminSetting.vue";
 import AdminSettingPage from "../AddGroup/AdminSettingPage.vue";
 import AdminSettingDetail from "../AddGroup/AdminSettingDetail.vue";
-import BanSetting from '../AddGroup/BanSetting.vue';
-import BanWord from '../AddGroup/BanWord.vue';
+import BanSetting from "../AddGroup/BanSetting.vue";
+import BanWord from "../AddGroup/BanWord.vue";
 
 export default {
   name: "MsgInfoPage",
@@ -295,11 +352,11 @@ export default {
     return {
       userData: {},
       settingContactData: [
-        // {
-        //   name: "传送讯息",
-        //   icon: require("./../../../static/images/pc/message.png"),
-        //   path: "HiChat",
-        // },
+        {
+          name: "传送讯息",
+          icon: require("./../../../static/images/pc/message.png"),
+          path: "HiChat",
+        },
         // {
         //   name: "查看相片和影片",
         //   icon: require("./../../../static/images/pc/image.png"),
@@ -333,12 +390,12 @@ export default {
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
-      chatUserId:"",
-      dialogTitle:"",
+      chatUserId: "",
+      dialogTitle: "",
       dialogContent: "",
-      contactList:[],
+      contactList: [],
       groupDataList: [],
-      notification:true,
+      notification: true,
       successDialogShow: false,
       settingDialogShow: false,
       developmentMessage: developmentMessage,
@@ -351,6 +408,7 @@ export default {
       infoMsg: (state) => state.ws.infoMsg,
       myUserInfo: (state) => state.ws.myUserInfo,
       msgInfoPage: (state) => state.ws.msgInfoPage,
+      authority: (state) => state.ws.authority,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
@@ -358,7 +416,7 @@ export default {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     // this.infoMsgSettingData();
-    if(this.infoMsg.infoMsgNav === "ContactPage" && this.infoMsg.infoMsgChat){
+    if (this.infoMsg.infoMsgNav === "ContactPage" && this.infoMsg.infoMsgChat) {
       this.getUserId();
     }
   },
@@ -369,7 +427,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
-      setContactListData:"ws/setContactListData",
+      setContactListData: "ws/setContactListData",
     }),
     changeSettingGroupShow() {
       this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
@@ -399,14 +457,14 @@ export default {
         type: "success",
         duration: 1000,
       });
-    },   
-    getUserId() { 
+    },
+    getUserId() {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
-        if(res.data.id === this.myUserInfo.id){
-          this.chatUser.name = "Hichat 记事本"
-          this.chatUser.icon = require("./../../../static/images/image_savemessage.png")
-        }else {
+        if (res.data.id === this.myUserInfo.id) {
+          this.chatUser.name = "Hichat 记事本";
+          this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
+        } else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
           this.chatUserId = res.data.username;
           this.chatUser.name = res.data.name;
@@ -415,33 +473,29 @@ export default {
         }
         this.setChatUser(this.chatUser);
       });
-    },    
+    },
     dialogShow(type) {
       this.settingDialogShow = true;
       switch (type) {
         case "block":
         case "unBlock":
-          this.dialogTitle = `${
-            type === "block" ? "封锁" : "解除封锁"
-          }联络人`;
+          this.dialogTitle = `${type === "block" ? "封锁" : "解除封锁"}联络人`;
           this.dialogContent = `确认是否${
             type === "block" ? "封锁" : "解除封锁"
           }联络人${this.chatUser.name}？`;
           break;
         case "delete":
-          this.dialogTitle = `${
+          this.dialogTitle = `${type === "delete" ? "删除" : ""}联络人`;
+          this.dialogContent = `确认是否${
             type === "delete" ? "删除" : ""
-          }联络人`;
-          this.dialogContent = `确认是否${type === "delete" ? "删除" : ""}联络人${
-            this.chatUser.name
-          }？`;
+          }联络人${this.chatUser.name}？`;
           break;
         case "add":
           this.dialogTitle = "加入联络人";
           this.dialogContent = `确认是否将${this.chatUser.name}加入联络人`;
           break;
       }
-    }, 
+    },
     submitBtn(dialogContent) {
       switch (dialogContent) {
         case `确认是否封锁联络人${this.chatUser.name}？`:
@@ -498,9 +552,9 @@ export default {
             }
           });
       }
-    },    
+    },
     editShowBtn(data) {
-      console.log(data)
+      console.log(data);
       this.setMsgInfoPage({ pageShow: false, type: data });
     },
     // infoMsgSettingData() {
@@ -510,9 +564,9 @@ export default {
     //   }
     // },
     closeInfoMsgShow() {
-      if(this.msgInfoPage.page === "GroupPeople"){
-        this.setMsgInfoPage({ pageShow: false, type: this.msgInfoPage.page }); 
-      }else{
+      if (this.msgInfoPage.page === "GroupPeople") {
+        this.setMsgInfoPage({ pageShow: false, type: this.msgInfoPage.page });
+      } else {
         this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
       }
     },
@@ -522,10 +576,10 @@ export default {
         iconData.icon === null ||
         iconData.icon === ""
       ) {
-        if(key === "user"){
-          return require('./../../../static/images/image_user_defult.png');
-        } else{
-          return require('./../../../static/images/image_group_defult.png');
+        if (key === "user") {
+          return require("./../../../static/images/image_user_defult.png");
+        } else {
+          return require("./../../../static/images/image_group_defult.png");
         }
       } else {
         return iconData.icon;
@@ -561,15 +615,15 @@ export default {
         this.getHistory(type);
         this.$router.push({ name: path, params: data });
       } else if (path === "GroupPeople") {
-        this.setMsgInfoPage({ pageShow: false, type: path }); 
-      } 
+        this.setMsgInfoPage({ pageShow: false, type: path });
+      }
     },
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          if (item.icon === undefined){
+          if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
@@ -740,7 +794,7 @@ export default {
     }
   }
 }
-.mt10-border{
+.mt10-border {
   border-top: 3px solid rgba(0, 0, 0, 0.05);
 }
 .hichat-pc {

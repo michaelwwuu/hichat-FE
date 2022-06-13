@@ -26,7 +26,7 @@
                     @click="changeGroupAdminShow"
                   >
                     <img src="./../../../static/images/pc/key.png" alt="" />
-                    <span>转移管理者权限</span>
+                    <span>转移群主权限</span>
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
@@ -45,7 +45,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >        
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !==''">
+          <div class="top-msg" v-if="pinMsg !==''" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="">
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
@@ -53,7 +53,7 @@
               </span>
               <span v-else>{{ isBase64(pinMsg) }}</span>
             </div>
-            <img class="top-msg-right" src="./../../../static/images/next.png" alt="" @click="goTopMsgShow"/>
+            <img class="top-msg-right" src="./../../../static/images/next.png" alt="" />
           </div>
           <message-pabel
             :timeOut="timeOut"
@@ -140,7 +140,7 @@
                     @click="changeGroupAdminShow"
                   >
                     <img src="./../../../static/images/pc/key.png" alt="" />
-                    <span>转移管理者权限</span>
+                    <span>转移群主权限</span>
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
@@ -486,6 +486,7 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
         case "SRV_GROUP_DEL": 
+        case "SRV_GROUP_JOIN": 
         case "SRV_CHAT_PIN":                  
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if(userInfo.chat.text !== null){
@@ -533,6 +534,7 @@ export default {
           this.getPinList()
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
+          console.log(historyMsgList)
           this.loading = true;
           this.timeOut = historyMsgList.length * 40;
           this.$nextTick(() => {
@@ -976,6 +978,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-bottom: 0.01em solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
   .top-msg-left{
     display: flex;
     align-items: center;
@@ -985,7 +988,6 @@ export default {
   }
   .top-msg-right{
     height: 1.2em;
-    cursor: pointer;
   }
 }
 </style>

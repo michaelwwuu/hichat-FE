@@ -41,6 +41,7 @@
                   v-if="authority.addUser"
                   :to="'GroupAddPeople'"
                   style="position: absolute; right: 50px"
+                  :style="!authority.delUser ? 'right: 5px':''"                   
                 >
                   <div class="home-add-user"></div>
                 </router-link>
@@ -98,6 +99,21 @@
                   @click="(editBtnShow = true) && (checkList = [])"
                 ></div>
               </template>
+              <template v-if="groupData.isManager && !editBtnShow">
+                <router-link
+                  v-if="authority.addUser"
+                  :to="'GroupAddPeople'"
+                  style="position: absolute; right: 50px"
+                  :style="!authority.delUser ? 'right: 5px':''"               
+                >
+                  <div class="home-add-user"></div>
+                </router-link>
+                <div
+                  v-if="authority.delUser"
+                  class="home-user-edit"
+                  @click="(editBtnShow = true) && (checkList = [])"
+                ></div>
+              </template>              
             </div>
           </el-header>
           <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
@@ -132,8 +148,8 @@
                     <div class="msg-box">
                       <span>
                         <div style="display: flex;">{{ item.name }}
-                          <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★</div>
-                          <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔</div>
+                          <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★ 管理员</div>
+                          <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔ 群主</div>
                         </div>
                       </span>
                     </div>
@@ -156,8 +172,8 @@
                   <div class="msg-box">
                     <span>
                       <div style="display: flex;">{{ item.name }}
-                        <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★</div>
-                        <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔</div>
+                        <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★ 管理员</div>
+                        <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔ 群主</div>
                       </div>
                     </span>
                   </div>
@@ -171,7 +187,7 @@
             :class="disabled ? 'gray-btn' : 'red-btn'"
             :disabled="disabled"
             @click="leaveUserDialogShow = true"
-            >退出</el-button
+            >移除成员</el-button
           >
         </div>
       </el-main>
@@ -189,7 +205,7 @@
         <div v-if="device === 'moblie'">
           <img src="./../../../static/images/warn.png" alt="" />
         </div>
-        <span>确认是否将所选的联络人退出群组？</span>
+        <span>确认是否将所选的成员退出群组？</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
@@ -401,21 +417,38 @@ export default {
           }
         }
       } else{
-        if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-          this.$message({ message: "此即为您的帐号", type: "warning" });
-        } else {
-          data.toChatId = "u" + data.memberId;
-          if (this.device === "moblie") {
-            this.$router.push({ name: "ContactPage" });
-          } else {
-            this.setInfoMsg({
-              infoMsgShow: true,
-              infoMsgChat: true,
-              infoMsgNav: "ContactPage",
-            });
-            this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+        if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
+          if(data.isAdmin || data.isManager){
+            data.toChatId = "u" + data.memberId;
+            if (this.device === "moblie") {
+              this.$router.push({ name: "ContactPage" });
+            } else {
+              this.setInfoMsg({
+                infoMsgShow: true,
+                infoMsgChat: true,
+                infoMsgNav: "ContactPage",
+              });
+              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+            }
+            this.setChatUser(data);
           }
-          this.setChatUser(data);
+        } else {
+          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
+            this.$message({ message: "此即为您的帐号", type: "warning" });
+          } else {
+            data.toChatId = "u" + data.memberId;
+            if (this.device === "moblie") {
+              this.$router.push({ name: "ContactPage" });
+            } else {
+              this.setInfoMsg({
+                infoMsgShow: true,
+                infoMsgChat: true,
+                infoMsgNav: "ContactPage",
+              });
+              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+            }
+            this.setChatUser(data);
+          }
         }
       } 
     },

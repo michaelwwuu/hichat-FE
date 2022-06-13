@@ -331,7 +331,7 @@ export const blockListMember = (params) => {
   return axios.request(postData)
 }
 
-// 設定管理這權限
+// 設定管理這权限
 export const setAdminAuthority = data => {
   let postData = {
     url: '/api/group/setAdminAuthority',
@@ -350,7 +350,7 @@ export const addManager = data => {
   }
   return axios.request(postData)
 }
-// 設定管理員權限
+// 設定管理員权限
 export const setManagerAuthority = data => {
   let postData = {
     url: '/api/group/setManagerAuthority',
@@ -390,7 +390,7 @@ export const delGroupDisabledWord = data => {
   return axios.request(postData)
 }
 
-// 取得群組權限
+// 取得群組权限
 export const getGroupDisabledWord = (params) => {
   let postData = {
     url: '/api/group/getGroupDisabledWord',
@@ -422,7 +422,7 @@ export const setBanPostByPersonal = data => {
 }
 
 
-// 取得群組權限設定
+// 取得群組权限設定
 export const getGroupAuthoritySetting = (params) => {
   let postData = {
     url: '/api/group/getGroupAuthoritySetting',
@@ -432,7 +432,7 @@ export const getGroupAuthoritySetting = (params) => {
   return axios.request(postData)
 }
 
-// 設定群組權限(設定)
+// 設定群組权限(設定)
 export const setGroupAuthority = data => {
   let postData = {
     url: '/api/group/setGroupAuthority',
@@ -443,7 +443,7 @@ export const setGroupAuthority = data => {
 }
 
 
-// 取得群組管理者權限設定
+// 取得群組管理者权限設定
 export const getManagerAuthority = (params) => {
   let postData = {
     url: '/api/group/getManagerAuthority',

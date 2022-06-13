@@ -12,7 +12,7 @@
         >
           <template
             v-if="
-              el.chatType !== 'SRV_CHAT_PIN' && el.chatType !== 'SRV_GROUP_DEL'
+              el.chatType !== 'SRV_CHAT_PIN' && el.chatType !== 'SRV_GROUP_DEL' && el.chatType !== 'SRV_GROUP_JOIN'
             "
           >
             <img class="message-avatar" :src="el.icon" />
@@ -222,17 +222,24 @@
               <span>{{ pinUserName(el.message.content) }}離開了聊天室</span>
             </div>
           </template>
+          <template v-else-if="el.chatType === 'SRV_GROUP_JOIN'">
+            <div class="top-msg-style">
+              <span>{{ pinUserName(el.message.content) }}加入了聊天室</span>
+            </div>
+          </template>
         </li>
       </div>
     </ul>
-    <el-button
-      v-show="showScrollBar"
-      class="scroll-bottom-btn"
-      size="medium"
-      icon="el-icon-arrow-down"
-      circle
-      @click="$root.gotoBottom()"
-    ></el-button>
+    <div style="width: 95%; text-align: right;">
+      <el-button
+        class="scroll-bottom-btn"
+        v-show="showScrollBar"
+        size="medium"
+        icon="el-icon-arrow-down"
+        circle
+        @click="$root.gotoBottom()"
+      ></el-button>
+    </div>
     <el-dialog
       title="上傳圖片"
       :visible.sync="uploadShow"
@@ -478,14 +485,23 @@ export default {
       } else {
         this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
         if (this.device === "moblie") {
-          this.$router.push({ name: "ContactPage" });
+          if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
+            this.$message({ message: "此即为您的帐号", type: "warning" });
+          }else{
+            this.$router.push({ name: "ContactPage" });
+          }
         } else {
-          this.carteContact[0].type = "address";
-          this.setInfoMsg({
-            infoMsgShow: true,
-            infoMsgChat: true,
-            infoMsgNav: "ContactPage",
-          });
+          if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
+            this.$message({ message: "此即为您的帐号", type: "warning" });
+          }else{
+            this.carteContact[0].type = "address";
+            this.setInfoMsg({
+              infoMsgShow: true,
+              infoMsgChat: true,
+              infoMsgNav: "ContactPage",
+            });
+          }
+          
         }
       }
 
@@ -1205,7 +1221,6 @@ export default {
 }
 .scroll-bottom-btn {
   position: fixed;
-  right: 30px;
   bottom: 80px;
   border-radius: 50px;
   border: 1px solid rgba(0, 0, 0, 0.05);

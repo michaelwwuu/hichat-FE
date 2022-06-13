@@ -68,7 +68,7 @@
               <div class="message-box">
                 <div class="message-name">{{ el.chat.name }}</div>
                 <div
-                  v-if="device === 'moblie'"
+                  v-if="device === 'moblie' && groupAuthority.pin"
                   class="images-more-btn"
                   @click.prevent.stop="
                     device === 'moblie' ? onContextmenu(el) : false
@@ -124,14 +124,17 @@
         </li>
       </div>
     </ul>
-    <el-button
-      v-show="showScrollBar"
-      class="scroll-bottom-btn"
-      size="medium"
-      icon="el-icon-arrow-down"
-      circle
-      @click="$root.gotoBottom()"
-    ></el-button>
+    <div style="width: 95%; text-align: right;">
+      <el-button
+        class="scroll-bottom-btn"
+        v-show="showScrollBar"
+        size="medium"
+        icon="el-icon-arrow-down"
+        circle
+        @click="$root.gotoBottom()"
+      ></el-button>
+    </div>
+
   </div>
 </template>
 
@@ -153,6 +156,7 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
+      groupAuthority:{},
       fullscreenLoading: false,
 
       device: localStorage.getItem("device"),
@@ -184,6 +188,7 @@ export default {
       true
     );
     this.getPinList();
+    this.groupAuthority = JSON.parse(localStorage.getItem("groupAuthority"))
   },
   methods: {
     ...mapMutations({
@@ -308,6 +313,25 @@ export default {
         this.newItem = item.filter(list => list.name !== "copy");
       } else if (data.chatType === "SRV_GROUP_AUDIO") {
         this.newItem = item.filter(list => list.name === "upDown");
+      }
+      if(!JSON.parse(localStorage.getItem("groupData")).isAdmin && !JSON.parse(localStorage.getItem("groupData")).isManager){
+        if(!JSON.parse(localStorage.getItem("groupAuthority")).pin){
+          this.newItem = this.newItem.filter((list)=>{
+            return (
+                list.name !== "upDown"
+              );
+          })
+        }
+      }
+      if(JSON.parse(localStorage.getItem("groupData")).isManager){
+        if(!JSON.parse(localStorage.getItem("authority")).pin){
+          this.newItem = this.newItem.filter((list)=>{
+            return (
+                list.name !== "edit" &&
+                list.name !== "upDown"
+              );
+          })
+        }
       }
       this.$contextmenu({
         items: this.newItem,

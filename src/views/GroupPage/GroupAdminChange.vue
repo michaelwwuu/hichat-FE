@@ -6,7 +6,7 @@
           <el-header height="125px">
             <div class="home-header">
               <div class="home-user" @click="back"></div>
-              <span class="home-header-title">转移管理者权限</span>
+              <span class="home-header-title">转移群主权限</span>
               <div class="home-add-user"></div>
             </div>
             <div class="home-search">
@@ -24,7 +24,7 @@
           <el-header height="70px">
             <div class="home-header flex-start" style="position: relative; left: -4px; top: -1px;">
               <div class="home-user-pc" @click="back" ></div>
-              <span class="home-header-title">转移管理者权限</span>
+              <span class="home-header-title">转移群主权限</span>
             </div>
           </el-header>
           <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
@@ -67,7 +67,7 @@
       </el-main>
     </el-container>
     <el-dialog
-      :title="device === 'pc' ? '轉移管理者權限' : ''"
+      :title="device === 'pc' ? '转移群主权限' : ''"
       :visible.sync="groupAdminChange"
       class="el-dialog-loginOut"
       width="75%"
@@ -79,7 +79,7 @@
         <div v-if="device === 'moblie'">
           <img src="./../../../static/images/warn.png" alt="" />
         </div>
-        <span>确认是否將管理者權限轉移給 {{ checkMember.name }} ？</span>
+        <span>确认是否將管理者权限轉移給 {{ checkMember.name }} ？</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
@@ -93,7 +93,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      :title="device === 'pc' ? '轉移管理者權限' : ''"
+      :title="device === 'pc' ? '转移群主权限' : ''"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"

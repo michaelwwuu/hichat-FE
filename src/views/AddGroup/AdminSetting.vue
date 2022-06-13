@@ -53,7 +53,7 @@
                 <span>管理员设定</span>
               </div>
             </span>
-            <div @click="goAdminSetting('AdminSettingPage')">
+            <div @click="goAdminSetting(groupData,'AdminSettingPage')">
               <div class="home-add-user"></div>
             </div>
           </div>
@@ -73,16 +73,18 @@
           <div v-for="(item, index) in isManagerList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
-                <div class="setting-button-left">
-                  <div class="el-image">
-                    <img :src="item.icon" alt="" class="el-image__inner" />
+                <div class="setting-button-left" @click="goAdminSetting(item,'AdminSettingDetail')">
+                  <div style="display: flex; align-items: center;">
+                    <div class="el-image">
+                      <img :src="item.icon" alt="" class="el-image__inner" />
+                    </div>
+                    <span>{{ item.name }}</span>
                   </div>
-                  <span>{{ item.name }}</span>
-                </div>
-                <div class="setting-button-right">
-                  <a @click="goAdminSetting(item,'AdminSettingDetail')">
+                  <a>
                     <img src="./../../../static/images/next.png" alt="" />
                   </a>
+                </div>
+                <div class="setting-button-right">
                   <span @click="unAdmin(item)">－</span>
                 </div>
               </div>
@@ -294,7 +296,9 @@ export default {
       .setting-button-left {
         display: flex;
         align-items: center;
-        width: 20em;
+        justify-content: space-between;
+        width: 30em;
+        cursor: pointer;
         span {
           font-size: 16px;
           padding-left: 1em;
@@ -305,7 +309,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        width: 10em;
+        // width: 10em;
         span {
           margin-right: 1em;
           font-size: 15px;

@@ -116,14 +116,16 @@
         </li>
       </div>
     </ul>
-    <el-button
-      v-show="showScrollBar"
-      class="scroll-bottom-btn"
-      size="medium"
-      icon="el-icon-arrow-down"
-      circle
-      @click="$root.gotoBottom()"
-    ></el-button>
+    <div style="width: 95%; text-align: right;">
+      <el-button
+        class="scroll-bottom-btn"
+        v-show="showScrollBar"
+        size="medium"
+        icon="el-icon-arrow-down"
+        circle
+        @click="$root.gotoBottom()"
+      ></el-button>
+    </div>
   </div>
 </template>
 

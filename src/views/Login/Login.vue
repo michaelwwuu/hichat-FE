@@ -12,7 +12,7 @@
       label-position="top"
     >
       <div class="title-container">
-        <img src="./../../../static/images/material_ic_logo.png" alt="" />
+        <img src="./../../../static/images/ic_logo.png" alt="" />
         <span class="header-title" v-if="device === 'pc'">登录 Hichat</span
         ><!--{{ $t('LOGIN.LGOIN_TITLE') }}-->
       </div>
