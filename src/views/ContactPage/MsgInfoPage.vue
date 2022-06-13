@@ -20,20 +20,20 @@
               </span>
 
               <div
+                v-if="
+                  infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact
+                "
                 :style="
                   chatUser.name === 'Hichat 记事本' ? 'visibility: hidden' : ''
                 "
               >
                 <div
-                v-if="
-                    infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact
-                  "
-                    class="home-add-user"
-                    @click="editShowBtn(infoMsg.infoMsgNav)"
+                  class="home-add-user"
+                  @click="editShowBtn(infoMsg.infoMsgNav)"
                   ></div>
               </div>
               <div
-                v-if="groupUser.isAdmin"
+                v-else-if="groupUser.isAdmin"
                 class="home-add-user"
                 @click="
                   groupUser.isAdmin
@@ -241,7 +241,7 @@
               </div>
               <template v-if="groupData.isAdmin">
                 <div class="setting-button mt10-border">
-                  <a @click="changeSettingGroupShow">
+                  <a @click="changeSettingAdminGroupShow('SettingGroup')">
                     <div class="setting-button-left">
                       <img src="./../../../static/images/key.png" alt="" />
                       <span>权限</span>
@@ -254,7 +254,7 @@
                   class="setting-button mt10-border"
                   v-if="authority.banUserPost || authority.disabledWord"
                 >
-                  <a @click="changeSettingGroupShow">
+                  <a @click="changeSettingAdminGroupShow('SettingGroup')">
                     <div class="setting-button-left">
                       <img src="./../../../static/images/key.png" alt="" />
                       <span>权限</span>
@@ -263,7 +263,7 @@
                 </div>
               </template>
               <div class="setting-button" v-if="groupData.isAdmin">
-                <a @click="changeGroupAdminShow">
+                <a @click="changeSettingAdminGroupShow('AdminChange')">
                   <div class="setting-button-left">
                     <img src="./../../../static/images/shield.png" alt="" />
                     <span>转移群主权限</span>
@@ -439,16 +439,36 @@ export default {
       setAuthority:"ws/setAuthority",
       setContactListData: "ws/setContactListData",
     }),
-    changeSettingGroupShow() {
-      this.setMsgInfoPage({ pageShow: false, type: "SettingGroup" });
-      this.setInfoMsg({
-        infoMsgShow: true,
-        infoMsgNav: "GroupPage",
-        infoMsgChat: true,
+    getGroupListMember(data) {
+      let groupId = data.toChatId.replace("g", "");
+      groupListMember({ groupId }).then((res) => {
+        this.contactList = res.data.list;
+        this.contactList.forEach((item) => {
+          if (item.icon === undefined) {
+            item.icon = require("./../../../static/images/image_user_defult.png");
+          }
+        });
+        this.setContactListData(this.contactList);
       });
-    },
-    changeGroupAdminShow() {
-      this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
+    },   
+    getUserId() {
+      let id = this.chatUser.toChatId.replace("u", "");
+      getSearchById({ id }).then((res) => {
+        if (res.data.id === this.myUserInfo.id) {
+          this.chatUser.name = "Hichat 记事本";
+          this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
+        } else {
+          this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
+          this.chatUserId = res.data.username;
+          this.chatUser.name = res.data.name;
+          this.chatUser.isBlock = res.data.isBlock;
+          this.chatUser.isContact = res.data.isContact;
+        }
+        this.setChatUser(this.chatUser);
+      });
+    },    
+    changeSettingAdminGroupShow(key){
+      this.setMsgInfoPage({ pageShow: false, type: key });
       this.setInfoMsg({
         infoMsgShow: true,
         infoMsgNav: "GroupPage",
@@ -468,22 +488,7 @@ export default {
         duration: 1000,
       });
     },
-    getUserId() {
-      let id = this.chatUser.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        if (res.data.id === this.myUserInfo.id) {
-          this.chatUser.name = "Hichat 记事本";
-          this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
-        } else {
-          this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";
-          this.chatUserId = res.data.username;
-          this.chatUser.name = res.data.name;
-          this.chatUser.isBlock = res.data.isBlock;
-          this.chatUser.isContact = res.data.isContact;
-        }
-        this.setChatUser(this.chatUser);
-      });
-    },
+
     dialogShow(type) {
       this.settingDialogShow = true;
       switch (type) {
@@ -564,15 +569,8 @@ export default {
       }
     },
     editShowBtn(data) {
-      console.log(data);
       this.setMsgInfoPage({ pageShow: false, type: data });
     },
-    // infoMsgSettingData() {
-    //   if (this.infoMsg.infoMsgChat) {
-    //     // this.settingContactData.splice(0, 1);
-    //     // this.settingGroupData.splice(0, 1);
-    //   }
-    // },
     closeInfoMsgShow() {
       if (this.msgInfoPage.page === "GroupPeople") {
         this.setMsgInfoPage({ pageShow: false, type: this.msgInfoPage.page });
@@ -608,7 +606,6 @@ export default {
       Socket.send(this.getHistoryMessage);
     },
     goChatRoom(data, path, type) {
-      console.log(data, path, type)
       if (path === "HiChat") {
         this.setInfoMsg({
           infoMsgShow: false,
@@ -632,18 +629,7 @@ export default {
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },
-    getGroupListMember(data) {
-      let groupId = data.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
-        this.contactList = res.data.list;
-        this.contactList.forEach((item) => {
-          if (item.icon === undefined) {
-            item.icon = require("./../../../static/images/image_user_defult.png");
-          }
-        });
-        this.setContactListData(this.contactList);
-      });
-    },
+
     back() {
       this.$router.back(-1);
     },

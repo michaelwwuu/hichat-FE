@@ -287,6 +287,7 @@ export default {
   computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
+      infoMsg: (state) => state.ws.infoMsg,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
@@ -345,9 +346,34 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
-        this.setMsgInfoPage({ pageShow: true });
+        if(this.infoMsg.infoMsgMap === "address"){
+          this.setInfoMsg({ infoMsgShow: true, infoMsgNav: "GroupPage", infoMsgChat:false ,infoMsgMap:'address' });
+          this.setMsgInfoPage({ pageShow: true, type: "" });
+        } else {
+          this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
+          this.setMsgInfoPage({ pageShow: true });
+        }
+
       }
+    },
+    goInfoMsgContactPage(data){
+      data.toChatId = "u" + data.memberId;
+      if (this.device === "moblie") {
+        this.$router.push({ name: "ContactPage" });
+      } else {
+        if(this.infoMsg.infoMsgMap === "address"){
+          this.setInfoMsg({ infoMsgShow: true, infoMsgNav: "ContactPage", infoMsgChat:false ,infoMsgMap:'address' });
+          this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+        }else{
+          this.setInfoMsg({
+            infoMsgShow: true,
+            infoMsgChat: true,
+            infoMsgNav: "ContactPage",
+          });
+          this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+        }
+      }
+      this.setChatUser(data);
     },
     goContactPage(data) {
       if(!this.checkGroupPeople){
@@ -355,99 +381,33 @@ export default {
           if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
           } else {
-            data.toChatId = "u" + data.memberId;
-            if (this.device === "moblie") {
-              this.$router.push({ name: "ContactPage" });
-            } else {
-              this.setInfoMsg({
-                infoMsgShow: true,
-                infoMsgChat: true,
-                infoMsgNav: "ContactPage",
-              });
-              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-            }
-            this.setChatUser(data);
+            this.goInfoMsgContactPage(data)
           }
         } else if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
           if(data.isAdmin || data.isManager){
-            data.toChatId = "u" + data.memberId;
-            if (this.device === "moblie") {
-              this.$router.push({ name: "ContactPage" });
-            } else {
-              this.setInfoMsg({
-                infoMsgShow: true,
-                infoMsgChat: true,
-                infoMsgNav: "ContactPage",
-              });
-              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-            }
-            this.setChatUser(data);
+            this.goInfoMsgContactPage(data)
           }
         } else if(this.groupData.isManager && JSON.parse(localStorage.getItem("authority")).checkUserInfo){
           if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
           } else {
-            data.toChatId = "u" + data.memberId;
-            if (this.device === "moblie") {
-              this.$router.push({ name: "ContactPage" });
-            } else {
-              this.setInfoMsg({
-                infoMsgShow: true,
-                infoMsgChat: true,
-                infoMsgNav: "ContactPage",
-              });
-              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-            }
-            this.setChatUser(data);
+            this.goInfoMsgContactPage(data)
           }
         } else if(!this.groupData.isAdmin && !this.groupData.isManager){
           if(data.isAdmin || data.isManager){
-            data.toChatId = "u" + data.memberId;
-            if (this.device === "moblie") {
-              this.$router.push({ name: "ContactPage" });
-            } else {
-              this.setInfoMsg({
-                infoMsgShow: true,
-                infoMsgChat: true,
-                infoMsgNav: "ContactPage",
-              });
-              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-            }
-            this.setChatUser(data);
+            this.goInfoMsgContactPage(data)
           }
         }
       } else{
         if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
           if(data.isAdmin || data.isManager){
-            data.toChatId = "u" + data.memberId;
-            if (this.device === "moblie") {
-              this.$router.push({ name: "ContactPage" });
-            } else {
-              this.setInfoMsg({
-                infoMsgShow: true,
-                infoMsgChat: true,
-                infoMsgNav: "ContactPage",
-              });
-              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-            }
-            this.setChatUser(data);
+            this.goInfoMsgContactPage(data)
           }
         } else {
           if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
           } else {
-            data.toChatId = "u" + data.memberId;
-            if (this.device === "moblie") {
-              this.$router.push({ name: "ContactPage" });
-            } else {
-              this.setInfoMsg({
-                infoMsgShow: true,
-                infoMsgChat: true,
-                infoMsgNav: "ContactPage",
-              });
-              this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-            }
-            this.setChatUser(data);
+            this.goInfoMsgContactPage(data)
           }
         }
       } 

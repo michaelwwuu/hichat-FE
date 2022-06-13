@@ -116,6 +116,7 @@ export default {
       });
     },
     goContactPage(data, path) {
+      console.log(data, path)
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
         data.type = this.device === "pc" ? "address" : "";
@@ -128,7 +129,7 @@ export default {
       if (this.device === "moblie") {
         this.$router.push({ name: path });
       } else {
-        this.setInfoMsg({ infoMsgShow: true, infoMsgNav: path });
+        this.setInfoMsg({ infoMsgShow: true, infoMsgNav: path, infoMsgChat:false ,infoMsgMap:'address' });
         this.setMsgInfoPage({ pageShow: true, type: "" });
       }
     },
