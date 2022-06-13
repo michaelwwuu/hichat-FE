@@ -156,8 +156,9 @@ export default {
       setMsgInfoPage:"ws/setMsgInfoPage",
     }),
     goAdminSetting(data,key){
+      console.log(data,key)
       if(this.groupPermissionData.addGroup){
-        this.$router.push({ path: "/AdminSettingPage",});
+        this.$router.push({ path: key,});
       }else{
         this.setMsgInfoPage({ pageShow: false, type: key, data });
       }   

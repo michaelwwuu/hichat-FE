@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="home-wrapper" @touchmove="$root.handleTouch">
     <el-container>
       <el-main>
         <template v-if="device === 'moblie'">
