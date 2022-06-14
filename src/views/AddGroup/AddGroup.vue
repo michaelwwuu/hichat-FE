@@ -50,9 +50,8 @@
       <el-aside width="300px">
         <el-header height="70px">
           <div class="home-header flex-start" >
-            <router-link :to="'/HiChat'">
-              <div class="home-user-pc"></div>
-            </router-link>
+
+            <div class="home-user-pc" @click="back()"></div>
             <span class="home-header-title">创建群组</span>
           </div>
         </el-header>
@@ -176,6 +175,7 @@ export default {
     ...mapMutations({
       setChatUser:"ws/setChatUser",
       setChatGroup:"ws/setChatGroup",
+      setInfoMsg:"ws/setInfoMsg",
       setGroupPermissionData:"ws/setGroupPermissionData",
     }),
     getAddressList() {
@@ -238,6 +238,15 @@ export default {
         return false;
       });
     },
+    back(){
+      if(this.groupPermissionData.addGroup){
+        this.$router.push({ path: "/HiChat" });
+        this.setChatGroup({})
+        this.groupPermissionData.addGroup = false
+        this.setGroupPermissionData(this.groupPermissionData)
+        this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
+      }
+    }
   },
 };
 </script>

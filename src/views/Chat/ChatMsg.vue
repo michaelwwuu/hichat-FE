@@ -661,7 +661,7 @@ export default {
           // this.pinMsg = "";
           // this.getPinList();
           this.getChatHistoryMessage()
-          break;      
+          break;     
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";

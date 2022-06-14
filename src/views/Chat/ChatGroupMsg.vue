@@ -100,13 +100,13 @@
             <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
           </template>
           <template v-else-if="groupUser.isManager">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="authority.sendMessage"/>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="authority.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
           </template>
           <template v-else>
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
@@ -173,11 +173,12 @@ export default {
       pinMsg:"",
       timeOut:0,      
       groupData: {},
-      // authorityData:{},
+      authorityGroupData:{},
       readMsgData: [],
       contactList: [],
       pinDataList: [],
       loading: false,
+      unGroupDisabledWord:false,
       device: localStorage.getItem("device"),
 
       //加解密 key iv
@@ -213,7 +214,7 @@ export default {
   mounted() {
     this.getChatHistoryMessage();
     this.getGroupListMember();
-    // this.getGroupAuthority()
+    this.getGroupAuthority()
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -225,7 +226,7 @@ export default {
       replyMsg: (state) => state.ws.replyMsg,
       topMsgShow: (state) => state.ws.topMsgShow,
       authority: (state) => state.ws.authority,
-      authorityGroupData: (state) => state.ws.authorityGroupData,
+      // authorityGroupData: (state) => state.ws.authorityGroupData,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -240,23 +241,23 @@ export default {
       setAuthority:"ws/setAuthority",
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
-    // getGroupAuthority(){
-    //   let groupId = this.groupData.groupId;
-    //   getGroupAuthoritySetting({groupId}).then((res)=>{
-    //     if(res.code === 200 ){
-    //       if(res.data === undefined){
-    //         this.authorityGroupData={
-    //           checkUserInfo: true,
-    //           pin: true,
-    //           sendMessage: true,
-    //         }
-    //       }else{
-    //         this.authorityGroupData = res.data
-    //       }
-    //       this.setAuthorityGroupData(this.authorityGroupData)
-    //     }
-    //   })
-    // },
+    getGroupAuthority(){
+      let groupId = this.groupData.groupId;
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          if(res.data === undefined){
+            this.authorityGroupData = {
+              checkUserInfo: true,
+              pin: true,
+              sendMessage: true,
+            }
+          }else{
+            this.authorityGroupData = res.data
+          }
+          this.setAuthorityGroupData(this.authorityGroupData)
+        }
+      })
+    },
     resetPinMsg(){
      this.getPinList()
     },    
@@ -339,6 +340,11 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
+          if (item.memberId === this.groupUser.memberId ){
+            this.groupUser.isAdmin = item.isAdmin
+            this.groupUser.isBanPost = item.isBanPost
+            this.groupUser.isManager = item.isManager
+          }
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
@@ -347,6 +353,8 @@ export default {
               localStorage.removeItem("authority")
             }else if(item.isManager){
               this.setAuthority(item.authority)
+            }else if(!item.isAdmin && !item.isManager){
+              localStorage.removeItem("authority")
             }
           }
         });
@@ -468,13 +476,18 @@ export default {
               this.audioAction();
             }
           }
-          break;
-        // case "SRV_CHAT_PIN":       
+          break;    
         case "SRV_CHAT_UNPIN":
-          // this.pinMsg = "";
-          // this.getPinList();
           this.getChatHistoryMessage()
-          break;          
+          break;     
+        case "SRV_GROUP_AUTHORITY":
+          this.getGroupAuthority()
+          break;    
+        case "SRV_GROUP_MANAGER_AUTHORITY":
+        case "SRV_GROUP_ADMIN_CHANGE":
+        case "SRV_GROUP_BAN_POST":  
+          this.getGroupListMember()
+          break;      
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
           this.pinMsg = "";    

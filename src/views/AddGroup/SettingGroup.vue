@@ -18,15 +18,15 @@
               :key="item + index"
             >
               <div class="setting-box">
-                <div class="setting-button-left">
+                <!-- <div class="setting-button-left">
                   <span>{{ item.name }}</span>
-                </div>
-                <div class="setting-button-right">
+                </div> -->
+                <div class="setting-button-left">
                   <el-switch
                     v-model="item.isCheck"
+                    :inactive-text="item.name"
                     active-color="#fd5f3f"
                     inactive-color="#666666"
-                    
                   >
                   </el-switch>
                 </div>
@@ -219,13 +219,11 @@ export default {
       if(this.groupData.isManager){
         if(!JSON.parse(localStorage.getItem("authority")).banUserPost){
           this.settingPermission = this.settingPermission.filter((list)=>{
-            console.log(list)
             return list.path !== "/BanSetting"
           })
         }
         if(!JSON.parse(localStorage.getItem("authority")).disabledWord){
           this.settingPermission = this.settingPermission.filter((list)=>{
-            console.log(list)
             return list.path !== "/BanWord"
           })
         }
@@ -362,19 +360,18 @@ export default {
       .setting-button-left {
         display: flex;
         align-items: center;
-        width: 20em;
+        width: 100vw;
         span {
           font-size: 15px;
           color: #333333;
         }
         .el-switch{
-          width: 19em;
+          width: 100%;
           display: flex;
           justify-content: space-between;
         }
         /deep/.el-switch__label.is-active{
           color: #333333;
-
         }
       }
       .setting-button-right {

@@ -286,8 +286,9 @@ export default {
     //     });
     // },
     back() {
-      this.groupForm.name=""
-      this.groupIcon=""
+      this.groupPermissionData.groupName = ""
+      this.groupPermissionData.icon =""
+      this.setGroupPermissionData(this.groupPermissionData)
       this.$router.push({ path: "/AddGroup",});
     },
   },

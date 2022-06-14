@@ -8,9 +8,9 @@
               <span class="home-header-title">
                 <div
                   style="display: flex; align-items: center; cursor: pointer"
-                  @click="infoMsg.infoMsgChat ? closeInfoMsgShow() : false"
+                  @click="infoMsg.infoMsgChat || infoMsg.infoMsgMap === 'address' ? closeInfoMsgShow() : false"
                 >
-                  <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat"
+                  <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat || infoMsg.infoMsgMap === 'address'"
                     ><img
                       src="./../../../static/images/pc/arrow-left.png"
                       alt=""
@@ -42,7 +42,7 @@
                 "
               ></div>
               <div
-                v-else-if="groupData.isManager"
+                v-else-if="groupUser.isManager"
                 class="home-add-user"
                 :class="{ notAdmin: !authority.updateGroupInfo }"
                 @click="
@@ -52,11 +52,11 @@
                 "
               ></div>
               <div
-                v-else-if="!groupUser.isAdmin && !groupData.isManager"
+                v-else-if="!groupUser.isAdmin && !groupUser.isManager"
                 class="home-add-user"
                 :class="{ notAdmin: !authority.updateGroupInfo }"
                 :style="
-                  !groupUser.isAdmin && !groupData.isManager ? 'visibility: hidden' : ''
+                  !groupUser.isAdmin && !groupUser.isManager ? 'visibility: hidden' : ''
                 "
                 @click="
                   groupUser.isAdmin
@@ -239,7 +239,7 @@
                   <img src="./../../../static/images/next.png" alt="" />
                 </a>
               </div>
-              <template v-if="groupData.isAdmin">
+              <template v-if="groupUser.isAdmin">
                 <div class="setting-button mt10-border">
                   <a @click="changeSettingAdminGroupShow('SettingGroup')">
                     <div class="setting-button-left">
@@ -249,7 +249,7 @@
                   </a>
                 </div>
               </template>
-              <template v-else-if="groupData.isManager">
+              <template v-else-if="groupUser.isManager">
                 <div
                   class="setting-button mt10-border"
                   v-if="authority.banUserPost || authority.disabledWord"
@@ -262,7 +262,7 @@
                   </a>
                 </div>
               </template>
-              <div class="setting-button" v-if="groupData.isAdmin">
+              <div class="setting-button" v-if="groupUser.isAdmin">
                 <a @click="changeSettingAdminGroupShow('AdminChange')">
                   <div class="setting-button-left">
                     <img src="./../../../static/images/shield.png" alt="" />
@@ -433,10 +433,10 @@ export default {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
+      setAuthority:"ws/setAuthority",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
-      setAuthority:"ws/setAuthority",
       setContactListData: "ws/setContactListData",
     }),
     getGroupListMember(data) {

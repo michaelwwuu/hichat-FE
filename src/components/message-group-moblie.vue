@@ -366,6 +366,7 @@ export default {
       let newTime = this.timeOut + 3000;
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
+        this.setGoAnchorMessage({})
       }, newTime);
     }
   },
@@ -375,6 +376,7 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
+      setGoAnchorMessage: "ws/setGoAnchorMessage",      
     }),
     uploadImg(file, fileList) {
       this.fileList = fileList;
@@ -383,7 +385,6 @@ export default {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
         if(res.code === 200 ){
-          console.log(res.data)
           if(res.data !== undefined){
             this.checkGroupPeople = res.data.checkUserInfo
           }
@@ -610,7 +611,6 @@ export default {
             });
           }
         } else if(JSON.parse(localStorage.getItem("groupData")).isManager){
-          console.log(123)
           if(JSON.parse(localStorage.getItem("authority")).delUserMessage){
             this.newItem = item.filter((list)=>{
               return (
@@ -660,7 +660,7 @@ export default {
           });
         }
       }
-      if(!JSON.parse(localStorage.getItem("groupData")).isAdmin && !JSON.parse(localStorage.getItem("groupData")).isManager){
+      if(!JSON.parse(localStorage.getItem("groupData")).isAdmin || JSON.parse(localStorage.getItem("groupData")).isManager){
         if(!JSON.parse(localStorage.getItem("groupAuthority")).pin){
           this.newItem = this.newItem.filter((list)=>{
             return (
@@ -669,16 +669,16 @@ export default {
           })
         }
       }
-      if(JSON.parse(localStorage.getItem("groupData")).isManager){
-        if(!JSON.parse(localStorage.getItem("authority")).pin){
-          this.newItem = this.newItem.filter((list)=>{
-            return (
-                list.name !== "edit" &&
-                list.name !== "upDown"
-              );
-          })
-        }
-      }
+      // if(JSON.parse(localStorage.getItem("groupData")).isManager){
+      //   if(!JSON.parse(localStorage.getItem("authority")).pin){
+      //     this.newItem = this.newItem.filter((list)=>{
+      //       return (
+      //           list.name !== "edit" &&
+      //           list.name !== "upDown"
+      //         );
+      //     })
+      //   }
+      // }
       this.$contextmenu({
         items: this.newItem,
         // event,

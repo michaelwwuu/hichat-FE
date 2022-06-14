@@ -116,7 +116,6 @@ export default {
       });
     },
     goContactPage(data, path) {
-      console.log(data, path)
       if (path === "ContactPage") {
         data.toChatId = "u" + data.contactId;
         data.type = this.device === "pc" ? "address" : "";

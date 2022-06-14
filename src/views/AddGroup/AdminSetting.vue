@@ -23,16 +23,18 @@
           <div v-for="(item, index) in isManagerList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
-                <div class="setting-button-left">
-                  <div class="el-image">
-                    <img :src="item.icon" alt="" class="el-image__inner" />
+                <div class="setting-button-left" @click="addAdmin(item)">
+                   <div style="display: flex; align-items: center;">
+                    <div class="el-image">
+                      <img :src="item.icon" alt="" class="el-image__inner" />
+                    </div>
+                    <span>{{ item.name }}</span>
                   </div>
-                  <span>{{ item.name }}</span>
-                </div>
-                <div class="setting-button-right">
-                  <a @click="addAdmin(item)">
+                  <a>
                     <img src="./../../../static/images/next.png" alt="" />
                   </a>
+                </div>
+                <div class="setting-button-right">
                   <span @click="unAdmin(item)">－</span>
                 </div>
               </div>
@@ -156,7 +158,6 @@ export default {
       setMsgInfoPage:"ws/setMsgInfoPage",
     }),
     goAdminSetting(data,key){
-      console.log(data,key)
       if(this.groupPermissionData.addGroup){
         this.$router.push({ path: key,});
       }else{

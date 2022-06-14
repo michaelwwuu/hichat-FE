@@ -18,11 +18,9 @@
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.name }}</span>
-              </div>
-              <div class="setting-button-right">
                 <el-switch
                   v-model="item.isCheck"
+                  :inactive-text="item.name"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
                 >
@@ -58,11 +56,9 @@
           >
             <div class="setting-box">
               <div class="setting-button-left">
-                <span>{{ item.name }}</span>
-              </div>
-              <div class="setting-button-right">
                 <el-switch
                   v-model="item.isCheck"
+                  :inactive-text="item.name"
                   active-color="#fd5f3f"
                   inactive-color="#666666"
                 >
@@ -324,6 +320,7 @@ export default {
         padding: 0.5em 0.7em 0.5em 0;
         margin-left: 10px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        cursor: pointer;
       }
       img {
         height: 1.2em;
@@ -339,11 +336,19 @@ export default {
       .setting-button-left {
         display: flex;
         align-items: center;
-        width: 20em;
+        width: 100vw;
         span {
           font-size: 16px;
           color: #333333;
         }
+        .el-switch{
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        }
+        /deep/.el-switch__label.is-active{
+          color: #333333;
+        }        
       }
       .setting-button-right {
         display: flex;

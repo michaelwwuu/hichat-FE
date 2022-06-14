@@ -353,7 +353,6 @@ export default {
       }
     },
     submitBtn(dialogContent) {
-      console.log(dialogContent)
       switch (dialogContent) {
         case `确认是否封锁联络人${this.chatUser.name}？`:
           let blockId = this.chatUser.toChatId.replace("u", "");

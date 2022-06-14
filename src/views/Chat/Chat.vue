@@ -196,7 +196,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
-import { groupListMember, leaveGroup,pinList,unpinHistory } from "@/api";
+import { groupListMember, leaveGroup,pinList,unpinHistory,getGroupAuthoritySetting } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
@@ -218,6 +218,7 @@ export default {
       pinMsg:"",
       timeOut:0,      
       groupData: {},
+      authorityGroupData:{},
       readMsgData: [],
       contactList: [],
       leaveGroupDialogShow: false,
@@ -266,7 +267,7 @@ export default {
       topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
       authority: (state) => state.ws.authority,
-      authorityGroupData: (state) => state.ws.authorityGroupData,
+      // authorityGroupData: (state) => state.ws.authorityGroupData,
     }),
   },
   methods: {
@@ -280,9 +281,26 @@ export default {
       setTopMsgShow:"ws/setTopMsgShow",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setAuthority:"ws/setAuthority",
+      setAuthorityGroupData:"ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
     }),
-
+    getGroupAuthority(){
+      let groupId = this.groupData.groupId;
+      getGroupAuthoritySetting({groupId}).then((res)=>{
+        if(res.code === 200 ){
+          if(res.data === undefined){
+            this.authorityGroupData = {
+              checkUserInfo: true,
+              pin: true,
+              sendMessage: true,
+            }
+          }else{
+            this.authorityGroupData = res.data
+          }
+          this.setAuthorityGroupData(this.authorityGroupData)
+        }
+      })
+    },    
     resetPinMsg(){
      this.getPinList()
     },    
@@ -381,6 +399,11 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
+          if (item.memberId === this.groupUser.memberId ){
+            this.groupUser.isAdmin = item.isAdmin
+            this.groupUser.isBanPost = item.isBanPost
+            this.groupUser.isManager = item.isManager
+          }
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
@@ -479,7 +502,6 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
-      // this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         case "SRV_GROUP_IMAGE":
@@ -493,26 +515,6 @@ export default {
               this.base64Msg = this.isBase64(userInfo.chat.text);
               userInfo.chat.newContent = this.base64Msg.split(" ");
             }
-            // this.groupListData.forEach((item) => {
-            //   if (userInfo.chat.fromChatId === "u" + item.memberId) {
-            //     userInfo.chat.icon = item.icon;
-            //     userInfo.chat.name = item.name;
-            //     userInfo.chat.username = item.username;
-            //   } else if (
-            //     userInfo.chat.icon === undefined &&
-            //     userInfo.chat.name === undefined
-            //   ) {
-            //     userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
-            //     userInfo.chat.name = "无此成员";
-            //   }
-            //   if (
-            //     userInfo.replyChat !== null &&
-            //     userInfo.replyChat.fromChatId === "u" + item.memberId
-            //   ) {
-            //     userInfo.replyChat.icon = item.icon;
-            //     userInfo.replyChat.nickName = item.name;
-            //   }
-            // });
             this.messageList(userInfo);
             this.messageData.push(this.chatRoomMsg);
             this.getHiChatDataList();
@@ -522,19 +524,23 @@ export default {
             }
           }
           break;
-        // case "SRV_CHAT_PIN":
         case "SRV_CHAT_UNPIN":
-          // this.pinMsg = "";
-          // this.getPinList();
           this.getChatHistoryMessage()
-          break;          
+          break;     
+        case "SRV_GROUP_AUTHORITY":
+          this.getGroupAuthority()
+          break;    
+        case "SRV_GROUP_MANAGER_AUTHORITY":
+        case "SRV_GROUP_ADMIN_CHANGE":
+        case "SRV_GROUP_BAN_POST":  
+          this.getGroupListMember()
+          break;        
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
           this.pinMsg = ""
           this.getPinList()
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          console.log(historyMsgList)
           this.loading = true;
           this.timeOut = historyMsgList.length * 40;
           this.$nextTick(() => {
@@ -542,26 +548,6 @@ export default {
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
-              //   this.groupListData.forEach((item) => {
-              //   if (el.chat.fromChatId === "u" + item.memberId) {
-              //     el.chat.icon = item.icon;
-              //     el.chat.name = item.name;
-              //     el.chat.username = item.username;
-              //   } else if (
-              //     el.chat.icon === undefined &&
-              //     el.chat.name === undefined
-              //   ) {
-              //     el.chat.icon = require("./../../../static/images/image_user_defult.png");
-              //     el.chat.name = "无此成员";
-              //   }
-              //   if (
-              //     el.replyChat !== null &&
-              //     el.replyChat.fromChatId === "u" + item.memberId
-              //   ) {
-              //     el.replyChat.icon = item.icon;
-              //     el.replyChat.nickName = item.name;
-              //   }
-              // });
                 this.messageList(el);
                 this.messageData.unshift(this.chatRoomMsg);
               });

@@ -145,6 +145,7 @@
       v-show="calloutShow && searchContactData.length > 0"
     >
       <ul>
+        <li @click="markPeople(searchContactData)" v-if="groupData.isAdmin || groupData.isManager "><div class="callout-message-box"><span>標記所有成員</span></div></li>
         <li
           v-for="(item, index) in searchContactData"
           :key="index"
@@ -304,6 +305,9 @@ export default {
     groupData: {
       type: Object,
     },
+    unGroupDisabledWord:{
+      type: Boolean,
+    }
   },
   computed: {
     ...mapState({
@@ -329,8 +333,10 @@ export default {
     editMsg(val) {
       this.textArea = val.innerText;
     },
+
   },
   created() {
+    Socket.$on("message", this.handleGetMessage);
     this.getDisabledWord()
   },
   methods: {
@@ -338,6 +344,23 @@ export default {
       setEditMsg:"ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    markPeople(data){
+      data.forEach((el)=>{
+        this.targetArray.push("u" + el.memberId);
+      })
+      this.textArea = "@所有成員"
+    },
+    checkCallout(data) {
+      this.calloutShow = false;
+      this.targetArray.push("u" + data.memberId);
+      this.textArea = this.textArea + data.username;
+    },   
+    handleGetMessage(msg) {
+      let userInfo = JSON.parse(msg);
+      if(userInfo.chatType === "SRV_GROUP_DISABLE_WORD"){
+        this.getDisabledWord()
+      }
+    },
     getDisabledWord(){
       let groupId = this.groupData.groupId;
       getGroupDisabledWord({groupId}).then((res)=>{
@@ -581,13 +604,6 @@ export default {
         }
       }
     },
-
-    checkCallout(data) {
-      this.calloutShow = false;
-      this.targetArray.push("u" + data.memberId);
-      this.textArea = this.textArea + data.username;
-    },
-
     closeReplyMessage() {
       this.setReplyMsg({
         name:"",

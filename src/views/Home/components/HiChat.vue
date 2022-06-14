@@ -72,9 +72,7 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'">{{
-                    isBase64(item.lastChat.text)
-                  }}</span>
+                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'" v-html="judgeTextMarking(isBase64(item.lastChat.text))"></span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
                     isBase64(item.lastChat.text)
                   }}置顶了消息</span>
@@ -244,6 +242,13 @@ export default {
       setAuthority:"ws/setAuthority",
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
+    judgeTextMarking(data){
+      if(data.includes("@"+JSON.parse(localStorage.getItem("myUserInfo")).username) || data.includes("@所有成員")){
+        return `<span style="color:#F00">【 有人@我 】</span>` + data
+      }else{
+        return data
+      }
+    },
     noIconShow(iconData, key) {
       if (
         iconData.icon === undefined ||
@@ -367,6 +372,11 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
+          if (item.memberId === this.groupUser.memberId ){
+            this.groupUser.isAdmin = item.isAdmin
+            this.groupUser.isBanPost = item.isBanPost
+            this.groupUser.isManager = item.isManager
+          }
           if (item.icon === undefined) {
             item.icon = require("./../../../../static/images/image_user_defult.png");
           }
@@ -375,9 +385,11 @@ export default {
               localStorage.removeItem("authority")
             }else if(item.isManager){
               this.setAuthority(item.authority)
+            }else if(!item.isAdmin && !item.isManager){
+              localStorage.removeItem("authority")
             }
           }
-        });      
+        });
         this.setContactListData(this.contactList);
       });
     },
