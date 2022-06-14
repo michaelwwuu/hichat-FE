@@ -82,6 +82,12 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
                     >传送了图片</span
                   >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_DEL_MANAGER_HISTORY'"
+                    >{{ isBase64(item.lastChat.text) }} 已被剔除管理員</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'"
+                    >{{ isBase64(item.lastChat.text) }} 已被新增為管理員</span
+                  >
                 </span>
               </div>
               <div class="time">
@@ -211,6 +217,7 @@ export default {
       chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
+      myUserInfo: (state) => state.ws.myUserInfo,
       contactUser: (state) => state.ws.contactUser,
     }),
   },
@@ -243,7 +250,7 @@ export default {
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
     judgeTextMarking(data){
-      if(data.includes("@"+JSON.parse(localStorage.getItem("myUserInfo")).username) || data.includes("@所有成員")){
+      if(data.includes("@"+this.myUserInfo.username) || data.includes("@所有成員")){
         return `<span style="color:#F00">【 有人@我 】</span>` + data
       }else{
         return data

@@ -440,7 +440,10 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        case "SRV_CHAT_PIN":                   
+        case "SRV_GROUP_DEL": 
+        case "SRV_GROUP_JOIN": 
+        case "SRV_CHAT_PIN": 
+
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if(userInfo.chat.text !== null){
               this.base64Msg = this.isBase64(userInfo.chat.text);
