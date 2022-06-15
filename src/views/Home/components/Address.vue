@@ -67,6 +67,7 @@ export default {
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
+      setAuthority:"ws/setAuthority",
       setGroupList: "ws/setGroupList",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setActiveName: "ws/setActiveName",
@@ -124,8 +125,16 @@ export default {
         data.toChatId = "g" + data.groupId;
         data.type = this.device === "pc" ? "address" : "";
         this.setChatGroup(data);
+        if(data.isAdmin){
+          localStorage.removeItem("authority")
+        }else if(data.isManager){
+          this.setAuthority(data.authority)
+        }else if(!data.isAdmin && !data.isManager){
+          localStorage.removeItem("authority")
+        }
       }
       if (this.device === "moblie") {
+        this.setInfoMsg({ infoMsgShow: true, infoMsgNav: path, infoMsgChat:false ,infoMsgMap:'address' });
         this.$router.push({ name: path });
       } else {
         this.setInfoMsg({ infoMsgShow: true, infoMsgNav: path, infoMsgChat:false ,infoMsgMap:'address' });

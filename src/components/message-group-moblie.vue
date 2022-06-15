@@ -12,7 +12,12 @@
         >
           <template
             v-if="
-              el.chatType !== 'SRV_CHAT_PIN' && el.chatType !== 'SRV_GROUP_DEL' && el.chatType !== 'SRV_GROUP_JOIN'
+              el.chatType !== 'SRV_CHAT_PIN' && 
+              el.chatType !== 'SRV_GROUP_DEL' && 
+              el.chatType !== 'SRV_GROUP_JOIN' &&
+              el.chatType !== 'SRV_GROUP_REMOVE_MANAGER_HISTORY' &&
+              el.chatType !== 'SRV_GROUP_ADD_MANAGER_HISTORY' &&
+              el.chatType !== 'SRV_GROUP_CHANGE_ADMIN_HISTORY' 
             "
           >
             <img class="message-avatar" :src="el.icon" />
@@ -214,23 +219,38 @@
           </template>
           <template v-else-if="el.chatType === 'SRV_CHAT_PIN'">
             <div class="top-msg-style">
-              <span>{{ pinUserName(el.message.content) }}置顶了一則訊息</span>
+              <span>{{ pinUserName(el) }}置顶了一則訊息</span>
             </div>
           </template>
           <template v-else-if="el.chatType === 'SRV_GROUP_DEL'">
             <div class="top-msg-style">
-              <span>{{ pinUserName(el.message.content) }}離開了聊天室</span>
+              <span>{{ pinUserName(el) }}離開了聊天室</span>
             </div>
           </template>
           <template v-else-if="el.chatType === 'SRV_GROUP_JOIN'">
             <div class="top-msg-style">
-              <span>{{ pinUserName(el.message.content) }}加入了聊天室</span>
+              <span>{{ pinUserName(el) }}加入了聊天室</span>
+            </div>
+          </template>
+          <template v-else-if="el.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'">
+            <div class="top-msg-style">
+              <span>{{ pinUserName(el) }}已被指定為管理員</span>
+            </div>
+          </template>          
+          <template v-else-if="el.chatType === 'SRV_GROUP_REMOVE_MANAGER_HISTORY'">
+            <div class="top-msg-style">
+              <span>{{ pinUserName(el) }}已被解除管理員身份</span>
+            </div>
+          </template>
+          <template v-else-if="el.chatType === 'SRV_GROUP_CHANGE_ADMIN_HISTORY'">
+            <div class="top-msg-style">
+              <span>群主變更為{{ pinUserName(el) }}</span>
             </div>
           </template>
         </li>
       </div>
     </ul>
-    <div style="width: 95%; text-align: right;">
+    <div style="width: 95%; text-align: right">
       <el-button
         class="scroll-bottom-btn"
         v-show="showScrollBar"
@@ -319,11 +339,13 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.getGroupAuthority()
+    this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")))
+    this.getGroupAuthority();
   },
   computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
+      myUserInfo: (state) => state.ws.myUserInfo,      
       contactListData: (state) => state.ws.contactListData,
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
@@ -366,7 +388,7 @@ export default {
       let newTime = this.timeOut + 3000;
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
-        this.setGoAnchorMessage({})
+        this.setGoAnchorMessage({});
       }, newTime);
     }
   },
@@ -376,26 +398,27 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
-      setGoAnchorMessage: "ws/setGoAnchorMessage",      
+      setMyUserInfo:"ws/setMyUserInfo",
+      setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
-    getGroupAuthority(){
+    getGroupAuthority() {
       let groupId = this.groupData.groupId;
-      getGroupAuthoritySetting({groupId}).then((res)=>{
-        if(res.code === 200 ){
-          if(res.data !== undefined){
-            this.checkGroupPeople = res.data.checkUserInfo
+      getGroupAuthoritySetting({ groupId }).then((res) => {
+        if (res.code === 200) {
+          if (res.data !== undefined) {
+            this.checkGroupPeople = res.data.checkUserInfo;
           }
         }
-      })
-    },    
+      });
+    },
     pinUserName(data) {
-      if (data === JSON.parse(localStorage.getItem("myUserInfo")).username) {
+      if (data.username === this.myUserInfo.username) {
         return (data = "你");
       } else {
-        return data;
+        return data.message.content;
       }
     },
     goAnchor(data) {
@@ -486,15 +509,19 @@ export default {
       } else {
         this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
         if (this.device === "moblie") {
-          if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
+          if (
+            data === JSON.parse(localStorage.getItem("myUserInfo")).username
+          ) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
-          }else{
+          } else {
             this.$router.push({ name: "ContactPage" });
           }
         } else {
-          if(data === JSON.parse(localStorage.getItem("myUserInfo")).username){
+          if (
+            data === JSON.parse(localStorage.getItem("myUserInfo")).username
+          ) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
-          }else{
+          } else {
             this.carteContact[0].type = "address";
             this.setInfoMsg({
               infoMsgShow: true,
@@ -502,7 +529,6 @@ export default {
               infoMsgNav: "ContactPage",
             });
           }
-          
         }
       }
 
@@ -610,23 +636,20 @@ export default {
               );
             });
           }
-        } else if(JSON.parse(localStorage.getItem("groupData")).isManager){
-          if(JSON.parse(localStorage.getItem("authority")).delUserMessage){
-            this.newItem = item.filter((list)=>{
-              return (
-                list.name !== "edit" &&
-                list.name !== "download" 
-              );
-            })
-          }else{
-             this.newItem = item.filter((list)=>{
+        } else if (JSON.parse(localStorage.getItem("groupData")).isManager) {
+          if (JSON.parse(localStorage.getItem("authority")).delUserMessage) {
+            this.newItem = item.filter((list) => {
+              return list.name !== "edit" && list.name !== "download";
+            });
+          } else {
+            this.newItem = item.filter((list) => {
               return (
                 list.name !== "edit" &&
                 list.name !== "download" &&
-                list.name !== "deleteAllChat" 
+                list.name !== "deleteAllChat"
               );
-            })
-          } 
+            });
+          }
         } else {
           this.newItem = item.filter((list) => {
             return (
@@ -660,13 +683,14 @@ export default {
           });
         }
       }
-      if(!JSON.parse(localStorage.getItem("groupData")).isAdmin || JSON.parse(localStorage.getItem("groupData")).isManager){
-        if(!JSON.parse(localStorage.getItem("groupAuthority")).pin){
-          this.newItem = this.newItem.filter((list)=>{
-            return (
-                list.name !== "upDown"
-              );
-          })
+      if (
+        !JSON.parse(localStorage.getItem("groupData")).isAdmin ||
+        JSON.parse(localStorage.getItem("groupData")).isManager
+      ) {
+        if (!JSON.parse(localStorage.getItem("groupAuthority")).pin) {
+          this.newItem = this.newItem.filter((list) => {
+            return list.name !== "upDown";
+          });
         }
       }
       // if(JSON.parse(localStorage.getItem("groupData")).isManager){

@@ -51,14 +51,14 @@
                 }}</span>
               </span>
               <template v-if="chatUser.isContact">
-                <div
+                <!-- <div
                   class="home-user-search"
                   :style="
                     chatUser.forChatId === chatUser.toChatId
                       ? 'right: 30px'
                       : ''
                   "
-                ></div>
+                ></div> -->
                 <el-dropdown
                   trigger="click"
                   v-if="chatUser.forChatId !== chatUser.toChatId"
@@ -85,6 +85,18 @@
                         <span>{{
                           chatUser.isBlock ? "解除封锁" : "封锁联络人"
                         }}</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div
+                        class="logout-btn"
+                        @click="deleteGroupDialogShow = true"
+                      >
+                        <img
+                          src="./../../../static/images/pc/trash.png"
+                          alt=""
+                        />
+                        <span style="color: #ee5253">删除對話</span>
                       </div>
                     </el-dropdown-item>
                     <el-dropdown-item>
@@ -242,11 +254,40 @@
           </template>
         </el-header>
         <message-pin :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
-        <div class="top-msg-bottom" @click="untopMsgAction">
+        <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
       </el-main>
     </el-container>
+    <el-dialog
+      :title="device === 'pc' ? '取消置頂' : ''"
+      :visible.sync="isTopMsgShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <span
+          >确认是否取消置頂？</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          :class="device === 'moblie' ? 'border-red' : 'background-gray'"
+          @click="isTopMsgShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="untopMsgAction"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+
     <el-dialog
       :title="
         device === 'pc' ? `${chatUser.isBlock ? '解除封锁' : '封锁'}联络人` : ''
@@ -319,7 +360,7 @@
         <span>刪除成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="deleteRecent(chatUser)"
+        <el-button class="background-orange" @click="deleteRecent(chatUser,'stranger')"
           >確認</el-button
         >
       </span>
@@ -345,6 +386,25 @@
         <el-button class="background-red" @click="deleteSubmitBtn(chatUser)"
           >确认</el-button
         >
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="刪除對話"
+      :visible.sync="deleteGroupDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span>确认是否刪除對話？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="deleteGroupDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="deleteRecent(chatUser,'message')">确认</el-button>
       </span>
     </el-dialog>
     <audio
@@ -390,9 +450,11 @@ export default {
       pinMsg: "",
       timeOut:0,
       loading: false,
+      isTopMsgShow:false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
+      deleteGroupDialogShow: false,
       isDeleteContactDialogShow: false,
       device: localStorage.getItem("device"),
 
@@ -462,6 +524,7 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.setTopMsgShow(true);
+          this.isTopMsgShow = false;
         }
       });
     },
@@ -767,9 +830,9 @@ export default {
           return false;
         });
     },
-    deleteRecent(data) {
+    deleteRecent(data,key) {
       let parmas = {
-        fullDelete: false,
+        fullDelete: key !== "stranger",
         historyId: "",
         toChatId: data.toChatId,
       };

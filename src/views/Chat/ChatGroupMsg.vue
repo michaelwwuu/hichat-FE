@@ -136,7 +136,7 @@
           :userInfoData="userInfoData"
           @resetPinMsg="resetPinMsg"
         />
-        <div class="top-msg-bottom" @click="untopMsgAction">
+        <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
       </el-main>
@@ -146,6 +146,34 @@
       muted="muted"
       src="./../../../static/wav/receive.mp3"
     ></audio>
+    <el-dialog
+      :visible.sync="isTopMsgShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div>
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <span
+          >确认是否取消置頂？</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          :class="device === 'moblie' ? 'border-red' : 'background-gray'"
+          @click="isTopMsgShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="untopMsgAction"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -178,6 +206,7 @@ export default {
       contactList: [],
       pinDataList: [],
       loading: false,
+      isTopMsgShow:false,
       unGroupDisabledWord:false,
       device: localStorage.getItem("device"),
 
@@ -271,6 +300,7 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.setTopMsgShow(true);
+          this.isTopMsgShow = false;
         }
       });
     },      
@@ -349,6 +379,10 @@ export default {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
           if (item.memberId === Number(localStorage.getItem("id"))){
+            this.groupUser.isBanPost = item.isBanPost
+            this.groupUser.isAdmin = item.isAdmin
+            this.groupUser.isManager = item.isManager
+            this.setChatGroup(this.groupUser)
             if(item.isAdmin){
               localStorage.removeItem("authority")
             }else if(item.isManager){
@@ -443,7 +477,9 @@ export default {
         case "SRV_GROUP_DEL": 
         case "SRV_GROUP_JOIN": 
         case "SRV_CHAT_PIN": 
-
+        case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
+        case "SRV_GROUP_ADD_MANAGER_HISTORY":
+        case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if(userInfo.chat.text !== null){
               this.base64Msg = this.isBase64(userInfo.chat.text);
@@ -932,6 +968,56 @@ export default {
   }
   .top-msg-right {
     height: 1.2em;
+  }
+}
+/deep/.el-dialog-loginOut {
+  overflow: auto;
+  .el-dialog {
+    position: relative;
+    margin: 0 auto 50px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 50%;
+    .el-dialog__header {
+      padding: 10px;
+    }
+    .el-dialog__body {
+      text-align: center;
+      padding: 25px 25px 15px;
+      .loginOut-box {
+        img {
+          height: 5em;
+          margin-bottom: 1.2em;
+        }
+      }
+    }
+    .el-dialog__footer {
+      padding: 20px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+      .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        .el-button {
+          width: 100%;
+          border-radius: 8px;
+        }
+        .background-red {
+          background-color: #ee5253;
+          color: #fff;
+        }
+        .background-orange {
+          background-color: #fe5f3f;
+          color: #fff;
+        }
+        .border-red {
+          border: 1px solid #fe5f3f;
+          color: #fe5f3f;
+        }
+      }
+    }
   }
 }
 </style>

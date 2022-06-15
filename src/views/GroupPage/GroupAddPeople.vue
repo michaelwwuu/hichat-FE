@@ -150,7 +150,7 @@ export default {
           });
         });
         this.newContactDataList = this.newContactDataList.filter((el)=>{
-          return el.contactId !== el.memberId
+          return (el.contactId !== el.memberId) && !el.isAdmin && !el.isManager
         })
       });
     },

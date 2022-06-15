@@ -93,6 +93,14 @@
               </div>
             </a>
           </div>
+          <div class="setting-button" @click="isDialogShow = true" v-if="infoMsg.infoMsgMap !== 'address'">
+            <a>
+              <div class="setting-button-left">
+                <img src="./../../../static/images/trash.png" alt="" />
+                <span class="red-text">刪除對話</span>
+              </div>
+            </a>
+          </div>
           <div class="setting-button" @click="leaveGroupDialogShow = true">
             <a>
               <div class="setting-button-left">
@@ -104,6 +112,27 @@
         </div>
       </el-main>
     </el-container>
+    <el-dialog
+      :visible.sync="isDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <span>確定要刪除對話</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="isDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="deleteMessage()"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>    
     <el-dialog
       :visible.sync="leaveGroupDialogShow"
       class="el-dialog-loginOut"
@@ -131,9 +160,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { leaveGroup } from "@/api";
+import { leaveGroup,deleteRecentChat } from "@/api";
 
 export default {
   name: "GroupPage",
@@ -165,9 +194,15 @@ export default {
       ],
       dialogContent: "",
       notification: true,
+      isDialogShow:false,
       leaveGroupDialogShow: false,
       developmentMessage: developmentMessage,
     };
+  },
+  computed: {
+    ...mapState({
+      infoMsg: (state) => state.ws.infoMsg,
+    }),
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
@@ -187,9 +222,23 @@ export default {
         return iconData.icon;
       }
     },
+    deleteMessage(){
+      let parmas = {
+        fullDelete: true,
+        historyId: "",
+        toChatId: this.groupData.toChatId,
+      };
+      deleteRecentChat(parmas).then((res) => {
+        if (res.code === 200) {
+          localStorage.removeItem("groupData");
+          this.$router.push({ path: "/Address" });
+        }
+      }) 
+    },    
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
+    
     submitBtn() {
       let groupId = this.groupData.groupId;
       leaveGroup({ groupId })
@@ -201,8 +250,7 @@ export default {
         });
     },
     back() {
-
-      this.$router.push({ path: "/ChatGroupMsg" });
+      this.$router.back(-1);
     },
   },
 };

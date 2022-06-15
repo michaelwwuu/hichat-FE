@@ -74,13 +74,14 @@
                   style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
-              <template v-else-if="groupData.isAdmin">
+              <template v-else-if="groupData.isAdmin || groupData.isManager">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
                   style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
+              
 
               <span class="home-header-title"
                 >成员 ({{
@@ -100,14 +101,12 @@
                 ></div>
               </template>
               <template v-if="groupData.isManager && !editBtnShow">
-                <router-link
-                  v-if="authority.addUser"
-                  :to="'GroupAddPeople'"
+                <div
+                  class="home-add-user"
+                  @click="addGroupPeople"
                   style="position: absolute; right: 50px"
-                  :style="!authority.delUser ? 'right: 5px':''"               
-                >
-                  <div class="home-add-user"></div>
-                </router-link>
+                  :style="!authority.delUser ? 'right: 5px':''"     
+                ></div>
                 <div
                   v-if="authority.delUser"
                   class="home-user-edit"
@@ -170,12 +169,7 @@
                 <div class="address-box">
                   <el-image :src="item.icon" />
                   <div class="msg-box">
-                    <span>
-                      <div style="display: flex;">{{ item.name }}
-                        <div v-if="item.isManager" style="color:#FE5F3F; padding-left: 0.5em;">★ 管理员</div>
-                        <div v-if="item.isAdmin" style="color:#FE5F3F; padding-left: 0.5em;">♔ 群主</div>
-                      </div>
-                    </span>
+                    <span>{{ item.name }}</span>
                   </div>
                 </div>
               </el-checkbox>
@@ -309,7 +303,7 @@ export default {
         });
         this.setContactListData(this.contactList);
         this.checkDataList = this.contactList.filter(
-          (el) => el.memberId !== this.groupData.memberId
+          (el) => (el.memberId !== this.groupData.memberId) && !el.isAdmin && !el.isManager
         );
       });
     },
@@ -376,6 +370,9 @@ export default {
       this.setChatUser(data);
     },
     goContactPage(data) {
+      if(this.device === "moblie"){
+        this.setInfoMsg({infoMsgMap:'GroupPeople'});
+      }
       if(!this.checkGroupPeople){
         if(this.groupData.isAdmin){
           if (data.memberId === JSON.parse(localStorage.getItem("id"))) {

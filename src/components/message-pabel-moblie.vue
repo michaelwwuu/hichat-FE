@@ -288,10 +288,13 @@ export default {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
       soundNofiy: (state) => state.ws.soundNofiy,
+      myUserInfo: (state) => state.ws.myUserInfo,      
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
   },
-
+  created() {
+    this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")))
+  },
   mounted() {
     window.addEventListener(
       "scroll",
@@ -311,10 +314,11 @@ export default {
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
+      setMyUserInfo:"ws/setMyUserInfo",
       setReplyMsg: "ws/setReplyMsg",
     }),
     pinUserName(data) {
-      if (data === JSON.parse(localStorage.getItem("myUserInfo")).username) {
+      if (data === this.myUserInfo.username) {
         return (data = "你");
       } else {
         return data;

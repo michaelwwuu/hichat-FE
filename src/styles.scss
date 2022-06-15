@@ -971,3 +971,8 @@ body {
 .custom-class .menu_item {
   font-size: 15px !important;
 }
+/deep/.el-dialog-msg-show{
+  .el-dialog{
+    position: fixed;
+  }
+}

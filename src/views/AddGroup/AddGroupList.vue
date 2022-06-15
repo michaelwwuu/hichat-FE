@@ -243,48 +243,15 @@ export default {
       let uniqueArr = [...new Set(this.groupPermissionData.memberList)]
       this.groupPermissionData.memberList = uniqueArr
       this.groupPermissionData.addGroup = true
-      let list = {
+      let groupList = {
         groupName:this.groupForm.name,
         icon:this.groupIcon,
         isAdmin:true,
       }
-      localStorage.setItem("groupData",JSON.stringify(list))
+      localStorage.setItem("groupData",JSON.stringify(groupList))
       this.setGroupPermissionData(this.groupPermissionData)
       this.$router.push({ path: '/SettingGroup'})
     },
-    // editSubmit() {
-    //   let memberList = [];
-    //   this.checkList.forEach((res) => {
-    //     memberList.push(res.contactId);
-    //   });
-    //   let params = {
-    //     groupName: this.groupForm.name,
-    //     icon: this.groupIcon,
-    //     memberList: memberList,
-    //   };
-    //   this.disableEditSubmit = true;
-    //   addGroup(params)
-    //     .then((res) => {
-    //       if (res.code === 200) {
-    //         let groupData = {
-    //           groupId: res.data.id,
-    //           groupName: res.data.groupName,
-    //           icon: this.groupIcon,
-    //           isAdmin: true,
-    //           toChatId: "g" + res.data.id,
-    //           memberId: JSON.parse(localStorage.getItem("id")),
-    //         };
-    //         this.setChatGroup(groupData);
-    //         this.$router.push({
-    //           path: this.device === "moblie" ? "/ChatGroupMsg" : "home",
-    //         });
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       this.$message({ message: err, type: "error" });
-    //       return false;
-    //     });
-    // },
     back() {
       this.groupPermissionData.groupName = ""
       this.groupPermissionData.icon =""

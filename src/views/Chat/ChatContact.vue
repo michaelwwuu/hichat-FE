@@ -145,11 +145,40 @@
           </template>
         </el-header>
         <message-pin :contactUser="contactUser" :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
-        <div class="top-msg-bottom" @click="untopMsgAction">
+        <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
       </el-main>
     </el-container>    
+    <el-dialog
+      :title="device === 'pc' ? '取消置頂' : ''"
+      :visible.sync="isTopMsgShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div v-if="device === 'moblie'">
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <span
+          >确认是否取消置頂？</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          :class="device === 'moblie' ? 'border-red' : 'background-gray'"
+          @click="isTopMsgShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="untopMsgAction"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+
     <el-dialog
       :title="`${contactUser.isBlock ? '解除封锁' : '封锁'}联络人`"
       :visible.sync="isBlockDialogShow"
@@ -300,6 +329,7 @@ export default {
       pinMsg: "",    
       timeOut:0,        
       loading: false,
+      isTopMsgShow:false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
@@ -354,6 +384,7 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setTopMsgShow: "ws/setTopMsgShow",      
     }),
+    
     goTopMsgShow() {
       this.setTopMsgShow(false);
     },
@@ -364,6 +395,7 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.setTopMsgShow(true);
+          this.isTopMsgShow = false;          
         }
       });
     },

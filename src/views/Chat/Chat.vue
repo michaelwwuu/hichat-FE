@@ -30,6 +30,12 @@
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
+                  <div class="logout-btn" @click="deleteGroupDialogShow = true">
+                    <img src="./../../../static/images/pc/trash.png" alt="" />
+                    <span style="color: #ee5253">刪除對話</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
                   <div class="logout-btn" @click="leaveGroupDialogShow = true">
                     <img src="./../../../static/images/pc/trash.png" alt="" />
                     <span style="color: #ee5253">退出群组</span>
@@ -157,11 +163,55 @@
           :userInfoData="userInfoData"
           @resetPinMsg="resetPinMsg"
         />
-        <div class="top-msg-bottom" @click="untopMsgAction">
+        <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
       </el-main>
     </el-container>
+    <el-dialog
+      title="取消置頂"
+      :visible.sync="isTopMsgShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span
+          >确认是否取消置頂？</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          class="background-gray"
+          @click="isTopMsgShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="untopMsgAction"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="刪除對話"
+      :visible.sync="deleteGroupDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span>确认是否刪除對話？</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-gray" @click="deleteGroupDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="deleteMessage">确认</el-button>
+      </span>
+    </el-dialog>
     <el-dialog
       title="退出群組"
       :visible.sync="leaveGroupDialogShow"
@@ -196,7 +246,7 @@
 <script>
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
-import { groupListMember, leaveGroup,pinList,unpinHistory,getGroupAuthoritySetting } from "@/api";
+import { groupListMember, leaveGroup,pinList,unpinHistory,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
@@ -221,8 +271,10 @@ export default {
       authorityGroupData:{},
       readMsgData: [],
       contactList: [],
-      leaveGroupDialogShow: false,
       loading: false,
+      isTopMsgShow:false,
+      deleteGroupDialogShow:false,
+      leaveGroupDialogShow: false,
       pinDataList:[],
       //加解密 key iv
       aesKey: "hichatisachatapp",
@@ -284,6 +336,21 @@ export default {
       setAuthorityGroupData:"ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
     }),
+    deleteMessage(){
+      let parmas = {
+        fullDelete: true,
+        historyId: "",
+        toChatId: this.groupUser.toChatId,
+      };
+      deleteRecentChat(parmas).then((res) => {
+        if (res.code === 200) {
+          localStorage.removeItem("groupData");
+          this.setHichatNav({ type: "group", num: 1 });
+          this.setChatGroup({});
+          this.getHiChatDataList();
+        }
+      }) 
+    },    
     getGroupAuthority(){
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
@@ -314,6 +381,7 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.setTopMsgShow(true);
+          this.isTopMsgShow = false;          
         }
       });
     },     
@@ -408,10 +476,16 @@ export default {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
           if (item.memberId === Number(localStorage.getItem("id"))){
+            this.groupUser.isBanPost = item.isBanPost
+            this.groupUser.isAdmin = item.isAdmin
+            this.groupUser.isManager = item.isManager
+            this.setChatGroup(this.groupUser)
             if(item.isAdmin){
               localStorage.removeItem("authority")
             }else if(item.isManager){
               this.setAuthority(item.authority)
+            }else if(!item.isAdmin && !item.isManager){
+              localStorage.removeItem("authority")
             }
           }
         });
@@ -509,7 +583,10 @@ export default {
         case "SRV_GROUP_SEND":
         case "SRV_GROUP_DEL": 
         case "SRV_GROUP_JOIN": 
-        case "SRV_CHAT_PIN":                  
+        case "SRV_CHAT_PIN":    
+        case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
+        case "SRV_GROUP_ADD_MANAGER_HISTORY":
+        case "SRV_GROUP_CHANGE_ADMIN_HISTORY":                      
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if(userInfo.chat.text !== null){
               this.base64Msg = this.isBase64(userInfo.chat.text);

@@ -171,7 +171,6 @@ export default {
             }
             if (res.memberId === this.groupData.memberId) {
               this.checkList = res.memberId;
-              consle.log(this.checkList);
             }
           });
         })

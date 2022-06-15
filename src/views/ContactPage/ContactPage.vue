@@ -93,7 +93,7 @@
               </el-switch>
             </div>
             -->
-            <template v-if="groupUser.isAdmin">
+            <template v-if="groupUser.isAdmin && infoMsg.infoMsgMap ==='HiChat'">
               <div
                 class="setting-button mt10"
                 @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
@@ -108,7 +108,7 @@
                 </a>
               </div>
             </template>
-            <template v-if="groupUser.isManager">
+            <template v-if="groupUser.isManager && infoMsg.infoMsgMap ==='HiChat'">
               <div
                 v-if="!chatUser.isAdmin && !chatUser.isManager"
                 class="setting-button mt10"
@@ -158,10 +158,52 @@
                 </div>
               </a>
             </div>
+            <div
+              v-if="infoMsg.infoMsgMap === 'HiChat'"
+              class="setting-button"
+              @click="isDialogShow = true"
+            >
+              <a>
+                <div class="setting-button-left">
+                  <img
+                    :src="
+                      require(`./../../../static/images/${
+                        chatUser.isContact === false ? 'add_user' : 'trash'
+                      }.png`)
+                    "
+                    alt=""
+                  />
+                  <span class="red-text">刪除對話</span>
+                </div>
+              </a>
+            </div>
           </template>
         </div>
       </el-main>
     </el-container>
+
+    <el-dialog
+      :visible.sync="isDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <span>確定要刪除對話</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="border-red" @click="isDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="deleteMessage()"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+
     <el-dialog
       :visible.sync="settingDialogShow"
       class="el-dialog-loginOut"
@@ -228,6 +270,7 @@ import {
   unBlockContactUser,
   deleteContactUser,
   setBanPostByPersonal,
+  deleteRecentChat,
 } from "@/api";
 
 export default {
@@ -261,6 +304,7 @@ export default {
       ],
       dialogContent: "",
       notification: true,
+      isDialogShow: false,
       successDialogShow: false,
       settingDialogShow: false,
       addContactDialogShow: false,
@@ -271,6 +315,7 @@ export default {
     ...mapState({
       // chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
+      infoMsg: (state) => state.ws.infoMsg,
       myUserInfo: (state) => state.ws.myUserInfo,
     }),
   },
@@ -279,12 +324,26 @@ export default {
     this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
     this.setMyUserInfo(this.myInfo)
     this.getUserId();
+    console.log(this.infoMsg)
   },
   methods: {
     ...mapMutations({
       setChatUser: "ws/setChatUser",
       setMyUserInfo:"ws/setMyUserInfo"
     }),
+    deleteMessage(){
+      let parmas = {
+        fullDelete: true,
+        historyId: "",
+        toChatId: this.chatUser.toChatId,
+      };
+      deleteRecentChat(parmas).then((res) => {
+        if (res.code === 200) {
+          localStorage.removeItem("userData");
+          this.$router.push({ path: "/Address" });
+        }
+      }) 
+    },
     getUserId() {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {

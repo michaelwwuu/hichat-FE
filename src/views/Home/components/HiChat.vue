@@ -82,11 +82,14 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
                     >传送了图片</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_DEL_MANAGER_HISTORY'"
-                    >{{ isBase64(item.lastChat.text) }} 已被剔除管理員</span
-                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'"
-                    >{{ isBase64(item.lastChat.text) }} 已被新增為管理員</span
+                    >{{ isBase64(item.lastChat.text) }}已被指定為管理員</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_REMOVE_MANAGER_HISTORY'"
+                    >{{ isBase64(item.lastChat.text) }}已被解除管理員身份</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_CHANGE_ADMIN_HISTORY'"
+                    >群主變更為{{ isBase64(item.lastChat.text) }}</span
                   >
                 </span>
               </div>
@@ -164,6 +167,26 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <el-dialog
+      title="選擇操作"
+      class="el-dialog-msg-show"
+      :visible.sync="isDialogShow"
+      width="70%"
+      center
+      :show-close="false"
+      :close-on-click-modal="false"
+      append-to-body
+      >
+      <div @click="sendMessage">
+        <img src="./../../../../static/images/chat_icon.png" alt="">
+        <span>傳送訊息</span>
+      </div>
+      <div @click="deleteMessage">
+        <img src="./../../../../static/images/trash.png" alt="">
+        <span>刪除訊息</span>
+      </div>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -172,7 +195,7 @@ import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
-import { getGroupList, groupListMember, getSearchById,getGroupAuthoritySetting } from "@/api";
+import { getGroupList, groupListMember, getSearchById,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
 
 export default {
   name: "HiChat",
@@ -197,7 +220,8 @@ export default {
       },
       device: localStorage.getItem("device"),
       activeName: "address",
-
+      isDialogShow:false,
+      dialogData:{},
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -239,6 +263,7 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
+      setAuthority:"ws/setAuthority",
       setHichatNav: "ws/setHichatNav",
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
@@ -246,11 +271,62 @@ export default {
       setActiveName: "ws/setActiveName",
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
-      setAuthority:"ws/setAuthority",
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
+    touchStart(item){
+      //手指触摸
+      clearTimeout(this.Loop); //再次清空定时器，防止重复注册定时器
+      this.Loop = setTimeout(()=> {
+        this.isDialogShow = true
+        this.dialogData = item
+      },500)
+    },
+    sendMessage(){
+      if(this.dialogData.isContact){
+        this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
+        this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
+        this.setChatUser(this.dialogData);
+        this.$router.push({ path: "/ChatMsg" });
+      }else if(this.dialogData.isGroup){
+        this.dialogData.icon = this.dialogData.icon;
+        this.dialogData.groupName = this.dialogData.name;
+        this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
+        this.dialogData.memberId = JSON.parse(this.dialogData.forChatId.replace("u", ""));
+        this.groupList.forEach((item) => {
+          if (item.groupName === this.dialogData.groupName) {
+            this.dialogData.isBanPost = item.isBanPost
+            this.dialogData.isAdmin = item.isAdmin
+            this.dialogData.isManager = item.isManager
+          }
+        });
+        this.setChatGroup(this.dialogData);
+        this.getGroupListMember(this.dialogData);
+        this.getGroupAuthority(this.dialogData)
+        this.$router.push({ path: "/ChatGroupMsg" });
+      }else{
+        this.setContactUser(data);
+      }
+    },
+    deleteMessage(){
+      let parmas = {
+        fullDelete: true,
+        historyId: "",
+        toChatId: this.dialogData.toChatId,
+      };
+      deleteRecentChat(parmas).then((res) => {
+        if (res.code === 200) {
+          if(this.dialogData.isContact){
+            localStorage.removeItem("userData");
+          }else if(this.dialogData.isGroup){
+            localStorage.removeItem("groupData");
+          }
+          this.setHichatNav({ type: this.hichatNav.type, num: 0 });
+          this.$router.push({ path: "/Address" });
+        }
+      }) 
+    },
     judgeTextMarking(data){
-      if(data.includes("@"+this.myUserInfo.username) || data.includes("@所有成員")){
+      if(["@"+this.myUserInfo.username, "@所有成員", "@所有成员"].includes(data)){
         return `<span style="color:#F00">【 有人@我 】</span>` + data
       }else{
         return data
@@ -416,11 +492,11 @@ export default {
     goChatRoom(data, path) {
       this.setTopMsgShow(true)
       this.getGroupDataList()
+      this.setInfoMsg({infoMsgMap:'HiChat'});
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
         this.setChatUser(data);
-        // this.getUserId(data)
       } else if (path === "ChatContact") {
         this.setContactUser(data);
       } else {
@@ -449,6 +525,7 @@ export default {
         } else if (!data.isBlock && !data.isContact && !data.isGroup) {
           this.type = "contact";
         }
+        
         this.setHichatNav({ type: this.type, num: 1 });
         this.setInfoMsg({
           infoMsgShow: false,
@@ -557,6 +634,45 @@ export default {
               width: 120px;
             }
           }
+        }
+      }
+    }
+  }
+}
+.el-dialog-msg-show {
+  overflow: auto;
+  /deep/.el-dialog {
+    margin: 0 auto 50px;
+    background: #ffffff;
+    border-radius: 10px;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    .el-dialog__header {
+      padding: 10px;
+      background-color: #F60;
+      border-radius: 10px 10px 0 0;
+      .el-dialog__title{
+        color: #000000;
+      }
+    }
+    .el-dialog__body {
+      text-align: center;
+      padding: 0;
+      div{
+        height: 3.5em;
+        line-height:3.5em;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;  
+        justify-content: center;
+        img{
+          height:1.5em;
+          padding-right:5px;
+        }
+        &:nth-child(1) {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
       }
     }

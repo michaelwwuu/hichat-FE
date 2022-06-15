@@ -1,6 +1,6 @@
 export const state = {
-  wsRes: {},
   badgeNum:0,
+  wsRes: {},
   chatUser:{},
   groupUser:{},
   myUserInfo:{},
@@ -91,11 +91,10 @@ export const state = {
     groupDisabledWordList: [],
     groupManagerAuthority: [],    
   },
-  goAnchorMessage:{},
-  device: localStorage.getItem("device"),
   topMsgShow:true,
   authority:{},
-  authorityGroupData:{}
+  goAnchorMessage:{},
+  authorityGroupData:{},
 };
 export const actions = {};
 
