@@ -356,7 +356,6 @@ export default {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
         if(res.code === 200 ){
-          console.log(123)
           if(res.data === undefined){
             this.authorityGroupData = {
               checkUserInfo: true,
@@ -471,7 +470,6 @@ export default {
         this.contactList.forEach((item) => {
           
           if (item.memberId === this.groupUser.memberId ){
-            console.log(item)
             this.groupUser.isAdmin = item.isAdmin
             this.groupUser.isBanPost = item.isBanPost
             this.groupUser.isManager = item.isManager
