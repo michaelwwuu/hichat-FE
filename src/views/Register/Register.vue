@@ -191,7 +191,7 @@
           label-position="top"
         >
           <el-form-item prop="phone">
-            <span class="svg-container">电子邮箱</span>
+            <span class="svg-container">手机号码</span>
             <el-input
               ref="phone"
               v-model.trim="loginForm.phone"

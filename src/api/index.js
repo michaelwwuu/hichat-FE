@@ -149,7 +149,7 @@ export const uploadMessageFile = data => {
 // 忘記密碼
 export const forgetPassword = data => {
   let postData = {
-    url: '/api/sso/forgetPassword',
+    url: '/api/sso/cnForgetPassword',
     method: 'post',
     data
   }
@@ -158,13 +158,12 @@ export const forgetPassword = data => {
 // 解鎖密碼
 export const unlockUser = data => {
   let postData = {
-    url: '/api/sso/unlockUser',
+    url: '/api/sso/cnUnlockUser',
     method: 'post',
     data
   }
   return axios.request(postData)
 }
-
 // 修改密碼
 export const updatePassword = data => {
   let postData = {

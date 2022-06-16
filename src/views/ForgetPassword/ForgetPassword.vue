@@ -19,20 +19,20 @@
           class="login-form"
           label-position="top"
         >
-          <el-form-item prop="email">
+          <el-form-item prop="phone">
             <span class="svg-container">
               <img src="./../../../static/images/mail.png" alt="" />
             </span>
             <el-input
-              ref="email"
-              placeholder="电子邮箱"
-              v-model="loginForm.email"
-              name="email"
+              ref="phone"
+              placeholder="手机号码"
+              v-model="loginForm.phone"
+              name="phone"
               type="text"
               tabindex="1"
               maxLength="30"
               @input="
-                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -59,7 +59,7 @@
               "
               plain
               :disabled="disabledTime"
-              @click="getAuthCodeData(loginForm.email, false)"
+              @click="getAuthCodeData(loginForm.phone, false)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
@@ -150,17 +150,17 @@
           class="login-form"
           label-position="top"
         >
-          <el-form-item prop="email">
-            <span class="svg-container">电子邮箱</span>
+          <el-form-item prop="phone">
+            <span class="svg-container">手机号码</span>
             <el-input
-              ref="email"
-              v-model="loginForm.email"
-              name="email"
+              ref="phone"
+              v-model="loginForm.phone"
+              name="phone"
               type="text"
               tabindex="1"
               maxLength="30"
               @input="
-                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -184,7 +184,7 @@
               "
               plain
               :disabled="disabledTime"
-              @click="getAuthCodeData(loginForm.email, false)"
+              @click="getAuthCodeData(loginForm.phone, false)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
@@ -305,7 +305,7 @@ export default {
   data() {
     return {
       loginForm: {
-        email: "",
+        phone: "",
         authCode: "",
         newPassword: "",
         passwordAganin: "",
@@ -350,16 +350,16 @@ export default {
     },
   },
   methods: {
-    getAuthCodeData(email, key) {
-      if (email === "") {
-        this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
+    getAuthCodeData(phone, key) {
+      if (phone === "") {
+        this.$message({ message: "手机号码尚未输入", type: "error" });
         return;
       }
       this.disabledTime = true;
-      let params = { email: email, forRegister: key };
+      let params = { phoneNo: phone, forRegister: key };
       genAuthCode(params).then((res) => {
         if (res.code === 200) {
-          this.$message({ message: "请至邮件信箱获取验证码", type: "success" });
+          this.$message({ message: "请至註冊手机確認驗證碼", type: "success" });
           this.timer = true;
           let time = null;
           time = setInterval(() => {

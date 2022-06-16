@@ -95,7 +95,7 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
-          <span class="tip-text">请至注册邮箱确认验证码</span>
+          <span class="tip-text">请至註冊手机確認驗證碼</span>
           <div class="register-footer">
             <el-button
               style="width: 100%; margin-bottom: 30px"
@@ -148,7 +148,7 @@ export default {
   data() {
     return {
       loginForm: {
-        email: localStorage.getItem("email"),
+        phone: localStorage.getItem("phone"),
         authCode: "",
       },
       count: 60,
@@ -172,16 +172,16 @@ export default {
     },
   },
   methods: {
-    getAuthCodeData(email, key) {
-      if (email === "") {
-        this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
+    getAuthCodeData(phone, key) {
+      if (phone === "") {
+        this.$message({ message: "手机号码尚未输入", type: "error" });
         return;
       }
       this.disabledTime = true;
-      let params = { email: email, forRegister: key };
+      let params = { phoneNo: phone, forRegister: key };
       genAuthCode(params).then((res) => {
         if (res.code === 200) {
-          this.$message({ message: "请至邮件信箱获取验证码", type: "success" });
+          this.$message({ message: "请至註冊手机確認驗證碼", type: "success" });
           this.timer = true;
           let time = null;
           time = setInterval(() => {
