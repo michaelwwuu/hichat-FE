@@ -82,6 +82,12 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_IMAGE'"
                     >传送了图片</span
                   >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_JOIN'"
+                    >{{ isBase64(item.lastChat.text) }}加入了聊天室</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_DEL'"
+                    >{{ isBase64(item.lastChat.text) }}離開了聊天室</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'"
                     >{{ isBase64(item.lastChat.text) }}已被指定為管理員</span
                   >
