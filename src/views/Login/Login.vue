@@ -13,24 +13,24 @@
     >
       <div class="title-container">
         <img src="./../../../static/images/ic_logo.png" alt="" />
-        <span class="header-title" v-if="device === 'pc'">登录 Hichat</span
+        <span class="header-title" v-if="device === 'pc'">登录 嗨聊</span
         ><!--{{ $t('LOGIN.LGOIN_TITLE') }}-->
       </div>
       <template v-if="device === 'moblie'">
-        <el-form-item prop="email">
+        <el-form-item prop="phone">
           <span class="svg-container">
             <img src="./../../../static/images/mail.png" alt="" />
           </span>
           <el-input
-            ref="email"
-            v-model.trim="loginForm.email"
-            placeholder="电子邮箱"
-            name="email"
+            ref="phone"
+            v-model.trim="loginForm.phone"
+            placeholder="手机号码"
+            name="phone"
             type="text"
             tabindex="1"
             maxLength="30"
             @input="
-              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -65,17 +65,17 @@
         </el-form-item>
       </template>
       <template v-else>
-        <el-form-item prop="email">
+        <el-form-item prop="phone">
           <span class="svg-container">电子邮箱</span>
           <el-input
-            ref="email"
-            v-model.trim="loginForm.email"
-            name="email"
+            ref="phone"
+            v-model.trim="loginForm.phone"
+            name="phone"
             type="text"
             tabindex="1"
             maxLength="30"
             @input="
-              (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
           >
           </el-input>
@@ -182,7 +182,7 @@
           <img src="./../../../static/images/warn.png" alt="" />
         </div>
         <div style="margin-bottom: 10px"><span>帐号已锁定。</span></div>
-        <div><span>请至邮箱取得验证码以解锁帐号。</span></div>
+        <div><span>请至请至註冊手机確認驗證碼以解锁帐号。</span></div>
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link :to="'/ResetPassword'">
@@ -209,7 +209,7 @@ export default {
         deviceId: "",
         deviceName: "",
         deviceType: 1,
-        email: "",
+        phone: "",
         password: "",
         version: 1,
       },
@@ -231,20 +231,21 @@ export default {
       handler(val) {
         if (
           Object.values(val).every((el) => el !== "") &&
+          /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(val.phone) &&
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password)
         ) {
           this.disabled = false;
         } else {
           this.disabled = true;
         }
-        this.remember ? localStorage.setItem("email", val.email) : "";
+        this.remember ? localStorage.setItem("phone", val.phone) : "";
       },
       deep: true,
     },
     remember(val) {
       !val
-        ? localStorage.removeItem("email")
-        : localStorage.setItem("email", this.loginForm.email);
+        ? localStorage.removeItem("phone")
+        : localStorage.setItem("phone", this.loginForm.phone);
     },
   },
   created() {
@@ -252,9 +253,9 @@ export default {
   },
   mounted() {
     if (this.remember) {
-      this.loginForm.email =
-        localStorage.getItem("email") !== null
-          ? localStorage.getItem("email")
+      this.loginForm.phone =
+        localStorage.getItem("phone") !== null
+          ? localStorage.getItem("phone")
           : "";
     }
     this.getUUID();
@@ -341,7 +342,7 @@ export default {
           });
           return;
         }
-        this.loginForm.email = this.loginForm.email.trim();
+        this.loginForm.phone = this.loginForm.phone.trim();
         this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
         login(this.loginForm)
           .then((res) => {

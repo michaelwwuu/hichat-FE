@@ -69,7 +69,7 @@ class HttpRequest {
         // 1-帐号相关
         if (res.code === 10004) this.message = "该用户名或邮箱已存在"
         if (res.code === 10005) this.message = "邮箱已存在"
-        if (res.code === 10006) this.message = "邮箱不存在"
+        if (res.code === 10006) this.message = "手机号码不存在"
         if (res.code === 10007) this.message = "验证码已发送过,请一分钟后再发送"
         if (res.code === 10008) this.message = "登录已失效,请重新登录"
         if (res.code === 10010) this.message = "平台不存在"

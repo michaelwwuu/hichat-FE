@@ -3,7 +3,7 @@ import { axios } from '../libs/axios/api.request'
 //登录
 export const login = data => {
   let postData = {
-    url: '/api/sso/login',
+    url: '/api/sso/cnLogin',
     method: 'post',
     data
   }
@@ -37,11 +37,10 @@ export const getUserInfo = (params) => {
   }
   return axios.request(postData)
 }
-
 // 產生驗證碼
 export const genAuthCode = (params) => {
   let postData = {
-    url: '/api/sso/genAuthCode',
+    url: '/api/sso/genCnPhoneAuthCode',
     method: 'get',
     params
   }

@@ -19,20 +19,20 @@
           class="login-form"
           label-position="top"
         >
-          <el-form-item prop="email">
+          <el-form-item prop="phone">
             <span class="svg-container">
               <img src="./../../../static/images/mail.png" alt="" />
             </span>
             <el-input
-              ref="email"
-              placeholder="电子邮箱"
-              v-model.trim="loginForm.email"
-              name="email"
+              ref="phone"
+              placeholder="手机号码"
+              v-model.trim="loginForm.phone"
+              name="phone"
               type="text"
               tabindex="1"
               maxLength="30"
               @input="
-                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -160,7 +160,7 @@
               "
               plain
               :disabled="disabledTime"
-              @click="getAuthCodeData(loginForm.email, true)"
+              @click="getAuthCodeData(loginForm.phone, true)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
@@ -190,17 +190,17 @@
           class="login-form"
           label-position="top"
         >
-          <el-form-item prop="email">
+          <el-form-item prop="phone">
             <span class="svg-container">电子邮箱</span>
             <el-input
-              ref="email"
-              v-model.trim="loginForm.email"
-              name="email"
+              ref="phone"
+              v-model.trim="loginForm.phone"
+              name="phone"
               type="text"
               tabindex="1"
               maxLength="30"
               @input="
-                (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
             >
             </el-input>
@@ -321,7 +321,7 @@
               "
               plain
               :disabled="disabledTime"
-              @click="getAuthCodeData(loginForm.email, true)"
+              @click="getAuthCodeData(loginForm.phone, true)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
@@ -397,7 +397,7 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         deviceName: "",
         deviceType: 1,
-        email: "",
+        phone: "",
         password: "",
         passwordAganin: "",
         authCode: "",
@@ -425,6 +425,7 @@ export default {
         if (val.password === val.passwordAganin) {
           if (
             Object.values(val).every((el) => el !== "") &&
+            /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(val.phone) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
               val.passwordAganin
@@ -473,16 +474,16 @@ export default {
         this.loginForm.deviceName = "Chrome";
       }
     },    
-    getAuthCodeData(email, key) {
-      if (email === "") {
-        this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
+    getAuthCodeData(phone, key) {
+      if (phone === "") {
+        this.$message({ message: "手机号码尚未输入", type: "error" });
         return;
       }
       this.disabledTime = true;
-      let params = { email: email, forRegister: key };
+      let params = { phoneNo: phone, forRegister: key };
       genAuthCode(params).then((res) => {
         if (res.code === 200) {
-          this.$message({ message: "请至邮件信箱获取验证码", type: "success" });
+          this.$message({ message: "请至註冊手机確認驗證碼", type: "success" });
           this.timer = true;
           let time = null;
           time = setInterval(() => {
@@ -533,7 +534,7 @@ export default {
             //登录成功
             if (res.code === 200) {
               setToken(res.data.tokenHead + res.data.token);
-              localStorage.setItem("email", this.loginForm.email);
+              localStorage.setItem("phone", this.loginForm.phone);
               this.dialogShow = true;
               this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             }
