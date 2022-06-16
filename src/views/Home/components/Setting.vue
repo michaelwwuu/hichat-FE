@@ -182,21 +182,29 @@ export default {
         duration: 1000,
       });
     },
+    // loginOut() {
+    //   logout().then((res) => {
+    //     if(res.code === 200 && res.message === "登出成功"){
+    //       this.$router.push({ path: "/login" });
+    //       localStorage.removeItem("id");
+    //       localStorage.removeItem("token");
+    //       localStorage.removeItem("myUserInfo");
+    //       localStorage.removeItem("myUserList");
+    //       window.location.reload();
+    //     }
+    //   })
+    //   .catch((err)=>{
+    //     return false
+    //   })
+    // },
     loginOut() {
-      logout().then((res) => {
-        if(res.code === 200 && res.message === "登出成功"){
-          this.$router.push({ path: "/login" });
-          localStorage.removeItem("id");
-          localStorage.removeItem("token");
-          localStorage.removeItem("myUserInfo");
-          localStorage.removeItem("myUserList");
-          window.location.reload();
-        }
-      })
-      .catch((err)=>{
-        return false
-      })
-    },
+      this.$router.push({ path: "/login" });
+      localStorage.removeItem("id");
+      localStorage.removeItem("token");
+      localStorage.removeItem("myUserInfo");
+      localStorage.removeItem("myUserList");
+      window.location.reload();
+    },    
   },
 };
 </script>

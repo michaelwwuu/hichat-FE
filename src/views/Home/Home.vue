@@ -6,7 +6,10 @@
           <div class="home-header">
             <div
               class="home-user"
-              :class="{ 'QRcode-img': num === 0 || num === 2 }"
+              :class="[
+                { 'QRcode-img': num === 0 },
+                { 'promote-img': num === 2 },
+              ]"
               @click="
                 num === 0 || num === 2 ? (centerDialogVisible = true) : ''
               "
@@ -14,10 +17,15 @@
             <span class="home-header-title">{{
               num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
             }}</span>
-            <template v-if=" num === 0">
-              <div> 
-                <template v-if="['address','contact'].includes(activeName)">
-                  <router-link :to="'/AddUser'" :style="activeName === 'contact' ? 'visibility: hidden':''">
+            <template v-if="num === 0">
+              <div>
+                <template v-if="['address', 'contact'].includes(activeName)">
+                  <router-link
+                    :to="'/AddUser'"
+                    :style="
+                      activeName === 'contact' ? 'visibility: hidden' : ''
+                    "
+                  >
                     <div class="home-add-user address-img"></div>
                   </router-link>
                 </template>
@@ -25,13 +33,20 @@
                   <router-link :to="'/AddGroup'">
                     <div class="home-add-user hichat-img"></div>
                   </router-link>
-                </template>  
+                </template>
               </div>
             </template>
-            <template v-if=" num === 1">
-              <div> 
-                <template v-if="['address','contact'].includes(hichatNav.type)">
-                  <router-link :to="'/AddUser'" :style="hichatNav.type === 'contact' ? 'visibility: hidden':''">
+            <template v-if="num === 1">
+              <div>
+                <template
+                  v-if="['address', 'contact'].includes(hichatNav.type)"
+                >
+                  <router-link
+                    :to="'/AddUser'"
+                    :style="
+                      hichatNav.type === 'contact' ? 'visibility: hidden' : ''
+                    "
+                  >
                     <div class="home-add-user address-img"></div>
                   </router-link>
                 </template>
@@ -39,12 +54,12 @@
                   <router-link :to="'/AddGroup'">
                     <div class="home-add-user hichat-img"></div>
                   </router-link>
-                </template>  
+                </template>
               </div>
             </template>
-            <template v-if=" num === 2">
-              <div> 
-                <template >
+            <template v-if="num === 2">
+              <div>
+                <template>
                   <router-link :to="'/EditUser'"
                     ><div class="home-add-user setting-img"></div
                   ></router-link>
@@ -122,10 +137,13 @@
               <div>
                 <template v-if="activeName === 'address'">
                   <router-link :to="'/AddUser'">
-                    <img src="./../../../static/images/pc/user-plus.png" alt="" />
+                    <img
+                      src="./../../../static/images/pc/user-plus.png"
+                      alt=""
+                    />
                   </router-link>
                 </template>
-                
+
                 <template v-else-if="activeName === 'group'">
                   <router-link :to="'/AddGroup'">
                     <img
@@ -140,10 +158,13 @@
               <div>
                 <template v-if="hichatNav.type === 'address'">
                   <router-link :to="'/AddUser'">
-                    <img src="./../../../static/images/pc/user-plus.png" alt="" />
+                    <img
+                      src="./../../../static/images/pc/user-plus.png"
+                      alt=""
+                    />
                   </router-link>
                 </template>
-                
+
                 <template v-else-if="hichatNav.type === 'group'">
                   <router-link :to="'/AddGroup'">
                     <img
@@ -219,19 +240,28 @@
       </el-aside>
     </el-container>
     <el-dialog
-      title="我的帐号"
+      :title="num === 1 ? '我的帐号' : '推廣連結'"
       :visible.sync="centerDialogVisible"
       :close-on-click-modal="false"
       width="100%"
       center
     >
+      <template v-if="num === 2">
+        <a
+          :href="promoteCodeConfig.text"
+          class="promote-href-text"
+          target="_blank"
+          >{{ promoteCodeConfig.text }}</a
+        >
+        <div class="promote-box-text">快来注册并下载嗨聊吧</div>
+      </template>
       <div class="qrcode-box">
         <vue-qr
           ref="Qrcode"
           :correctLevel="3"
           :autoColor="false"
           colorDark="#333333"
-          :text="qrCodeConfig.text"
+          :text="num === 0 ? qrCodeConfig.text : promoteCodeConfig.text"
           :download="downloadFilename"
           :size="100"
           :margin="0"
@@ -240,15 +270,20 @@
           :logoMargin="1"
         ></vue-qr>
       </div>
-      <span class="qrcode-box-text"
+      <span class="qrcode-box-text" v-if="num === 0"
         >嗨聊用户扫描此二维码后，可将您加入联络人！</span
       >
-      <span slot="footer" class="dialog-footer">
-        <router-link :to="'/QRcode'"
+      <span
+        slot="footer"
+        class="dialog-footer"
+        :style="num === 2 ? 'justify-content: center;' : ''"
+      >
+        <router-link :to="'/QRcode'" v-if="num === 0"
           ><img src="./../../../static/images/scan.png" alt=""
         /></router-link>
         <img src="./../../../static/images/share.png" alt="" @click="copyUrl" />
         <img
+          v-if="num === 0"
           src="./../../../static/images/download.png"
           alt=""
           @click="downloadImg"
@@ -293,7 +328,7 @@ import {
   getContactList,
   logout,
 } from "@/api";
-import { Decrypt } from "@/utils/AESUtils.js";
+import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
@@ -324,7 +359,13 @@ export default {
         },
       ],
       qrCodeConfig: {
-        text: `${location.origin}/fe/#/AddUser?username=${localStorage.getItem('username')}&id=${localStorage.getItem('id')}`,
+        text: `${location.origin}/fe/#/AddUser?username=${localStorage.getItem(
+          "username"
+        )}&id=${localStorage.getItem("id")}`,
+        logo: require("./../../../static/images/material_ic_logo.png"),
+      },
+      promoteCodeConfig: {
+        text: "",
         logo: require("./../../../static/images/material_ic_logo.png"),
       },
       num: 0,
@@ -348,10 +389,15 @@ export default {
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
+      agentId: "",
 
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
+
+      //推廣 key iv
+      promoteKey: "142c7ec1b64ae0c6",
+      promoteIv: "0000000000000000",
     };
   },
   created() {
@@ -367,9 +413,18 @@ export default {
     // if(localStorage.getItem("nofity") === null){
     //   this.setNofiy(this.nofity)
     // }
-    if(localStorage.getItem("soundNofiy") === null){
-      this.setSoundNofiy(this.soundNofiy)
+    if (localStorage.getItem("soundNofiy") === null) {
+      this.setSoundNofiy(this.soundNofiy);
     }
+    this.promoteCodeConfig.text = `${
+      location.origin
+    }/pub/#/signUp?${encodeURIComponent(
+      Encrypt(
+        `agentId=${localStorage.getItem("id")}`,
+        this.promoteIv,
+        this.promoteIv
+      )
+    )}`;
   },
   watch: {
     hichatNav(val) {
@@ -404,13 +459,13 @@ export default {
       activeName: (state) => state.ws.activeName,
       contactUser: (state) => state.ws.contactUser,
       nofity: (state) => state.ws.nofity,
-      soundNofiy: (state) => state.ws.soundNofiy,      
+      soundNofiy: (state) => state.ws.soundNofiy,
     }),
   },
   methods: {
     ...mapMutations({
-      setNofiy:"ws/setNofiy",
-      setSoundNofiy: "ws/setSoundNofiy",      
+      setNofiy: "ws/setNofiy",
+      setSoundNofiy: "ws/setSoundNofiy",
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
       setBadgeNum: "ws/setBadgeNum",
@@ -418,7 +473,7 @@ export default {
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
       setHichatNav: "ws/setHichatNav",
-      setTopMsgShow:"ws/setTopMsgShow",
+      setTopMsgShow: "ws/setTopMsgShow",
       setMyUserInfo: "ws/setMyUserInfo",
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
@@ -429,7 +484,7 @@ export default {
         infoMsgShow: false,
         infoMsgNav: type === "address" ? "ContactPage" : "GroupPage",
       });
-      this.setTopMsgShow(true)
+      this.setTopMsgShow(true);
       if (type === "address") {
         delete this.chatUser.type;
         this.setChatUser(this.chatUser);
@@ -483,7 +538,7 @@ export default {
         if (res.data.icon === undefined) {
           res.data.icon = require("./../../../static/images/image_user_defult.png");
         }
-        this.qrCodeConfig.text = `${location.origin}/fe/#/AddUser?username=${res.data.username}&id=${res.data.id}`
+        this.qrCodeConfig.text = `${location.origin}/fe/#/AddUser?username=${res.data.username}&id=${res.data.id}`;
         this.setMyUserInfo(res.data);
       });
     },
@@ -539,8 +594,8 @@ export default {
                 item.contactId = this.chatUser.contactId;
                 item.username = this.chatUser.username;
               }
-              if(this.device === "pc") {
-                this.setChatUser(item)
+              if (this.device === "pc") {
+                this.setChatUser(item);
               }
             }
             this.setBadgeNum(numNumber);
@@ -716,20 +771,29 @@ export default {
       }
       Socket.send(this.getHistoryMessage);
     },
+    // loginOut() {
+    //   logout()
+    //     .then((res) => {
+    //       if (res.code === 200 && res.message === "登出成功") {
+    //         this.$router.push({ path: "/login" });
+    //         localStorage.removeItem("id");
+    //         localStorage.removeItem("token");
+    //         localStorage.removeItem("myUserInfo");
+    //         localStorage.removeItem("myUserList");
+    //         window.location.reload();
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       return false;
+    //     });
+    // },
     loginOut() {
-      logout().then((res) => {
-        if(res.code === 200 && res.message === "登出成功"){
-          this.$router.push({ path: "/login" });
-          localStorage.removeItem("id");
-          localStorage.removeItem("token");
-          localStorage.removeItem("myUserInfo");
-          localStorage.removeItem("myUserList");
-          window.location.reload();
-        }
-      })
-      .catch((err)=>{
-        return false
-      })
+      this.$router.push({ path: "/login" });
+      localStorage.removeItem("id");
+      localStorage.removeItem("token");
+      localStorage.removeItem("myUserInfo");
+      localStorage.removeItem("myUserList");
+      window.location.reload();
     },
   },
   components: {
@@ -751,6 +815,10 @@ export default {
           .QRcode-img {
             background-color: #fff;
             background-image: url("./../../../static/images/qrcode.png");
+          }
+          .promote-img {
+            background-color: #fff;
+            background-image: url("./../../../static/images/icon_promotion.png");
           }
           .home-add-user {
             background-color: #fff;

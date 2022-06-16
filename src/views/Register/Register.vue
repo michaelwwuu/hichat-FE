@@ -425,7 +425,7 @@ export default {
         if (val.password === val.passwordAganin) {
           if (
             Object.values(val).every((el) => el !== "") &&
-            /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(val.phone) &&
+            /^1[3-9][0-9]{9}$/.test(val.phone) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
               val.passwordAganin
