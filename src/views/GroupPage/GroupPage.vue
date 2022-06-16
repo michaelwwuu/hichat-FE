@@ -238,7 +238,6 @@ export default {
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });
     },
-    
     submitBtn() {
       let groupId = this.groupData.groupId;
       leaveGroup({ groupId })

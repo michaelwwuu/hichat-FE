@@ -579,11 +579,7 @@ export default {
       }
     },
     noIconShow(iconData, key) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         if (key === "user") {
           return require("./../../../static/images/image_user_defult.png");
         } else {

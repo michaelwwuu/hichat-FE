@@ -381,7 +381,7 @@ export default {
             this.goInfoMsgContactPage(data)
           }
         } else if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
-          if(data.isAdmin || data.isManager){
+          if(data.isAdmin || data.isManager) {
             this.goInfoMsgContactPage(data)
           }
         } else if(this.groupData.isManager && JSON.parse(localStorage.getItem("authority")).checkUserInfo){
@@ -391,13 +391,13 @@ export default {
             this.goInfoMsgContactPage(data)
           }
         } else if(!this.groupData.isAdmin && !this.groupData.isManager){
-          if(data.isAdmin || data.isManager){
+          if(data.isAdmin || data.isManager) {
             this.goInfoMsgContactPage(data)
           }
         }
       } else{
         if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
-          if(data.isAdmin || data.isManager){
+          if(data.isAdmin || data.isManager) {
             this.goInfoMsgContactPage(data)
           }
         } else {

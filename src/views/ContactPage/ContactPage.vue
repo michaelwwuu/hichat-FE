@@ -93,7 +93,7 @@
               </el-switch>
             </div>
             -->
-            <template v-if="groupUser.isAdmin && infoMsg.infoMsgMap ==='HiChat'">
+            <template v-if="groupUser.isAdmin && infoMsg.infoMsgMap ==='GroupPeople'">
               <div
                 class="setting-button mt10"
                 @click="dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')"
@@ -108,7 +108,7 @@
                 </a>
               </div>
             </template>
-            <template v-if="groupUser.isManager && infoMsg.infoMsgMap ==='HiChat'">
+            <template v-if="groupUser.isManager && infoMsg.infoMsgMap ==='GroupPeople'">
               <div
                 v-if="!chatUser.isAdmin && !chatUser.isManager"
                 class="setting-button mt10"

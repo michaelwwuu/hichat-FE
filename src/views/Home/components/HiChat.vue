@@ -333,11 +333,7 @@ export default {
       }
     },
     noIconShow(iconData, key) {
-      if (
-        iconData.icon === undefined ||
-        iconData.icon === null ||
-        iconData.icon === ""
-      ) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
         return require(`./../../../../static/images/image_${key}_defult.png`);
       } else {
         return iconData.icon;
@@ -506,8 +502,8 @@ export default {
         data.memberId = JSON.parse(data.forChatId.replace("u", ""));
         this.groupList.forEach((item) => {
           if (item.groupName === data.groupName) {
-            data.isBanPost = item.isBanPost
             data.isAdmin = item.isAdmin
+            data.isBanPost = item.isBanPost
             data.isManager = item.isManager
           }
         });
