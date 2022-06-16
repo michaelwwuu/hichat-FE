@@ -100,7 +100,7 @@
             <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
           </template>
           <template v-else-if="groupUser.isManager">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="authority.sendMessage"/>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="authorityGroupData.sendMessage || authority.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>

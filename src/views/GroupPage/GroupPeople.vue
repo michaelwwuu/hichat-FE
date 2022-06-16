@@ -397,10 +397,6 @@ export default {
         }
       } else{
         if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
-          if(data.isAdmin || data.isManager) {
-            this.goInfoMsgContactPage(data)
-          }
-        } else {
           if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
             this.$message({ message: "此即为您的帐号", type: "warning" });
           } else {
