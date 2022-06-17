@@ -105,7 +105,7 @@
             <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
           </template>
           <template v-else-if="groupUser.isManager">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="authority.sendMessage"/>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="authorityGroupData.sendMessage || authority.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
@@ -308,6 +308,7 @@ export default {
   },
   mounted() {
     this.getGroupListMember();
+    this.getGroupAuthority()
   },
   computed: {
     ...mapState({
@@ -467,6 +468,7 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
+          
           if (item.memberId === this.groupUser.memberId ){
             this.groupUser.isAdmin = item.isAdmin
             this.groupUser.isBanPost = item.isBanPost

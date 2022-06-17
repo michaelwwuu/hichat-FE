@@ -112,7 +112,7 @@
       </template>
       <div
         class="remember-style"
-        :style="device === 'moblie' ? 'flex-direction: row-reverse' : ''"
+       
       >
         <el-switch
           v-model="remember"
@@ -124,6 +124,8 @@
         <router-link :to="'/ForgetPassword'" style="text-decoration: none">
           <span>忘记密码</span>
         </router-link>
+        
+        
       </div>
       <div class="read-check-box">
         <el-checkbox v-model="readChecked">

@@ -96,12 +96,12 @@
                         <span
                           v-html="item"
                           v-linkified
-                          @click="
+                        ></span>
+                          <!-- @click="
                             item.startsWith('@')
                               ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                               : false
-                          "
-                        ></span>
+                          " -->
                       </span>
                     </div>
 
@@ -125,12 +125,12 @@
                         >
                           <span
                             v-html="item"
-                            @click="
+                          ></span>
+                            <!-- @click="
                               item.startsWith('@')
                                 ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                                 : false
-                            "
-                          ></span>
+                            " -->
                         </div>
                         <div
                           v-else-if="
@@ -684,8 +684,8 @@ export default {
         }
       }
       if (
-        !JSON.parse(localStorage.getItem("groupData")).isAdmin ||
-        JSON.parse(localStorage.getItem("groupData")).isManager
+        !JSON.parse(localStorage.getItem("groupData")).isAdmin &&
+        !JSON.parse(localStorage.getItem("groupData")).isManager
       ) {
         if (!JSON.parse(localStorage.getItem("groupAuthority")).pin) {
           this.newItem = this.newItem.filter((list) => {
@@ -693,16 +693,24 @@ export default {
           });
         }
       }
-      // if(JSON.parse(localStorage.getItem("groupData")).isManager){
-      //   if(!JSON.parse(localStorage.getItem("authority")).pin){
-      //     this.newItem = this.newItem.filter((list)=>{
-      //       return (
-      //           list.name !== "edit" &&
-      //           list.name !== "upDown"
-      //         );
-      //     })
-      //   }
-      // }
+
+      if(JSON.parse(localStorage.getItem("groupData")).isManager){
+        if(JSON.parse(localStorage.getItem("groupAuthority")).pin || JSON.parse(localStorage.getItem("authority")).pin){
+          this.newItem = this.newItem.filter((list)=>{
+            return (
+                list.name !== "edit" 
+              );
+          })
+        }else {
+          this.newItem = this.newItem.filter((list)=>{
+            return (
+              list.name !== "edit" &&
+              list.name !== "upDown" 
+            );
+          })
+        }
+      }
+
       this.$contextmenu({
         items: this.newItem,
         // event,

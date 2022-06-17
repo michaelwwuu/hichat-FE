@@ -46,7 +46,7 @@
                 class="home-add-user"
                 :class="{ notAdmin: !authority.updateGroupInfo }"
                 @click="
-                  groupUser.isAdmin
+                  groupUser.isManager
                     ? editShowBtn(infoMsg.infoMsgNav)
                     : false
                 "
@@ -123,7 +123,7 @@
                 >
                 </el-switch>
               </div> -->
-              <template v-if="groupUser.isAdmin && infoMsg.infoMsgChat">
+              <template v-if="groupUser.isAdmin && infoMsg.infoMsgMap === 'GroupPeople'">
                 <div
                   class="setting-button mt10"
                   @click="
@@ -140,7 +140,7 @@
                   </a>
                 </div>
               </template>
-              <template v-if="groupUser.isManager">
+              <template v-if="groupUser.isManager && infoMsg.infoMsgMap === 'GroupPeople'">
                 <div
                   v-if="!chatUser.isAdmin && !chatUser.isManager"
                   class="setting-button mt10"
@@ -309,6 +309,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :title="dialogTitle"
       :visible.sync="successDialogShow"
       class="el-dialog-loginOut"
       width="70%"
@@ -317,7 +318,6 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/success.png" alt="" /></div>
         <span>操作成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -435,6 +435,7 @@ export default {
       setChatUser: "ws/setChatUser",
       setAuthority:"ws/setAuthority",
       setChatGroup: "ws/setChatGroup",
+      setContactUser:"ws/setContactUser",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
@@ -518,6 +519,7 @@ export default {
           addBlockContactUser({ blockId }).then((res) => {
             if (res.code === 200) {
               this.successDialogShow = true;
+              this.settingDialogShow =false;
               this.chatUser.isBlock = true;
               this.setChatUser(this.chatUser);
             }
@@ -529,6 +531,7 @@ export default {
             .then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
+                this.settingDialogShow =false;
                 this.chatUser.isBlock = false;
                 this.setChatUser(this.chatUser);
               }
@@ -544,8 +547,12 @@ export default {
             .then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
+                this.settingDialogShow =false;
                 this.chatUser.isContact = false;
-                this.setChatUser(this.chatUser);
+                this.setChatUser({});
+                this.setContactUser(this.chatUser);
+                this.closeInfoMsgShow()
+                this.getHiChatDataList()
               }
             })
             .catch((err) => {
@@ -567,6 +574,16 @@ export default {
             }
           });
       }
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        token: getToken("token"),
+        deviceId: localStorage.getItem("UUID"),
+      };
+      Socket.send(chatMsgKey);
     },
     editShowBtn(data) {
       this.setMsgInfoPage({ pageShow: false, type: data });

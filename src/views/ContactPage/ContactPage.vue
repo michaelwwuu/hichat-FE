@@ -324,7 +324,6 @@ export default {
     this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
     this.setMyUserInfo(this.myInfo)
     this.getUserId();
-    console.log(this.infoMsg)
   },
   methods: {
     ...mapMutations({
