@@ -332,7 +332,7 @@ export default {
       }) 
     },
     judgeTextMarking(data){
-      if(["@"+this.myUserInfo.username, "@所有成員", "@所有成员"].includes(data)){
+      if(["@"+this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(data)){
         return `<span style="color:#F00">【 有人@我 】</span>` + data
       }else{
         return data
