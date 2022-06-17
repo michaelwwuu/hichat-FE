@@ -127,7 +127,7 @@
         
         
       </div>
-      <div class="read-check-box">
+      <!-- <div class="read-check-box">
         <el-checkbox v-model="readChecked">
           已阅读并同意<a
             href="https://www.hichat.info/pub/userAgreement.html"
@@ -139,7 +139,7 @@
             >隐私权政策</a
           ></el-checkbox
         >
-      </div>
+      </div> -->
       <div>
         <el-button
           style="width: 100%; margin-bottom: 30px"
@@ -218,7 +218,7 @@ export default {
       passwordType: "password",
       remember: true,
       disabled: true,
-      readChecked: false,
+      // readChecked: false,
       dialogShow: false,
       token: localStorage.getItem("token"),
       device: localStorage.getItem("device"),
@@ -328,13 +328,13 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
-      if (!this.readChecked) {
-        this.$message({
-          message: "尚未勾選同意條款",
-          type: "warning",
-        });
-        return;
-      }
+      // if (!this.readChecked) {
+      //   this.$message({
+      //     message: "尚未勾選同意條款",
+      //     type: "warning",
+      //   });
+      //   return;
+      // }
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {
