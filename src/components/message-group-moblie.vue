@@ -96,12 +96,12 @@
                         <span
                           v-html="item"
                           v-linkified
-                          @click="
+                        ></span>
+                          <!-- @click="
                             item.startsWith('@')
                               ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                               : false
-                          "
-                        ></span>
+                          " -->
                       </span>
                     </div>
 
@@ -125,12 +125,12 @@
                         >
                           <span
                             v-html="item"
-                            @click="
+                          ></span>
+                            <!-- @click="
                               item.startsWith('@')
                                 ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
                                 : false
-                            "
-                          ></span>
+                            " -->
                         </div>
                         <div
                           v-else-if="

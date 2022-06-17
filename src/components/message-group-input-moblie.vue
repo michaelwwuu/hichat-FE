@@ -2,6 +2,7 @@
   <div
     class="message-input-box"
     :style="device !== 'moblie' ? 'height:59px' : ''"
+    @touchmove="$root.handleTouch"
   >
     <template v-if="device === 'moblie'">
       <div class="input-tools-right">
@@ -353,7 +354,7 @@ export default {
     checkCallout(data) {
       this.calloutShow = false;
       this.targetArray.push("u" + data.memberId);
-      this.textArea = this.textArea + data.username;
+      this.textArea = this.textArea + data.name;
     },   
     handleGetMessage(msg) {
       let userInfo = JSON.parse(msg);

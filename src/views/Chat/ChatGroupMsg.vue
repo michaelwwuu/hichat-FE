@@ -415,7 +415,6 @@ export default {
         isPing:false,
       };
     },
-
     //判斷是否base64
     isBase64(data) {
       var base64Rejex =

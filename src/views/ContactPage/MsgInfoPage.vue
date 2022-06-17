@@ -549,7 +549,6 @@ export default {
                 this.successDialogShow = true;
                 this.settingDialogShow =false;
                 this.chatUser.isContact = false;
-                console.log()
                 this.setChatUser({});
                 this.setContactUser(this.chatUser);
                 this.closeInfoMsgShow()
