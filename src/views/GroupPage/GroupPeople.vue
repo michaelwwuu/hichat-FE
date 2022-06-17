@@ -363,6 +363,7 @@ export default {
             infoMsgShow: true,
             infoMsgChat: true,
             infoMsgNav: "ContactPage",
+            infoMsgMap: "GroupPeople"
           });
           this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
         }

@@ -694,6 +694,7 @@ export default {
             this.setChatUser(data);
             localStorage.removeItem("contactUser");
             if (this.device === "pc") {
+              this.getHistory(data)
               this.getHiChatDataList();
               this.setHichatNav({ type: "address", num: 1 });
             }
@@ -789,6 +790,19 @@ export default {
     },
     back() {
       this.$router.back(-1);
+    },
+    getHistory(data){
+      this.getHistoryMessage= {
+        chatType: "CLI_HISTORY_REQ",
+        toChatId: data.toChatId,
+        id: Math.random(),
+        tokenType: 0,
+        targetId: "",
+        pageSize: 1000,
+        token: getToken("token"),
+        deviceId: localStorage.getItem("UUID"),
+      },
+      Socket.send(this.getHistoryMessage);
     },
   },
   components: {

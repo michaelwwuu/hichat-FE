@@ -468,6 +468,7 @@ export default {
             el.toChatId = "u" + el.memberId;
           }
         });
+        this.setMyContactDataList(this.addressDataList);        
       });
       // getGroupList().then((res) => {
       //   this.groupList = res.data.list;
@@ -478,6 +479,7 @@ export default {
       //   });
       // });
     },
+
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined) {

@@ -643,6 +643,7 @@ export default {
         infoMsgShow: true,
         infoMsgNav: "ContactPage",
         infoMsgChat: true,
+        infoMsgMap: "address"
       });
     },
     // 已讀
