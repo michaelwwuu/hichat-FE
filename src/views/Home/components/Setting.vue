@@ -437,6 +437,7 @@ export default {
   .el-promotion-dialog {
     /deep/.el-dialog{
       width: 420px !important;
+      box-shadow: none;
     }
     /deep/.el-dialog__header{
       padding:0;
