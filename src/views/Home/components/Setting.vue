@@ -1,6 +1,9 @@
 <template>
   <div class="home-content" @touchmove="$root.handleTouch">
     <div class="user-data">
+      <div class="icon_promotion-img" v-if="device === 'pc'" @click="promotionDialogShow = true">
+        <img src="./../../../../static/images/icon_promotion.png" alt="">
+      </div>
       <el-image
         v-if="myUserInfo.icon !== undefined"
         :src="myUserInfo.icon"
@@ -94,11 +97,50 @@
         <el-button class="background-red" @click="loginOut">确认</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="promotionDialogShow"
+      class="el-promotion-dialog"
+      width="80%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :modal="false"
+      center
+    > 
+      <div class="qrcode-box">
+        <vue-qr
+          ref="Qrcode"
+          :correctLevel="3"
+          :autoColor="false"
+          colorDark="#333333"
+          :text="promoteCodeConfig.text"
+          :logoSrc="promoteCodeConfig.logo"
+          :size="1000"
+          :margin="0"
+          :logoCornerRadius="0"
+          :logoMargin="1"
+        ></vue-qr>
+      </div>
+      <div class="promote-box-text">快来注册并下载嗨聊吧！</div>
+      <div
+        class="promote-box-text2"
+        >
+        <span>{{ promoteCodeConfig.text }}</span></div
+      >
+      <span slot="footer" class="dialog-footer">
+        <el-button class="orange" @click="copyUrl">
+          <img src="./../../../../static/images/copy.png" alt="">
+          复制推广链接</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import VueQr from "vue-qr";
+import urlCopy from "@/utils/urlCopy.js";
 import { logout } from "@/api";
+import { Encrypt} from "@/utils/AESUtils.js";
+
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 
@@ -143,8 +185,13 @@ export default {
           path: "/About",
         },
       ],
+      promoteCodeConfig: {
+        text: "",
+        logo: require("./../../../../static/images/material_ic_logo.png"),
+      },      
       notification: true,
       logoutDialogShow: false,
+      promotionDialogShow:false,
       developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
     };
@@ -167,8 +214,21 @@ export default {
         if (el.name === "密码管理") el.path = "/PasswordEdit";
       });
     }
+    this.promoteCodeConfig.text = `${
+      location.origin
+    }/pub/#/signUp?${encodeURIComponent(
+      Encrypt(
+        `agentId=${localStorage.getItem("id")}`,
+        this.promoteIv,
+        this.promoteIv
+      )
+    )}`;    
   },
   methods: {
+    copyUrl() {
+      let url = this.promoteCodeConfig.text;
+      urlCopy(url);
+    },
     copyPaste(data) {
       let url = document.createElement("input");
       document.body.appendChild(url);
@@ -206,6 +266,9 @@ export default {
       window.location.reload();
     },    
   },
+  components: {
+    VueQr,
+  },
 };
 </script>
 
@@ -216,6 +279,16 @@ export default {
       margin: -3.5em 0 -5em 0;
       font-size: 13px;
       color: #b3b3b3;
+    }
+    .icon_promotion-img{
+      text-align: left;
+      position: relative;
+      top: 15px;
+      left: 15px;
+      cursor: pointer;
+      img{
+        height: 1.5em;
+      }
     }
     .user-paste {
       width: 1em;
@@ -357,6 +430,68 @@ export default {
           color: #fe5f3f;
         }
       }
+    }
+  }
+}
+.hichat-pc{
+  .el-promotion-dialog {
+    /deep/.el-dialog{
+      width: 420px !important;
+    }
+    /deep/.el-dialog__header{
+      padding:0;
+      border-bottom: 0;
+    }
+    /deep/.el-dialog__body{
+      padding: 15px 0px !important;
+      border-bottom: 0;
+      .qrcode-box{
+        width: 25em;
+        height: 25em;
+        border: 20px solid rgba(0, 0, 0, 0.05);
+        img{
+          height: 23em;
+        }
+      }
+      .promote-box-text{
+        margin-top: 1em;
+        font-size: 20px;
+        font-weight: 300;
+      }
+      .promote-box-text2{
+        color:rgba(0, 0, 0, 0.4);
+        padding:0 50px;        
+      }
+    }
+    /deep/.el-dialog__footer {
+      padding: 10px 0 !important;
+      
+      .dialog-footer{
+        justify-content: center;
+        img{
+          height: 1.5em;
+          padding-right: 10px;
+        }
+        .el-button {
+          width: 90% !important;
+          padding: 15px !important;
+          font-size: 15px;
+          &:nth-child(1){
+            border-radius: 10px !important;  
+          }        
+          span{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+        .orange {
+          background-color: #fe5f3f !important;
+          color: #fff;
+        }
+      }
+      
+      
     }
   }
 }

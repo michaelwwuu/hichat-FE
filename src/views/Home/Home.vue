@@ -263,7 +263,7 @@
           colorDark="#333333"
           :text="num === 0 ? qrCodeConfig.text : promoteCodeConfig.text"
           :download="downloadFilename"
-          :size="100"
+          :size="1000"
           :margin="0"
           :logoSrc="qrCodeConfig.logo"
           :logoCornerRadius="2"
@@ -567,7 +567,7 @@ export default {
       setTimeout(() => this.getHiChatDataList(), 2000);
     },
     copyUrl() {
-      let url = this.qrCodeConfig.text;
+      let url = this.num === 0? this.qrCodeConfig.text:this.promoteCodeConfig.text;
       urlCopy(url);
     },
     downloadImg() {
