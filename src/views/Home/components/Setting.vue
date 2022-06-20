@@ -102,7 +102,6 @@
       class="el-promotion-dialog"
       width="80%"
       :show-close="false"
-      :close-on-click-modal="false"
       :modal="false"
       center
     > 
