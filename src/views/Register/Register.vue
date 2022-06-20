@@ -164,6 +164,19 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
+          <div class="read-check-box">
+            <el-checkbox v-model="readChecked">
+              已阅读并同意<a
+                href="https://www.hichat.info/pub/userAgreement.html"
+                target="_blank"
+                >服务条款</a
+              >與<a
+                href="https://www.hichat.info/pub/privacyPolicy.html"
+                target="_blank"
+                >隐私权政策</a
+              ></el-checkbox
+            >
+          </div>
           <div class="register-footer">
             <el-button
               style="width: 100%; margin-bottom: 30px"
@@ -173,6 +186,7 @@
               >提交</el-button
             >
           </div>
+          
         </el-form>
       </div>
     </template>
@@ -325,6 +339,19 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
+          <div class="read-check-box">
+            <el-checkbox v-model="readChecked">
+              已阅读并同意<a
+                href="https://www.hichat.info/pub/userAgreement.html"
+                target="_blank"
+                >服务条款</a
+              >與<a
+                href="https://www.hichat.info/pub/privacyPolicy.html"
+                target="_blank"
+                >隐私权政策</a
+              ></el-checkbox
+            >
+          </div>          
           <div class="register-footer">
             <div>
               <el-button
@@ -410,6 +437,7 @@ export default {
       count: 60,
       timer: false,
       disabledTime: false,
+      readChecked: false,
       disabled: true,
       dialogShow: false,
       device: localStorage.getItem("device"),
@@ -516,6 +544,13 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
+      if (!this.readChecked) {
+        this.$message({
+          message: "尚未勾選同意條款",
+          type: "warning",
+        });
+        return;
+      }
       //驗證註冊表單是否通過
       this.$refs[rules].validate((valid) => {
         if (!valid) {
@@ -652,6 +687,35 @@ export default {
     .register-footer {
       position: relative;
       top: 2em;
+    }
+  }
+  .read-check-box {
+    margin-bottom: 1em;
+    /deep/.el-checkbox__input.is-checked + .el-checkbox__label {
+      color: rgba(0, 0, 0, 0.8);
+    }
+    /deep/.el-checkbox {
+      .el-checkbox__input {
+        .el-checkbox__inner {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          &:after {
+            border: 2px solid #ffffff;
+            border-left: 0;
+            border-top: 0;
+            height: 13px;
+            left: 7px;
+          }
+        }
+      }
+    }
+
+    .el-checkbox__label {
+      a {
+        color: #10686e;
+        text-decoration: none;
+      }
     }
   }
   /deep/.el-dialog-loginOut {
