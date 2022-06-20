@@ -22,7 +22,7 @@ export const logout = data => {
 //註冊
 export const register = data => {
   let postData = {
-    url: '/api/sso/register',
+    url: '/api/sso/cnRegister',
     method: 'post',
     data
   }
