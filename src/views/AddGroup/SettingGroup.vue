@@ -150,7 +150,6 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { addGroup,getGroupAuthoritySetting,setGroupAuthority} from "@/api";
 
 export default {

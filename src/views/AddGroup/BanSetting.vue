@@ -20,7 +20,7 @@
         <div class="home-content">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              v-for="(item, index) in contactList"
+              v-for="(item, index) in newContactList"
               :label="!groupPermissionData.addGroup ? item.memberId:item.contactId"
               :key="index"
             >
@@ -65,7 +65,7 @@
         <div class="home-content">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              v-for="(item, index) in contactList"
+              v-for="(item, index) in newContactList"
               :label="!groupPermissionData.addGroup ? item.memberId : item.contactId"
               :key="index"
             >
@@ -92,7 +92,6 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { groupListMember,setBanPost,listMember } from "@/api";
 
 export default {
@@ -101,6 +100,7 @@ export default {
     return {
       checkList: [],
       contactList: [],
+      newContactList:[],
       searchKey:"",
       device: localStorage.getItem("device"),
     };
@@ -115,6 +115,18 @@ export default {
   },
   mounted() {
      this.getGroupListMember();
+  },
+  watch:{
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase = this.contactList;
+        this.searchData = searchCase.filter((item) => {
+          return item.name.indexOf(el.replace("@", "")) !== -1;
+        });
+      });
+      this.newContactList = this.searchData
+    },
   },
   computed: {
     ...mapState({
@@ -142,18 +154,20 @@ export default {
           this.contactList = this.contactList.filter((el)=>{
             return !el.isAdmin && !el.isManager
           })
+          this.newContactList = this.contactList
         });
       }else{
         this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
           return el.isManager === undefined
         })
         this.contactList.forEach((res) => {
-        this.groupPermissionData.banPostMemberList.forEach((el)=>{
+          this.groupPermissionData.banPostMemberList.forEach((el)=>{
             if(res.contactId === el){
               this.checkList.push(res.contactId)
             }
           })
         })
+        this.newContactList = this.contactList
       }
     },
     setBan(){

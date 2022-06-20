@@ -15,7 +15,6 @@
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
             >
             </el-input>
           </div>
@@ -24,11 +23,11 @@
           <el-checkbox-group v-model="checkList">
             <el-checkbox
               :label="item"
-              v-for="(item, index) in contactList"
+              v-for="(item, index) in newContactList"
               :key="index"
             >
               <div class="address-box">
-                <el-image :src="item.icon"/>
+                <el-image :src="item.icon" />
                 <div class="msg-box">
                   <span>{{ item.name }}</span>
                 </div>
@@ -44,24 +43,22 @@
             >邀请联络人</el-button
           >
         </div>
-      </el-main>      
+      </el-main>
     </el-container>
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start" >
-
+          <div class="home-header flex-start">
             <div class="home-user-pc" @click="back()"></div>
             <span class="home-header-title">创建群组</span>
           </div>
         </el-header>
-        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
-          <div class="home-search" >
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)">
+          <div class="home-search">
             <el-input
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
             >
             </el-input>
           </div>
@@ -70,11 +67,11 @@
           <el-checkbox-group v-model="checkList">
             <el-checkbox
               :label="item"
-              v-for="(item, index) in contactList"
+              v-for="(item, index) in newContactList"
               :key="index"
             >
               <div class="address-box">
-                <el-image :src="item.icon"/>
+                <el-image :src="item.icon" />
                 <div class="msg-box">
                   <span>{{ item.name }}</span>
                 </div>
@@ -95,10 +92,10 @@
     <el-dialog
       title="上傳群组照片"
       :visible.sync="uploadImgShow"
-      :class="{'el-dialog-loginOut':device ==='pc'}"
+      :class="{ 'el-dialog-loginOut': device === 'pc' }"
       width="100%"
       center
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
     >
       <el-upload
         class="upload-demo"
@@ -114,23 +111,26 @@
         </div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-        <template v-if="device ==='moblie'">
+        <template v-if="device === 'moblie'">
           <el-button type="success" @click="submitAvatarUpload">确认</el-button>
           <el-button @click="uploadImgShow = false">取 消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false">取消</el-button>
-          <el-button class="background-orange" @click="submitAvatarUpload">确认</el-button>
-        </template>        
+          <el-button class="background-gray" @click="uploadImgShow = false"
+            >取消</el-button
+          >
+          <el-button class="background-orange" @click="submitAvatarUpload"
+            >确认</el-button
+          >
+        </template>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
-import { getContactList,uploadGroupIcon,addGroup } from "@/api";
+import { mapState, mapMutations } from "vuex";
+import { getContactList, uploadGroupIcon, addGroup } from "@/api";
 
 export default {
   name: "AddGroup",
@@ -138,61 +138,88 @@ export default {
     return {
       checkList: [],
       contactList: [],
+      newContactList:[],
       groupForm: {
-        name: ""
+        name: "",
       },
       searchKey: "",
       groupIcon: "",
       fileList: [],
       disabled: true,
-
       uploadImgShow: false,
-      disableEditSubmit:true,
-      developmentMessage: developmentMessage,
+      disableEditSubmit: true,
       device: localStorage.getItem("device"),
     };
   },
   created() {
     this.getAddressList();
+    let groupPermissionData = {
+      addGroup: false,
+      groupName: "",
+      memberList: [],
+      icon: "",
+      banPostMemberList: [],
+      groupAdminAuthority: {
+        checkUserInfo: false,
+        pin: false,
+        sendMessage: true,
+      },
+      groupDisabledWordList: [],
+      groupManagerAuthority: [],
+    };
+    this.setGroupPermissionData(groupPermissionData);
   },
-  watch:{
+  watch: {
     checkList(val) {
-      this.disabled = !val.length > 0
+      this.disabled = !val.length > 0;
     },
-    groupForm:{
+    groupForm: {
       handler(val) {
-        this.disableEditSubmit = !val.name
+        this.disableEditSubmit = !val.name;
       },
       deep: true,
-    }
+    },
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase = this.contactList;
+        this.searchData = searchCase.filter((item) => {
+          return item.name.indexOf(el.replace("@", "")) !== -1;
+        });
+      });
+      this.newContactList = this.searchData
+    },
   },
   computed: {
     ...mapState({
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
-  },  
+  },
   methods: {
     ...mapMutations({
-      setChatUser:"ws/setChatUser",
-      setChatGroup:"ws/setChatGroup",
-      setInfoMsg:"ws/setInfoMsg",
-      setGroupPermissionData:"ws/setGroupPermissionData",
+      setChatUser: "ws/setChatUser",
+      setChatGroup: "ws/setChatGroup",
+      setInfoMsg: "ws/setInfoMsg",
+      setGroupPermissionData: "ws/setGroupPermissionData",
     }),
     getAddressList() {
       getContactList().then((res) => {
-        this.contactList = res.data.list.filter((el=> el.contactId !== localStorage.getItem("id")))
+        this.contactList = res.data.list.filter(
+          (el) => el.contactId !== localStorage.getItem("id")
+        );
         this.contactList.forEach((res) => {
-          if (res.icon === undefined){
+          if (res.icon === undefined) {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
+        this.newContactList = this.contactList
       });
     },
-    createGroup(){
-      this.groupPermissionData.addGroup = true
-      this.groupPermissionData.peopleData = this.checkList
-      this.setGroupPermissionData(this.groupPermissionData)
-      this.$router.push({ path: '/AddGroupList'})
+    createGroup() {
+      this.groupPermissionData.addGroup = true;
+      this.groupPermissionData.peopleData = this.checkList;
+      this.setGroupPermissionData(this.groupPermissionData);
+      this.$router.push({ path: "/AddGroupList" });
     },
     uploadImg(file, fileList) {
       this.fileList = fileList;
@@ -204,49 +231,54 @@ export default {
         if (res.code === 200) {
           this.fileList = [];
           this.uploadImgShow = false;
-          this.groupIcon = res.data
+          this.groupIcon = res.data;
         }
       });
     },
     editSubmit() {
-      let memberList = []
+      let memberList = [];
       this.checkList.forEach((res) => {
         memberList.push(res.contactId);
       });
       let params = {
         groupName: this.groupForm.name,
-        icon:this.groupIcon,
-        memberList:memberList,
-      }
-      this.disableEditSubmit = true
-      addGroup(params).then((res) => {
-        if (res.code === 200) {
-          let groupData = { 
-            groupId: res.data.id,
-            groupName: res.data.groupName,
-            icon: this.groupIcon,
-            isAdmin: true,
-            toChatId:"g" + res.data.id,
-            memberId: JSON.parse(localStorage.getItem("id")),
+        icon: this.groupIcon,
+        memberList: memberList,
+      };
+      this.disableEditSubmit = true;
+      addGroup(params)
+        .then((res) => {
+          if (res.code === 200) {
+            let groupData = {
+              groupId: res.data.id,
+              groupName: res.data.groupName,
+              icon: this.groupIcon,
+              isAdmin: true,
+              toChatId: "g" + res.data.id,
+              memberId: JSON.parse(localStorage.getItem("id")),
+            };
+            this.setChatGroup(groupData);
+            this.$router.push({
+              path: this.device === "moblie" ? "/ChatGroupMsg" : "home",
+            });
           }
-          this.setChatGroup(groupData)
-          this.$router.push({ path: this.device === 'moblie' ? "/ChatGroupMsg" : "home" });
-        }
-      })
-      .catch((err) => {
-        this.$message({ message: err, type: "error"});
-        return false;
-      });
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+          return false;
+        });
     },
-    back(){
-      if(this.groupPermissionData.addGroup){
+    back() {
+      if (this.groupPermissionData.addGroup) {
         this.$router.push({ path: "/HiChat" });
-        this.setChatGroup({})
-        this.groupPermissionData.addGroup = false
-        this.setGroupPermissionData(this.groupPermissionData)
+        this.setChatGroup({});
+        this.groupPermissionData.addGroup = false;
+        this.setGroupPermissionData(this.groupPermissionData);
         this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
+      } else {
+        this.$router.push({ path: "/HiChat" });
       }
-    }
+    },
   },
 };
 </script>
@@ -273,7 +305,7 @@ export default {
       width: 100vw;
       .el-checkbox__input {
         padding-right: 20px;
-        .el-checkbox__inner{
+        .el-checkbox__inner {
           border-radius: 10px;
         }
       }
@@ -297,7 +329,7 @@ export default {
                 position: absolute;
                 margin-top: 0.5em;
                 width: 100%;
-                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05) ;
+                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05);
               }
             }
           }
@@ -315,7 +347,7 @@ export default {
     background-color: #fff;
     border-radius: 10px;
     /deep/.el-form {
-      .el-form-item{
+      .el-form-item {
         margin-bottom: 0px;
         .el-form-item__label {
           font-size: 17px;
@@ -327,11 +359,10 @@ export default {
           }
         }
       }
-
     }
   }
-  .add-content{
-    .user-data{
+  .add-content {
+    .user-data {
       margin: 1.5em auto 0 auto;
       span {
         display: block;
@@ -346,7 +377,7 @@ export default {
   }
 }
 /deep/.el-dialog__wrapper {
-  .el-dialog{
+  .el-dialog {
     .el-dialog__body {
       .upload-demo {
         .el-upload-list {
@@ -359,19 +390,19 @@ export default {
   }
 }
 
-.hichat-pc{
-  .home-wrapper{
-    .home-search{
-      .el-input{
+.hichat-pc {
+  .home-wrapper {
+    .home-search {
+      .el-input {
         width: 95%;
       }
     }
-    .home-content{
-      .el-checkbox{
+    .home-content {
+      .el-checkbox {
         width: 100%;
       }
-      .el-checkbox__label{
-        .address-box{
+      .el-checkbox__label {
+        .address-box {
           .msg-box {
             span {
               &::after {
@@ -384,32 +415,32 @@ export default {
       }
     }
 
-    .el-container{
-      .el-aside{
-        .add-content{
-          .user-data{
-            .el-image{
+    .el-container {
+      .el-aside {
+        .add-content {
+          .user-data {
+            .el-image {
               width: 5em;
               height: 5em;
             }
-            span{
+            span {
               height: 5.5em;
             }
           }
         }
       }
     }
-    .user-edit-form{
-      /deep/.el-form{
+    .user-edit-form {
+      /deep/.el-form {
         border-radius: 8px;
         background-color: rgba(0, 0, 0, 0.05);
-        .el-form-item{
+        .el-form-item {
           .el-form-item__label {
             font-size: 17px;
           }
-          .el-input{
-            .el-input__inner{
-              background:none;
+          .el-input {
+            .el-input__inner {
+              background: none;
             }
           }
         }
@@ -419,11 +450,11 @@ export default {
       cursor: pointer;
     }
   }
-  .el-dialog-loginOut{
+  .el-dialog-loginOut {
     /deep/.el-dialog__footer {
-      padding:0 !important;
-      .el-button{
-        &:nth-child(2){
+      padding: 0 !important;
+      .el-button {
+        &:nth-child(2) {
           border-left: 1px solid #efefef;
         }
       }

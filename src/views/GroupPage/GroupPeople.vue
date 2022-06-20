@@ -57,7 +57,6 @@
                 placeholder="搜寻"
                 prefix-icon="el-icon-search"
                 v-model="searchKey"
-                @keyup.native.enter="developmentMessage(searchKey)"
               >
               </el-input>
             </div>
@@ -82,7 +81,6 @@
                 ></div>
               </template>
               
-
               <span class="home-header-title"
                 >成员 ({{
                   !editBtnShow ? contactList.length : checkDataList.length
@@ -121,7 +119,7 @@
                 placeholder="搜寻"
                 prefix-icon="el-icon-search"
                 v-model="searchKey"
-                @keyup.native.enter="developmentMessage(searchKey)"
+                
               >
               </el-input>
             </div>
@@ -135,7 +133,7 @@
                 <span class="el-checkbox__label">
                   <div
                     class="address-box"
-                    v-for="(item, index) in contactList"
+                    v-for="(item, index) in newContactList"
                     :key="index"
                     @click="goContactPage(item)"
                   >
@@ -162,7 +160,7 @@
           <div class="home-content">
             <el-checkbox-group v-model="checkList">
               <el-checkbox
-                v-for="(item, index) in checkDataList"
+                v-for="(item, index) in newCheckDataList"
                 :label="item.memberId"
                 :key="index"
               >
@@ -249,7 +247,9 @@ export default {
       groupData: {},
       checkList: [],
       contactList: [],
+      newContactList:[],
       checkDataList: [],
+      newCheckDataList: [],
       searchKey: "",
       disabled: true,
       editBtnShow: false,
@@ -277,6 +277,26 @@ export default {
     checkList(val) {
       this.disabled = !val.length > 0;
     },
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      if(!this.editBtnShow){
+        searchKeyData.forEach((el) => {
+          let searchCase = this.contactList;
+          this.searchData = searchCase.filter((item) => {
+            return item.name.indexOf(el.replace("@", "")) !== -1;
+          });
+        });
+        this.newContactList = this.searchData
+      }else{
+        searchKeyData.forEach((el) => {
+          let searchCase = this.checkDataList;
+          this.searchData = searchCase.filter((item) => {
+            return item.name.indexOf(el.replace("@", "")) !== -1;
+          });
+        });
+        this.newCheckDataList = this.searchData
+      }
+    },     
   },
   computed: {
     ...mapState({
@@ -301,10 +321,12 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
+        this.newContactList = this.contactList
         this.setContactListData(this.contactList);
         this.checkDataList = this.contactList.filter(
           (el) => (el.memberId !== this.groupData.memberId) && !el.isAdmin && !el.isManager
         );
+        this.newCheckDataList = this.checkDataList
       });
     },
     getGroupAuthority(){

@@ -19,7 +19,7 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div v-for="(item, index) in contactList" :key="index">
+          <div v-for="(item, index) in newContactList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
                 <div class="setting-button-left">
@@ -58,7 +58,7 @@
           </div>
         </div>        
         <div class="home-content">
-          <div v-for="(item, index) in contactList" :key="index">
+          <div v-for="(item, index) in newContactList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
                 <div class="setting-button-left">
@@ -89,6 +89,7 @@ export default {
   data() {
     return {
       contactList: [],
+      newContactList:[],
       adminUser: [],      
       searchKey:"",
       device: localStorage.getItem("device"),
@@ -100,6 +101,18 @@ export default {
     }else{
       this.groupData = this.groupUser
     }    
+  },
+  watch:{
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase = this.contactList;
+        this.searchData = searchCase.filter((item) => {
+          return item.name.indexOf(el.replace("@", "")) !== -1;
+        });
+      });
+      this.newContactList = this.searchData
+    },
   },
   mounted() {
     this.getGroupListMember()
@@ -128,11 +141,13 @@ export default {
             (el) => el.memberId !== this.groupData.memberId
           );
           this.contactList = this.contactList.filter((el)=>el.isManager === undefined || (!el.isAdmin && !el.isManager))
+          this.newContactList = this.contactList
         });
       }else{
         this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
           return el.isManager === undefined
         })
+        this.newContactList = this.contactList
       }
       
     },    
