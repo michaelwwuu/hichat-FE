@@ -434,8 +434,9 @@ export default {
       let searchKeyData = val.split(" ");
       searchKeyData.forEach((el) => {
         let searchCase =
-          this.activeName === "address" ? this.addressDataList : this.groupList;
+          this.activeName === "address" ? this.addressDataList : this.newGroupList;
         this.searchData = searchCase.filter((item) => {
+          console.log(item)
           if (this.activeName === "address") {
             return item.name.indexOf(el.replace("@", "")) !== -1;
           } else {
@@ -532,6 +533,9 @@ export default {
             el.icon = require("./../../../static/images/image_group_defult.png");
           }
         });
+        this.newGroupList = this.groupList.filter((el)=>{
+          return el.groupName !== undefined
+        })
       });
     },
 

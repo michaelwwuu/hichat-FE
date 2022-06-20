@@ -173,6 +173,7 @@
               >提交</el-button
             >
           </div>
+          
         </el-form>
       </div>
     </template>
@@ -324,7 +325,7 @@
               @click="getAuthCodeData(loginForm.phone, true)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
-          </el-form-item>
+          </el-form-item>        
           <div class="register-footer">
             <div>
               <el-button
@@ -400,7 +401,8 @@ export default {
         passwordAganin: "",
         phone: "",
         username: "",
-        version: 1,
+        version:1,
+        readChecked:false,
       },
       passwordType: "password",
       passwordTypeAgain: "password",
@@ -419,20 +421,15 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        if (val.password === val.passwordAganin) {
-          if (
-            Object.values(val).every((el) => el !== "") &&
-            /^1[3-9][0-9]{9}$/.test(val.phone) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
-              val.passwordAganin
-            ) &&
-            /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
-          ) {
-            this.disabled = false;
-          } else {
-            this.disabled = true;
-          }
+        if (
+          Object.values(val).every((el) => el !== "") &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
+            val.passwordAganin
+          ) &&
+          /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
+        ) {
+          this.disabled = false;
         } else {
           this.disabled = true;
         }
@@ -444,33 +441,6 @@ export default {
     this.browserType();
   },  
   methods: {
-    // browserType() {
-    //   var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
-    //   var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
-    //   var isIE =
-    //     userAgent.indexOf("compatible") > -1 &&
-    //     userAgent.indexOf("MSIE") > -1 &&
-    //     !isOpera; //判斷是否IE瀏覽器
-    //   var isEdge = userAgent.indexOf("Edge") > -1; //判斷是否IE的Edge瀏覽器
-    //   var isFF = userAgent.indexOf("Firefox") > -1; //判斷是否Firefox瀏覽器
-    //   var isSafari =
-    //     userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判斷是否Safari瀏覽器
-    //   var isChrome =
-    //     userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1; //判斷Chrome瀏覽器
-    //   if (isOpera) {
-    //     this.loginForm.deviceName = "Opera";
-    //   } else if (isIE) {
-    //     this.loginForm.deviceName = "compatible";
-    //   } else if (isEdge) {
-    //     this.loginForm.deviceName = "Edge";
-    //   } else if (isFF) {
-    //     this.loginForm.deviceName = "Firefox";
-    //   } else if (isSafari) {
-    //     this.loginForm.deviceName = "Safari";
-    //   } else if (isChrome) {
-    //     this.loginForm.deviceName = "Chrome";
-    //   }
-    // },    
     getAuthCodeData(phone, key) {
       if (phone === "") {
         this.$message({ message: "手机号码尚未输入", type: "error" });
@@ -514,6 +484,13 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
+      if(this.loginForm.password !== this.loginForm.passwordAganin){
+        this.$message({
+          message: "两次输入密码不一致!",
+          type: "warning",
+        });
+        return;
+      }
       //驗證註冊表單是否通過
       this.$refs[rules].validate((valid) => {
         if (!valid) {
@@ -652,6 +629,35 @@ export default {
     .register-footer {
       position: relative;
       top: 2em;
+    }
+  }
+  .read-check-box {
+    margin-bottom: 1em;
+    /deep/.el-checkbox__input.is-checked + .el-checkbox__label {
+      color: rgba(0, 0, 0, 0.8);
+    }
+    /deep/.el-checkbox {
+      .el-checkbox__input {
+        .el-checkbox__inner {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          &:after {
+            border: 2px solid #ffffff;
+            border-left: 0;
+            border-top: 0;
+            height: 13px;
+            left: 7px;
+          }
+        }
+      }
+    }
+
+    .el-checkbox__label {
+      a {
+        color: #10686e;
+        text-decoration: none;
+      }
     }
   }
   /deep/.el-dialog-loginOut {
