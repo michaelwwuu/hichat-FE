@@ -1,6 +1,6 @@
 import Vue from "vue";
-var wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
-// const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
+// var wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
+const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   data() {
