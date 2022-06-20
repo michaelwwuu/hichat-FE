@@ -181,7 +181,7 @@
       <div class="register-header">
         <div class="title-container">
           <img src="./../../../static/images/material_ic_logo.png" alt="" />
-          <span class="register-header-title">注册 Hichat</span>
+          <span class="register-header-title">注册 嗨聊</span>
         </div>
       </div>
       <div class="register-content">
