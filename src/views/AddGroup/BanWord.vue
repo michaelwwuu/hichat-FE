@@ -156,16 +156,26 @@ export default {
   },
   watch:{
     searchKey(val) {
-      let searchKeyData = val.split(" ");
-      searchKeyData.forEach((el) => {
-        console.log(el)
-        let searchCase = this.banMessage;
-        this.searchData = searchCase.filter((item) => {
-          return item.indexOf(el) !== -1;
+      if(this.groupPermissionData.addGroup){
+        let searchKeyData = val.split(" ");
+        searchKeyData.forEach((el) => {
+          let searchCase = this.banMessage;
+          this.searchData = searchCase.filter((item) => {
+            console.log(item)
+            return item.indexOf(el) !== -1;
+          });
         });
-      });
-      this.newBanSearchData = this.searchData
-      console.log(this.newBanSearchData)
+        this.newBanSearchData = this.searchData
+      }else{
+        let searchKeyData = val.split(" ");
+        searchKeyData.forEach((el) => {
+          let searchCase = this.banMessage;
+          this.searchData = searchCase.filter((item) => {
+            return item.word.indexOf(el) !== -1;
+          });
+        });
+        this.newBanSearchData = this.searchData
+      }
     },
   },  
   computed: {
@@ -379,6 +389,11 @@ export default {
 }
 .hichat-pc {
   .home-wrapper {
+    .home-search{
+      .el-input{
+        width: 95%;
+      }
+    }
     .el-dialog-loginOut {
       /deep/.el-dialog {
         .el-dialog__footer {

@@ -97,7 +97,10 @@ export default {
             el.icon = require("./../../../../static/images/image_group_defult.png");
           }
         });
-        this.setGroupList(this.groupData);
+        this.newGroupList = this.groupData.filter((el)=>{
+          return el.groupName !== undefined
+        })
+        this.setGroupList(this.newGroupList);
       });
     },
     getUserId(data) {
