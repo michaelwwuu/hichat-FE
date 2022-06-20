@@ -14,7 +14,6 @@
                 placeholder="搜寻"
                 prefix-icon="el-icon-search"
                 v-model="searchKey"
-                @keyup.native.enter="developmentMessage(searchKey)"
               >
               </el-input>
             </div>
@@ -36,7 +35,6 @@
                 placeholder="搜寻"
                 prefix-icon="el-icon-search"
                 v-model="searchKey"
-                @keyup.native.enter="developmentMessage(searchKey)"
               >
               </el-input>
             </div>
@@ -46,7 +44,7 @@
         <div class="home-content">
           <el-radio-group v-model="checkList">
             <el-radio
-              v-for="(item, index) in contactList"
+              v-for="(item, index) in newContactList"
               :label="item.memberId"
               :key="index"
             >
@@ -121,7 +119,6 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { groupListMember, changeAdmin } from "@/api";
 
 export default {
@@ -132,11 +129,11 @@ export default {
       checkList: "",
       checkMember: "",
       contactList: [],
+      newContactList:[],
       searchKey: "",
       disabled: true,
       successDialogShow: false,
       groupAdminChange: false,
-      developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
     };
   },
@@ -153,6 +150,16 @@ export default {
         (el) => el.memberId === val
       )[0];
     },
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase = this.contactList;
+        this.searchData = searchCase.filter((item) => {
+          return item.name.indexOf(el.replace("@", "")) !== -1;
+        });
+      });
+      this.newContactList = this.searchData
+    },    
   },
   methods: {
     ...mapMutations({
@@ -173,6 +180,7 @@ export default {
               this.checkList = res.memberId;
             }
           });
+          this.newContactList = this.contactList
         })
         .catch((err) => {
           return false;

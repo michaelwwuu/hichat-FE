@@ -525,14 +525,14 @@ export default {
         });
         this.setMyContactDataList(this.addressDataList);        
       });
-      // getGroupList().then((res) => {
-      //   this.groupList = res.data.list;
-      //   this.groupList.forEach((el) => {
-      //     if (el.icon === "") {
-      //       el.icon = require("./../../../static/images/image_group_defult.png");
-      //     }
-      //   });
-      // });
+      getGroupList().then((res) => {
+        this.groupList = res.data.list;
+        this.groupList.forEach((el) => {
+          if (el.icon === "") {
+            el.icon = require("./../../../static/images/image_group_defult.png");
+          }
+        });
+      });
     },
 
     getUserData() {

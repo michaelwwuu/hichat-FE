@@ -20,7 +20,7 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div v-for="(item, index) in isManagerList" :key="index">
+          <div v-for="(item, index) in newManagerList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
                 <div class="setting-button-left" @click="addAdmin(item)">
@@ -72,7 +72,7 @@
           </div>
         </div>
         <div class="home-content">
-          <div v-for="(item, index) in isManagerList" :key="index">
+          <div v-for="(item, index) in newManagerList" :key="index">
             <div class="setting-button mt10">
               <div class="setting-box">
                 <div class="setting-button-left" @click="goAdminSetting(item,'AdminSettingDetail')">
@@ -122,7 +122,6 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { groupListMember,delManager } from "@/api";
 
 export default {
@@ -132,6 +131,7 @@ export default {
       searchKey: "",
       unAdminShow: false,
       isManagerList: [],
+      newManagerList:[],
       unAdminData: {},
       device: localStorage.getItem("device"),
     };
@@ -142,6 +142,19 @@ export default {
     }else{
       this.groupData = this.groupUser
     }
+  },
+  watch:{
+    searchKey(val) {
+      console.log(this.isManagerList)
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase = this.isManagerList;
+        this.searchData = searchCase.filter((item) => {
+          return item.name.indexOf(el.replace("@", "")) !== -1;
+        });
+      });
+      this.newManagerList = this.searchData
+    },
   },
   mounted() {
     this.getGroupListMember()
@@ -177,12 +190,14 @@ export default {
           this.isManagerList = this.contactList.filter(
             (el) => el.isManager
           );
+          this.newManagerList = this.isManagerList
         });
       } else{
         this.contactList = this.groupPermissionData.peopleData
         this.isManagerList = this.contactList.filter(
           (el) => el.isManager
         );
+        this.newManagerList = this.isManagerList
       }
       
     },    

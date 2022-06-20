@@ -14,7 +14,6 @@
                 placeholder="搜寻"
                 prefix-icon="el-icon-search"
                 v-model="searchKey"
-                @keyup.native.enter="developmentMessage(searchKey)"
               >
               </el-input>
             </div>
@@ -33,7 +32,6 @@
                 placeholder="搜寻"
                 prefix-icon="el-icon-search"
                 v-model="searchKey"
-                @keyup.native.enter="developmentMessage(searchKey)"
               >
               </el-input>
             </div>
@@ -42,7 +40,7 @@
         <div class="home-content">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              v-for="(item, index) in newContactDataList"
+              v-for="(item, index) in newContactList"
               :label="item.contactId"
               :key="index"
               :disabled="item.disabled"
@@ -107,10 +105,10 @@ export default {
       checkList: [],
       contactList: [],
       newContactDataList: [],
+      newContactList:[],
       searchKey: "",
       disabled: true,
       addUserDialogShow: false,
-      developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
     };
   },
@@ -125,6 +123,16 @@ export default {
     checkList(val) {
       this.disabled = !val.length > 0;
     },
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        let searchCase = this.newContactDataList;
+        this.searchData = searchCase.filter((item) => {
+          return item.name.indexOf(el.replace("@", "")) !== -1;
+        });
+      });
+      this.newContactList = this.searchData
+    },     
   },
   methods: {
     ...mapMutations({
@@ -152,6 +160,7 @@ export default {
         this.newContactDataList = this.newContactDataList.filter((el)=>{
           return (el.contactId !== el.memberId) && !el.isAdmin && !el.isManager
         })
+        this.newContactList = this.newContactDataList
       });
     },
     addMemberSubmitBtn() {

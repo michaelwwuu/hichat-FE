@@ -86,7 +86,7 @@ export const state = {
     groupAdminAuthority: {
       checkUserInfo: false,
       pin: false,
-      sendMessage: false
+      sendMessage: true
     },
     groupDisabledWordList: [],
     groupManagerAuthority: [],    

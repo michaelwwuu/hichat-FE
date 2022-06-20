@@ -20,7 +20,7 @@
         <div class="home-content">
           <div
             class="setting-button"
-            v-for="(item, index) in banMessage"
+            v-for="(item, index) in newBanSearchData"
             :key="index"
           >
             <div class="setting-box">
@@ -62,7 +62,6 @@
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
             >
             </el-input>
           </div>
@@ -70,7 +69,7 @@
         <div class="home-content">
           <div
             class="setting-button"
-            v-for="(item, index) in banMessage"
+            v-for="(item, index) in newBanSearchData"
             :key="index"
           >
             <div class="setting-box">
@@ -129,7 +128,6 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { addGroupDisabledWord,getGroupDisabledWord,delGroupDisabledWord } from "@/api";
 
 export default {
@@ -139,6 +137,7 @@ export default {
       searchKey:"",
       input:"",
       banMessage:[],
+      newBanSearchData:[],
       banObject:{},
       unBanShow:false,
       addBanShow:false,
@@ -155,6 +154,20 @@ export default {
   mounted() {
     this.getDisabledWord()
   },
+  watch:{
+    searchKey(val) {
+      let searchKeyData = val.split(" ");
+      searchKeyData.forEach((el) => {
+        console.log(el)
+        let searchCase = this.banMessage;
+        this.searchData = searchCase.filter((item) => {
+          return item.indexOf(el) !== -1;
+        });
+      });
+      this.newBanSearchData = this.searchData
+      console.log(this.newBanSearchData)
+    },
+  },  
   computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
@@ -171,10 +184,12 @@ export default {
         getGroupDisabledWord({groupId}).then((res)=>{
           if(res.code === 200){
             this.banMessage = res.data
+            this.newBanSearchData = this.banMessage
           }
         })
       }else{
         this.banMessage = this.groupPermissionData.groupDisabledWordList
+        this.newBanSearchData = this.banMessage
       }
     },
     unAdmin(data){
