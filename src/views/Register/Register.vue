@@ -165,7 +165,7 @@
             </el-button>
           </el-form-item>
           <div class="read-check-box">
-            <el-checkbox v-model="readChecked">
+            <el-checkbox v-model="loginForm.readChecked">
               已阅读并同意<a
                 href="https://www.hichat.info/pub/userAgreement.html"
                 target="_blank"
@@ -340,7 +340,7 @@
             </el-button>
           </el-form-item>
           <div class="read-check-box">
-            <el-checkbox v-model="readChecked">
+            <el-checkbox v-model="loginForm.readChecked">
               已阅读并同意<a
                 href="https://www.hichat.info/pub/userAgreement.html"
                 target="_blank"
@@ -431,13 +431,13 @@ export default {
         nickname: "",
         username: "",
         version:1,
+        readChecked:false,
       },
       passwordType: "password",
       passwordTypeAgain: "password",
       count: 60,
       timer: false,
       disabledTime: false,
-      readChecked: false,
       disabled: true,
       dialogShow: false,
       device: localStorage.getItem("device"),
@@ -450,17 +450,17 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        if (val.password === val.passwordAganin) {
-          if (
-            Object.values(val).every((el) => el !== "") &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
-              val.passwordAganin
-            ) &&
-            /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
-          ) {
+        if (
+          Object.values(val).every((el) => el !== "") &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
+            val.passwordAganin
+          ) &&
+          /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
+        ) {
+          if(val.readChecked){
             this.disabled = false;
-          } else {
+          }else{
             this.disabled = true;
           }
         } else {
@@ -544,9 +544,9 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
-      if (!this.readChecked) {
+      if(this.loginForm.password !== this.loginForm.passwordAganin){
         this.$message({
-          message: "尚未勾選同意條款",
+          message: "两次输入密码不一致!",
           type: "warning",
         });
         return;
@@ -561,6 +561,7 @@ export default {
           return;
         }
         delete this.loginForm.passwordAganin;
+        delete this.loginForm.readChecked;
         this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
         this.disabled = true;
         register(this.loginForm)
