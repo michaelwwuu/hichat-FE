@@ -506,8 +506,37 @@ export default {
         return;
       }
       //驗證註冊表單是否通過;
-      
-      
+      this.$refs[rules].validate((valid) => {
+        if (!valid) {
+          this.$message({
+            message: "注册失败，请重新输入并确认",
+            type: "error",
+          });
+          return;
+        }
+        delete this.loginForm.passwordAganin;
+        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
+        this.disabled = true;
+        register(this.loginForm)
+          .then((res) => {
+            //登录成功
+            if (res.code === 200) {
+              setToken(res.data.tokenHead + res.data.token);
+              localStorage.setItem("phone", this.loginForm.phone);
+              this.dialogShow = true;
+              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+            }else{
+              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+            }
+          })
+          .catch((err) => {
+            this.$message({
+              message: "注册失败，请重新输入并确认",
+              type: "error",
+            });
+            return false;
+          });
+      });
     },
   },
 };
