@@ -186,7 +186,6 @@
               >提交</el-button
             >
           </div>
-          
         </el-form>
       </div>
     </template>
@@ -351,7 +350,7 @@
                 >隐私权政策</a
               ></el-checkbox
             >
-          </div>          
+          </div>
           <div class="register-footer">
             <div>
               <el-button
@@ -384,7 +383,7 @@
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       width="70%"
       center
     >
@@ -414,8 +413,8 @@
 
 <script>
 import { register, genAuthCode } from "@/api";
-import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
-import { getLocal,setToken } from "_util/utils.js";
+import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
+import { setToken } from "_util/utils.js";
 
 export default {
   data() {
@@ -430,8 +429,8 @@ export default {
         authCode: "",
         nickname: "",
         username: "",
-        version:1,
-        readChecked:false,
+        version: 1,
+        readChecked: false,
       },
       passwordType: "password",
       passwordTypeAgain: "password",
@@ -450,17 +449,19 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
+        let password = val.password;
+        let passwordAganin = val.passwordAganin;
         if (
           Object.values(val).every((el) => el !== "") &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
-            val.passwordAganin
-          ) &&
+          // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
+          // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.passwordAganin) &&
+          password.toString().length >= 6 &&
+          passwordAganin.toString().length >= 6 &&
           /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
         ) {
-          if(val.readChecked){
+          if (val.readChecked) {
             this.disabled = false;
-          }else{
+          } else {
             this.disabled = true;
           }
         } else {
@@ -472,7 +473,7 @@ export default {
   },
   created() {
     this.browserType();
-  },  
+  },
   methods: {
     browserType() {
       var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
@@ -500,7 +501,7 @@ export default {
       } else if (isChrome) {
         this.loginForm.deviceName = "Chrome";
       }
-    },    
+    },
     getAuthCodeData(email, key) {
       if (email === "") {
         this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
@@ -544,14 +545,26 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
-      if(this.loginForm.password !== this.loginForm.passwordAganin){
+      if (this.loginForm.password !== this.loginForm.passwordAganin) {
         this.$message({
           message: "两次输入密码不一致!",
           type: "warning",
         });
         return;
+      } else if (
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]/.test(this.loginForm.password) ||
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]/.test(
+          this.loginForm.passwordAganin
+        )
+      ) {
+        console.log(123);
+        this.$message({
+          message: "請輸入正確密碼格式!",
+          type: "warning",
+        });
+        return;
       }
-      //驗證註冊表單是否通過
+      驗證註冊表單是否通過;
       this.$refs[rules].validate((valid) => {
         if (!valid) {
           this.$message({
@@ -562,7 +575,11 @@ export default {
         }
         delete this.loginForm.passwordAganin;
         delete this.loginForm.readChecked;
-        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
+        this.loginForm.password = Encrypt(
+          this.loginForm.password,
+          this.aesKey,
+          this.aesIv
+        );
         this.disabled = true;
         register(this.loginForm)
           .then((res) => {
@@ -571,7 +588,11 @@ export default {
               setToken(res.data.tokenHead + res.data.token);
               localStorage.setItem("email", this.loginForm.email);
               this.dialogShow = true;
-              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+              this.loginForm.password = Decrypt(
+                this.loginForm.password,
+                this.aesKey,
+                this.aesIv
+              );
             }
           })
           .catch((err) => {
@@ -804,10 +825,10 @@ export default {
     .login-form {
       .el-form-item {
         .el-input {
-           width:60%;
+          width: 60%;
           /deep/.el-input__inner {
             vertical-align: middle;
-            background-color: #FFFFFF !important;
+            background-color: #ffffff !important;
           }
         }
       }
@@ -836,9 +857,9 @@ export default {
         padding: 0 !important;
       }
     }
-  }  
+  }
 }
-.-webkit-input-placeholder{
-  background-color: #FFFFFF;
+.-webkit-input-placeholder {
+  background-color: #ffffff;
 }
 </style>

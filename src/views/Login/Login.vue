@@ -110,10 +110,7 @@
           </span>
         </el-form-item>
       </template>
-      <div
-        class="remember-style"
-       
-      >
+      <div class="remember-style">
         <el-switch
           v-model="remember"
           active-color="#fe5f3f"
