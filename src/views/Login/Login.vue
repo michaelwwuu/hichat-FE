@@ -315,7 +315,7 @@ export default {
       if(!phoneValidator.isPhoneNumberValid(this.loginForm.phone, "CN")){
         this.$message({
           message: "請輸入正確手机号码格式!",
-          type: "warning",
+          type: "error",
         });
         return;
       }
@@ -621,6 +621,13 @@ $light_gray: #eee;
   }
   .el-input {
     width: 60%;
+  }
+  /deep/.el-dialog-loginOut {
+    .el-dialog {
+      .el-dialog__footer {
+        padding: 0 !important;
+      }
+    }
   }
 }
 </style>

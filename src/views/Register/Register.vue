@@ -438,9 +438,15 @@ export default {
     },
   },
   methods: {
-    getAuthCodeData(email, key) {
-      if (email === "") {
-        this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
+    getAuthCodeData(phone, key) {
+      if (phone === "") {
+        this.$message({ message: "手机号码尚未输入", type: "error" });
+        return;
+      } else if(!phoneValidator.isPhoneNumberValid(phone, "CN")){
+        this.$message({
+          message: "請輸入正確手机号码格式!",
+          type: "error",
+        });
         return;
       }
       this.disabledTime = true;
@@ -484,7 +490,7 @@ export default {
       if (this.loginForm.password !== this.loginForm.passwordAganin) {
         this.$message({
           message: "两次输入密码不一致!",
-          type: "warning",
+          type: "error",
         });
         return;
       } else if (
@@ -495,13 +501,13 @@ export default {
       ) {
         this.$message({
           message: "請輸入正確密碼格式!",
-          type: "warning",
+          type: "error",
         });
         return;
       } else if(!phoneValidator.isPhoneNumberValid(this.loginForm.phone, "CN")){
         this.$message({
           message: "請輸入正確手机号码格式!",
-          type: "warning",
+          type: "error",
         });
         return;
       }

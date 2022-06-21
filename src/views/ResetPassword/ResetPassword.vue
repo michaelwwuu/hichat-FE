@@ -41,7 +41,7 @@
               "
               plain
               :disabled="disabledTime"
-              @click="getAuthCodeData(loginForm.email, false)"
+              @click="getAuthCodeData(loginForm.phoneNo, false)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
@@ -91,7 +91,7 @@
               "
               plain
               :disabled="disabledTime"
-              @click="getAuthCodeData(loginForm.email, false)"
+              @click="getAuthCodeData(loginForm.phoneNo, false)"
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
@@ -143,12 +143,13 @@
 
 <script>
 import { unlockUser, genAuthCode } from "@/api";
+import * as phoneValidator from '@/utils/phoneValidator';
 
 export default {
   data() {
     return {
       loginForm: {
-        phone: localStorage.getItem("phone"),
+        phoneNo: localStorage.getItem("phone"),
         authCode: "",
       },
       count: 60,
@@ -175,6 +176,12 @@ export default {
     getAuthCodeData(phone, key) {
       if (phone === "") {
         this.$message({ message: "手机号码尚未输入", type: "error" });
+        return;
+      } else if(!phoneValidator.isPhoneNumberValid(phone, "CN")){
+        this.$message({
+          message: "請輸入正確手机号码格式!",
+          type: "error",
+        });
         return;
       }
       this.disabledTime = true;
@@ -439,6 +446,13 @@ export default {
     font-size: 14px !important;
     border: 0 !important;
     right: 0.5em;
+  }
+  /deep/.el-dialog-loginOut {
+    .el-dialog {
+      .el-dialog__footer {
+        padding: 0 !important;
+      }
+    }
   }
 }
 </style>

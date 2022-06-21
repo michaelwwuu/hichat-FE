@@ -350,13 +350,19 @@ export default {
     },
   },
   methods: {
-    getAuthCodeData(phoneNo, key) {
-      if (phoneNo === "") {
+    getAuthCodeData(phone, key) {
+      if (phone === "") {
         this.$message({ message: "手机号码尚未输入", type: "error" });
+        return;
+      } else if(!phoneValidator.isPhoneNumberValid(phone, "CN")){
+        this.$message({
+          message: "請輸入正確手机号码格式!",
+          type: "error",
+        });
         return;
       }
       this.disabledTime = true;
-      let params = { phoneNo: phoneNo, forRegister: key };
+      let params = { phoneNo: phone, forRegister: key };
       genAuthCode(params).then((res) => {
         if (res.code === 200) {
           this.$message({ message: "请至註冊手机確認驗證碼", type: "success" });
