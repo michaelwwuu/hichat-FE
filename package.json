@@ -19,6 +19,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.0",
+    "google-libphonenumber": "^3.2.28",
     "js-audio-recorder": "^1.0.7",
     "js-base64": "^3.7.2",
     "jsqr": "^1.4.0",

@@ -110,10 +110,7 @@
           </span>
         </el-form-item>
       </template>
-      <div
-        class="remember-style"
-       
-      >
+      <div class="remember-style">
         <el-switch
           v-model="remember"
           active-color="#fe5f3f"
@@ -127,19 +124,6 @@
         
         
       </div>
-      <!-- <div class="read-check-box">
-        <el-checkbox v-model="readChecked">
-          已阅读并同意<a
-            href="https://www.hichat.info/pub/userAgreement.html"
-            target="_blank"
-            >服务条款</a
-          >與<a
-            href="https://www.hichat.info/pub/privacyPolicy.html"
-            target="_blank"
-            >隐私权政策</a
-          ></el-checkbox
-        >
-      </div> -->
       <div>
         <el-button
           style="width: 100%; margin-bottom: 30px"
@@ -204,6 +188,7 @@
 <script>
 import { login } from "_api/index.js";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
+import * as phoneValidator from '@/utils/phoneValidator';
 export default {
   data() {
     return {
@@ -233,7 +218,6 @@ export default {
       handler(val) {
         if (
           Object.values(val).every((el) => el !== "") &&
-          /^1[3-9][0-9]{9}$/.test(val.phone) &&
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password)
         ) {
           this.disabled = false;
@@ -328,13 +312,13 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
-      // if (!this.readChecked) {
-      //   this.$message({
-      //     message: "尚未勾選同意條款",
-      //     type: "warning",
-      //   });
-      //   return;
-      // }
+      if(!phoneValidator.isPhoneNumberValid(this.loginForm.phone, "CN")){
+        this.$message({
+          message: "請輸入正確手机号码格式!",
+          type: "warning",
+        });
+        return;
+      }
       //驗證登录表單是否通過
       this.$refs[rules].validate(() => {
         if (this.disabled) {

@@ -30,7 +30,7 @@
               name="phone"
               type="text"
               tabindex="1"
-              maxLength="30"
+              maxLength="13"
               @input="
                 (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
@@ -173,7 +173,6 @@
               >提交</el-button
             >
           </div>
-          
         </el-form>
       </div>
     </template>
@@ -199,7 +198,7 @@
               name="phone"
               type="text"
               tabindex="1"
-              maxLength="30"
+              maxLength="13"
               @input="
                 (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
@@ -358,7 +357,7 @@
       :visible.sync="dialogShow"
       class="el-dialog-loginOut"
       :show-close="false"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       width="70%"
       center
     >
@@ -388,8 +387,9 @@
 
 <script>
 import { register, genAuthCode } from "@/api";
-import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
-import { getLocal,setToken } from "_util/utils.js";
+import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
+import * as phoneValidator from '@/utils/phoneValidator';
+import { setToken } from "_util/utils.js";
 
 export default {
   data() {
@@ -401,8 +401,8 @@ export default {
         passwordAganin: "",
         phone: "",
         username: "",
-        version:1,
-        readChecked:false,
+        version: 1,
+        readChecked: false,
       },
       passwordType: "password",
       passwordTypeAgain: "password",
@@ -421,12 +421,12 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
+        let password = val.password;
+        let passwordAganin = val.passwordAganin;
         if (
           Object.values(val).every((el) => el !== "") &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password) &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
-            val.passwordAganin
-          ) &&
+          password.toString().length >= 6 &&
+          passwordAganin.toString().length >= 6 &&
           /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
         ) {
           this.disabled = false;
@@ -437,13 +437,10 @@ export default {
       deep: true,
     },
   },
-  created() {
-    this.browserType();
-  },  
   methods: {
-    getAuthCodeData(phone, key) {
-      if (phone === "") {
-        this.$message({ message: "手机号码尚未输入", type: "error" });
+    getAuthCodeData(email, key) {
+      if (email === "") {
+        this.$message({ message: "邮件信箱资料尚未输入", type: "error" });
         return;
       }
       this.disabledTime = true;
@@ -484,45 +481,33 @@ export default {
     },
     //登录&&註冊
     submitForm(rules) {
-      if(this.loginForm.password !== this.loginForm.passwordAganin){
+      if (this.loginForm.password !== this.loginForm.passwordAganin) {
         this.$message({
           message: "两次输入密码不一致!",
           type: "warning",
         });
         return;
+      } else if (
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]/.test(this.loginForm.password) ||
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]/.test(
+          this.loginForm.passwordAganin
+        )
+      ) {
+        this.$message({
+          message: "請輸入正確密碼格式!",
+          type: "warning",
+        });
+        return;
+      } else if(!phoneValidator.isPhoneNumberValid(this.loginForm.phone, "CN")){
+        this.$message({
+          message: "請輸入正確手机号码格式!",
+          type: "warning",
+        });
+        return;
       }
-      //驗證註冊表單是否通過
-      this.$refs[rules].validate((valid) => {
-        if (!valid) {
-          this.$message({
-            message: "注册失败，请重新输入并确认",
-            type: "error",
-          });
-          return;
-        }
-        delete this.loginForm.passwordAganin;
-        this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
-        this.disabled = true;
-        register(this.loginForm)
-          .then((res) => {
-            //登录成功
-            if (res.code === 200) {
-              setToken(res.data.tokenHead + res.data.token);
-              localStorage.setItem("phone", this.loginForm.phone);
-              this.dialogShow = true;
-              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
-            }else{
-              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
-            }
-          })
-          .catch((err) => {
-            this.$message({
-              message: "注册失败，请重新输入并确认",
-              type: "error",
-            });
-            return false;
-          });
-      });
+      //驗證註冊表單是否通過;
+      
+      
     },
   },
 };
@@ -745,10 +730,10 @@ export default {
     .login-form {
       .el-form-item {
         .el-input {
-           width:60%;
+          width: 60%;
           /deep/.el-input__inner {
             vertical-align: middle;
-            background-color: #FFFFFF !important;
+            background-color: #ffffff !important;
           }
         }
       }
@@ -777,9 +762,9 @@ export default {
         padding: 0 !important;
       }
     }
-  }  
+  }
 }
-.-webkit-input-placeholder{
-  background-color: #FFFFFF;
+.-webkit-input-placeholder {
+  background-color: #ffffff;
 }
 </style>
