@@ -226,7 +226,7 @@ const router = new VueRouter({
 //导航守卫
 router.beforeEach((to, from, next) => {
   //判断token是否失效
-  if (to.name === "Address") {
+  if (to.name === "Address" || to.name === "HiChat") {
     getUserInfo().then((res) => {
       if (res.code === 200) {
         setLocal('username', res.data.username);
@@ -240,7 +240,6 @@ router.beforeEach((to, from, next) => {
       }, 2000);
       alert("请注意:由于跳转页面失败，即将导回登录页，谢谢。");
     })
-
   }
   if (!['Login','Register','ForgetPassword','ResetPassword'].includes(to.name)) {
     if (localStorage.getItem("token") === null) next({ path: '/login' });
