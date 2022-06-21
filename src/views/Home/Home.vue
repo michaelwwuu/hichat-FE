@@ -233,7 +233,7 @@
           colorDark="#333333"
           :text="qrCodeConfig.text"
           :download="downloadFilename"
-          :size="100"
+          :size="1000"
           :margin="0"
           :logoSrc="qrCodeConfig.logo"
           :logoCornerRadius="2"
