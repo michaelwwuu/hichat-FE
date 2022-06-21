@@ -145,7 +145,6 @@ export default {
   },
   watch:{
     searchKey(val) {
-      console.log(this.isManagerList)
       let searchKeyData = val.split(" ");
       searchKeyData.forEach((el) => {
         let searchCase = this.isManagerList;

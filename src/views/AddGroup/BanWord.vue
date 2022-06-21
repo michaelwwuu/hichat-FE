@@ -161,7 +161,6 @@ export default {
         searchKeyData.forEach((el) => {
           let searchCase = this.banMessage;
           this.searchData = searchCase.filter((item) => {
-            console.log(item)
             return item.indexOf(el) !== -1;
           });
         });

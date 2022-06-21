@@ -436,7 +436,6 @@ export default {
         let searchCase =
           this.activeName === "address" ? this.addressDataList : this.newGroupList;
         this.searchData = searchCase.filter((item) => {
-          console.log(item)
           if (this.activeName === "address") {
             return item.name.indexOf(el.replace("@", "")) !== -1;
           } else {
