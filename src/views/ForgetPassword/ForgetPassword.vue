@@ -301,6 +301,8 @@
 <script>
 import { forgetPassword, genAuthCode } from "@/api";
 import { Encrypt,Decrypt } from "@/utils/AESUtils.js";
+import * as phoneValidator from '@/utils/phoneValidator';
+
 export default {
   data() {
     return {
