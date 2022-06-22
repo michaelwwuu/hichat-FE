@@ -32,6 +32,7 @@
             @input="
               (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
+            @blur="recover"
           >
           </el-input>
         </el-form-item>
@@ -50,6 +51,7 @@
             @input="
               (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
+            @blur="recover"
           >
           </el-input>
           <span class="show-pwd" @click="showPwd">
@@ -77,6 +79,7 @@
             @input="
               (v) => (loginForm.email = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
+            @blur="recover"
           >
           </el-input>
         </el-form-item>
@@ -92,6 +95,7 @@
             @input="
               (v) => (loginForm.password = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
             "
+            @blur="recover"
           >
           </el-input>
           <span
@@ -257,8 +261,17 @@ export default {
           : "";
     }
     this.getUUID();
+    
   },
   methods: {
+    recover(){
+      let agentValue = navigator.userAgent;
+      // userAgent属性是一个只读的字符串，声明了浏览器用于 HTTP 请求的用户代理头的值，用于判断是Android设备还是IOS设备
+      let isIOS = !!agentValue.match( /\(i[^;]+;( U;)? CPU.+Mac OS X/ ); // 判断是否是ios终端
+      if( isIOS ) {
+        window.scrollTo( 0, 0 ); // 如果是ios终端，则在失焦的时候使页面返回顶部
+      }
+    },
     browserType() {
       var userAgent = navigator.userAgent; //取得瀏覽器的userAgent字串
       var isOpera = userAgent.indexOf("Opera") > -1; //判斷是否Opera瀏覽器
