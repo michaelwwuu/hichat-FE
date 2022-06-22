@@ -1,35 +1,41 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title">关于HiChat</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="home-content">
-      <div
-        class="setting-button"
-        v-for="(item, index) in aboutData"
-        :key="index"
-        :class="{ 'mt10 border-bottom': item.name === '服务条款' }"
-        @click="developmentMessage(item.name)"
-      >
-        <router-link :to="item.path">
-          <div class="setting-button-left">
-            <img :src="item.icon" alt="" />
-            <span>{{ item.name }}</span>
+    <el-container>
+      <el-main>
+        <el-header height="55px">       
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">关于HiChat</span>
+            <div class="home-add-user"></div>
           </div>
+        </el-header>
+        <div class="home-content">
           <div
-            class="setting-button-right version"
-            v-if="item.name === '使用版本'"
+            class="setting-button"
+            v-for="(item, index) in aboutData"
+            :key="index"
+            :class="{ 'mt10 border-bottom': item.name === '服务条款' }"
+            @click="developmentMessage(item.name)"
           >
-            <span>{{ item.version }}</span>
+            <router-link :to="item.path">
+              <div class="setting-button-left">
+                <img :src="item.icon" alt="" />
+                <span>{{ item.name }}</span>
+              </div>
+              <div
+                class="setting-button-right version"
+                v-if="item.name === '使用版本'"
+              >
+                <span>{{ item.version }}</span>
+              </div>
+              <div class="setting-button-right" v-else>
+                <img src="./../../../static/images/next.png" alt="" />
+              </div>
+            </router-link>
           </div>
-          <div class="setting-button-right" v-else>
-            <img src="./../../../static/images/next.png" alt="" />
-          </div>
-        </router-link>
-      </div>
-    </div>
+        </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 

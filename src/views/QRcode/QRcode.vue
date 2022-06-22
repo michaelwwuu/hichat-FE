@@ -1,19 +1,25 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <div class="home-user" @click="back"></div>
-      <span class="home-header-title">掃碼QRcode</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="scroll-container">
-      <Scaner
-        v-on:code-scanned="codeScanned"
-        v-on:error-captured="errorCaptured"
-        :stop-on-scanned="true"
-        :draw-on-found="true"
-        :responsive="false"
-      />
-    </div>
+    <el-container>
+      <el-main>
+        <el-header height="55px">    
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">掃碼QRcode</span>
+            <div class="home-add-user"></div>
+          </div>
+        </el-header>
+        <div class="scroll-container">
+          <Scaner
+            v-on:code-scanned="codeScanned"
+            v-on:error-captured="errorCaptured"
+            :stop-on-scanned="true"
+            :draw-on-found="true"
+            :responsive="false"
+          />
+        </div>
+      </el-main>
+    </el-container>   
   </div>
 </template>
 

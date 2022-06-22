@@ -1,43 +1,49 @@
 <template>
   <div class="home-wrapper">
-    <div class="home-header">
-      <router-link :to="'/Setting'">
-        <div class="home-user"></div>
-      </router-link>
-      <span class="home-header-title">密码管理</span>
-      <div class="home-add-user"></div>
-    </div>
-    <div class="home-content">
-      <div
-        class="setting-button"
-        v-for="(item, index) in aboutData"
-        :key="index"
-        :class="{ 'border-bottom': item.name === '修改登录密码' }"
-        @click="developmentMessage(item.name)"
-      >
-        <router-link :to="item.path">
-          <div class="setting-button-left">
-            <img :src="item.icon" alt="" />
-            <span>{{ item.name }}</span>
+    <el-container>
+      <el-main>
+        <el-header height="55px">       
+          <div class="home-header">
+            <router-link :to="'/Setting'">
+              <div class="home-user"></div>
+            </router-link>
+            <span class="home-header-title">密码管理</span>
+            <div class="home-add-user"></div>
           </div>
+        </el-header>
+        <div class="home-content">
           <div
-            class="setting-button-right version"
-            v-if="item.name === '生物辨识'"
+            class="setting-button"
+            v-for="(item, index) in aboutData"
+            :key="index"
+            :class="{ 'border-bottom': item.name === '修改登录密码' }"
+            @click="developmentMessage(item.name)"
           >
-            <el-switch
-              v-model="notification"
-              active-color="#fd5f3f"
-              inactive-color="#666666"
-              disabled
-            >
-            </el-switch>
+            <router-link :to="item.path">
+              <div class="setting-button-left">
+                <img :src="item.icon" alt="" />
+                <span>{{ item.name }}</span>
+              </div>
+              <div
+                class="setting-button-right version"
+                v-if="item.name === '生物辨识'"
+              >
+                <el-switch
+                  v-model="notification"
+                  active-color="#fd5f3f"
+                  inactive-color="#666666"
+                  disabled
+                >
+                </el-switch>
+              </div>
+              <div class="setting-button-right" v-else>
+                <img src="./../../../static/images/next.png" alt="" />
+              </div>
+            </router-link>
           </div>
-          <div class="setting-button-right" v-else>
-            <img src="./../../../static/images/next.png" alt="" />
-          </div>
-        </router-link>
-      </div>
-    </div>
+        </div>
+      </el-main>
+    </el-container>    
   </div>
 </template>
 
