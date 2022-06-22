@@ -138,7 +138,7 @@
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import { logout } from "@/api";
-import { Encrypt} from "@/utils/AESUtils.js";
+import { Decrypt,Encrypt} from "@/utils/AESUtils.js";
 
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
@@ -193,6 +193,10 @@ export default {
       promotionDialogShow:false,
       developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
+
+      //推廣 key iv
+      promoteKey: "142c7ec1b64ae0c6",
+      promoteIv: "0000000000000000",
     };
   },
   computed: {
@@ -218,10 +222,10 @@ export default {
     }/pub/#/signUp?${encodeURIComponent(
       Encrypt(
         `agentId=${localStorage.getItem("id")}`,
-        this.promoteIv,
+        this.promoteKey,
         this.promoteIv
       )
-    )}`;    
+    )}`; 
   },
   methods: {
     copyUrl() {

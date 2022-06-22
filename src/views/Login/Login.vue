@@ -345,6 +345,9 @@ export default {
               this.dialogShow = true;
             } else if(res.code === 10002){
                this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+            } else {
+               this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+
             }
           })
           .catch((err) => {

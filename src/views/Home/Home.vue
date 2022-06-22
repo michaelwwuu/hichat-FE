@@ -421,7 +421,7 @@ export default {
     }/pub/#/signUp?${encodeURIComponent(
       Encrypt(
         `agentId=${localStorage.getItem("id")}`,
-        this.promoteIv,
+        this.promoteKey,
         this.promoteIv
       )
     )}`;
