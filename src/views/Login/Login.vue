@@ -343,11 +343,9 @@ export default {
             } else if (res.code === 10009) {
               //登录失敗
               this.dialogShow = true;
-            } else if(res.code === 10002){
-               this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
+              this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             } else {
                this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
-
             }
           })
           .catch((err) => {
