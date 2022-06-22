@@ -15,6 +15,7 @@
           :key="index"
           class="address-box"
           @click="goChatRoom(item, 'ChatMsg')"
+          @contextmenu.prevent.stop="onContextmenu(item)"
         >
           <el-image :src="noIconShow(item, 'user')" />
           <div class="contont-box">
@@ -279,6 +280,45 @@ export default {
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
+    onContextmenu(data){
+      console.log(data)
+      let item = [
+        {
+          name: "deleteAllChat",
+          label: "刪除對話",
+          divided: true,
+          onClick: () => {
+            this.deleteRecent(data);
+          },
+        },
+      ]
+      this.$contextmenu({
+        items: item,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
+        customClass: "custom-class",
+        zIndex: 3,
+        minWidth: 230,
+      });
+      return false;
+    },
+    deleteRecent(data) {
+      let parmas = {
+        fullDelete: true,
+        toChatId: data.toChatId,
+      };
+      console.log(parmas)
+      // deleteRecentChat(parmas)
+      //   .then((res) => {
+      //     if (res.code === 200) {
+      //       this.getHiChatDataList();
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     this.$message({ message: err, type: "error" });
+      //   });
+    },    
     touchStart(item){
       //手指触摸
       clearTimeout(this.Loop); //再次清空定时器，防止重复注册定时器
