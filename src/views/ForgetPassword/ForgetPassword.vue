@@ -34,6 +34,7 @@
               @input="
                 (v) => (loginForm.phoneNo = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
+              @blur="recover"
             >
             </el-input>
           </el-form-item>
@@ -50,6 +51,7 @@
               tabindex="2"
               maxLength="6"
               @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+              @blur="recover"
             >
             </el-input>
             <el-button
@@ -79,6 +81,7 @@
                 (v) =>
                   (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
+              @blur="recover"
             >
             </el-input>
             <span class="show-pwd" @click="showPwd('password')">
@@ -111,6 +114,7 @@
                     ''
                   ))
               "
+              @blur="recover"
             >
             </el-input>
             <span class="show-pwd" @click="showPwd('passwordAgain')">
@@ -162,6 +166,7 @@
               @input="
                 (v) => (loginForm.phoneNo = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
+              @blur="recover"
             >
             </el-input>
           </el-form-item>
@@ -175,6 +180,7 @@
               tabindex="2"
               maxLength="6"
               @input="(v) => (loginForm.authCode = v.replace(/[^\d]/g, ''))"
+              @blur="recover"
             >
             </el-input>
             <el-button
@@ -201,6 +207,7 @@
                 (v) =>
                   (loginForm.newPassword = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
               "
+              @blur="recover"
             >
             </el-input>
             <span
@@ -234,6 +241,7 @@
                     ''
                   ))
               "
+              @blur="recover"
             >
             </el-input>
             <span
@@ -352,6 +360,14 @@ export default {
     },
   },
   methods: {
+    recover(){
+		  let agentValue = navigator.userAgent;
+      // userAgent属性是一个只读的字符串，声明了浏览器用于 HTTP 请求的用户代理头的值，用于判断是Android设备还是IOS设备
+      let isIOS = !!agentValue.match( /\(i[^;]+;( U;)? CPU.+Mac OS X/ ); // 判断是否是ios终端
+      if( isIOS ) {
+          window.scrollTo( 0, 0 ); // 如果是ios终端，则在失焦的时候使页面返回顶部
+      }
+    },
     getAuthCodeData(phone, key) {
       if (phone === "") {
         this.$message({ message: "手机号码尚未输入", type: "error" });
