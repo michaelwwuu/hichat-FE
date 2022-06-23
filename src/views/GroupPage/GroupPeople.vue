@@ -73,7 +73,7 @@
                   style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
-              <template v-else-if="groupData.isAdmin || groupData.isManager">
+              <template v-else-if="(groupData.isAdmin || groupData.isManager) ">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
@@ -100,6 +100,7 @@
               </template>
               <template v-if="groupData.isManager && !editBtnShow">
                 <div
+                  v-if="authority.addUser"
                   class="home-add-user"
                   @click="addGroupPeople"
                   style="position: absolute; right: 50px"
