@@ -100,6 +100,7 @@
               </template>
               <template v-if="groupData.isManager && !editBtnShow">
                 <div
+                  v-if="authority.addUser"
                   class="home-add-user"
                   @click="addGroupPeople"
                   style="position: absolute; right: 50px"
