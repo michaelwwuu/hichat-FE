@@ -414,7 +414,6 @@ export default {
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing:false,
       };
-      console.log(this.chatRoomMsg)
     },
     //判斷是否base64
     isBase64(data) {
