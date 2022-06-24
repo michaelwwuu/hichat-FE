@@ -402,7 +402,7 @@ export default {
         historyId: data.chat.historyId,
         message: {
           time: data.chat.sendTime,
-          content: this.isBase64(data.chat.text),
+          content: data.chat.text,
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
@@ -414,6 +414,7 @@ export default {
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing:false,
       };
+      console.log(this.chatRoomMsg)
     },
     //判斷是否base64
     isBase64(data) {
@@ -533,7 +534,7 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.timeOut = historyMsgList.length * 40;
+          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 200 : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               this.groupListData = JSON.parse(

@@ -522,7 +522,8 @@ export default {
         historyId: data.chat.historyId,
         message: {
           time: data.chat.sendTime,
-          content: this.isBase64(data.chat.text),
+          // content: this.isBase64(data.chat.text),
+          content: data.chat.text,
         },
         isRead: data.isRead,
         userChatId: data.chat.fromChatId,
@@ -621,7 +622,7 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
-          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 200 : historyMsgList.length * 50;
+          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 200 : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {

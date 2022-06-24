@@ -619,23 +619,65 @@ export default {
           data.chatType === "SRV_GROUP_AUDIO"
         ) {
           if (data.chatType === "SRV_GROUP_AUDIO") {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "deleteAllChat" &&
-                list.name !== "edit" &&
-                list.name !== "copy" &&
-                list.name !== "download"
-              );
-            });
+            if(JSON.parse(localStorage.getItem("groupData")).isAdmin){
+              this.newItem = item.filter((list) => {
+                return (
+                  list.name !== "edit" &&
+                  list.name !== "copy" &&
+                  list.name !== "download"
+                );
+              });
+            }else if(JSON.parse(localStorage.getItem("groupData")).isManager){
+              if (JSON.parse(localStorage.getItem("authority")).delUserMessage) {
+                this.newItem = item.filter((list) => {
+                  return (
+                    list.name !== "edit" &&
+                    list.name !== "copy" &&
+                    list.name !== "download"
+                  );
+                });
+              }
+            }else{
+              this.newItem = item.filter((list) => {
+                return (
+                  list.name !== "deleteAllChat" &&
+                  list.name !== "edit" &&
+                  list.name !== "copy" &&
+                  list.name !== "download"
+                );
+              });
+            }
           } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "deleteAllChat" &&
-                list.name !== "edit" &&
-                list.name !== "copy"
-              );
-            });
+            if(JSON.parse(localStorage.getItem("groupData")).isAdmin){
+              this.newItem = item.filter((list) => {
+                return (
+                  list.name !== "edit" &&
+                  list.name !== "copy"
+                );
+              });
+            }else if(JSON.parse(localStorage.getItem("groupData")).isManager){
+              if (JSON.parse(localStorage.getItem("authority")).delUserMessage) {
+                this.newItem = item.filter((list) => {
+                  return list.name !== "edit" && list.name !== "copy";
+                });
+              }
+            }else{
+              this.newItem = item.filter((list) => {
+                return (
+                  list.name !== "deleteAllChat" &&
+                  list.name !== "edit" &&
+                  list.name !== "copy"
+                );
+              });
+            }
           }
+        } else if(JSON.parse(localStorage.getItem("groupData")).isAdmin){
+          this.newItem = item.filter((list) => {
+            return (
+              list.name !== "edit" &&
+              list.name !== "download"
+            );
+          });
         } else if (JSON.parse(localStorage.getItem("groupData")).isManager) {
           if (JSON.parse(localStorage.getItem("authority")).delUserMessage) {
             this.newItem = item.filter((list) => {
