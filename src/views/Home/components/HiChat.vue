@@ -25,9 +25,9 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                    isBase64(item.lastChat.text)
                   }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
-                    item.lastChat.text
-                  }}置顶了消息</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
+                    >{{ item.lastChat.text }}置顶了消息</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -72,10 +72,13 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'" v-html="judgeTextMarking(isBase64(item.lastChat.text))"></span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
-                    item.lastChat.text
-                  }}置顶了消息</span>
+                  <span
+                    v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'"
+                    v-html="judgeTextMarking(isBase64(item.lastChat.text))"
+                  ></span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
+                    >{{ item.lastChat.text }}置顶了消息</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
                     >传送了语音</span
                   >
@@ -88,13 +91,24 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_DEL'"
                     >{{ item.lastChat.text }}離開了聊天室</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'"
+                  <span
+                    v-else-if="
+                      item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'
+                    "
                     >{{ item.lastChat.text }}已被指定為管理員</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_REMOVE_MANAGER_HISTORY'"
+                  <span
+                    v-else-if="
+                      item.lastChat.chatType ===
+                      'SRV_GROUP_REMOVE_MANAGER_HISTORY'
+                    "
                     >{{ item.lastChat.text }}已被解除管理員身份</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_CHANGE_ADMIN_HISTORY'"
+                  <span
+                    v-else-if="
+                      item.lastChat.chatType ===
+                      'SRV_GROUP_CHANGE_ADMIN_HISTORY'
+                    "
                     >群主變更為{{ item.lastChat.text }}</span
                   >
                 </span>
@@ -146,9 +160,9 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
-                    item.lastChat.text
-                  }}置顶了消息</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
+                    >{{ item.lastChat.text }}置顶了消息</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -182,16 +196,15 @@
       :show-close="false"
       :close-on-click-modal="false"
       append-to-body
-      >
+    >
       <div @click="sendMessage">
-        <img src="./../../../../static/images/chat_icon.png" alt="">
+        <img src="./../../../../static/images/chat_icon.png" alt="" />
         <span>傳送訊息</span>
       </div>
       <div @click="deleteMessage">
-        <img src="./../../../../static/images/trash.png" alt="">
+        <img src="./../../../../static/images/trash.png" alt="" />
         <span>刪除訊息</span>
       </div>
-
     </el-dialog>
   </div>
 </template>
@@ -201,7 +214,13 @@ import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
-import { getGroupList, groupListMember, getSearchById,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
+import {
+  getGroupList,
+  groupListMember,
+  getSearchById,
+  getGroupAuthoritySetting,
+  deleteRecentChat,
+} from "@/api";
 
 export default {
   name: "HiChat",
@@ -209,7 +228,7 @@ export default {
     return {
       searchKey: "",
       groupList: [],
-      authorityData:{},
+      authorityData: {},
       groupDataList: [],
       hiChatDataList: [],
       contactDataList: [],
@@ -226,8 +245,8 @@ export default {
       },
       device: localStorage.getItem("device"),
       activeName: "address",
-      isDialogShow:false,
-      dialogData:{},
+      isDialogShow: false,
+      dialogData: {},
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -264,56 +283,58 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setTopMsg:"ws/setTopMsg",
+      setTopMsg: "ws/setTopMsg",
       setInfoMsg: "ws/setInfoMsg",
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
-      setAuthority:"ws/setAuthority",
+      setAuthority: "ws/setAuthority",
       setHichatNav: "ws/setHichatNav",
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
-      setTopMsgShow:"ws/setTopMsgShow",
+      setTopMsgShow: "ws/setTopMsgShow",
       setActiveName: "ws/setActiveName",
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
-      setAuthorityGroupData:"ws/setAuthorityGroupData",
-    }),  
-    touchStart(item){
+      setAuthorityGroupData: "ws/setAuthorityGroupData",
+    }),
+    touchStart(item) {
       //手指触摸
       clearTimeout(this.Loop); //再次清空定时器，防止重复注册定时器
-      this.Loop = setTimeout(()=> {
-        this.isDialogShow = true
-        this.dialogData = item
-      },500)
+      this.Loop = setTimeout(() => {
+        this.isDialogShow = true;
+        this.dialogData = item;
+      }, 500);
     },
-    sendMessage(){
-      if(this.dialogData.isContact){
+    sendMessage() {
+      if (this.dialogData.isContact) {
         this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
         this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
         this.setChatUser(this.dialogData);
         this.$router.push({ path: "/ChatMsg" });
-      }else if(this.dialogData.isGroup){
+      } else if (this.dialogData.isGroup) {
         this.dialogData.icon = this.dialogData.icon;
         this.dialogData.groupName = this.dialogData.name;
         this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
-        this.dialogData.memberId = JSON.parse(this.dialogData.forChatId.replace("u", ""));
+        this.dialogData.memberId = JSON.parse(
+          this.dialogData.forChatId.replace("u", "")
+        );
         this.groupList.forEach((item) => {
           if (item.groupName === this.dialogData.groupName) {
-            this.dialogData.isBanPost = item.isBanPost
-            this.dialogData.isAdmin = item.isAdmin
-            this.dialogData.isManager = item.isManager
+            this.dialogData.isBanPost = item.isBanPost;
+            this.dialogData.isAdmin = item.isAdmin;
+            this.dialogData.isManager = item.isManager;
           }
         });
         this.setChatGroup(this.dialogData);
         this.getGroupListMember(this.dialogData);
-        this.getGroupAuthority(this.dialogData)
+        this.getGroupAuthority(this.dialogData);
         this.$router.push({ path: "/ChatGroupMsg" });
-      }else{
+      } else {
         this.setContactUser(data);
       }
     },
-    deleteMessage(){
+    deleteMessage() {
       let parmas = {
         fullDelete: true,
         historyId: "",
@@ -321,21 +342,25 @@ export default {
       };
       deleteRecentChat(parmas).then((res) => {
         if (res.code === 200) {
-          if(this.dialogData.isContact){
+          if (this.dialogData.isContact) {
             localStorage.removeItem("userData");
-          }else if(this.dialogData.isGroup){
+          } else if (this.dialogData.isGroup) {
             localStorage.removeItem("groupData");
           }
           this.setHichatNav({ type: this.hichatNav.type, num: 0 });
           this.$router.push({ path: "/Address" });
         }
-      }) 
+      });
     },
-    judgeTextMarking(data){
-      if(["@"+this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(data)){
-        return `<span style="color:#F00">【 有人@我 】</span>` + data
-      }else{
-        return data
+    judgeTextMarking(data) {
+      if (
+        ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(
+          data
+        )
+      ) {
+        return `<span style="color:#F00">【 有人@我 】</span>` + data;
+      } else {
+        return data;
       }
     },
     noIconShow(iconData, key) {
@@ -350,7 +375,7 @@ export default {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
         this.getHistoryMessage.id = Math.random();
-      } else if( tab.name === "contact"){
+      } else if (tab.name === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.contactUser.toChatId;
         this.getHistoryMessage.id = Math.random();
@@ -444,35 +469,35 @@ export default {
         this.setGroupList(this.groupList);
       });
     },
-    getGroupAuthority(data){
+    getGroupAuthority(data) {
       let groupId = data.toChatId.replace("g", "");
-      getGroupAuthoritySetting({groupId}).then((res)=>{
-        if(res.code === 200 ){
-          this.authorityGroupData = res.data
-          this.setAuthorityGroupData(this.authorityGroupData)
+      getGroupAuthoritySetting({ groupId }).then((res) => {
+        if (res.code === 200) {
+          this.authorityGroupData = res.data;
+          this.setAuthorityGroupData(this.authorityGroupData);
         }
-      })
-    },    
+      });
+    },
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          if (item.memberId === this.groupUser.memberId ){
-            this.groupUser.isAdmin = item.isAdmin
-            this.groupUser.isBanPost = item.isBanPost
-            this.groupUser.isManager = item.isManager
+          if (item.memberId === this.groupUser.memberId) {
+            this.groupUser.isAdmin = item.isAdmin;
+            this.groupUser.isBanPost = item.isBanPost;
+            this.groupUser.isManager = item.isManager;
           }
           if (item.icon === undefined) {
             item.icon = require("./../../../../static/images/image_user_defult.png");
           }
-          if (item.memberId === Number(localStorage.getItem("id"))){
-            if(item.isAdmin){
-              localStorage.removeItem("authority")
-            }else if(item.isManager){
-              this.setAuthority(item.authority)
-            }else if(!item.isAdmin && !item.isManager){
-              localStorage.removeItem("authority")
+          if (item.memberId === Number(localStorage.getItem("id"))) {
+            if (item.isAdmin) {
+              localStorage.removeItem("authority");
+            } else if (item.isManager) {
+              this.setAuthority(item.authority);
+            } else if (!item.isAdmin && !item.isManager) {
+              localStorage.removeItem("authority");
             }
           }
         });
@@ -493,9 +518,9 @@ export default {
       });
     },
     goChatRoom(data, path) {
-      this.setTopMsgShow(true)
-      this.getGroupDataList()
-      this.setInfoMsg({infoMsgMap:'HiChat'});
+      this.setTopMsgShow(true);
+      this.getGroupDataList();
+      this.setInfoMsg({ infoMsgMap: "HiChat" });
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
@@ -509,14 +534,14 @@ export default {
         data.memberId = JSON.parse(data.forChatId.replace("u", ""));
         this.groupList.forEach((item) => {
           if (item.groupName === data.groupName) {
-            data.isAdmin = item.isAdmin
-            data.isBanPost = item.isBanPost
-            data.isManager = item.isManager
+            data.isAdmin = item.isAdmin;
+            data.isBanPost = item.isBanPost;
+            data.isManager = item.isManager;
           }
         });
         this.setChatGroup(data);
         this.getGroupListMember(data);
-        this.getGroupAuthority(data)
+        this.getGroupAuthority(data);
       }
       if (this.device === "moblie") {
         this.$router.push({ name: path });
@@ -528,7 +553,7 @@ export default {
         } else if (!data.isBlock && !data.isContact && !data.isGroup) {
           this.type = "contact";
         }
-        
+
         this.setHichatNav({ type: this.type, num: 1 });
         this.setInfoMsg({
           infoMsgShow: false,
@@ -586,7 +611,7 @@ export default {
         display: flex;
         font-size: 14px;
         opacity: 0.5;
-        height:20px;
+        height: 20px;
         span {
           &:nth-child(1) {
             width: 15em;
@@ -653,26 +678,26 @@ export default {
     width: 100%;
     .el-dialog__header {
       padding: 10px;
-      background-color: #F60;
+      background-color: #f60;
       border-radius: 10px 10px 0 0;
-      .el-dialog__title{
+      .el-dialog__title {
         color: #000000;
       }
     }
     .el-dialog__body {
       text-align: center;
       padding: 0;
-      div{
+      div {
         height: 3.5em;
-        line-height:3.5em;
+        line-height: 3.5em;
         font-size: 14px;
         cursor: pointer;
         display: flex;
-        align-items: center;  
+        align-items: center;
         justify-content: center;
-        img{
-          height:1.5em;
-          padding-right:5px;
+        img {
+          height: 1.5em;
+          padding-right: 5px;
         }
         &:nth-child(1) {
           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
