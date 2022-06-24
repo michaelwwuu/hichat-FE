@@ -73,7 +73,7 @@
                   style="position: absolute; left: 12px; top: 20px;"
                 ></div>
               </template>
-              <template v-else-if="groupData.isAdmin || groupData.isManager">
+              <template v-else-if="(groupData.isAdmin || groupData.isManager) ">
                 <div
                   class="home-user"
                   @click="editBtnShow = false"
@@ -374,24 +374,29 @@ export default {
       }
     },
     goInfoMsgContactPage(data){
-      data.toChatId = "u" + data.memberId;
-      if (this.device === "moblie") {
-        this.$router.push({ name: "ContactPage" });
-      } else {
-        if(this.infoMsg.infoMsgMap === "address"){
-          this.setInfoMsg({ infoMsgShow: true, infoMsgNav: "ContactPage", infoMsgChat:false ,infoMsgMap:'address' });
-          this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
-        }else{
-          this.setInfoMsg({
-            infoMsgShow: true,
-            infoMsgChat: true,
-            infoMsgNav: "ContactPage",
-            infoMsgMap: "GroupPeople"
-          });
-          this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+      if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
+        this.$message({ message: "此即为您的帐号", type: "warning" });
+      }else{
+        data.toChatId = "u" + data.memberId;
+        if (this.device === "moblie") {
+          this.$router.push({ name: "ContactPage" });
+        } else {
+          if(this.infoMsg.infoMsgMap === "address"){
+            this.setInfoMsg({ infoMsgShow: true, infoMsgNav: "ContactPage", infoMsgChat:false ,infoMsgMap:'address' });
+            this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+          }else{
+            this.setInfoMsg({
+              infoMsgShow: true,
+              infoMsgChat: true,
+              infoMsgNav: "ContactPage",
+              infoMsgMap: "GroupPeople"
+            });
+            this.setMsgInfoPage({ pageShow: true, type: "ContactPage", page:"GroupPeople" });
+          }
         }
+        this.setChatUser(data);
       }
-      this.setChatUser(data);
+
     },
     goContactPage(data) {
       if(this.device === "moblie"){
@@ -399,21 +404,13 @@ export default {
       }
       if(!this.checkGroupPeople){
         if(this.groupData.isAdmin){
-          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.goInfoMsgContactPage(data)
-          }
+          this.goInfoMsgContactPage(data)
         } else if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
           if(data.isAdmin || data.isManager) {
             this.goInfoMsgContactPage(data)
           }
         } else if(this.groupData.isManager && JSON.parse(localStorage.getItem("authority")).checkUserInfo){
-          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.goInfoMsgContactPage(data)
-          }
+          this.goInfoMsgContactPage(data)
         } else if(!this.groupData.isAdmin && !this.groupData.isManager){
           if(data.isAdmin || data.isManager) {
             this.goInfoMsgContactPage(data)
@@ -421,29 +418,13 @@ export default {
         }
       } else{
         if(this.groupData.isAdmin){
-          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.goInfoMsgContactPage(data)
-          }
+          this.goInfoMsgContactPage(data)
         } else if(this.groupData.isManager && JSON.parse(localStorage.getItem("authority")).checkUserInfo){
-          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.goInfoMsgContactPage(data)
-          }
+          this.goInfoMsgContactPage(data)
         } else if(this.groupData.isManager && !JSON.parse(localStorage.getItem("authority")).checkUserInfo){
-          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.goInfoMsgContactPage(data)
-          }
+          this.goInfoMsgContactPage(data)
         } else if(!this.groupData.isAdmin && !this.groupData.isManager){
-          if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.goInfoMsgContactPage(data)
-          }
+          this.goInfoMsgContactPage(data)
         }
       } 
     },
