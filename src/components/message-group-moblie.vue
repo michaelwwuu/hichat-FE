@@ -176,7 +176,7 @@
                   >
                     <i class="el-icon-more"></i>
                   </div>
-                  <mini-audio :audio-source="el.message.content"></mini-audio>
+                  <mini-audio :audio-source="isBase64(el.message.content)"></mini-audio>
                 </div>
               </span>
               <span
@@ -197,8 +197,8 @@
                     <i class="el-icon-more"></i>
                   </div>
                   <el-image
-                    :src="el.message.content"
-                    :preview-src-list="[el.message.content]"
+                    :src="isBase64(el.message.content)"
+                    :preview-src-list="[isBase64(el.message.content)]"
                   ></el-image>
                 </div>
               </span>

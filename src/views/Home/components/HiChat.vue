@@ -25,9 +25,7 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
-                    isBase64(item.lastChat.text)
-                  }}置顶了消息</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -73,9 +71,7 @@
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'" v-html="judgeTextMarking(isBase64(item.lastChat.text))"></span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
-                    isBase64(item.lastChat.text)
-                  }}置顶了消息</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
                     >传送了语音</span
                   >
@@ -83,19 +79,19 @@
                     >传送了图片</span
                   >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_JOIN'"
-                    >{{ isBase64(item.lastChat.text) }}加入了聊天室</span
+                    >{{ item.lastChat.text }}加入了聊天室</span
                   >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_DEL'"
-                    >{{ isBase64(item.lastChat.text) }}離開了聊天室</span
+                    >{{ item.lastChat.text }}離開了聊天室</span
                   >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'"
-                    >{{ isBase64(item.lastChat.text) }}已被指定為管理員</span
+                    >{{ item.lastChat.text }}已被指定為管理員</span
                   >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_REMOVE_MANAGER_HISTORY'"
-                    >{{ isBase64(item.lastChat.text) }}已被解除管理員身份</span
+                    >{{ item.lastChat.text }}已被解除管理員身份</span
                   >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_CHANGE_ADMIN_HISTORY'"
-                    >群主變更為{{ isBase64(item.lastChat.text) }}</span
+                    >群主變更為{{ item.lastChat.text }}</span
                   >
                 </span>
               </div>
@@ -146,9 +142,7 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{
-                    isBase64(item.lastChat.text)
-                  }}置顶了消息</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
