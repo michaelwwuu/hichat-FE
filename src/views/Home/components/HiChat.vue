@@ -28,6 +28,7 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
                     >{{ item.lastChat.text }}置顶了消息</span
                   >
+                  
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
