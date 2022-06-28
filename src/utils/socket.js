@@ -1,6 +1,6 @@
 import Vue from "vue";
-// var wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
-const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
+var wsUrl = process.env.VUE_APP_SOCKET_URL;//動態環境
+// const wsUrl = `wss://${location.host}/ws/im/echo`;//動態環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   data() {
@@ -54,9 +54,11 @@ const emitter = new Vue({
       };
       socket.onclose = function (e) {
         // console.log("<--【连线斷開】------自動重新連線-->",e);
-        joinChatKey.chatType = "CLI_AUTH";
-        joinChatKey.id = Math.random();
-        emitter.connect();
+        setInterval( ()=> {
+          joinChatKey.chatType = "CLI_AUTH";
+          joinChatKey.id = Math.random();
+          emitter.connect();
+        }, 1500);
       };
     },
   }

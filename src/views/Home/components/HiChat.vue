@@ -70,7 +70,8 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_GROUP_SEND'" v-html="judgeTextMarking(isBase64(item.lastChat.text))"></span>
+                  <span v-if="item.lastChat === null"></span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_SEND'" v-html="judgeTextMarking(isBase64(item.lastChat.text))"></span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
                     >传送了语音</span
@@ -93,9 +94,10 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_CHANGE_ADMIN_HISTORY'"
                     >群主變更為{{ item.lastChat.text }}</span
                   >
+                  
                 </span>
               </div>
-              <div class="time">
+              <div class="time" v-if ="item.lastChat !==null">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
                 <div class="el-badge-box">
                   <el-badge
@@ -403,7 +405,8 @@ export default {
               }
               this.hiChatDataList.push(item);
               this.hiChatNumBadge += item.unreadCount;
-            } else if (item.isGroup && item.lastChat !== null) {
+            } else if (item.isGroup) {
+              console.log(item)
               this.groupDataList.push(item);
               this.groupNumBadge += item.unreadCount;
             } else if (

@@ -222,7 +222,7 @@ export default {
       handler(val) {
         if (
           Object.values(val).every((el) => el !== "") &&
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.password)
+          val.password.toString().length >= 4
         ) {
           this.disabled = false;
         } else {

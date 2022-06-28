@@ -249,7 +249,7 @@
               </span>
             </el-form-item>
             <span class="tip-text"
-              >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
+              >密码长度为4至12个字元。</span
             >
           </el-form>
         </div>
@@ -279,6 +279,7 @@
 
 <script>
 import { updatePassword } from "@/api";
+import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "PasswordEdit",
@@ -287,6 +288,7 @@ export default {
       loginForm: {
         newPassword: "",
         oldPassword: "",
+        version:1,
       },
       email: localStorage.getItem("email"),
       oldPasswordType: "password",
@@ -296,6 +298,10 @@ export default {
       dialogShow: false,
       notification: false,
       device: localStorage.getItem("device"),
+
+      //加解密 key iv
+      aesKey: "142c7ec1b64ae0c6",
+      aesIv: "0000000000000000",      
     };
   },
   watch: {
@@ -304,9 +310,9 @@ export default {
         if (val.newPassword === val.newPasswordAganin) {
           if (
             Object.values(val).every((el) => el !== "") &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.oldPassword) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPassword) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPasswordAganin)
+            val.oldPassword.toString().length >= 4 &&
+            val.newPassword.toString().length >= 4 &&
+            val.newPasswordAganin.toString().length >= 4
           ) {
             this.disabled = false;
           } else {
@@ -347,12 +353,17 @@ export default {
           });
           return;
         }
+        this.loginForm.newPassword = Encrypt(this.loginForm.newPassword,this.aesKey,this.aesIv)
+        this.loginForm.oldPassword = Encrypt(this.loginForm.oldPassword,this.aesKey,this.aesIv)
         // delete this.loginForm.newPasswordAganin;
         updatePassword(this.loginForm)
           .then((res) => {
             //登录成功
             if (res.code === 200) {
               this.dialogShow = true;
+            }else{
+              this.loginForm.newPassword = Decrypt(this.loginForm.newPassword,this.aesKey,this.aesIv)
+              this.loginForm.oldPassword = Decrypt(this.loginForm.oldPassword,this.aesKey,this.aesIv)
             }
           })
           .catch((err) => {

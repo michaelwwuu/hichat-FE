@@ -67,7 +67,7 @@
             </span>
           </el-form-item>
           <span class="tip-text"
-            >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
+            >密码长度为4至12个字元。</span
           >
           <el-form-item prop="passwordAganin">
             <span class="svg-container">
@@ -238,8 +238,11 @@
               />
             </span>
           </el-form-item>
-          <span class="tip-text"
+          <!-- <span class="tip-text"
             >密码长度为6至12个字元，至少包含1个大写、1个小写英文及1个数字。</span
+          > -->
+          <span class="tip-text"
+            >密码长度为4至12个字元。</span
           >
           <el-form-item prop="passwordAganin">
             <span class="svg-container">确认密码</span>
@@ -427,12 +430,10 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
-        let password = val.password;
-        let passwordAganin = val.passwordAganin;
         if (
           Object.values(val).every((el) => el !== "") &&
-          password.toString().length >= 6 &&
-          passwordAganin.toString().length >= 6 &&
+          val.password.toString().length >= 4 &&
+          val.passwordAganin.toString().length >= 4 &&
           /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
         ) {
           this.disabled = false;
@@ -504,17 +505,6 @@ export default {
       if (this.loginForm.password !== this.loginForm.passwordAganin) {
         this.$message({
           message: "两次输入密码不一致!",
-          type: "error",
-        });
-        return;
-      } else if (
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]/.test(this.loginForm.password) ||
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]/.test(
-          this.loginForm.passwordAganin
-        )
-      ) {
-        this.$message({
-          message: "請輸入正確密碼格式!",
           type: "error",
         });
         return;

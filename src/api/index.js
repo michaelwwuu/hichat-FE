@@ -167,7 +167,7 @@ export const unlockUser = data => {
 // 修改密碼
 export const updatePassword = data => {
   let postData = {
-    url: '/api/sso/updatePassword',
+    url: '/api/sso/cnUpdatePassword',
     method: 'post',
     data
   }

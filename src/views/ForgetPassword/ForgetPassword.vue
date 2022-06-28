@@ -342,10 +342,8 @@ export default {
         if (val.newPassword === val.passwordAganin) {
           if (
             Object.values(val).every((el) => el !== "") &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(val.newPassword) &&
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,}$/.test(
-              val.passwordAganin
-            ) &&
+            val.newPassword.toString().length >= 4 &&
+            val.passwordAganin.toString().length >= 4 &&
             /^[A-Za-z0-9_\_]{5,}$/.test(val.username)
           ) {
             this.disabled = false;

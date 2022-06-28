@@ -16,11 +16,11 @@
                 :src="noIconShow(userData)"
                 :preview-src-list="[noIconShow(userData)]"
             /></span>
-            <div>
+            <!-- <div>
               <span class="photo-edit" @click="uploadImgShow = true"
                 >变更头像</span
               >
-            </div>
+            </div> -->
           </div>
           <div class="user-edit-form">
             <el-form ref="form" :model="userEditForm" label-width="100px">
@@ -51,11 +51,11 @@
                 :src="noIconShow(userData)"
                 :preview-src-list="[noIconShow(userData)]"
             /></span>
-            <div>
+            <!-- <div>
               <span class="photo-edit" @click="uploadImgShow = true"
                 >变更头像</span
               >
-            </div>
+            </div> -->
           </div>
           <div class="user-edit-form">
             <el-form ref="form" :model="userEditForm" label-width="100px">
@@ -191,6 +191,7 @@ export default {
       .el-image {
         width: 4em;
         height: 4em;
+        top:0;
       }
       span {
         height: 4.5em !important;
@@ -234,6 +235,7 @@ export default {
       .el-image {
         width: auto;
         height: 6em;
+        top:0;
       }
       span {
         height: 6.5em !important;
