@@ -188,33 +188,15 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <el-dialog
-      title="選擇操作"
-      class="el-dialog-msg-show"
-      :visible.sync="isDialogShow"
-      width="70%"
-      center
-      :show-close="false"
-      :close-on-click-modal="false"
-      append-to-body
-    >
-      <div @click="sendMessage">
-        <img src="./../../../../static/images/chat_icon.png" alt="" />
-        <span>傳送訊息</span>
-      </div>
-      <div @click="deleteMessage">
-        <img src="./../../../../static/images/trash.png" alt="" />
-        <span>刪除訊息</span>
-      </div>
-    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
-import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { Decrypt } from "@/utils/AESUtils.js";
+import { getToken } from "_util/utils.js";
 import {
   getGroupList,
   groupListMember,
@@ -246,7 +228,6 @@ export default {
       },
       device: localStorage.getItem("device"),
       activeName: "address",
-      isDialogShow: false,
       dialogData: {},
       //加解密 key iv
       aesKey: "hichatisachatapp",
@@ -299,60 +280,7 @@ export default {
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
-    touchStart(item) {
-      //手指触摸
-      clearTimeout(this.Loop); //再次清空定时器，防止重复注册定时器
-      this.Loop = setTimeout(() => {
-        this.isDialogShow = true;
-        this.dialogData = item;
-      }, 500);
-    },
-    sendMessage() {
-      if (this.dialogData.isContact) {
-        this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
-        this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
-        this.setChatUser(this.dialogData);
-        this.$router.push({ path: "/ChatMsg" });
-      } else if (this.dialogData.isGroup) {
-        this.dialogData.icon = this.dialogData.icon;
-        this.dialogData.groupName = this.dialogData.name;
-        this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
-        this.dialogData.memberId = JSON.parse(
-          this.dialogData.forChatId.replace("u", "")
-        );
-        this.groupList.forEach((item) => {
-          if (item.groupName === this.dialogData.groupName) {
-            this.dialogData.isBanPost = item.isBanPost;
-            this.dialogData.isAdmin = item.isAdmin;
-            this.dialogData.isManager = item.isManager;
-          }
-        });
-        this.setChatGroup(this.dialogData);
-        this.getGroupListMember(this.dialogData);
-        this.getGroupAuthority(this.dialogData);
-        this.$router.push({ path: "/ChatGroupMsg" });
-      } else {
-        this.setContactUser(data);
-      }
-    },
-    deleteMessage() {
-      let parmas = {
-        fullDelete: true,
-        historyId: "",
-        toChatId: this.dialogData.toChatId,
-      };
-      deleteRecentChat(parmas).then((res) => {
-        if (res.code === 200) {
-          if (this.dialogData.isContact) {
-            localStorage.removeItem("userData");
-          } else if (this.dialogData.isGroup) {
-            localStorage.removeItem("groupData");
-          }
-          this.setHichatNav({ type: this.hichatNav.type, num: 0 });
-          this.$router.push({ path: "/Address" });
-        }
-      });
-    },
+
     judgeTextMarking(data) {
       if (
         ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(

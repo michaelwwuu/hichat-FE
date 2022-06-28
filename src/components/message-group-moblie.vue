@@ -260,40 +260,7 @@
         @click="$root.gotoBottom()"
       ></el-button>
     </div>
-    <el-dialog
-      title="上傳圖片"
-      :visible.sync="uploadShow"
-      class="el-dialog-takePicture"
-      center
-      :close-on-click-modal="false"
-      style="600px"
-    >
-      <el-upload
-        center
-        drag
-        :limit="1"
-        action="#"
-        multiple
-        :on-change="uploadImg"
-        :auto-upload="false"
-        :file-list="fileList"
-        list-type="picture"
-      >
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">
-          只能上传jpg/png文件，且不超过500kb
-        </div>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="uploadShow = false"
-          >取消</el-button
-        >
-        <el-button class="background-orange" @click="submitAvatarUpload"
-          >确认</el-button
-        >
-      </span>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -326,11 +293,9 @@ export default {
       newData: [],
       message: [],
       newMessageData: {},
-      fullscreenLoading: false,
-      fileList: [],
+
       device: localStorage.getItem("device"),
       showScrollBar: false,
-      uploadShow: false,
 
       //加解密 key iv
       aesKey: "hichatisachatapp",
@@ -401,9 +366,7 @@ export default {
       setMyUserInfo:"ws/setMyUserInfo",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
-    uploadImg(file, fileList) {
-      this.fileList = fileList;
-    },
+
     getGroupAuthority() {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({ groupId }).then((res) => {
@@ -447,33 +410,7 @@ export default {
         return iconData.icon;
       }
     },
-    // 上傳圖片
-    submitAvatarUpload() {
-      let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
-      this.fullscreenLoading = true;
-      uploadMessageImage(formData).then((res) => {
-        if (res.code === 200) {
-          let message = this.userInfoData;
-          message.chatType = "CLI_GROUP_IMAGE";
-          message.id = Math.random();
-          message.fromChatId = "u" + localStorage.getItem("id");
-          message.toChatId = this.chatUser.toChatId;
-          (message.text = Encrypt(res.data, this.aesKey, this.aesIv)), //TODO 加密
-            // message.text = res.data,
-            this.soundNofiy.forEach((res) => {
-              if (res.key === "group" && res.isNofity) this.audioAction();
-            });
-          Socket.send(message);
-          this.fileList = [];
-          this.uploadImgShow = false;
-          this.fullscreenLoading = false;
-        } else if (res.code === 40001) {
-          this.fileList = [];
-          this.fullscreenLoading = false;
-        }
-      });
-    },
+
     audioAction() {
       let audioEl = document.getElementById("notify-send-audio");
       var playPromise = audioEl.play();
