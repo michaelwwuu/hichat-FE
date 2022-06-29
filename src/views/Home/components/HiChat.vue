@@ -22,7 +22,8 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+                  <span v-if="item.lastChat === null"></span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
@@ -34,7 +35,7 @@
                   >
                 </span>
               </div>
-              <div class="time">
+              <div class="time" v-if ="item.lastChat !==null">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
                 <div class="el-badge-box">
                   <el-badge
@@ -316,6 +317,7 @@ export default {
         toChatId: this.dialogData.toChatId,
       };
       deleteRecentChat(parmas).then((res) => {
+        let msg = resStatus[res.code] || res.message
         if (res.code === 200) {
           if(this.dialogData.isContact){
             localStorage.removeItem("userData");
@@ -398,7 +400,7 @@ export default {
           this.groupDataList = [];
           this.contactDataList = [];
           userInfo.recentChat.forEach((item) => {
-            if (item.isContact && item.lastChat !== null) {
+            if (item.isContact) {
               if (item.forChatId === item.toChatId) {
                 item.name = "Hichat 记事本";
                 item.icon = require("./../../../../static/images/image_savemessage.png");
@@ -406,7 +408,6 @@ export default {
               this.hiChatDataList.push(item);
               this.hiChatNumBadge += item.unreadCount;
             } else if (item.isGroup) {
-              console.log(item)
               this.groupDataList.push(item);
               this.groupNumBadge += item.unreadCount;
             } else if (
@@ -463,29 +464,14 @@ export default {
             item.icon = require("./../../../../static/images/image_user_defult.png");
           }
           if (item.memberId === Number(localStorage.getItem("id"))){
-            if(item.isAdmin){
+            if(item.isAdmin || (!item.isAdmin && !item.isManager)){
               localStorage.removeItem("authority")
             }else if(item.isManager){
               this.setAuthority(item.authority)
-            }else if(!item.isAdmin && !item.isManager){
-              localStorage.removeItem("authority")
             }
           }
         });
         this.setContactListData(this.contactList);
-      });
-    },
-    getUserId(data) {
-      let id = data.toChatId.replace("u", "");
-      getSearchById({ id }).then((res) => {
-        if (res.data.id === localStorage.getItem("id")) {
-          data.name = "Hichat 记事本";
-          data.icon = require("./../../../../static/images/image_savemessage.png");
-        } else {
-          data.username = res.data.username;
-          data.toChatId = "u" + res.data.id;
-        }
-        this.setChatUser(data);
       });
     },
     goChatRoom(data, path) {

@@ -49,17 +49,21 @@
           v-loading="loading"
           element-loading-text="讯息加载中"
           element-loading-background="rgba(255, 255, 255, 0.5)"
-        >        
+        >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !==''" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== ''" @click="goTopMsgShow">
             <div class="top-msg-left">
-              <img src="./../../../static/images/pin.png" alt="">
+              <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
-                <img :src="isBase64(pinMsg)" alt="">
+                <img :src="isBase64(pinMsg)" alt="" />
               </span>
               <span v-else>{{ isBase64(pinMsg) }}</span>
             </div>
-            <img class="top-msg-right" src="./../../../static/images/next.png" alt="" />
+            <img
+              class="top-msg-right"
+              src="./../../../static/images/next.png"
+              alt=""
+            />
           </div>
           <message-pabel
             :timeOut="timeOut"
@@ -102,16 +106,27 @@
             </div>
           </div>
           <template v-if="groupUser.isAdmin">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
+            <message-input
+              :userInfoData="userInfoData"
+              :groupData="groupUser"
+            />
           </template>
           <template v-else-if="groupUser.isManager">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="authorityGroupData.sendMessage || authority.sendMessage"/>
+            <message-input
+              :userInfoData="userInfoData"
+              :groupData="groupUser"
+              v-if="authorityGroupData.sendMessage || authority.sendMessage"
+            />
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
           </template>
           <template v-else>
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"  v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
+            <message-input
+              :userInfoData="userInfoData"
+              :groupData="groupUser"
+              v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"
+            />
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
@@ -123,14 +138,9 @@
       <el-main style="overflow-y: auto; overflow-x: hidden">
         <el-header class="PC-header" height="70px">
           <div class="home-header-pc">
-            <span
-              class="home-photo-link"
-              @click="setTopMsgShow(true)"
-            >
-              <span style="padding-right: 10px" 
-                ><img
-                  src="./../../../static/images/pc/arrow-left.png"
-                  alt=""
+            <span class="home-photo-link" @click="setTopMsgShow(true)">
+              <span style="padding-right: 10px"
+                ><img src="./../../../static/images/pc/arrow-left.png" alt=""
               /></span>
               <span>{{ isBase64(pinMsg) }}</span>
             </span>
@@ -159,10 +169,7 @@
             </el-dropdown>
           </div>
         </el-header>
-        <message-pin
-          :userInfoData="userInfoData"
-          @resetPinMsg="resetPinMsg"
-        />
+        <message-pin :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
         <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
@@ -178,14 +185,10 @@
       center
     >
       <div class="loginOut-box">
-        <span
-          >确认是否取消置頂？</span
-        >
+        <span>确认是否取消置頂？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          class="background-gray"
-          @click="isTopMsgShow = false"
+        <el-button class="background-gray" @click="isTopMsgShow = false"
           >取消</el-button
         >
         <el-button class="background-red" @click="untopMsgAction"
@@ -206,10 +209,14 @@
         <span>确认是否刪除對話？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="deleteGroupDialogShow = false"
+        <el-button
+          class="background-gray"
+          @click="deleteGroupDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="deleteMessage">确认</el-button>
+        <el-button class="background-red" @click="deleteMessage"
+          >确认</el-button
+        >
       </span>
     </el-dialog>
     <el-dialog
@@ -235,6 +242,24 @@
         <el-button class="background-red" @click="submitBtn">确认</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="退出群組"
+      :visible.sync="isLeaveGroupShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span>你已不再群組內</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-red" @click="leaveGroupAction"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
     <audio
       id="notify-receive-audio"
       muted="muted"
@@ -246,9 +271,16 @@
 <script>
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
-import { groupListMember, leaveGroup,pinList,unpinHistory,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
+import {
+  groupListMember,
+  leaveGroup,
+  pinList,
+  unpinHistory,
+  getGroupAuthoritySetting,
+  deleteRecentChat,
+} from "@/api";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
 import MessagePin from "@/components/message-group-pin";
@@ -265,50 +297,48 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         tokenType: 0,
       },
-      pinMsg:"",
-      timeOut:0,      
+      pinMsg: "",
+      timeOut: 0,
       groupData: {},
-      authorityGroupData:{},
+      authorityGroupData: {},
       readMsgData: [],
       contactList: [],
       loading: false,
-      isTopMsgShow:false,
-      deleteGroupDialogShow:false,
+      isTopMsgShow: false,
+      isLeaveGroupShow: false,
+      deleteGroupDialogShow: false,
       leaveGroupDialogShow: false,
-      pinDataList:[],
+      pinDataList: [],
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
     };
   },
-  watch:{
-    topMsgShow(val){
-      val ? this.getChatHistoryMessage() : false
+  watch: {
+    topMsgShow(val) {
+      val ? this.getChatHistoryMessage() : false;
     },
-    messageData(val){
+    messageData(val) {
       val.forEach((data) => {
-        this.pinDataList.forEach((list) => {  
-          if(data.chatType !== "SRV_CHAT_PIN"){
+        this.pinDataList.forEach((list) => {
+          if (data.chatType !== "SRV_CHAT_PIN") {
             if (data.historyId === list.historyId) {
               data.isPing = true;
-            } 
+            }
           }
         });
       });
-    }    
+    },
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     if (this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-    this.getPinList()
-    // if(this.groupData.isManager){
-    //   this.authority = JSON.parse(localStorage.getItem("authority"));
-    // }        
+    this.getPinList();
   },
   mounted() {
     this.getGroupListMember();
-    this.getGroupAuthority()
+    this.getGroupAuthority();
   },
   computed: {
     ...mapState({
@@ -320,7 +350,6 @@ export default {
       topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
       authority: (state) => state.ws.authority,
-      // authorityGroupData: (state) => state.ws.authorityGroupData,
     }),
   },
   methods: {
@@ -331,13 +360,13 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
-      setTopMsgShow:"ws/setTopMsgShow",
+      setTopMsgShow: "ws/setTopMsgShow",
       setMsgInfoPage: "ws/setMsgInfoPage",
-      setAuthority:"ws/setAuthority",
-      setAuthorityGroupData:"ws/setAuthorityGroupData",
+      setAuthority: "ws/setAuthority",
+      setAuthorityGroupData: "ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
     }),
-    deleteMessage(){
+    deleteMessage() {
       let parmas = {
         fullDelete: true,
         historyId: "",
@@ -350,31 +379,37 @@ export default {
           this.setChatGroup({});
           this.getHiChatDataList();
         }
-      }) 
-    },    
-    getGroupAuthority(){
+      });
+    },
+    leaveGroupAction() {
+      this.isLeaveGroupShow = false;
+      this.getHiChatDataList();
+      this.setHichatNav({ type: "address", num: 1 });
+      this.setChatGroup({});
+    },
+    getGroupAuthority() {
       let groupId = this.groupData.groupId;
-      getGroupAuthoritySetting({groupId}).then((res)=>{
-        if(res.code === 200 ){
-          if(res.data === undefined){
+      getGroupAuthoritySetting({ groupId }).then((res) => {
+        if (res.code === 200) {
+          if (res.data === undefined) {
             this.authorityGroupData = {
               checkUserInfo: true,
               pin: true,
               sendMessage: true,
-            }
-          }else{
-            this.authorityGroupData = res.data
+            };
+          } else {
+            this.authorityGroupData = res.data;
           }
-          this.setAuthorityGroupData(this.authorityGroupData)
+          this.setAuthorityGroupData(this.authorityGroupData);
         }
-      })
-    },    
-    resetPinMsg(){
-     this.getPinList()
-    },    
-    goTopMsgShow(){
-      this.setTopMsgShow(false)
-    }, 
+      });
+    },
+    resetPinMsg() {
+      this.getPinList();
+    },
+    goTopMsgShow() {
+      this.setTopMsgShow(false);
+    },
     untopMsgAction() {
       let param = {
         toChatId: this.groupUser.toChatId,
@@ -382,10 +417,10 @@ export default {
       unpinHistory(param).then((res) => {
         if (res.code === 200) {
           this.setTopMsgShow(true);
-          this.isTopMsgShow = false;          
+          this.isTopMsgShow = false;
         }
       });
-    },     
+    },
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -408,7 +443,7 @@ export default {
       historyMessageData.targetId = "";
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
-    },    
+    },
     closeReplyMessage() {
       this.setReplyMsg({
         name: "",
@@ -437,23 +472,23 @@ export default {
       });
     },
     getPinList() {
-      let params={
-        toChatId:this.groupUser.toChatId,
-        order:1,
-      }
+      let params = {
+        toChatId: this.groupUser.toChatId,
+        order: 1,
+      };
       pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
-          this.pinDataList.forEach((list)=>{
-            this.messageData.forEach((data)=>{
-              if(data.chatType !== "SRV_CHAT_PIN"){
-                if(list.historyId === data.historyId){
+          this.pinDataList.forEach((list) => {
+            this.messageData.forEach((data) => {
+              if (data.chatType !== "SRV_CHAT_PIN") {
+                if (list.historyId === data.historyId) {
                   data.isPing = true;
                 }
               }
-            })
-          })          
-          if(this.pinDataList.length !== 0){
+            });
+          });
+          if (this.pinDataList.length !== 0) {
             if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
               this.pinMsg = "語音訊息";
             } else {
@@ -462,32 +497,31 @@ export default {
           }
         }
       });
-    },    
+    },
     getGroupListMember() {
       let groupId = this.groupUser.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          
-          if (item.memberId === this.groupUser.memberId ){
-            this.groupUser.isAdmin = item.isAdmin
-            this.groupUser.isBanPost = item.isBanPost
-            this.groupUser.isManager = item.isManager
+          if (item.memberId === this.groupUser.memberId) {
+            this.groupUser.isAdmin = item.isAdmin;
+            this.groupUser.isBanPost = item.isBanPost;
+            this.groupUser.isManager = item.isManager;
           }
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
-          if (item.memberId === Number(localStorage.getItem("id"))){
-            this.groupUser.isBanPost = item.isBanPost
-            this.groupUser.isAdmin = item.isAdmin
-            this.groupUser.isManager = item.isManager
-            this.setChatGroup(this.groupUser)
-            if(item.isAdmin){
-              localStorage.removeItem("authority")
-            }else if(item.isManager){
-              this.setAuthority(item.authority)
-            }else if(!item.isAdmin && !item.isManager){
-              localStorage.removeItem("authority")
+          if (item.memberId === Number(localStorage.getItem("id"))) {
+            this.groupUser.isBanPost = item.isBanPost;
+            this.groupUser.isAdmin = item.isAdmin;
+            this.groupUser.isManager = item.isManager;
+            this.setChatGroup(this.groupUser);
+            if (item.isAdmin) {
+              localStorage.removeItem("authority");
+            } else if (item.isManager) {
+              this.setAuthority(item.authority);
+            } else if (!item.isAdmin && !item.isManager) {
+              localStorage.removeItem("authority");
             }
           }
         });
@@ -533,7 +567,7 @@ export default {
         username: data.chat.username,
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
-        isPing:false
+        isPing: false,
       };
     },
     //判斷是否base64
@@ -584,14 +618,19 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        case "SRV_GROUP_DEL": 
-        case "SRV_GROUP_JOIN": 
-        case "SRV_CHAT_PIN":    
+        case "SRV_GROUP_DEL":
+        case "SRV_GROUP_JOIN":
+        case "SRV_CHAT_PIN":
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
-        case "SRV_GROUP_CHANGE_ADMIN_HISTORY":                      
+        case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
+          if (userInfo.chatType === "SRV_GROUP_DEL") {
+            if (userInfo.chat.fromChatId === "u" + localStorage.getItem("id")) {
+              this.isLeaveGroupShow = true;
+            }
+          }
           if (this.groupUser.toChatId === userInfo.toChatId) {
-            if(userInfo.chat.text !== null){
+            if (userInfo.chat.text !== null) {
               this.base64Msg = this.isBase64(userInfo.chat.text);
               userInfo.chat.newContent = this.base64Msg.split(" ");
             }
@@ -599,30 +638,33 @@ export default {
             this.messageData.push(this.chatRoomMsg);
             this.getHiChatDataList();
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if(userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")){
+            if (userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
               this.audioAction();
             }
           }
           break;
         case "SRV_CHAT_UNPIN":
-          this.getChatHistoryMessage()
-          break;     
+          this.getChatHistoryMessage();
+          break;
         case "SRV_GROUP_AUTHORITY":
-          this.getGroupAuthority()
-          break;    
+          this.getGroupAuthority();
+          break;
         case "SRV_GROUP_MANAGER_AUTHORITY":
         case "SRV_GROUP_ADMIN_CHANGE":
-        case "SRV_GROUP_BAN_POST":  
-          this.getGroupListMember()
-          break;        
+        case "SRV_GROUP_BAN_POST":
+          this.getGroupListMember();
+          break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.pinMsg = ""
-          this.getPinList()
+          this.pinMsg = "";
+          this.getPinList();
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.loading = true;
-          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 200 : historyMsgList.length * 40;
+          this.timeOut =
+            historyMsgList.length < 10
+              ? historyMsgList.length * 400
+              : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
@@ -665,7 +707,6 @@ export default {
           });
           this.getHiChatDataList();
           break;
-
       }
     },
 
@@ -698,7 +739,7 @@ export default {
   components: {
     MessagePabel,
     MessageInput,
-    MessagePin
+    MessagePin,
   },
 };
 </script>
@@ -1045,14 +1086,14 @@ export default {
   align-items: center;
   border-bottom: 0.01em solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  .top-msg-left{
+  .top-msg-left {
     display: flex;
     align-items: center;
     img {
       height: 1.5em;
     }
   }
-  .top-msg-right{
+  .top-msg-right {
     height: 1.2em;
   }
 }

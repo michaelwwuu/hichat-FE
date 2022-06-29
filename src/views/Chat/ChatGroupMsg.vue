@@ -174,6 +174,29 @@
       </span>
     </el-dialog>
 
+    <el-dialog
+      :visible.sync="isLeaveGroupShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div>
+          <img src="./../../../static/images/warn.png" alt="" />
+        </div>
+        <span
+          >你已不再群組內</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="background-red" @click="leaveGroupAction"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -207,6 +230,7 @@ export default {
       pinDataList: [],
       loading: false,
       isTopMsgShow:false,
+      isLeaveGroupShow:false,
       unGroupDisabledWord:false,
       device: localStorage.getItem("device"),
 
@@ -235,10 +259,6 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-    // this.getPinList()
-    // if(JSON.parse(localStorage.getItem("authority")) !== undefined){
-    //   this.authority = JSON.parse(localStorage.getItem("authority"));
-    // }
   },
   mounted() {
     this.getChatHistoryMessage();
@@ -255,7 +275,6 @@ export default {
       replyMsg: (state) => state.ws.replyMsg,
       topMsgShow: (state) => state.ws.topMsgShow,
       authority: (state) => state.ws.authority,
-      // authorityGroupData: (state) => state.ws.authorityGroupData,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -270,6 +289,9 @@ export default {
       setAuthority:"ws/setAuthority",
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
+    leaveGroupAction(){
+      this.$router.push({ path: "/HiChat" });
+    },
     getGroupAuthority(){
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({groupId}).then((res)=>{
@@ -468,6 +490,7 @@ export default {
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
+      
       switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         case "SRV_GROUP_IMAGE":
@@ -479,6 +502,11 @@ export default {
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
         case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
+          if(userInfo.chatType === "SRV_GROUP_DEL"){
+            if( userInfo.chat.fromChatId === "u" + localStorage.getItem("id")){
+              this.isLeaveGroupShow = true;
+            }
+          }
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if(userInfo.chat.text !== null){
               this.base64Msg = this.isBase64(userInfo.chat.text);
@@ -514,7 +542,7 @@ export default {
               this.audioAction();
             }
           }
-          break;    
+          break; 
         case "SRV_CHAT_UNPIN":
           this.getChatHistoryMessage()
           break;     
@@ -533,15 +561,13 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 200 : historyMsgList.length * 40;
+          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 400 : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
-              this.groupListData = JSON.parse(
-                localStorage.getItem("groupListMember")
-              );
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
+                this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
                 this.groupListData.forEach((item) => {
                   if (el.chat.fromChatId === "u" + item.memberId) {
                     el.chat.icon = item.icon;
@@ -587,6 +613,7 @@ export default {
           });
           this.getHiChatDataList();
           break;
+          
         // 刪除訊息
         case "SRV_CHAT_DEL":
           this.messageData.forEach((res, index) => {
@@ -595,7 +622,7 @@ export default {
             }
           });
           this.getHiChatDataList();
-          break;
+          break;         
         // 撈取歷史訊息
         case "SRV_NEED_AUTH":
           this.getChatHistoryMessage();

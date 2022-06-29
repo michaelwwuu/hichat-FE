@@ -25,6 +25,7 @@ const emitter = new Vue({
       socket.send(JSON.stringify(leaveChatKey));
       socket.close();
     },
+
     // 初始化 websocket 
     connect() {
       socket = new WebSocket(wsUrl);
@@ -53,12 +54,14 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        // console.log("<--【连线斷開】------自動重新連線-->",e);
-        setInterval( ()=> {
+        console.log("<--【连线斷開】------自動重新連線-->",e);
+        setTimeout(() => {
           joinChatKey.chatType = "CLI_AUTH";
           joinChatKey.id = Math.random();
-          emitter.connect();
+          emitter.connect(); 
+          socket.send(JSON.stringify(joinChatKey));
         }, 1500);
+        
       };
     },
   }

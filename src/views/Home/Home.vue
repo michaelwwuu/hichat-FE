@@ -634,9 +634,7 @@ export default {
           }
           break;
         case "SRV_CHAT_DEL":
-          if (this.device === "moblie") {
-            this.getHiChatDataList();
-          }
+          this.getHiChatDataList();
       }
     },
     getHiChatDataList() {
