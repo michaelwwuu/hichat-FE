@@ -33,7 +33,7 @@
           <el-button
             class="orange-btn"
             @click="addGroupMsg"
-            >设定群组资讯</el-button
+            >儲存設定</el-button
           >
         </div>
       </el-main>
@@ -71,7 +71,7 @@
           <el-button
             class="orange-btn"
             @click="addGroupMsg"
-            >设定群组资讯</el-button
+            >儲存設定</el-button
           >
         </div>
       </el-aside>
@@ -81,7 +81,6 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { addManager,groupListMember,setManagerAuthority } from "@/api";
 
 export default {
@@ -173,7 +172,6 @@ export default {
       if(!this.groupPermissionData.addGroup) {
         let parmaGroupId = this.device==="moblie" ? this.$route.params : this.msgInfoPage.data
         let parmaMemberId = this.device==="moblie" ? this.$route.params : this.msgInfoPage.data
-        
         let params = {
           groupId:parmaGroupId.groupId,
           groupManagerAuthorityVO:this.newManagerAuthorityData,
@@ -213,14 +211,13 @@ export default {
         if(this.$route.params.isManager){
           this.groupPermissionData.groupManagerAuthority.forEach((el)=>{
             if(el.memberId === this.$route.params.contactId){
-              el.addUser = this.newManagerAuthorityDataaddUser
-              el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo
+              el.pin = this.newManagerAuthorityData.pin
+              el.addUser = this.newManagerAuthorityData.addUser
               el.delUser = this.newManagerAuthorityData.delUser
               el.banUserPost = this.newManagerAuthorityData.banUserPost
-              el.disabledWord = this.newManagerAuthorityData.disabledWord
-              el.addUser = this.newManagerAuthorityData.addUser
-              el.pin = this.newManagerAuthorityData.pin
               el.sendMessage = this.newManagerAuthorityData.sendMessage
+              el.disabledWord = this.newManagerAuthorityData.disabledWord
+              el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo
               el.updateGroupInfo = this.newManagerAuthorityData.updateGroupInfo
             }
           })
@@ -267,8 +264,7 @@ export default {
             })
           }
         }
-      }
-      
+      }     
     },
     back() {
       if (this.device === "moblie") {

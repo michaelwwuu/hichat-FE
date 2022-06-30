@@ -182,7 +182,7 @@ import Socket from "@/utils/socket";
 import { groupListMember,pinList,unpinHistory,getGroupAuthoritySetting } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
 import MessagePin from "@/components/message-group-pin";
@@ -235,10 +235,6 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-    // this.getPinList()
-    // if(JSON.parse(localStorage.getItem("authority")) !== undefined){
-    //   this.authority = JSON.parse(localStorage.getItem("authority"));
-    // }
   },
   mounted() {
     this.getChatHistoryMessage();
@@ -255,7 +251,6 @@ export default {
       replyMsg: (state) => state.ws.replyMsg,
       topMsgShow: (state) => state.ws.topMsgShow,
       authority: (state) => state.ws.authority,
-      // authorityGroupData: (state) => state.ws.authorityGroupData,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -383,13 +378,14 @@ export default {
             this.groupUser.isAdmin = item.isAdmin
             this.groupUser.isManager = item.isManager
             this.setChatGroup(this.groupUser)
-            if(item.isAdmin){
+            if(item.isAdmin || (!item.isAdmin && !item.isManager)){
               localStorage.removeItem("authority")
             }else if(item.isManager){
               this.setAuthority(item.authority)
-            }else if(!item.isAdmin && !item.isManager){
-              localStorage.removeItem("authority")
             }
+            // else if(!item.isAdmin && !item.isManager){
+            //   localStorage.removeItem("authority")
+            // }
           }
         });
         this.setContactListData(this.contactList);

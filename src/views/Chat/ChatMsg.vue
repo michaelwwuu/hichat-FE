@@ -164,7 +164,7 @@
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
-                <img :src="isBase64(pinMsg)" alt="">
+                <img :src="isBase64(pinMsg)" alt="" />
               </span>
               <span v-else>{{ isBase64(pinMsg) }}</span>
             </div>
@@ -179,7 +179,7 @@
             :messageData="messageData"
             :userInfoData="userInfoData"
             @deleteMsgHistoryData="deleteMsgData"
-            @resetPinMsg="resetPinMsg"            
+            @resetPinMsg="resetPinMsg"
           />
           <div
             class="reply-message"
@@ -272,9 +272,7 @@
         <div v-if="device === 'moblie'">
           <img src="./../../../static/images/warn.png" alt="" />
         </div>
-        <span
-          >确认是否取消置頂？</span
-        >
+        <span>确认是否取消置頂？</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
@@ -360,7 +358,9 @@
         <span>刪除成功</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-orange" @click="deleteRecent(chatUser,'stranger')"
+        <el-button
+          class="background-orange"
+          @click="deleteRecent(chatUser, 'stranger')"
           >確認</el-button
         >
       </span>
@@ -401,10 +401,16 @@
         <span>确认是否刪除對話？</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="background-gray" @click="deleteGroupDialogShow = false"
+        <el-button
+          class="background-gray"
+          @click="deleteGroupDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="deleteRecent(chatUser,'message')">确认</el-button>
+        <el-button
+          class="background-red"
+          @click="deleteRecent(chatUser, 'message')"
+          >确认</el-button
+        >
       </span>
     </el-dialog>
     <audio
@@ -448,9 +454,9 @@ export default {
       readMsgData: [],
       pinDataList: [],
       pinMsg: "",
-      timeOut:0,
+      timeOut: 0,
       loading: false,
-      isTopMsgShow:false,
+      isTopMsgShow: false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
@@ -463,21 +469,21 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
-  watch:{
-    topMsgShow(val){
-      val ? this.getChatHistoryMessage() : false
+  watch: {
+    topMsgShow(val) {
+      val ? this.getChatHistoryMessage() : false;
     },
-    messageData(val){
+    messageData(val) {
       val.forEach((data) => {
-        this.pinDataList.forEach((list) => {  
-          if(data.chatType !== "SRV_CHAT_PIN"){
+        this.pinDataList.forEach((list) => {
+          if (data.chatType !== "SRV_CHAT_PIN") {
             if (data.historyId === list.historyId) {
               data.isPing = true;
-            } 
+            }
           }
         });
       });
-    }
+    },
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -487,7 +493,6 @@ export default {
     }
     if (this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
-    // this.getPinList();
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -532,30 +537,29 @@ export default {
       this.getPinList();
     },
     getPinList() {
-      let params={
-        toChatId:this.chatUser.toChatId,
-        order:1,
-      }
+      let params = {
+        toChatId: this.chatUser.toChatId,
+        order: 1,
+      };
       pinList(params).then((res) => {
         if (res.code === 200) {
           this.pinDataList = res.data;
-          this.pinDataList.forEach((list)=>{
-            this.messageData.forEach((data)=>{
-              if(data.chatType !== "SRV_CHAT_PIN"){
-                if(list.historyId === data.historyId){
+          this.pinDataList.forEach((list) => {
+            this.messageData.forEach((data) => {
+              if (data.chatType !== "SRV_CHAT_PIN") {
+                if (list.historyId === data.historyId) {
                   data.isPing = true;
                 }
               }
-            })
-          })
-          if(this.pinDataList.length !== 0){
+            });
+          });
+          if (this.pinDataList.length !== 0) {
             if (this.pinDataList[0].chatType === "SRV_USER_AUDIO") {
               this.pinMsg = "語音訊息";
             } else {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          
         }
       });
     },
@@ -611,7 +615,7 @@ export default {
         name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
-        isPing:false,
+        isPing: false,
       };
     },
     //判斷是否base64
@@ -637,15 +641,6 @@ export default {
       historyMessageData.pageSize = 1000;
       Socket.send(historyMessageData);
     },
-    infoMsgShow() {
-      this.setMsgInfoPage({ pageShow: true, type: "" });
-      this.setInfoMsg({
-        infoMsgShow: true,
-        infoMsgNav: "ContactPage",
-        infoMsgChat: true,
-        infoMsgMap: "address"
-      });
-    },
     // 已讀
     readMsgShow(data) {
       let sendReadMessageData = this.userInfoData;
@@ -654,6 +649,15 @@ export default {
       sendReadMessageData.targetId = data.historyId;
       sendReadMessageData.toChatId = data.toChatId;
       Socket.send(sendReadMessageData);
+    },    
+    infoMsgShow() {
+      this.setMsgInfoPage({ pageShow: true, type: "" });
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "ContactPage",
+        infoMsgChat: true,
+        infoMsgMap: "address",
+      });
     },
     audioAction() {
       let audioEl = document.getElementById("notify-receive-audio");
@@ -682,7 +686,7 @@ export default {
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
         case "SRV_USER_SEND":
-        case "SRV_CHAT_PIN":       
+        case "SRV_CHAT_PIN":
           if (userInfo.toChatId === this.chatUser.toChatId) {
             if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
               userInfo.chat.name = this.chatUser.name;
@@ -722,10 +726,8 @@ export default {
           }
           break;
         case "SRV_CHAT_UNPIN":
-          // this.pinMsg = "";
-          // this.getPinList();
-          this.getChatHistoryMessage()
-          break;     
+          this.getChatHistoryMessage();
+          break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";
@@ -775,7 +777,7 @@ export default {
               this.loading = false;
             }, this.timeOut);
           });
-          this.getPinList();   
+          this.getPinList();
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -831,7 +833,7 @@ export default {
           return false;
         });
     },
-    deleteRecent(data,key) {
+    deleteRecent(data, key) {
       let parmas = {
         fullDelete: key !== "stranger",
         historyId: "",
@@ -931,8 +933,6 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  // min-height: 100vh;
-  // min-height: webkit-fill-available;
   overflow: hidden;
   width: 100%;
   background-color: #eef7fb;
@@ -1356,7 +1356,6 @@ export default {
   }
   .top-msg-right {
     height: 1.2em;
-    
   }
 }
 </style>

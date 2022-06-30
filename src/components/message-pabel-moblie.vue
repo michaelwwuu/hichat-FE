@@ -661,7 +661,7 @@ export default {
       .message-layout-left {
         p {
           .el-image {
-            width: -webkit-fill-available !important;
+            width: 25em !important;
             height: 11em !important;
             top: 0;
             /deep/.el-image__inner {
@@ -678,7 +678,7 @@ export default {
       .message-layout-right {
         p {
           .el-image {
-            width: -webkit-fill-available !important;
+            width: 25em !important;
             height: 11em !important;
             top: 0;
             /deep/.el-image__inner {

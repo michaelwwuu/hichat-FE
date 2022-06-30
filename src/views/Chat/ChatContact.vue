@@ -307,7 +307,7 @@ import {
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import MessagePin from "@/components/message-pin";

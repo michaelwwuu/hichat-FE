@@ -301,10 +301,7 @@ export default {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
     if (this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
-    this.getPinList()
-    // if(this.groupData.isManager){
-    //   this.authority = JSON.parse(localStorage.getItem("authority"));
-    // }        
+    this.getPinList()      
   },
   mounted() {
     this.getGroupListMember();
@@ -468,7 +465,6 @@ export default {
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          
           if (item.memberId === this.groupUser.memberId ){
             this.groupUser.isAdmin = item.isAdmin
             this.groupUser.isBanPost = item.isBanPost

@@ -23,12 +23,11 @@
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
-                   isBase64(item.lastChat.text)
+                    isBase64(item.lastChat.text)
                   }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
                     >{{ item.lastChat.text }}置顶了消息</span
                   >
-                  
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -214,7 +213,7 @@
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import {
   getGroupList,
   groupListMember,
