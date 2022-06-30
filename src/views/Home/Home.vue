@@ -15,7 +15,7 @@
               "
             ></div>
             <span class="home-header-title">{{
-              num === 0 ? "通讯录" : num === 1 ? "HiChat" : "设定"
+              num === 0 ? "通讯录" : num === 1 ? "嗨聊" : "设定"
             }}</span>
             <template v-if="num === 0">
               <div>
@@ -518,7 +518,7 @@ export default {
             el.icon = require("./../../../static/images/image_user_defult.png");
           }
           if (el.contactId === localStorage.getItem("id")) {
-            el.name = "Hichat 记事本";
+            el.name = "嗨聊记事本";
             el.icon = require("./../../../static/images/image_savemessage.png");
             el.toChatId = "u" + el.memberId;
           }
@@ -592,8 +592,8 @@ export default {
             numNumber += item.unreadCount;
             if (item.toChatId === this.chatUser.toChatId) {
               if (item.toChatId === item.forChatId) {
-                item.name = "Hichat 记事本";
-                item.username = "Hichat 记事本";
+                item.name = "嗨聊记事本";
+                item.username = "嗨聊记事本";
                 item.icon = require("./../../../static/images/image_savemessage.png");
               } else {
                 item.contactId = this.chatUser.contactId;

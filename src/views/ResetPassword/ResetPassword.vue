@@ -46,7 +46,7 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
-          <span class="tip-text">请至注册邮箱确认验证码</span>
+          <span class="tip-text">请至注册手机号码确认验证码</span>
           <div class="register-footer">
             <el-button
               style="width: 100%; margin-bottom: 30px"

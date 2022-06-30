@@ -82,7 +82,7 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((el) => {
           if (el.contactId === localStorage.getItem("id")) {
-            el.name = "Hichat 记事本";
+            el.name = "嗨聊记事本";
             el.icon = require("./../../../../static/images/image_savemessage.png");
           } else if (el.icon === undefined) {
             el.icon = require("./../../../../static/images/image_user_defult.png");
@@ -107,7 +107,7 @@ export default {
       let id = data.contactId;
       getSearchById({ id }).then((res) => {
         if (res.data.id === this.myUserInfo.id) {
-          data.name = "Hichat 记事本";
+          data.name = "嗨聊记事本";
           data.forChatId = "u" + res.data.id;
           data.icon = require("./../../../../static/images/image_savemessage.png");
         } else {

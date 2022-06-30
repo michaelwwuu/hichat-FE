@@ -14,7 +14,7 @@
           </div>
           <div class="home-search">
             <el-input
-              placeholder="输入欲搜寻的邮箱或帐号ID"
+              placeholder="输入欲搜寻的手机号码或帐号ID"
               prefix-icon="el-icon-search"
               v-model="searchKey"
               @keyup.native.enter="searchUserData(searchKey)"
@@ -56,7 +56,7 @@
         </el-header>
         <div class="home-search">
           <el-input
-            placeholder="输入欲搜寻的邮箱或帐号ID"
+            placeholder="输入欲搜寻的手机号码或帐号ID"
             prefix-icon="el-icon-search"
             v-model="searchKey"
             @keyup.native.enter="searchUserData(searchKey)"

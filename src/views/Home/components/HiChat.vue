@@ -402,7 +402,7 @@ export default {
           userInfo.recentChat.forEach((item) => {
             if (item.isContact) {
               if (item.forChatId === item.toChatId) {
-                item.name = "Hichat 记事本";
+                item.name = "嗨聊记事本";
                 item.icon = require("./../../../../static/images/image_savemessage.png");
               }
               this.hiChatDataList.push(item);

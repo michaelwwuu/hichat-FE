@@ -24,7 +24,7 @@
                   infoMsg.infoMsgNav === 'ContactPage' && chatUser.isContact
                 "
                 :style="
-                  chatUser.name === 'Hichat 记事本' ? 'visibility: hidden' : ''
+                  chatUser.name === '嗨聊记事本' ? 'visibility: hidden' : ''
                 "
               >
                 <div
@@ -77,7 +77,7 @@
                 <span>{{ chatUser.name }}</span>
                 <span
                   class="user-data-id"
-                  v-if="chatUser.name !== 'Hichat 记事本'"
+                  v-if="chatUser.name !== '嗨聊记事本'"
                 >
                   ID :
                   <span
@@ -108,7 +108,7 @@
                 </a>
               </div>
               <!-- <div
-               v-if="chatUser.name !== 'Hichat 记事本'"
+               v-if="chatUser.name !== '嗨聊记事本'"
                 class="setting-notification"
                 @click="developmentMessage('提醒通知')"
               >
@@ -158,7 +158,7 @@
                   </a>
                 </div>
               </template>
-              <template v-if="chatUser.name !== 'Hichat 记事本'">
+              <template v-if="chatUser.name !== '嗨聊记事本'">
                 <div
                   class="setting-button"
                   @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
@@ -456,7 +456,7 @@ export default {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         if (res.data.id === this.myUserInfo.id) {
-          this.chatUser.name = "Hichat 记事本";
+          this.chatUser.name = "嗨聊记事本";
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
         } else {
           this.blockContent = !res.data.isBlock ? "封锁联络人" : "解除封锁";

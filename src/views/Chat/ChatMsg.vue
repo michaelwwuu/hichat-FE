@@ -569,7 +569,7 @@ export default {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         if (res.data.id === localStorage.getItem("id")) {
-          this.userData.name = "Hichat 记事本";
+          this.userData.name = "嗨聊记事本";
           this.userData.icon = require("./../../../static/images/image_savemessage.png");
         } else {
           this.userData.username = res.data.username;

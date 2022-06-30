@@ -8,7 +8,7 @@
             <span class="home-header-title"></span>
             <router-link
               :to="'/EditContact'"
-              v-if="chatUser.name !== 'Hichat 记事本'"
+              v-if="chatUser.name !== '嗨聊记事本'"
             >
               <div class="home-add-user"></div>
             </router-link>
@@ -24,7 +24,7 @@
             <div>
               <span
                 :style="
-                  chatUser.name === 'Hichat 记事本'
+                  chatUser.name === '嗨聊记事本'
                     ? 'height:2em'
                     : ''
                 "
@@ -32,7 +32,7 @@
               >
               <span
                 class="user-data-id"
-                v-if="chatUser.name !== 'Hichat 记事本'"
+                v-if="chatUser.name !== '嗨聊记事本'"
               >
                 ID :
                 <span
@@ -44,7 +44,7 @@
             </div>
           </div>
           <template
-            v-if="chatUser.name === 'Hichat 记事本'"
+            v-if="chatUser.name === '嗨聊记事本'"
           >
             <div
               class="setting-button"
@@ -347,7 +347,7 @@ export default {
       let id = this.chatUser.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
         if (res.data.id === this.myUserInfo.id) {
-          this.chatUser.name = "Hichat 记事本";
+          this.chatUser.name = "嗨聊记事本";
           this.chatUser.icon = require("./../../../static/images/image_savemessage.png");
         } else {
           this.chatUser.username = res.data.username;

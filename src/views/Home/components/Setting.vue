@@ -27,7 +27,7 @@
         :class="{
           mt10:
             item.name === '相片和影片' ||
-            item.name === '关于HiChat' ||
+            item.name === '关于嗨聊' ||
             item.name === '提醒' 
         }"
         @click="developmentMessage(item.name)"
@@ -62,7 +62,7 @@
         :class="[
           { no_bor_mb10: item.name === '封锁名单' },
           { bor_mt10: item.name === '提醒' },
-          { hidden: item.name === '关于HiChat' },
+          { hidden: item.name === '关于嗨聊' },
         ]"
         @click="developmentMessage(item.name)"
       >
@@ -179,7 +179,7 @@ export default {
         //   path: "",
         // },
         {
-          name: "关于HiChat",
+          name: "关于嗨聊",
           icon: require("./../../../../static/images/about.png"),
           path: "/About",
         },

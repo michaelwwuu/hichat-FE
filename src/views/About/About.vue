@@ -5,7 +5,7 @@
         <el-header height="70px">    
         <div class="home-header">
           <div class="home-user" @click="back"></div>
-          <span class="home-header-title">关于HiChat</span>
+          <span class="home-header-title">关于嗨聊</span>
           <div class="home-add-user"></div>
         </div>
         </el-header>
@@ -52,14 +52,14 @@ export default {
           path: "",
           version: "1.4.0",
         },
-        {
-          name: "服务条款",
-          path: "",
-        },
-        {
-          name: "隐私权政策",
-          path: "",
-        },
+        // {
+        //   name: "服务条款",
+        //   path: "",
+        // },
+        // {
+        //   name: "隐私权政策",
+        //   path: "",
+        // },
       ],
       developmentMessage: developmentMessage,
     };
