@@ -787,7 +787,7 @@ export default {
         case "SRV_CHAT_EDIT":
           this.messageData.forEach((res) => {
             if (res.historyId === userInfo.historyId) {
-              return (res.message.content = userInfo.chat.text);
+              return (res.message.content = this.isBase64(userInfo.chat.text));
             }
           });
           this.getHiChatDataList();

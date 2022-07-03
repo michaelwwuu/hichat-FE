@@ -67,7 +67,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300&display=swap');
 
 #app {
-  max-width: 100vw;
+  width: 100vw;
   height: 100vh;
   min-height: -webkit-fill-available;
   overflow: hidden;
@@ -90,6 +90,12 @@ export default {
       display: block;
       margin-bottom: 2px;
     }
+  }
+}
+@media (max-width: 820px) {
+  #app {
+    max-width: 480px;
+    margin: 0 auto;
   }
 }
 </style>

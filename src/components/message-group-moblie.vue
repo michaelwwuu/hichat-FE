@@ -538,7 +538,7 @@ export default {
       this.setReplyMsg({
         chatType: event.chatType,
         clickType: "replyMsg",
-        innerText: event.message.content,
+        innerText: this.isBase64(event.message.content),
         replyHistoryId: event.historyId,
         name: event.name,
         icon: event.icon,
@@ -553,12 +553,12 @@ export default {
             this.setReplyMsg({
               chatType: data.chatType,
               clickType: "editMsg",
-              innerText: data.message.content,
+              innerText: this.isBase64(data.message.content),
               replyHistoryId: data.historyId,
               name: data.name,
               icon: data.icon,
             });
-            this.setEditMsg({ innerText: data.message.content });
+            this.setEditMsg({ innerText: this.isBase64(data.message.content) });
           },
         },
         {
@@ -575,7 +575,7 @@ export default {
             this.setReplyMsg({
               chatType: data.chatType,
               clickType: "replyMsg",
-              innerText: data.message.content,
+              innerText: this.isBase64(data.message.content),
               replyHistoryId: data.historyId,
               name: data.name,
               icon: data.icon,
@@ -816,7 +816,8 @@ export default {
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.message.content.replace(/(\s*$)/g, "");
+      url.value = this.isBase64(data.message.content).replace(/(\s*$)/g, "");
+      console.log(url.value)
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);

@@ -357,7 +357,7 @@ export default {
     copyPaste(data) {
       let url = document.createElement("textarea");
       document.body.appendChild(url);
-      url.value = data.chat.text.replace(/(\s*$)/g, "");
+      url.value = this.isBase64(data.chat.text).replace(/(\s*$)/g, "");
       url.select();
       document.execCommand("copy");
       document.body.removeChild(url);

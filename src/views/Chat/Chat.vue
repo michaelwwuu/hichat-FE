@@ -690,10 +690,10 @@ export default {
           break;
         // 編輯訊息
         case "SRV_CHAT_EDIT":
-          this.messageData = this.messageData.forEach((res) => {
+          this.messageData.forEach((res) => {
             if (res.historyId === userInfo.historyId) {
               res.message.content = userInfo.chat.text;
-              res.newContent = userInfo.chat.text.split(" ");
+              res.newContent = this.isBase64(userInfo.chat.text).split(" ");
             }
           });
           this.getHiChatDataList();

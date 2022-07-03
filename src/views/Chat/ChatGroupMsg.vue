@@ -608,7 +608,7 @@ export default {
           this.messageData = this.messageData.forEach((res) => {
             if (res.historyId === userInfo.historyId) {
               res.message.content = userInfo.chat.text;
-              res.newContent = userInfo.chat.text.split(" ");
+              res.newContent = this.isBase64(userInfo.chat.text).split(" ");
             }
           });
           this.getHiChatDataList();
