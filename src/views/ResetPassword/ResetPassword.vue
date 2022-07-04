@@ -97,7 +97,7 @@
               >获取驗證碼 <span v-if="timer">({{ count }})</span>
             </el-button>
           </el-form-item>
-          <span class="tip-text">请至註冊手机確認驗證碼</span>
+          <span class="tip-text">请至注册手机号码确认验证码</span>
           <div class="register-footer">
             <el-button
               style="width: 100%; margin-bottom: 30px"
@@ -165,6 +165,11 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
+        let newNum = []
+        Array.from(val.phoneNo).forEach((num)=>{
+          if(!/^[\u4E00-\u9FA5_a-zA-Z/@~!#$%.^&*=<>:?"{}()]+$/.test(num)) newNum.push(num)
+        })
+        this.loginForm.phoneNo = newNum.toString().replace(/,/g, "")
         if (Object.values(val).every((el) => el !== "")) {
           this.disabled = false;
         } else {
@@ -198,7 +203,7 @@ export default {
       let params = { phoneNo: phone, forRegister: key };
       genAuthCode(params).then((res) => {
         if (res.code === 200) {
-          this.$message({ message: "请至註冊手机確認驗證碼", type: "success" });
+          this.$message({ message: "请至注册手机号码确认验证码", type: "success" });
           this.timer = true;
           let time = null;
           time = setInterval(() => {

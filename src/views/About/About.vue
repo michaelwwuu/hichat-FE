@@ -2,12 +2,12 @@
   <div class="home-wrapper">
     <el-container>
       <el-main>
-        <el-header height="70px">    
-        <div class="home-header">
-          <div class="home-user" @click="back"></div>
-          <span class="home-header-title">关于嗨聊</span>
-          <div class="home-add-user"></div>
-        </div>
+        <el-header height="70px">
+          <div class="home-header">
+            <div class="home-user" @click="back"></div>
+            <span class="home-header-title">关于嗨聊</span>
+            <div class="home-add-user"></div>
+          </div>
         </el-header>
         <div class="home-content">
           <div

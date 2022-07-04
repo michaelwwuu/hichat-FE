@@ -30,9 +30,7 @@
           </div>
         </div>
         <div class="home-footer-btn">
-          <el-button
-            class="orange-btn"
-            @click="addGroupMsg"
+          <el-button class="orange-btn" @click="addGroupMsg"
             >设定群组资讯</el-button
           >
         </div>
@@ -41,9 +39,24 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start" :style="!groupPermissionData.addGroup ? 'position: relative; left: -4px; top: -1px;':''" >
+          <div
+            class="home-header flex-start"
+            :style="
+              !groupPermissionData.addGroup
+                ? 'position: relative; left: -4px; top: -1px;'
+                : ''
+            "
+          >
             <div class="home-user-pc" @click="back()"></div>
-            <span class="home-header-title" :style="!groupPermissionData.addGroup ? 'position: relative; left: 1px; top: 1px;':''">管理员权限设定</span>
+            <span
+              class="home-header-title"
+              :style="
+                !groupPermissionData.addGroup
+                  ? 'position: relative; left: 1px; top: 1px;'
+                  : ''
+              "
+              >管理员权限设定</span
+            >
             <div class="home-add-user"></div>
           </div>
         </el-header>
@@ -68,9 +81,7 @@
           </div>
         </div>
         <div class="home-footer-btn">
-          <el-button
-            class="orange-btn"
-            @click="addGroupMsg"
+          <el-button class="orange-btn" @click="addGroupMsg"
             >设定群组资讯</el-button
           >
         </div>
@@ -80,211 +91,208 @@
 </template>
 
 <script>
-import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
-import { addManager,groupListMember,setManagerAuthority } from "@/api";
+import { mapState, mapMutations } from "vuex";
+import { addManager, groupListMember, setManagerAuthority } from "@/api";
 
 export default {
   name: "AdminSetting",
   data() {
     return {
-      searchKey:"",
-      groupManagerAuthorityVO:[
+      searchKey: "",
+      groupManagerAuthorityVO: [
         {
-          name:"传送讯息与媒体档案",
-          key:"sendMessage",
-          isCheck:true,
+          name: "传送讯息与媒体档案",
+          key: "sendMessage",
+          isCheck: true,
         },
         {
-          name:"置顶讯息",
-          key:"pin",
-          isCheck:false,
+          name: "置顶讯息",
+          key: "pin",
+          isCheck: false,
         },
         {
-          name:"禁言设定",
-          key:"banUserPost",
-          isCheck:false,
+          name: "禁言设定",
+          key: "banUserPost",
+          isCheck: false,
         },
         {
-          name:"禁言字词设定",
-          key:"disabledWord",
-          isCheck:false,
+          name: "禁言字词设定",
+          key: "disabledWord",
+          isCheck: false,
         },
         {
-          name:"加入成員",
-          key:"addUser",
-          isCheck:false,
+          name: "加入成員",
+          key: "addUser",
+          isCheck: false,
         },
         {
-          name:"踢除成員",
-          key:"delUser",
-          isCheck:false,
+          name: "踢除成員",
+          key: "delUser",
+          isCheck: false,
         },
         {
-          name:"变更群组资讯",
-          key:"updateGroupInfo",
-          isCheck:false,
+          name: "变更群组资讯",
+          key: "updateGroupInfo",
+          isCheck: false,
         },
         {
-          name:"删除群组成员讯息",
-          key:"delUserMessage",
-          isCheck:false,
+          name: "删除群组成员讯息",
+          key: "delUserMessage",
+          isCheck: false,
         },
         {
-          name:"查看群组成员资讯",
-          key:"checkUserInfo",
-          isCheck:false,
+          name: "查看群组成员资讯",
+          key: "checkUserInfo",
+          isCheck: false,
         },
       ],
       device: localStorage.getItem("device"),
     };
   },
   created() {
-    if(this.device === "moblie"){
+    if (this.device === "moblie") {
       this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    }else{
-      this.groupData = this.groupUser
-    }    
+    } else {
+      this.groupData = this.groupUser;
+    }
   },
   mounted() {
-    this.getGroupListMember()
+    this.getGroupListMember();
   },
   computed: {
     ...mapState({
-      groupUser: (state) => state.ws.groupUser,     
-      msgInfoPage: (state) => state.ws.msgInfoPage,     
+      groupUser: (state) => state.ws.groupUser,
+      msgInfoPage: (state) => state.ws.msgInfoPage,
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
-  },  
+  },
   methods: {
     ...mapMutations({
-      setMsgInfoPage:"ws/setMsgInfoPage",
-      setGroupPermissionData:"ws/setGroupPermissionData",
+      setMsgInfoPage: "ws/setMsgInfoPage",
+      setGroupPermissionData: "ws/setGroupPermissionData",
     }),
-    addGroupMsg(){
-      this.newManagerAuthorityData ={}
-      this.groupManagerAuthorityVO.forEach((el)=>{
+    
+    addGroupMsg() {
+      this.newManagerAuthorityData = {};
+      this.groupManagerAuthorityVO.forEach((el) => {
         this.newManagerAuthorityData[el.key] = true;
         let newData = this.groupManagerAuthorityVO.filter((res) => {
-          return (res.key === el.key);
+          return res.key === el.key;
         });
-        this.newManagerAuthorityData[el.key] = newData[0].isCheck
-      })
-      if(!this.groupPermissionData.addGroup) {
-        let parmaGroupId = this.device==="moblie" ? this.$route.params : this.msgInfoPage.data
-        let parmaMemberId = this.device==="moblie" ? this.$route.params : this.msgInfoPage.data
-        
+        this.newManagerAuthorityData[el.key] = newData[0].isCheck;
+      });
+      if (!this.groupPermissionData.addGroup) {
+        let parmaGroupId =
+          this.device === "moblie" ? this.$route.params : this.msgInfoPage.data;
+        let parmaMemberId =
+          this.device === "moblie" ? this.$route.params : this.msgInfoPage.data;
         let params = {
-          groupId:parmaGroupId.groupId,
-          groupManagerAuthorityVO:this.newManagerAuthorityData,
-          memberId:parmaMemberId.memberId,
+          groupId: parmaGroupId.groupId,
+          groupManagerAuthorityVO: this.newManagerAuthorityData,
+          memberId: parmaMemberId.memberId,
+        };
+        if (!parmaGroupId.isManager || parmaGroupId.isManager === undefined) {
+          addManager(params).then((res) => {
+            if (res.code === 200) {
+              this.groupActionCurrent()
+            }
+          });
+        } else {
+          setManagerAuthority(params).then((res) => {
+            if (res.code === 200) {
+              this.groupActionCurrent()
+            }
+          });
         }
-        if(!parmaGroupId.isManager || parmaGroupId.isManager === undefined){
-          addManager(params).then((res)=>{
-            if(res.code === 200){
-              if (this.device === "moblie") {
-                this.$router.push({ path: "/AdminSetting" });
-              } else {
-                if(this.msgInfoPage.pageAdd) {
-                  this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
-                }else{
-                  this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
-                }
-              } 
+      } else {
+        this.newManagerAuthorityData["memberId"] = this.$route.params.contactId;
+        if (this.$route.params.isManager) {
+          this.groupPermissionData.groupManagerAuthority.forEach((el) => {
+            if (el.memberId === this.$route.params.contactId) {
+              el.addUser = this.newManagerAuthorityData.addUser;
+              el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo;
+              el.delUser = this.newManagerAuthorityData.delUser;
+              el.banUserPost = this.newManagerAuthorityData.banUserPost;
+              el.disabledWord = this.newManagerAuthorityData.disabledWord;
+              el.pin = this.newManagerAuthorityData.pin;
+              el.sendMessage = this.newManagerAuthorityData.sendMessage;
+              el.updateGroupInfo = this.newManagerAuthorityData.updateGroupInfo;
             }
-          })
-        }else{
-          setManagerAuthority(params).then((res)=>{
-            if(res.code === 200){
-              if (this.device === "moblie") {
-                this.$router.push({ path: "/AdminSetting" });
-              } else {
-                if(this.msgInfoPage.pageAdd) {
-                  this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
-                }else{
-                  this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
-                }
-              } 
-            }
-          })
+          });
+        } else {
+          this.groupPermissionData.groupManagerAuthority.push(
+            this.newManagerAuthorityData
+          );
         }
-      }else{
-        this.newManagerAuthorityData["memberId"] = this.$route.params.contactId
-        if(this.$route.params.isManager){
-          this.groupPermissionData.groupManagerAuthority.forEach((el)=>{
-            if(el.memberId === this.$route.params.contactId){
-              el.addUser = this.newManagerAuthorityDataaddUser
-              el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo
-              el.delUser = this.newManagerAuthorityData.delUser
-              el.banUserPost = this.newManagerAuthorityData.banUserPost
-              el.disabledWord = this.newManagerAuthorityData.disabledWord
-              el.addUser = this.newManagerAuthorityData.addUser
-              el.pin = this.newManagerAuthorityData.pin
-              el.sendMessage = this.newManagerAuthorityData.sendMessage
-              el.updateGroupInfo = this.newManagerAuthorityData.updateGroupInfo
-            }
-          })
-        }else{
-          this.groupPermissionData.groupManagerAuthority.push(this.newManagerAuthorityData)
-        } 
-        this.groupPermissionData.peopleData.forEach((res)=>{
-          if(res.contactId === this.$route.params.contactId){
-            res.isManager = true
-            res.authority = this.newManagerAuthorityData
-           }
-        })
+        this.groupPermissionData.peopleData.forEach((res) => {
+          if (res.contactId === this.$route.params.contactId) {
+            res.isManager = true;
+            res.authority = this.newManagerAuthorityData;
+          }
+        });
         this.$router.push({ path: "/AdminSetting" });
       }
     },
-
-    getGroupListMember(){
-      if(!this.groupPermissionData.addGroup){
+    groupActionCurrent(){
+      if (this.device === "moblie") {
+        this.$router.push({ path: "/AdminSetting" });
+      } else {
+        if (this.msgInfoPage.pageAdd) {
+          this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage", });
+        } else {
+          this.setMsgInfoPage({ pageShow: false, type: "AdminSetting", });
+        }
+      }
+    },
+    getGroupListMember() {
+      if (!this.groupPermissionData.addGroup) {
         let groupId = this.groupData.groupId;
         groupListMember({ groupId }).then((res) => {
-          let parmaMemberId = this.device==="moblie" ? this.$route.params.memberId : this.msgInfoPage.data.memberId
-          this.newData = res.data.list.filter((el)=>{
-            return el.memberId === parmaMemberId
-          })
-          let managerAuthority = this.newData[0].authority
-          if(managerAuthority !== undefined){
+          let parmaMemberId =
+            this.device === "moblie"
+              ? this.$route.params.memberId
+              : this.msgInfoPage.data.memberId;
+          this.newData = res.data.list.filter((el) => {
+            return el.memberId === parmaMemberId;
+          });
+          let managerAuthority = this.newData[0].authority;
+          if (managerAuthority !== undefined) {
             for (let item in managerAuthority) {
-              this.groupManagerAuthorityVO.forEach((res)=>{
-                if(item === res.key){
-                  return res.isCheck = managerAuthority[item]
+              this.groupManagerAuthorityVO.forEach((res) => {
+                if (item === res.key) {
+                  return (res.isCheck = managerAuthority[item]);
                 }
-              })
+              });
             }
           }
-        })
-      }else{
-        let managerAuthority = this.$route.params.authority
-        if(managerAuthority !== undefined){
+        });
+      } else {
+        let managerAuthority = this.$route.params.authority;
+        if (managerAuthority !== undefined) {
           for (let item in managerAuthority) {
-            this.groupManagerAuthorityVO.forEach((res)=>{
-              if(item === res.key){
-                return res.isCheck = managerAuthority[item]
+            this.groupManagerAuthorityVO.forEach((res) => {
+              if (item === res.key) {
+                return (res.isCheck = managerAuthority[item]);
               }
-            })
+            });
           }
         }
       }
-      
     },
     back() {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        if(this.groupPermissionData.addGroup){
+        if (this.groupPermissionData.addGroup) {
           this.$router.back(-1);
-        }else{
-          if(this.msgInfoPage.pageAdd) {
+        } else {
+          if (this.msgInfoPage.pageAdd) {
             this.setMsgInfoPage({ pageShow: false, type: "AdminSettingPage" });
-          }else{
+          } else {
             this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
           }
         }
-       
-      } 
+      }
     },
   },
 };
@@ -312,7 +320,8 @@ export default {
     .setting-button {
       padding: 0.5em 0 0.5em 0.5em;
       background-color: #fff;
-      a,.setting-box {
+      a,
+      .setting-box {
         text-decoration: none;
         display: flex;
         justify-content: space-between;
@@ -325,9 +334,9 @@ export default {
       img {
         height: 1.2em;
       }
-      .setting-button-left{
-        .el-image{
-          .el-image__inner{
+      .setting-button-left {
+        .el-image {
+          .el-image__inner {
             height: -webkit-fill-available !important;
           }
         }
@@ -341,14 +350,14 @@ export default {
           font-size: 16px;
           color: #333333;
         }
-        .el-switch{
+        .el-switch {
           width: 100%;
           display: flex;
           justify-content: space-between;
         }
-        /deep/.el-switch__label.is-active{
+        /deep/.el-switch__label.is-active {
           color: #333333;
-        }        
+        }
       }
       .setting-button-right {
         display: flex;
@@ -361,7 +370,7 @@ export default {
           color: #b3b3b3;
         }
       }
-    }    
+    }
   }
 }
 </style>

@@ -26,11 +26,11 @@
             v-model.trim="loginForm.phone"
             placeholder="手机号码"
             name="phone"
-            type="text"
             tabindex="1"
+            type="text"
             maxLength="30"
             @input="
-              (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5_a-zA-Z]+$/, ''))
             "
             @blur="recover"
           >
@@ -77,7 +77,7 @@
             tabindex="1"
             maxLength="30"
             @input="
-              (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+              (v) => (loginForm.phone = v.replace(/^[\u4E00-\u9FA5_a-zA-Z]+$/, ''))
             "
             @blur="recover"
           >
@@ -172,7 +172,7 @@
           <img src="./../../../static/images/warn.png" alt="" />
         </div>
         <div style="margin-bottom: 10px"><span>帐号已锁定。</span></div>
-        <div><span>请至请至註冊手机確認驗證碼以解锁帐号。</span></div>
+        <div><span>请至请至注册手机号码确认验证码以解锁帐号。</span></div>
       </div>
       <span slot="footer" class="dialog-footer">
         <router-link :to="'/ResetPassword'">
@@ -220,6 +220,11 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
+        let newNum = []
+        Array.from(val.phone).forEach((num)=>{
+          if(!/^[\u4E00-\u9FA5_a-zA-Z/@~!#$%.^&*=<>:?"{}()]+$/.test(num)) newNum.push(num)
+        })
+        this.loginForm.phone = newNum.toString().replace(/,/g, "")
         if (
           Object.values(val).every((el) => el !== "") &&
           val.password.toString().length >= 4
@@ -256,7 +261,7 @@ export default {
       // userAgent属性是一个只读的字符串，声明了浏览器用于 HTTP 请求的用户代理头的值，用于判断是Android设备还是IOS设备
       let isIOS = !!agentValue.match( /\(i[^;]+;( U;)? CPU.+Mac OS X/ ); // 判断是否是ios终端
       if( isIOS ) {
-          window.scrollTo( 0, 0 ); // 如果是ios终端，则在失焦的时候使页面返回顶部
+        window.scrollTo( 0, 0 ); // 如果是ios终端，则在失焦的时候使页面返回顶部
       }
     },
     browserType() {

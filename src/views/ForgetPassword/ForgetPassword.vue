@@ -32,7 +32,7 @@
               tabindex="1"
               maxLength="30"
               @input="
-                (v) => (loginForm.phoneNo = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) => (loginForm.phoneNo = v.replace(/^[\u4E00-\u9FA5_a-zA-Z]+$/, ''))
               "
               @blur="recover"
             >
@@ -164,7 +164,7 @@
               tabindex="1"
               maxLength="30"
               @input="
-                (v) => (loginForm.phoneNo = v.replace(/^[\u4E00-\u9FA5]+$/, ''))
+                (v) => (loginForm.phoneNo = v.replace(/^[\u4E00-\u9FA5_a-zA-Z]+$/, ''))
               "
               @blur="recover"
             >
@@ -339,6 +339,11 @@ export default {
   watch: {
     loginForm: {
       handler(val) {
+        let newNum = []
+        Array.from(val.phoneNo).forEach((num)=>{
+          if(!/^[\u4E00-\u9FA5_a-zA-Z/@~!#$%.^&*=<>:?"{}()]+$/.test(num)) newNum.push(num)
+        })
+        this.loginForm.phoneNo = newNum.toString().replace(/,/g, "")
         if (val.newPassword === val.passwordAganin) {
           if (
             Object.values(val).every((el) => el !== "") &&
@@ -381,7 +386,7 @@ export default {
       let params = { phoneNo: phone, forRegister: key };
       genAuthCode(params).then((res) => {
         if (res.code === 200) {
-          this.$message({ message: "请至註冊手机確認驗證碼", type: "success" });
+          this.$message({ message: "请至注册手机号码确认验证码", type: "success" });
           this.timer = true;
           let time = null;
           time = setInterval(() => {

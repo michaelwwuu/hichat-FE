@@ -149,25 +149,25 @@ export default {
       uploadImgShow: false,
       disableEditSubmit: true,
       device: localStorage.getItem("device"),
+      permissionData:{
+        addGroup: false,
+        groupName: "",
+        memberList: [],
+        icon: "",
+        banPostMemberList: [],
+        groupAdminAuthority: {
+          checkUserInfo: false,
+          pin: false,
+          sendMessage: true,
+        },
+        groupDisabledWordList: [],
+        groupManagerAuthority: [],
+      }
     };
   },
   created() {
     this.getAddressList();
-    let groupPermissionData = {
-      addGroup: false,
-      groupName: "",
-      memberList: [],
-      icon: "",
-      banPostMemberList: [],
-      groupAdminAuthority: {
-        checkUserInfo: false,
-        pin: false,
-        sendMessage: true,
-      },
-      groupDisabledWordList: [],
-      groupManagerAuthority: [],
-    };
-    this.setGroupPermissionData(groupPermissionData);
+    this.setGroupPermissionData(this.permissionData);
   },
   watch: {
     checkList(val) {
@@ -270,14 +270,12 @@ export default {
     },
     back() {
       if (this.groupPermissionData.addGroup) {
-        this.$router.push({ path: "/HiChat" });
         this.setChatGroup({});
         this.groupPermissionData.addGroup = false;
         this.setGroupPermissionData(this.groupPermissionData);
         this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
-      } else {
-        this.$router.push({ path: "/HiChat" });
-      }
+      } 
+      this.$router.push({ path: "/HiChat" });
     },
   },
 };

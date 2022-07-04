@@ -21,7 +21,7 @@
         <div class="home-content">
           <div v-for="(item, index) in newContactList" :key="index">
             <div class="setting-button mt10">
-              <div class="setting-box">
+              <div class="setting-box" @click="addAdmin(item)">
                 <div class="setting-button-left">
                   <div class="el-image">
                     <img :src="item.icon" alt="" class="el-image__inner" />
@@ -29,7 +29,7 @@
                   <span>{{ item.name }}</span>
                 </div>
                 <div class="setting-button-right">
-                  <span @click="addAdmin(item)">＋</span>
+                  <span>＋</span>
                 </div>
               </div>
             </div>
@@ -40,14 +40,29 @@
     <el-container v-else>
       <el-aside width="300px">
         <el-header height="70px">
-          <div class="home-header flex-start" :style="!groupPermissionData.addGroup ? 'position: relative; left: -4px; top: -1px;':''">
+          <div
+            class="home-header flex-start"
+            :style="
+              !groupPermissionData.addGroup
+                ? 'position: relative; left: -4px; top: -1px;'
+                : ''
+            "
+          >
             <div class="home-user-pc" @click="back()"></div>
-            <span class="home-header-title" :style="!groupPermissionData.addGroup ? 'position: relative; left: 1px; top: 1px;':'position: relative; left: 1px;'">管理员设定</span>
+            <span
+              class="home-header-title"
+              :style="
+                !groupPermissionData.addGroup
+                  ? 'position: relative; left: 1px; top: 1px;'
+                  : 'position: relative; left: 1px;'
+              "
+              >管理员设定</span
+            >
             <div class="home-add-user"></div>
           </div>
         </el-header>
-        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
-          <div class="home-search" >
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)">
+          <div class="home-search">
             <el-input
               placeholder="搜寻"
               prefix-icon="el-icon-search"
@@ -56,11 +71,11 @@
             >
             </el-input>
           </div>
-        </div>        
+        </div>
         <div class="home-content">
           <div v-for="(item, index) in newContactList" :key="index">
             <div class="setting-button mt10">
-              <div class="setting-box">
+              <div class="setting-box" @click="addAdmin(item)">
                 <div class="setting-button-left">
                   <div class="el-image">
                     <img :src="item.icon" alt="" class="el-image__inner" />
@@ -68,20 +83,19 @@
                   <span>{{ item.name }}</span>
                 </div>
                 <div class="setting-button-right">
-                  <span @click="addAdmin(item)">＋</span>
+                  <span>＋</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </el-aside>
-    </el-container>    
+    </el-container>
   </div>
 </template>
 
 <script>
-import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
+import { mapState, mapMutations } from "vuex";
 import { groupListMember } from "@/api";
 
 export default {
@@ -89,20 +103,20 @@ export default {
   data() {
     return {
       contactList: [],
-      newContactList:[],
-      adminUser: [],      
-      searchKey:"",
+      newContactList: [],
+      adminUser: [],
+      searchKey: "",
       device: localStorage.getItem("device"),
     };
   },
   created() {
-    if(this.device === "moblie"){
+    if (this.device === "moblie") {
       this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    }else{
-      this.groupData = this.groupUser
-    }    
+    } else {
+      this.groupData = this.groupUser;
+    }
   },
-  watch:{
+  watch: {
     searchKey(val) {
       let searchKeyData = val.split(" ");
       searchKeyData.forEach((el) => {
@@ -111,24 +125,24 @@ export default {
           return item.name.indexOf(el.replace("@", "")) !== -1;
         });
       });
-      this.newContactList = this.searchData
+      this.newContactList = this.searchData;
     },
   },
   mounted() {
-    this.getGroupListMember()
+    this.getGroupListMember();
   },
   computed: {
     ...mapState({
-      groupUser: (state) => state.ws.groupUser,      
+      groupUser: (state) => state.ws.groupUser,
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
-  },  
+  },
   methods: {
     ...mapMutations({
-      setMsgInfoPage:"ws/setMsgInfoPage",
+      setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     getGroupListMember() {
-      if(!this.groupPermissionData.addGroup){
+      if (!this.groupPermissionData.addGroup) {
         let groupId = this.groupData.groupId;
         groupListMember({ groupId }).then((res) => {
           this.contactList = res.data.list;
@@ -140,25 +154,31 @@ export default {
           this.checkDataList = this.contactList.filter(
             (el) => el.memberId !== this.groupData.memberId
           );
-          this.contactList = this.contactList.filter((el)=>el.isManager === undefined || (!el.isAdmin && !el.isManager))
-          this.newContactList = this.contactList
+          this.contactList = this.contactList.filter(
+            (el) => el.isManager === undefined || (!el.isAdmin && !el.isManager)
+          );
+          this.newContactList = this.contactList;
         });
-      }else{
-        this.contactList = this.groupPermissionData.peopleData.filter((el)=>{
-          return el.isManager === undefined
-        })
-        this.newContactList = this.contactList
+      } else {
+        this.contactList = this.groupPermissionData.peopleData.filter((el) => {
+          return el.isManager === undefined;
+        });
+        this.newContactList = this.contactList;
       }
-      
-    },    
-    addAdmin(data){
+    },
+    addAdmin(data) {
       if (this.device === "moblie") {
-        this.$router.push({ name: "AdminSettingDetail",params:data });
-      }else{
-        if(this.groupPermissionData.addGroup){
-          this.$router.push({ name: "AdminSettingDetail",params:data });
-        }else{
-          this.setMsgInfoPage({ pageShow: false, type: "AdminSettingDetail",pageAdd:true,data });
+        this.$router.push({ name: "AdminSettingDetail", params: data });
+      } else {
+        if (this.groupPermissionData.addGroup) {
+          this.$router.push({ name: "AdminSettingDetail", params: data });
+        } else {
+          this.setMsgInfoPage({
+            pageShow: false,
+            type: "AdminSettingDetail",
+            pageAdd: true,
+            data,
+          });
         }
       }
     },
@@ -166,12 +186,12 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        if(this.groupPermissionData.addGroup){
+        if (this.groupPermissionData.addGroup) {
           this.$router.back(-1);
-        }else{
+        } else {
           this.setMsgInfoPage({ pageShow: false, type: "AdminSetting" });
         }
-      } 
+      }
     },
   },
 };
@@ -217,6 +237,7 @@ export default {
         align-content: center;
         padding: 0.5em 0.7em 0.5em 0;
         margin-left: 10px;
+        cursor: pointer;
       }
       img {
         height: 1.2em;
@@ -255,19 +276,19 @@ export default {
     }
   }
 }
-.hichat-pc{
-  .home-wrapper{
-    .home-search{
-      .el-input{
+.hichat-pc {
+  .home-wrapper {
+    .home-search {
+      .el-input {
         width: 95%;
       }
     }
-    .home-content{
-      .el-checkbox{
+    .home-content {
+      .el-checkbox {
         width: 100%;
       }
-      .el-checkbox__label{
-        .address-box{
+      .el-checkbox__label {
+        .address-box {
           .msg-box {
             span {
               &::after {
