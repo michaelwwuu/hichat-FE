@@ -8,126 +8,229 @@
       <div class="input-tools-right">
         <div>
           <!-- <img src="./../../static/images/plus.png" alt=""> -->
-          <img
-            src="./../../static/images/image.png"
-            alt=""
-            @click="uploadImgShow = true"
-          />
+          <template v-if="groupData.isAdmin">
+            <img
+              src="./../../static/images/image.png"
+              alt=""
+              @click="uploadImgShow = true"
+            />
+          </template>
+          <template v-else-if="groupData.isManager">
+            <img
+              v-if="authorityGroupData.sendImage || authority.sendImage"
+              src="./../../static/images/image.png"
+              alt=""
+              @click="uploadImgShow = true"
+            />
+          </template>
+          <template v-else>
+            <img
+              v-if="authorityGroupData.sendImage"
+              src="./../../static/images/image.png"
+              alt=""
+              @click="uploadImgShow = true"
+            />
+          </template>
           <!-- <img src="./../../static/images/camera.png" alt=""> -->
         </div>
       </div>
+
       <div class="text-send-box">
-        <el-input
-          type="textarea"
-          resize="none"
-          :autosize="{ minRows: 1, maxRows: 1 }"
-          placeholder="Aa"
-          v-model="textArea"
-          maxlength="500"
-          @keyup.native="callout"
+        <div
+          class="disable-box"
+          v-if="
+            groupData.isManager &&
+            (!authorityGroupData.sendMessage && !authority.sendMessage)
+          "
+          @click="disableTouch"
         >
-        </el-input>
-        <div class="footer-tools"  @touchmove="$root.handleTouch">
-          <emoji-picker @emoji="insert" :search="search">
-            <div
-              slot="emoji-invoker"
-              slot-scope="{ events: { click: clickEvent } }"
-              @click.stop="clickEvent"
-            >
-              <div class="face-other-btn">
-                <img src="./../../static/images/emoji.png" alt="" />
+          已禁止發言
+        </div>
+        <div
+          class="disable-box"
+          v-if="
+            !groupData.isAdmin &&
+            !groupData.isManager &&
+            !authorityGroupData.sendMessage
+          "
+          @click="disableTouch"
+        >
+          已禁止發言
+        </div>
+        <template v-else>
+          <el-input
+            type="textarea"
+            resize="none"
+            :autosize="{ minRows: 1, maxRows: 1 }"
+            placeholder="Aa"
+            v-model="textArea"
+            maxlength="500"
+            @keyup.native="callout"
+          >
+          </el-input>
+          <div class="footer-tools" @touchmove="$root.handleTouch">
+            <emoji-picker @emoji="insert" :search="search">
+              <div
+                slot="emoji-invoker"
+                slot-scope="{ events: { click: clickEvent } }"
+                @click.stop="clickEvent"
+              >
+                <div class="face-other-btn">
+                  <img src="./../../static/images/emoji.png" alt="" />
+                </div>
               </div>
-            </div>
-            <div
-              slot="emoji-picker"
-              slot-scope="{ emojis, insert }"
-              class="face-icon"
-            >
-              <div class="face-icon-box">
-                <div>
-                  <div
-                    v-for="(emojiGroup, category) in emojis"
-                    :key="category"
-                    class="face-box"
-                  >
-                    <h5>{{ emojiChine(category) }}</h5>
-                    <div>
-                      <span
-                        v-for="(emoji, emojiName) in emojiGroup"
-                        :key="emojiName"
-                        @click="insert(emoji)"
-                        >{{ emoji }}</span
-                      >
+              <div
+                slot="emoji-picker"
+                slot-scope="{ emojis, insert }"
+                class="face-icon"
+              >
+                <div class="face-icon-box">
+                  <div>
+                    <div
+                      v-for="(emojiGroup, category) in emojis"
+                      :key="category"
+                      class="face-box"
+                    >
+                      <h5>{{ emojiChine(category) }}</h5>
+                      <div>
+                        <span
+                          v-for="(emoji, emojiName) in emojiGroup"
+                          :key="emojiName"
+                          @click="insert(emoji)"
+                          >{{ emoji }}</span
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </emoji-picker>
-        </div>
+            </emoji-picker>
+          </div>
+        </template>
       </div>
+
       <div class="input-tools-left">
-        <div v-if="textArea === ''" @click="sendAduio">
-          <img src="./../../static/images/audio.png" alt="" />
-        </div>
-        <div v-else @click="editMsg.innerText === '' ? sendMessage() : editMessage()">
-          <img src="./../../static/images/send.png" alt="" />
-        </div>
+        <template v-if="groupData.isAdmin">
+          <div v-if="textArea === ''" @click="sendAduio">
+            <img src="./../../static/images/audio.png" alt="" />
+          </div>
+          <div
+            v-else
+            @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
+          >
+            <img src="./../../static/images/send.png" alt="" />
+          </div>
+        </template>
+        <template v-else-if="groupData.isManager">
+          <div
+            v-if="
+              textArea === '' &&
+              (authorityGroupData.sendImage || authority.sendImage)
+            "
+            @click="sendAduio"
+          >
+            <img src="./../../static/images/audio.png" alt="" />
+          </div>
+          <div
+            v-else-if="authorityGroupData.sendMessage || authority.sendMessage"
+            @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
+          >
+            <img src="./../../static/images/send.png" alt="" />
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-if="textArea === '' && authorityGroupData.sendImage"
+            @click="sendAduio"
+          >
+            <img src="./../../static/images/audio.png" alt="" />
+          </div>
+          <div
+            v-else-if="authorityGroupData.sendMessage"
+            @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
+          >
+            <img src="./../../static/images/send.png" alt="" />
+          </div>
+        </template>
       </div>
     </template>
     <template v-else>
       <div class="text-send-box">
-        <el-input
-          type="textarea"
-          resize="none"
-          :autosize="{ minRows: 1, maxRows: 1 }"
-          placeholder="Aa"
-          v-model="textArea"
-          maxlength="500"
-          @keyup.native="keyUp"
+        <div
+          class="disable-box"
+          v-if="
+            groupData.isManager &&
+            (!authorityGroupData.sendMessage && !authority.sendMessage)
+          "
+          @click="disableTouch"
         >
-        </el-input>
-        <div class="footer-tools">
-          <emoji-picker @emoji="insert" :search="search">
-            <div
-              slot="emoji-invoker"
-              slot-scope="{ events: { click: clickEvent } }"
-              @click.stop="clickEvent"
-            >
-              <div class="face-other-btn">
-                <img src="./../../static/images/pc/smile.png" alt="" />
+          已禁止發言
+        </div>
+        <div
+          class="disable-box"
+          v-if="
+            !groupData.isAdmin &&
+            !groupData.isManager &&
+            !authorityGroupData.sendMessage
+          "
+          @click="disableTouch"
+        >
+          已禁止發言
+        </div>
+        <template v-else>
+          <el-input
+            type="textarea"
+            resize="none"
+            :autosize="{ minRows: 1, maxRows: 1 }"
+            placeholder="Aa"
+            v-model="textArea"
+            maxlength="500"
+            @keyup.native="keyUp"
+          >
+          </el-input>
+          <div class="footer-tools">
+            <emoji-picker @emoji="insert" :search="search">
+              <div
+                slot="emoji-invoker"
+                slot-scope="{ events: { click: clickEvent } }"
+                @click.stop="clickEvent"
+              >
+                <div class="face-other-btn">
+                  <img src="./../../static/images/emoji.png" alt="" />
+                </div>
               </div>
-            </div>
-            <div
-              slot="emoji-picker"
-              slot-scope="{ emojis, insert }"
-              class="face-icon"
-            >
-              <div class="face-icon-box">
-                <div>
-                  <div
-                    v-for="(emojiGroup, category) in emojis"
-                    :key="category"
-                    class="face-box"
-                  >
-                    <h5>{{ emojiChine(category) }}</h5>
-                    <div>
-                      <span
-                        v-for="(emoji, emojiName) in emojiGroup"
-                        :key="emojiName"
-                        @click="insert(emoji)"
-                        >{{ emoji }}</span
-                      >
+              <div
+                slot="emoji-picker"
+                slot-scope="{ emojis, insert }"
+                class="face-icon"
+              >
+                <div class="face-icon-box">
+                  <div>
+                    <div
+                      v-for="(emojiGroup, category) in emojis"
+                      :key="category"
+                      class="face-box"
+                    >
+                      <h5>{{ emojiChine(category) }}</h5>
+                      <div>
+                        <span
+                          v-for="(emoji, emojiName) in emojiGroup"
+                          :key="emojiName"
+                          @click="insert(emoji)"
+                          >{{ emoji }}</span
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </emoji-picker>
-        </div>
+            </emoji-picker>
+          </div>
+        </template>
+        
       </div>
       <div class="input-tools-left">
-        <div>
+        <template  v-if="groupData.isAdmin">
           <img
             src="./../../static/images/image.png"
             alt=""
@@ -138,15 +241,45 @@
             alt=""
             @click="takePictureShow = true"
           />
-        </div>
+        </template>
+        <template  v-else-if="groupData.isManager && (authorityGroupData.sendImage || authority.sendImage)">
+          <img
+            src="./../../static/images/image.png"
+            alt=""
+            @click="uploadImgShow = true"
+          />
+          <img
+            src="./../../static/images/camera.png"
+            alt=""
+            @click="takePictureShow = true"
+          />
+        </template>        
+        <template v-else-if="!groupData.isAdmin && !groupData.isManager && authorityGroupData.sendImage">
+          <img
+            src="./../../static/images/image.png"
+            alt=""
+            @click="uploadImgShow = true"
+          />
+          <img
+            src="./../../static/images/camera.png"
+            alt=""
+            @click="takePictureShow = true"
+          />
+        </template>
       </div>
     </template>
+
     <div
       class="callout-message"
       v-show="calloutShow && searchContactData.length > 0"
     >
       <ul>
-        <li @click="markPeople(searchContactData)" v-if="groupData.isAdmin || groupData.isManager "><div class="callout-message-box"><span>標記所有成員</span></div></li>
+        <li
+          @click="markPeople(searchContactData)"
+          v-if="groupData.isAdmin || groupData.isManager"
+        >
+          <div class="callout-message-box"><span>標記所有成員</span></div>
+        </li>
         <li
           v-for="(item, index) in searchContactData"
           :key="index"
@@ -205,7 +338,7 @@
       :before-close="closeAduioShow"
       center
       v-loading.fullscreen.lock="fullscreenLoading"
-      element-loading-text="录音上传中"          
+      element-loading-text="录音上传中"
     >
       <div class="record-play">
         <div class="record-time">
@@ -231,7 +364,7 @@
     <el-dialog
       title="照相"
       :visible.sync="takePictureShow"
-      :close-on-click-modal="false"      
+      :close-on-click-modal="false"
       width="100%"
       class="el-dialog-takePicture"
       center
@@ -241,7 +374,11 @@
         v-on:closePictureShow="pictureShow"
       ></Photo>
     </el-dialog>
-    <audio id="notify-send-audio" src="./../../static/wav/send.mp3" preload="none"></audio>
+    <audio
+      id="notify-send-audio"
+      src="./../../static/wav/send.mp3"
+      preload="none"
+    ></audio>
   </div>
 </template>
 
@@ -251,10 +388,14 @@ import EmojiPicker from "vue-emoji-picker";
 
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import { uploadMessageImage, uploadMessageFile,getGroupDisabledWord } from "@/api";
-import { Decrypt,Encrypt} from '@/utils/AESUtils.js'
+import {
+  uploadMessageImage,
+  uploadMessageFile,
+  getGroupDisabledWord,
+} from "@/api";
+import { Decrypt, Encrypt } from "@/utils/AESUtils.js";
 
 export default {
   name: "MessageInput",
@@ -266,8 +407,8 @@ export default {
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
-      fullscreenLoading:false, 
-      banMessage:[],     
+      fullscreenLoading: false,
+      banMessage: [],
       checkName: [],
       fileList: [],
       targetArray: [],
@@ -293,8 +434,8 @@ export default {
       efg: 0, // 時的計數
 
       //加解密 key iv
-      aesKey:"hichatisachatapp",
-      aesIv:"hichatisachatapp",      
+      aesKey: "hichatisachatapp",
+      aesIv: "hichatisachatapp",
     };
   },
   props: {
@@ -306,15 +447,21 @@ export default {
     groupData: {
       type: Object,
     },
-    unGroupDisabledWord:{
+    unGroupDisabledWord: {
       type: Boolean,
-    }
+    },
+    authorityGroupData: {
+      type: Object,
+    },
+    authority: {
+      type: Object,
+    },
   },
   computed: {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
       editMsg: (state) => state.ws.editMsg,
-      soundNofiy: (state) => state.ws.soundNofiy,      
+      soundNofiy: (state) => state.ws.soundNofiy,
       contactListData: (state) => state.ws.contactListData,
     }),
   },
@@ -322,7 +469,7 @@ export default {
     textArea: {
       immediate: true,
       handler(val) {
-        if(val === '') this.calloutShow = false;
+        if (val === "") this.calloutShow = false;
         let textAreaSearchData = val.split(" ");
         textAreaSearchData.forEach((el) => {
           this.searchContactData = this.contactListData.filter((item) => {
@@ -334,42 +481,47 @@ export default {
     editMsg(val) {
       this.textArea = val.innerText;
     },
-
+    authorityGroupData(val) {
+      console.log(val);
+    },
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
-    this.getDisabledWord()
+    this.getDisabledWord();
   },
   methods: {
     ...mapMutations({
-      setEditMsg:"ws/setEditMsg",
+      setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
-    markPeople(data){
-      data.forEach((el)=>{
+    disableTouch() {
+      this.$message({ message: "已禁止發言", type: "warning" });
+    },
+    markPeople(data) {
+      data.forEach((el) => {
         this.targetArray.push("u" + el.memberId);
-      })
-      this.textArea = "@所有成員"
+      });
+      this.textArea = "@所有成員";
     },
     checkCallout(data) {
       this.calloutShow = false;
       this.targetArray.push("u" + data.memberId);
       this.textArea = this.textArea + data.name;
-    },   
+    },
     handleGetMessage(msg) {
       let userInfo = JSON.parse(msg);
-      if(userInfo.chatType === "SRV_GROUP_DISABLE_WORD"){
-        this.getDisabledWord()
+      if (userInfo.chatType === "SRV_GROUP_DISABLE_WORD") {
+        this.getDisabledWord();
       }
     },
-    getDisabledWord(){
+    getDisabledWord() {
       let groupId = this.groupData.groupId;
-      getGroupDisabledWord({groupId}).then((res)=>{
-        if(res.code === 200){
-          this.banMessage = res.data
+      getGroupDisabledWord({ groupId }).then((res) => {
+        if (res.code === 200) {
+          this.banMessage = res.data;
         }
-      })
-    },    
+      });
+    },
     pictureShow(val) {
       this.takePictureShow = val;
     },
@@ -389,21 +541,21 @@ export default {
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
           message.toChatId = "g" + this.groupData.groupId;
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          // message.text = res.data,
-          // 发送服务器
-          this.soundNofiy.forEach((res)=>{
-            if(res.key === "group" && res.isNofity) this.audioAction()
-          })          
+          (message.text = Encrypt(res.data, this.aesKey, this.aesIv)), //TODO 加密
+            // message.text = res.data,
+            // 发送服务器
+            this.soundNofiy.forEach((res) => {
+              if (res.key === "group" && res.isNofity) this.audioAction();
+            });
           Socket.send(message);
           this.fileList = [];
           this.uploadImgShow = false;
-          this.fullscreenLoading = false;          
-        }else if(res.code === 40001){
+          this.fullscreenLoading = false;
+        } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
         }
-      })
+      });
     },
 
     // 開始計時
@@ -528,23 +680,23 @@ export default {
       let formData = new FormData();
       formData.append("file", this.audioMessageData, `${Date.now()}.mp3`);
       formData.append("type", "AUDIO");
-      this.fullscreenLoading = true;      
+      this.fullscreenLoading = true;
       uploadMessageFile(formData).then((res) => {
         if (res.code === 200) {
           let message = this.userInfoData;
           message.chatType = "CLI_GROUP_AUDIO";
           message.id = Math.random();
           message.fromChatId = "u" + localStorage.getItem("id");
-          message.toChatId = "g" + this.groupData.groupId,
-          message.text = Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密
-          // message.text = res.data,
-          // 发送服务器
-          this.soundNofiy.forEach((res)=>{
-            if(res.key === "group" && res.isNofity) this.audioAction()
-          })          
+          (message.toChatId = "g" + this.groupData.groupId),
+            (message.text = Encrypt(res.data, this.aesKey, this.aesIv)), //TODO 加密
+            // message.text = res.data,
+            // 发送服务器
+            this.soundNofiy.forEach((res) => {
+              if (res.key === "group" && res.isNofity) this.audioAction();
+            });
           Socket.send(message);
           this.sendAduioShow = false;
-          this.fullscreenLoading = false;          
+          this.fullscreenLoading = false;
           this.audioMessageData = {};
         }
       });
@@ -571,19 +723,19 @@ export default {
     },
 
     callout() {
-      this.textArea.split(" ").forEach((res)=>{
-        if(res.startsWith('@')){
+      this.textArea.split(" ").forEach((res) => {
+        if (res.startsWith("@")) {
           this.calloutShow = true;
-        } else{
+        } else {
           this.calloutShow = false;
         }
-      })
+      });
     },
-    
+
     keyUp(event) {
-      this.textArea.split(" ").forEach((res)=>{
-        this.calloutShow = res.startsWith('@')
-      })
+      this.textArea.split(" ").forEach((res) => {
+        this.calloutShow = res.startsWith("@");
+      });
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
@@ -607,23 +759,49 @@ export default {
     },
     closeReplyMessage() {
       this.setReplyMsg({
-        name:"",
-        icon:"",
-        chatType:"",
-        clickType:"",
-        innerText:"",
-        replyHistoryId:"",
+        name: "",
+        icon: "",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
       });
-      this.setEditMsg({ innerText:""});
+      this.setEditMsg({ innerText: "" });
     },
     // 发送消息
     sendMessage() {
-      this.banMessageData = this.banMessage.filter((el)=>this.textArea.replace(/(\s*$)/g, "").includes(el.word))
-      if(this.banMessageData.length !== 0){
+      if (!this.groupData.isAdmin && !this.groupData.isManager) {
+        if (!this.authorityGroupData.sendLink) {
+          var strRegex =
+            /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+          var re = new RegExp(strRegex);
+          if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
+            this.$message({ message: "無法發送超連結", type: "error" });
+            this.textArea = "";
+            return false;
+          }
+        }
+      }else if(this.groupData.isManager){
+        if (!this.authorityGroupData.sendLink && !this.authority.sendLink) {
+          var strRegex =
+            /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+          var re = new RegExp(strRegex);
+          if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
+            this.$message({ message: "無法發送超連結", type: "error" });
+            this.textArea = "";
+            return false;
+          }
+        }
+      }
+
+      this.banMessageData = this.banMessage.filter((el) =>
+        this.textArea.replace(/(\s*$)/g, "").includes(el.word)
+      );
+      if (this.banMessageData.length !== 0) {
         this.$message({ message: "訊息含有禁用字詞，無法傳送", type: "error" });
-        this.textArea = this.textArea.replace(/(\s*$)/g, "")
-        return false
-      }else{
+        this.textArea = this.textArea.replace(/(\s*$)/g, "");
+        return false;
+      } else {
         let message = {
           chatType: "CLI_GROUP_SEND",
           id: Math.random(),
@@ -633,16 +811,20 @@ export default {
               ? this.replyMsg.replyHistoryId
               : "",
           targetArray: this.targetArray,
-          text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
+          text: Encrypt(
+            this.textArea.replace(/(\s*$)/g, ""),
+            this.aesKey,
+            this.aesIv
+          ), //TODO 加密
           // text: this.textArea,
           token: getToken("token"),
           deviceId: localStorage.getItem("UUID"),
           tokenType: 0,
         };
         // 发送服务器
-        this.soundNofiy.forEach((res)=>{
-          if(res.key === "group" && res.isNofity) this.audioAction()
-        })
+        this.soundNofiy.forEach((res) => {
+          if (res.key === "group" && res.isNofity) this.audioAction();
+        });
         Socket.send(message);
         this.closeReplyMessage();
         // 消息清空
@@ -650,21 +832,21 @@ export default {
         this.checkName = [];
         this.textArea = "";
       }
-      
     },
-    audioAction(){
-      let audioEl = document.getElementById("notify-send-audio")  
+    audioAction() {
+      let audioEl = document.getElementById("notify-send-audio");
       var playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          audioEl.pause();
-        })
-        .catch(error => {
-        });
+        playPromise
+          .then((_) => {
+            audioEl.pause();
+          })
+          .catch((error) => {});
       }
-      audioEl.src= "" // 移除src, 防止之后播放空白音频  
-      setTimeout(() => { // 用setTimeout模拟一个2秒的延迟
-        audioEl.src = require("./../../static/wav/send.mp3")
+      audioEl.src = ""; // 移除src, 防止之后播放空白音频
+      setTimeout(() => {
+        // 用setTimeout模拟一个2秒的延迟
+        audioEl.src = require("./../../static/wav/send.mp3");
         audioEl.play();
       }, 150);
     },
@@ -675,7 +857,11 @@ export default {
         tokenType: 0,
         fromChatId: this.groupData.lastChat.fromChatId,
         targetId: this.replyMsg.replyHistoryId,
-        text: Encrypt(this.textArea.replace(/(\s*$)/g, ""),this.aesKey,this.aesIv),//TODO 加密
+        text: Encrypt(
+          this.textArea.replace(/(\s*$)/g, ""),
+          this.aesKey,
+          this.aesIv
+        ), //TODO 加密
         // text: this.textArea,
         toChatId: this.groupData.lastChat.toChatId,
         token: getToken("token"),
@@ -719,6 +905,19 @@ export default {
     // margin: 0 auto;
     background-color: #f4f4f4;
     border-radius: 20px;
+    .disable-box {
+      width: 280px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      background-color: #f4f4f4;
+      color: #959393;
+      font-size: 14px;
+      border-radius: 20px;
+      position: absolute;
+      justify-content: center;
+      z-index: 1;
+    }
     .el-textarea {
       .el-textarea__inner {
         padding: 10px !important;

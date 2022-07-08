@@ -59,6 +59,13 @@ const routes = [
         component: () => import("@/views/Home/components/Setting.vue"),
         meta: { keepAlive: false },
       },
+      {
+        path: "/Spread",
+        name: "Spread",
+        component: () => import("@/views/Home/components/Spread.vue"),
+        meta: { keepAlive: false },
+        
+      },
     ]
   },
   {
@@ -192,6 +199,18 @@ const routes = [
     path: "/Notify",
     name: "Notify",
     component: () => import(/* webpackChunkName: "Notify" */ '@/views/Notify/Notify.vue'),
+    meta: { keepAlive: false },
+  },
+  {
+    path: "/SpreadChange",
+    name: "SpreadChange",
+    component: () => import(/* webpackChunkName: "Spread" */ '@/views/Spread/SpreadChange.vue'),
+    meta: { keepAlive: false },
+  },
+  {
+    path: "/spreadMessage",
+    name: "spreadMessage",
+    component: () => import(/* webpackChunkName: "Notify" */ '@/views/Spread/spreadMessage.vue'),
     meta: { keepAlive: false },
   },
   {

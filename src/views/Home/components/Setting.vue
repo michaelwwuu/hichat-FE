@@ -135,12 +135,15 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
+import { getToken } from "_util/utils.js";
+
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import { logout } from "@/api";
 import { Decrypt,Encrypt} from "@/utils/AESUtils.js";
 
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 
 export default {
@@ -226,6 +229,10 @@ export default {
         this.promoteIv
       )
     )}`; 
+    Socket.$on("message", this.handleGetMessage);
+  },
+  beforeDestroy() {
+    Socket.$off("message", this.handleGetMessage);
   },
   methods: {
     copyUrl() {
@@ -267,7 +274,31 @@ export default {
       localStorage.removeItem("myUserInfo");
       localStorage.removeItem("myUserList");
       window.location.reload();
-    },    
+    },  
+    // 收取 socket 回来讯息 (全局讯息)
+    handleGetMessage(msg) {
+      let userInfo = JSON.parse(msg);
+      switch (userInfo.chatType) {
+        case "SRV_USER_IMAGE":
+        case "SRV_USER_AUDIO":
+        case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
+        case "SRV_GROUP_SEND":
+          this.getHiChatDataList();
+          break;
+      }
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        token: getToken("token"),
+        deviceId: localStorage.getItem("UUID"),
+      };
+      Socket.send(chatMsgKey);
+    },        
   },
   components: {
     VueQr,

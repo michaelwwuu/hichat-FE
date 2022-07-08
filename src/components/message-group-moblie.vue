@@ -36,8 +36,8 @@
               :id="el.historyId"
             >
               <span
-                class="message-classic"
                 v-if="el.chatType === 'SRV_GROUP_SEND'"
+                class="message-classic"
                 @contextmenu.prevent.stop="onContextmenu(el)"
                 @dblclick="dblclick(el)"
                 :id="el.historyId"
@@ -93,10 +93,14 @@
                             item.startsWith('@') && item.length > 1,
                         }"
                       >
-                        <span
+                        <vue-markdown
+                          :anchor-attributes="linkAttrs"
+                          >{{ item }}</vue-markdown>
+                        <!-- <span
                           v-html="item"
                           v-linkified
-                        ></span>
+                        ></span> -->
+    
                           <!-- @click="
                             item.startsWith('@')
                               ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
@@ -115,10 +119,7 @@
                         }"
                       >
                         <div
-                          v-if="
-                            item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi) ===
-                            null
-                          "
+                          v-if="!IsURL(item)"
                           @click.prevent.stop="
                             !item.startsWith('@') ? onContextmenu(el) : false
                           "
@@ -133,9 +134,7 @@
                             " -->
                         </div>
                         <div
-                          v-else-if="
-                            item.match(/(http|https):\/\/([\w.]+\/?)\S*/gi)
-                          "
+                          v-else-if="IsURL(item)"
                         >
                           <div
                             v-if="device === 'moblie'"
@@ -147,11 +146,15 @@
                           >
                             <i class="el-icon-more"></i>
                           </div>
-                          <div
+                          <!-- <div
                             v-html="item"
                             v-linkified
                             :class="device === 'moblie' ? 'link-style' : ''"
-                          ></div>
+                          ></div> -->
+                          <vue-markdown
+                          :class="device === 'moblie' ? 'link-style' : ''"
+                          :anchor-attributes="linkAttrs"
+                          >{{ item }}</vue-markdown>
                         </div>
                         <span v-else v-html="item"></span>
                       </div>
@@ -307,6 +310,7 @@ import {
   getGroupAuthoritySetting,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
+import VueMarkdown from "vue-markdown";
 
 export default {
   name: "MessagePabel",
@@ -331,7 +335,10 @@ export default {
       device: localStorage.getItem("device"),
       showScrollBar: false,
       uploadShow: false,
-
+      linkAttrs: {
+        target: "_blank",
+        class:"linkified"
+      } ,
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -401,6 +408,15 @@ export default {
       setMyUserInfo:"ws/setMyUserInfo",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
+    IsURL(str_url) {
+      var strRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/; 
+      var re = new RegExp(strRegex);
+      if (re.test(str_url)) {
+        return true;
+      } else {
+        return false;
+      }
+    },  
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
@@ -847,6 +863,9 @@ export default {
         });
     },
   },
+  components: {
+    VueMarkdown,
+  },
 };
 </script>
 
@@ -1062,7 +1081,7 @@ export default {
       padding: 9px 12px;
       font-size: 14px;
       color: #333333;
-      white-space: pre-line;
+      // white-space: pre-line;
       word-break: break-all;
       .red {
         height: 1.5em;
@@ -1302,7 +1321,7 @@ export default {
   z-index: 9;
 }
 .link-style {
-  padding: 10px 0;
+  padding: 15px 0 7px 0;
 }
 /deep/.linkified {
   color: #10686e;

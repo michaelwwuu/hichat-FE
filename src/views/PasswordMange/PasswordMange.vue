@@ -60,10 +60,10 @@ export default {
           name: "修改登录密码",
           path: "/PasswordEdit",
         },
-        {
-          name: "生物辨识",
-          path: "",
-        },
+        // {
+        //   name: "生物辨识",
+        //   path: "",
+        // },
       ],
       developmentMessage: developmentMessage,
       notification: false,

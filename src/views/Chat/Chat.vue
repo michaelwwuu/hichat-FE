@@ -105,7 +105,9 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <template v-if="groupUser.isAdmin">
+          <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
+
+          <!-- <template v-if="groupUser.isAdmin">
             <message-input
               :userInfoData="userInfoData"
               :groupData="groupUser"
@@ -130,7 +132,7 @@
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
-          </template>
+          </template> -->
         </el-main>
       </el-main>
     </el-container>

@@ -101,10 +101,20 @@ export default {
       searchKey: "",
       groupManagerAuthorityVO: [
         {
-          name: "传送讯息与媒体档案",
+          name: "传送文字讯息",
           key: "sendMessage",
           isCheck: true,
         },
+        {
+          name:"传送图片或语音讯息",
+          key: "sendImage",
+          isCheck:true,
+        },
+        {
+          name:"传送链接或网址",
+          key: "sendLink",
+          isCheck:true,
+        },    
         {
           name: "置顶讯息",
           key: "pin",
@@ -216,6 +226,8 @@ export default {
               el.disabledWord = this.newManagerAuthorityData.disabledWord;
               el.pin = this.newManagerAuthorityData.pin;
               el.sendMessage = this.newManagerAuthorityData.sendMessage;
+              el.sendImage = this.newManagerAuthorityData.sendImage;
+              el.sendLink = this.newManagerAuthorityData.sendLink;
               el.updateGroupInfo = this.newManagerAuthorityData.updateGroupInfo;
             }
           });

@@ -96,21 +96,23 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <template v-if="groupUser.isAdmin">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser"/>
-          </template>
-          <template v-else-if="groupUser.isManager">
+          <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
+
+          <!-- <template v-if="groupUser.isAdmin">
+            <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
+          </template> -->
+          <!-- <template v-else-if="groupUser.isManager">
             <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="authorityGroupData.sendMessage || authority.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
           </template>
           <template v-else>
-            <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
+            <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority" v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
             <div class="top-msg-bottom" v-else>
               <span>禁言狀態無法發送訊息</span>
             </div>
-          </template>
+          </template> -->
         </el-main>
       </el-main>
     </el-container>
@@ -301,6 +303,8 @@ export default {
               checkUserInfo: true,
               pin: true,
               sendMessage: true,
+              sendImage: true,
+              sendLink: true,
             }
           }else{
             this.authorityGroupData = res.data

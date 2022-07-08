@@ -86,7 +86,9 @@ export const state = {
     groupAdminAuthority: {
       checkUserInfo: false,
       pin: false,
-      sendMessage: true
+      sendMessage: true,
+      sendImage: true,
+      sendLink: true,
     },
     groupDisabledWordList: [],
     groupManagerAuthority: [],    
@@ -95,10 +97,14 @@ export const state = {
   authority:{},
   goAnchorMessage:{},
   authorityGroupData:{},
+  spreadDataList:[],
 };
 export const actions = {};
 
 export const mutations = {
+  setSpreadDataList(state, payload) {
+    state.spreadDataList = payload;
+  },     
   setAuthority(state, payload) {
     state.authority = payload;
     localStorage.setItem("authority",JSON.stringify(payload))

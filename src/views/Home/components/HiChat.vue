@@ -197,7 +197,7 @@
 import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import { getGroupList, groupListMember, getSearchById,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
 
 export default {

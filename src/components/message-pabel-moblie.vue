@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="message-pabel-box"
-    @touchmove="$root.handleTouch"
-  >
+  <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -75,23 +72,15 @@
                   }"
                 >
                   <span
-                    v-if="
-                      el.message.content.match(
-                        /(http|https):\/\/([\w.]+\/?)\S*/gi
-                      ) === null
-                    "
+                    v-if="!IsURL(el.message.content)"
                     @click.prevent.stop="
                       device === 'moblie' ? onContextmenu(el) : false
                     "
                     v-html="el.message.content"
-                  ></span>
-                  <div
-                    v-else-if="
-                      el.message.content.match(
-                        /(http|https):\/\/([\w.]+\/?)\S*/gi
-                      )
-                    "
                   >
+                  </span>
+
+                  <div v-else-if="IsURL(el.message.content)">
                     <div
                       v-if="device === 'moblie'"
                       class="images-more-btn"
@@ -102,15 +91,16 @@
                     >
                       <i class="el-icon-more"></i>
                     </div>
-                    <div
-                      v-html="el.message.content"
-                      v-linkified
+                    <vue-markdown
+                      :anchor-attributes="linkAttrs"
                       :class="device === 'moblie' ? 'link-style' : ''"
-                    ></div>
+                      >{{ el.message.content }}</vue-markdown
+                    >
                   </div>
                   <span v-else v-html="el.message.content"></span>
                 </div>
               </span>
+
               <span
                 class="message-mini-audio"
                 v-else-if="el.chatType === 'SRV_USER_AUDIO'"
@@ -131,6 +121,7 @@
                   :audio-source="el.message.content"
                 ></mini-audio>
               </span>
+
               <span
                 class="message-image"
                 v-else-if="el.chatType === 'SRV_USER_IMAGE'"
@@ -173,7 +164,7 @@
         </li>
       </div>
     </ul>
-    <div style="width: 95%; text-align: right;">
+    <div style="width: 95%; text-align: right">
       <el-button
         class="scroll-bottom-btn"
         v-show="showScrollBar"
@@ -183,7 +174,6 @@
         @click="$root.gotoBottom()"
       ></el-button>
     </div>
-
   </div>
 </template>
 
@@ -197,7 +187,7 @@ import {
   unpinHistory,
 } from "@/api";
 import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
-
+import VueMarkdown from "vue-markdown";
 export default {
   name: "MessagePabel",
   props: {
@@ -220,7 +210,10 @@ export default {
 
       device: localStorage.getItem("device"),
       showScrollBar: false,
-
+      linkAttrs: {
+        target: '_blank',
+        class:"linkified"
+      } ,
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -252,23 +245,26 @@ export default {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
       soundNofiy: (state) => state.ws.soundNofiy,
-      myUserInfo: (state) => state.ws.myUserInfo,      
+      myUserInfo: (state) => state.ws.myUserInfo,
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
   },
   created() {
-    this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")))
+    this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")));
   },
   mounted() {
     window.addEventListener(
       "scroll",
       () => {
-        let scrollTop =  document.querySelector(".message-pabel-box")
-        this.showScrollBar = !(scrollTop.scrollHeight -  scrollTop.scrollTop ===  scrollTop.clientHeight)
+        let scrollTop = document.querySelector(".message-pabel-box");
+        this.showScrollBar = !(
+          scrollTop.scrollHeight - scrollTop.scrollTop ===
+          scrollTop.clientHeight
+        );
       },
       true
     );
-    if(this.goAnchorMessage.historyId !== undefined) {
+    if (this.goAnchorMessage.historyId !== undefined) {
       let newTime = this.timeOut + 1000;
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
@@ -278,9 +274,19 @@ export default {
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
-      setMyUserInfo:"ws/setMyUserInfo",
+      setMyUserInfo: "ws/setMyUserInfo",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    IsURL(str_url) {
+      var strRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/; 
+      var re = new RegExp(strRegex);
+      if (re.test(str_url)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
     pinUserName(data) {
       if (data === this.myUserInfo.username) {
         return (data = "你");
@@ -480,7 +486,7 @@ export default {
               );
             });
           }
-        } else  {
+        } else {
           this.newItem = item.filter((list) => {
             return (
               list.name !== "deleteAllChat" &&
@@ -606,6 +612,9 @@ export default {
           this.$message({ message: err, type: "error" });
         });
     },
+  },
+  components: {
+    VueMarkdown,
   },
 };
 </script>
@@ -850,7 +859,7 @@ export default {
       padding: 9px 12px;
       font-size: 14px;
       color: #333333;
-      white-space: pre-line;
+      // white-space: pre-line;
       word-break: break-all;
       .red {
         height: 1.5em;
@@ -1052,7 +1061,7 @@ export default {
   z-index: 9;
 }
 .link-style {
-  padding: 10px 0;
+  padding: 15px 0 7px 0;
 }
 /deep/.linkified {
   color: #10686e;

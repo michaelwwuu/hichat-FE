@@ -34,6 +34,9 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
+import { getToken } from "_util/utils.js";
+
 import { mapState, mapMutations } from "vuex";
 import { getContactList, getGroupList, getSearchById } from "@/api";
 export default {
@@ -51,8 +54,11 @@ export default {
     this.getDataList();
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setActiveName(this.activeName);
+    Socket.$on("message", this.handleGetMessage);
   },
-
+  beforeDestroy() {
+    Socket.$off("message", this.handleGetMessage);
+  },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
@@ -144,6 +150,30 @@ export default {
         this.setMsgInfoPage({ pageShow: true, type: "" });
       }
     },
+    // 收取 socket 回来讯息 (全局讯息)
+    handleGetMessage(msg) {
+      let userInfo = JSON.parse(msg);
+      switch (userInfo.chatType) {
+        case "SRV_USER_IMAGE":
+        case "SRV_USER_AUDIO":
+        case "SRV_USER_SEND":
+        case "SRV_GROUP_IMAGE":
+        case "SRV_GROUP_AUDIO":
+        case "SRV_GROUP_SEND":
+          this.getHiChatDataList();
+          break;
+      }
+    },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        token: getToken("token"),
+        deviceId: localStorage.getItem("UUID"),
+      };
+      Socket.send(chatMsgKey);
+    },      
   },
 };
 </script>

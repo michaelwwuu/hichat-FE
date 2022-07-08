@@ -144,6 +144,7 @@ body {
 
       .el-button {
         width: 93%;
+        line-height: 2;
       }
 
       .gray-btn {
@@ -739,7 +740,9 @@ body {
         width: 80%;
         border-radius: 5px;
         margin: 0 auto;
-
+        .disable-box{
+          width: 80%;
+        }
         .footer-tools {
           .face-other-btn {
             cursor: pointer;

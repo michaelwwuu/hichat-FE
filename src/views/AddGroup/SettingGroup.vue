@@ -158,10 +158,20 @@ export default {
     return {
       messagePermissionData:[
         {
-          name:"传送讯息与媒体档案",
+          name:"传送文字讯息",
           key:"sendMessage",
           isCheck:true,
         },
+        {
+          name:"传送图片或语音讯息",
+          key:"sendImage",
+          isCheck:true,
+        },
+        {
+          name:"传送链接或网址",
+          key:"sendLink",
+          isCheck:true,
+        },        
         {
           name:"查看群组成员资讯",
           key:"checkUserInfo",
@@ -172,6 +182,7 @@ export default {
           key:"pin",
           isCheck:false,
         },
+        
       ],
       settingPermission:[
         {

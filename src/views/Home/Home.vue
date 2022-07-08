@@ -8,10 +8,11 @@
               class="home-user"
               :class="[
                 { 'QRcode-img': num === 0 },
+                { 'broadcast-img': num === 1 && ['address', 'contact'].includes(activeName)},
                 { 'promote-img': num === 2 },
               ]"
               @click="
-                num === 0 || num === 2 ? (centerDialogVisible = true) : ''
+                num === 0 || num === 2 ? (centerDialogVisible = true) : $router.push({ name: 'SpreadChange'})
               "
             ></div>
             <span class="home-header-title">{{
@@ -157,7 +158,13 @@
             <template v-if="num === 1">
               <div>
                 <template v-if="hichatNav.type === 'address'">
-                  <router-link :to="'/AddUser'">
+                  <router-link :to="'/Spread'" class="spread-style">
+                    <img
+                      src="./../../../static/images/pc/icon_spread.png"
+                      alt=""
+                    />
+                  </router-link>                
+                  <router-link :to="'/AddUser'" class="addimg-style">
                     <img
                       src="./../../../static/images/pc/user-plus.png"
                       alt=""
@@ -177,6 +184,9 @@
             </template>
           </div>
         </el-header>
+        <div class="home-header" v-if="$route.name === 'Spread'" style="justify-content: center;">
+          <span class="home-header-title" style="color: #b3b3b3; font-weight:normal;">请选择发送对象</span>
+        </div>
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
@@ -204,7 +214,7 @@
         </el-footer>
       </el-aside>
       <el-main>
-        <template v-if="num === 1">
+        <template v-if="num === 1 && $route.name !== 'Spread'">
           <chat-msg
             v-if="
               hichatNav.type === 'address' && JSON.stringify(chatUser) !== '{}'
@@ -222,13 +232,16 @@
             "
           />
         </template>
-        <template v-if="infoMsg.infoMsgShow && !infoMsg.infoMsgChat">
+        <template v-else-if="infoMsg.infoMsgShow && !infoMsg.infoMsgChat">
           <div class="go-room-style">
             <img src="./../../../static/images/msg-btn.png" alt="" />
             <el-button @click="goChatRoom(chatUser, activeName)"
               >開始聊天</el-button
             >
           </div>
+        </template>
+        <template v-else-if="$route.name === 'Spread'">
+          <chat-spread/>
         </template>
       </el-main>
       <el-aside
@@ -332,6 +345,7 @@ import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
+import ChatSpread from "./../Chat/ChatSpread.vue";
 import MsgInfoPage from "./../ContactPage/MsgInfoPage.vue";
 
 export default {
@@ -404,7 +418,7 @@ export default {
     this.num =
       this.$route.fullPath === "/Address"
         ? 0
-        : this.$route.fullPath === "/HiChat"
+        : ["/HiChat","/Spread"].includes(this.$route.fullPath)
         ? 1
         : 2;
     Socket.$on("message", this.handleGetMessage);
@@ -479,6 +493,9 @@ export default {
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
+    broadcastAction(){
+      // this.$router.push({ name: "HiChat", params: data });
+    },
     goChatRoom(data, type) {
       this.setInfoMsg({
         infoMsgShow: false,
@@ -805,6 +822,7 @@ export default {
     ChatGroupMsg,
     ChatContact,
     MsgInfoPage,
+    ChatSpread,
   },
 };
 </script>
@@ -822,6 +840,10 @@ export default {
           .promote-img {
             background-color: #fff;
             background-image: url("./../../../static/images/icon_promotion.png");
+          }
+          .broadcast-img{
+            background-color: #fff;
+            background-image: url("./../../../static/images/icon_spread.png");
           }
           .home-add-user {
             background-color: #fff;
@@ -893,6 +915,24 @@ export default {
     color: #ffffff;
     padding: 1.3em 3em;
     background-color: #fe5f3f;
+  }
+}
+.hichat-pc{
+  .home-wrapper{
+    .el-container{
+      .home-search{
+        .spread-style{
+          img{
+            left: 8px;
+          }
+        }
+        .addimg-style{
+          img{
+            left: 12px;
+          }
+        }
+      }
+    }
   }
 }
 </style>
