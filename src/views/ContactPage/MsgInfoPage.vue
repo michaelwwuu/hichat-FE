@@ -636,7 +636,7 @@ export default {
         this.getHistory(type);
         this.$router.push({ name: path, params: data });
       } else if (path === "GroupPeople") {
-        if(data.authority !==undefined){
+        if(data.authority !== undefined){
           this.setAuthority(data.authority)
         }
         this.setMsgInfoPage({ pageShow: false, type: path });

@@ -532,8 +532,7 @@ export default {
     },
     // 訊息統一格式
     messageList(data) {
-      this.groupListData = JSON.parse(localStorage.getItem("groupListMember"));
-      this.groupListData.forEach((item) => {
+      this.contactListData.forEach((item) => {
         if (data.chat.fromChatId === "u" + item.memberId) {
           data.chat.icon = item.icon;
           data.chat.name = item.name;
@@ -643,6 +642,9 @@ export default {
             if (userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
               this.audioAction();
             }
+          }
+          if(userInfo.chatType === "SRV_GROUP_JOIN"){
+            this.getGroupListMember();
           }
           break;
         case "SRV_CHAT_UNPIN":

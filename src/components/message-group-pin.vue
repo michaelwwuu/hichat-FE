@@ -282,14 +282,14 @@ export default {
       let item = [
         {
           name: "copy",
-          label: "複製",
+          label: "复制",
           onClick: () => {
             this.copyPaste(data);
           },
         },
         {
           name: "download",
-          label: "下載",
+          label: "下载",
           onClick: () => {
             this.downloadImages(data);
           },

@@ -478,7 +478,6 @@ export default {
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
-        
         if (this.textArea.replace(/\s+/g, "") === "") {
           this.$alert("不能发送空白消息", "提示", {
             confirmButtonText: "确定",
@@ -511,6 +510,11 @@ export default {
     },
     // 发送消息
     sendMessage() {
+      if (this.textArea.replace(/\s+/g, "") === "") {
+        this.$message({ message: "不能发送空白消息", type: "error" });
+        this.textArea = "";
+        return false;
+      }      
       let message = {
         chatType: "CLI_USER_SEND",
         id: Math.random(),

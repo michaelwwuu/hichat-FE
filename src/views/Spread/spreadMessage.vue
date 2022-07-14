@@ -26,9 +26,7 @@
             </span>
           </label>
         </div>
-        <div
-          class="message-input-box"
-        >
+        <div class="message-input-box">
           <div class="input-tools-right">
             <div>
               <img
@@ -45,6 +43,7 @@
               :autosize="{ minRows: 1, maxRows: 1 }"
               placeholder="Aa"
               maxlength="500"
+              :disabled="disabled"
               v-model="textArea"
             >
             </el-input>
@@ -89,13 +88,10 @@
           </div>
 
           <div class="input-tools-left">
-            <div v-if="textArea === ''" style="visibility: hidden;">
+            <div v-if="textArea === ''" style="visibility: hidden">
               <img src="./../../../static/images/audio.png" alt="" />
             </div>
-            <div
-              v-else
-              @click="sendMessage()"
-            >
+            <div v-else @click="sendMessage()">
               <img src="./../../../static/images/send.png" alt="" />
             </div>
           </div>
@@ -104,8 +100,6 @@
             :visible.sync="uploadImgShow"
             width="100%"
             :modal-append-to-body="false"
-
-
             :close-on-click-modal="false"
             :class="{ 'el-dialog-loginOut': device === 'pc' }"
             v-loading.fullscreen.lock="fullscreenLoading"
@@ -127,11 +121,15 @@
             </el-upload>
             <span slot="footer" class="dialog-footer">
               <template v-if="device === 'moblie'">
-                <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+                <el-button type="success" @click="submitAvatarUpload"
+                  >确认</el-button
+                >
                 <el-button @click="uploadImgShow = false">取消</el-button>
               </template>
               <template v-else>
-                <el-button class="background-gray" @click="uploadImgShow = false"
+                <el-button
+                  class="background-gray"
+                  @click="uploadImgShow = false"
                   >取消</el-button
                 >
                 <el-button class="background-orange" @click="submitAvatarUpload"
@@ -143,7 +141,6 @@
         </div>
       </el-main>
     </el-container>
-
   </div>
 </template>
 
@@ -152,20 +149,19 @@ import Socket from "@/utils/socket";
 import EmojiPicker from "vue-emoji-picker";
 import { getToken } from "_util/utils.js";
 import { Encrypt } from "@/utils/AESUtils.js";
-import {
-  uploadMessageImage,
-} from "@/api";
+import { uploadMessageImage } from "@/api";
 export default {
   name: "spreadMessage",
   data() {
     return {
       search: "",
       textArea: "",
+      disabled:false,
       uploadImgShow: false,
       fullscreenLoading: false,
       fileList: [],
 
-      spreadDataList:[],
+      spreadDataList: [],
       device: localStorage.getItem("device"),
 
       //加解密 key iv
@@ -191,8 +187,8 @@ export default {
     insert(emoji) {
       this.textArea += emoji;
     },
-    getSpreadDataList(){
-      this.spreadDataList = this.$route.params.spreadData
+    getSpreadDataList() {
+      this.spreadDataList = this.$route.params.spreadData;
     },
     back() {
       this.$router.back(-1);
@@ -207,62 +203,65 @@ export default {
       this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
-          this.spreadDataList.forEach((res)=>{
+          this.spreadDataList.forEach((res) => {
             let uploadImgData = {
               chatType: "CLI_USER_IMAGE",
               id: Math.random(),
               tokenType: 0,
-              fromChatId:"u" + localStorage.getItem("id"),
+              fromChatId: "u" + localStorage.getItem("id"),
               toChatId: "u" + res.contactId,
-              text: Encrypt(
-                res.data,
-                this.aesKey,
-                this.aesIv
-              ),//TODO 加密
+              text: Encrypt(res.data, this.aesKey, this.aesIv), //TODO 加密
               token: getToken("token"),
               deviceId: localStorage.getItem("UUID"),
-            }
+            };
             Socket.send(uploadImgData);
-          })
+          });
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
-          this.$message({ message: "發送訊息成功", type: "success" });
+          this.$message({ message: "发送讯息成功", type: "success" });
+          this.disabled = true
           setTimeout(() => {
             this.$router.push({ path: "/HiChat" });
-          }, 500);
+          }, 1500);
         } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
         }
       });
     },
-    sendMessage(){
-      this.spreadDataList.forEach((res)=>{
+    sendMessage() {
+      if (this.textArea.replace(/\s+/g, "") === "") {
+        this.$message({ message: "不能发送空白消息", type: "error" });
+        this.textArea = "";
+        return false;
+      }      
+      this.spreadDataList.forEach((res) => {
         let message = {
           chatType: "CLI_USER_SEND",
           id: Math.random(),
           tokenType: 0,
           toChatId: "u" + res.contactId,
-          replyHistoryId:"",
+          replyHistoryId: "",
           targetArray: [],
           text: Encrypt(
             this.textArea.replace(/(\s*$)/g, ""),
             this.aesKey,
             this.aesIv
-          ),//TODO 加密
+          ), //TODO 加密
           token: getToken("token"),
           deviceId: localStorage.getItem("UUID"),
         };
         Socket.send(message);
-      })
-      this.$message({ message: "發送訊息成功", type: "success" });
+      });
+      this.$message({ message: "发送讯息成功", type: "success" });
+      this.disabled = true
       setTimeout(() => {
         this.$router.push({ path: "/HiChat" });
-      }, 500);
+      }, 1500);
       // 消息清空
       this.textArea = "";
-    }
+    },
   },
   components: {
     EmojiPicker,
@@ -502,5 +501,4 @@ export default {
     height: 20px;
   }
 }
-
 </style>

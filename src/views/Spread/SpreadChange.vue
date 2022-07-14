@@ -101,11 +101,10 @@ export default {
     return {
       checkList: [],
       contactList: [],
-      newContactList:[],
+      newContactList: [],
       searchKey: "",
       disabled: true,
       device: localStorage.getItem("device"),
-
     };
   },
   created() {
@@ -123,7 +122,7 @@ export default {
           return item.name.indexOf(el.replace("@", "")) !== -1;
         });
       });
-      this.newContactList = this.searchData
+      this.newContactList = this.searchData;
     },
   },
   methods: {
@@ -137,13 +136,15 @@ export default {
             res.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
-        this.newContactList = this.contactList
+        this.newContactList = this.contactList;
       });
     },
     chooseContact(data) {
-      if(this.device ==="moblie"){
-        this.$router.push({ name: "spreadMessage" ,params:{spreadData:data} });
-
+      if (this.device === "moblie") {
+        this.$router.push({
+          name: "spreadMessage",
+          params: { spreadData: data },
+        });
       }
     },
     back() {

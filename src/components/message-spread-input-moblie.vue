@@ -15,6 +15,7 @@
         :autosize="{ minRows: 1, maxRows: 1 }"
         placeholder="Aa"
         maxlength="500"
+        :disabled="disabled"
         v-model="textArea"
         @keyup.native="keyUp"
       >
@@ -144,6 +145,7 @@ export default {
     return {
       search: "",
       textArea: "",
+      disabled:false,
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
@@ -158,6 +160,7 @@ export default {
   },
   computed: {
     ...mapState({
+      chatUser: (state) => state.ws.chatUser,
       spreadDataList: (state) => state.ws.spreadDataList,
     }),
   },
@@ -180,7 +183,7 @@ export default {
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
           if(this.spreadDataList.length === 0) {
-            this.$message({ message: "請選擇發送對象", type: "error" });
+            this.$message({ message: "请选择发送对象", type: "error" });
             this.textArea = this.textArea.replace(/(\s*$)/g, "")
             return false
           }
@@ -205,11 +208,13 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
-          this.$message({ message: "發送訊息成功", type: "success" });
+          this.$message({ message: "发送讯息成功", type: "success" });
+          this.getChatHistoryMessage()
+          this.disabled = true
           setTimeout(() => {
             this.setSpreadDataList([])
             this.$router.push({ path: "/HiChat" });
-          }, 500);
+          }, 1000);
         } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
@@ -259,9 +264,16 @@ export default {
     // 发送消息
     sendMessage() {
       if(this.spreadDataList.length === 0) {
-        this.$message({ message: "請選擇發送對象", type: "error" });
+        this.$message({ message: "请选择发送对象", type: "error" });
         this.textArea = this.textArea.replace(/(\s*$)/g, "")
         return false
+      }else if (this.textArea.replace(/\s+/g, "") === "") {
+        this.$alert("不能发送空白消息", "提示", {
+          confirmButtonText: "确定",
+        }).then(() => {
+          this.textArea = "";
+        });
+        return false;
       }
       this.spreadDataList.forEach((res)=>{
         let message = {
@@ -281,11 +293,13 @@ export default {
         };
         Socket.send(message);
       })
-      this.$message({ message: "發送訊息成功", type: "success" });
+      this.$message({ message: "发送讯息成功", type: "success" });
+      this.getChatHistoryMessage()
+      this.disabled = true
       setTimeout(() => {
         this.setSpreadDataList([])
         this.$router.push({ path: "/HiChat" });
-      }, 500);
+      }, 1000);
       // 消息清空
       this.textArea = "";
     },
@@ -304,6 +318,20 @@ export default {
         audioEl.src = require("./../../static/wav/send.mp3")
         audioEl.play();
       }, 150);
+    },
+    // 獲取歷史訊息
+    getChatHistoryMessage() {
+      let historyMessageData = {
+        chatType: "CLI_HISTORY_REQ",
+        id: Math.random(),
+        tokenType: 0,
+        toChatId: this.chatUser.toChatId,
+        targetId:"",
+        pageSize: 1000,
+        token: getToken("token"),
+        deviceId: localStorage.getItem("UUID"),
+      };
+      Socket.send(historyMessageData);
     },
   },
   components: {

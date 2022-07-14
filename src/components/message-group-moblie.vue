@@ -43,7 +43,7 @@
                 :id="el.historyId"
               >
                 <div class="message-box">
-                  <div class="message-name">{{ el.name }}</div>
+                  <div class="message-name" :style="IsURL(isBase64(el.message.content)) ? 'padding-right:36px' :''">{{ el.name }}</div>
                   <template v-if="el.isRplay !== null">
                     <div
                       class="reply-box"
@@ -96,10 +96,6 @@
                         <vue-markdown
                           :anchor-attributes="linkAttrs"
                           >{{ item }}</vue-markdown>
-                        <!-- <span
-                          v-html="item"
-                          v-linkified
-                        ></span> -->
     
                           <!-- @click="
                             item.startsWith('@')

@@ -481,9 +481,6 @@ export default {
     editMsg(val) {
       this.textArea = val.innerText;
     },
-    authorityGroupData(val) {
-      console.log(val);
-    },
   },
   created() {
     Socket.$on("message", this.handleGetMessage);
@@ -531,6 +528,23 @@ export default {
     },
     // 上傳圖片
     submitAvatarUpload() {
+      if (!this.groupData.isAdmin && !this.groupData.isManager) {
+        if (!this.authorityGroupData.sendImage) {
+            this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
+            this.fileList = [];
+            this.uploadImgShow = false;
+            this.fullscreenLoading = false;
+            return false;
+        }
+      }else if(this.groupData.isManager){
+        if (!this.authorityGroupData.sendImage && !this.authority.sendImage) {
+            this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
+            this.fileList = [];
+            this.uploadImgShow = false;
+            this.fullscreenLoading = false;
+            return false;
+        }
+      }
       let formData = new FormData();
       formData.append("file", this.fileList[0].raw);
       this.fullscreenLoading = true;
@@ -675,8 +689,26 @@ export default {
       this.sendAduioShow = false;
       this.audioMessageData = {};
     },
+    
     // 上傳錄音
     onAudioFile() {
+      if (!this.groupData.isAdmin && !this.groupData.isManager) {
+        if (!this.authorityGroupData.sendImage) {
+          this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
+          this.sendAduioShow = false;
+          this.fullscreenLoading = false;
+          this.audioMessageData = {};
+          return false;
+        }
+      }else if(this.groupData.isManager){
+        if (!this.authorityGroupData.sendImage && !this.authority.sendImage) {
+          this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
+          this.sendAduioShow = false;
+          this.fullscreenLoading = false;
+          this.audioMessageData = {};
+          return false;
+        }
+      }
       let formData = new FormData();
       formData.append("file", this.audioMessageData, `${Date.now()}.mp3`);
       formData.append("type", "AUDIO");
@@ -770,13 +802,18 @@ export default {
     },
     // 发送消息
     sendMessage() {
+      if (this.textArea.replace(/\s+/g, "") === "") {
+        this.$message({ message: "不能发送空白消息", type: "error" });
+        this.textArea = "";
+        return false;
+      }      
       if (!this.groupData.isAdmin && !this.groupData.isManager) {
         if (!this.authorityGroupData.sendLink) {
           var strRegex =
             /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
           var re = new RegExp(strRegex);
           if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
-            this.$message({ message: "無法發送超連結", type: "error" });
+            this.$message({ message: "无法发送超连结", type: "error" });
             this.textArea = "";
             return false;
           }
@@ -787,18 +824,17 @@ export default {
             /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
           var re = new RegExp(strRegex);
           if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
-            this.$message({ message: "無法發送超連結", type: "error" });
+            this.$message({ message: "无法发送超连结", type: "error" });
             this.textArea = "";
             return false;
           }
         }
       }
-
       this.banMessageData = this.banMessage.filter((el) =>
         this.textArea.replace(/(\s*$)/g, "").includes(el.word)
       );
       if (this.banMessageData.length !== 0) {
-        this.$message({ message: "訊息含有禁用字詞，無法傳送", type: "error" });
+        this.$message({ message: "讯息含有禁用字词，无法传送", type: "error" });
         this.textArea = this.textArea.replace(/(\s*$)/g, "");
         return false;
       } else {

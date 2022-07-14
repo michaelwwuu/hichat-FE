@@ -130,7 +130,6 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { unpinHistory, pinList } from "@/api";
 import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
@@ -269,14 +268,14 @@ export default {
       let item = [
         {
           name: "copy",
-          label: "複製",
+          label: "复制",
           onClick: () => {
             this.copyPaste(data);
           },
         },
         {
           name: "download",
-          label: "下載",
+          label: "下载",
           onClick: () => {
             this.downloadImages(data);
           },

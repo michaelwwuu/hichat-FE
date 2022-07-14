@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { getToken } from "_util/utils.js";
 import { mapMutations } from "vuex";
 import MessagePabel from "@/components/message-spread-moblie";
 import MessageInput from "@/components/message-spread-input-moblie";

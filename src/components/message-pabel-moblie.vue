@@ -211,9 +211,9 @@ export default {
       device: localStorage.getItem("device"),
       showScrollBar: false,
       linkAttrs: {
-        target: '_blank',
-        class:"linkified"
-      } ,
+        target: "_blank",
+        class: "linkified",
+      },
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -278,7 +278,8 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
     }),
     IsURL(str_url) {
-      var strRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/; 
+      var strRegex =
+        /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
       var re = new RegExp(strRegex);
       if (re.test(str_url)) {
         return true;
@@ -413,7 +414,7 @@ export default {
         },
         {
           name: "copy",
-          label: "複製",
+          label: "复制",
           onClick: () => {
             this.copyPaste(data);
           },
@@ -434,7 +435,7 @@ export default {
         },
         {
           name: "download",
-          label: "下載",
+          label: "下载",
           onClick: () => {
             this.downloadImages(data);
           },
@@ -448,7 +449,7 @@ export default {
         },
         {
           name: "deleteAllChat",
-          label: "在所有人的對話紀錄中刪除",
+          label: "在所有人的对话纪录中删除",
           divided: true,
           onClick: () => {
             this.deleteRecent(data, "all");
@@ -456,7 +457,7 @@ export default {
         },
         {
           name: "deleteMyChat",
-          label: "只在我的對話紀錄中刪除",
+          label: "只在我的对话纪录中删除",
           divided: true,
           onClick: () => {
             this.deleteRecent(data, "only");
@@ -464,62 +465,34 @@ export default {
         },
       ];
       if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        if (
-          data.chatType === "SRV_USER_IMAGE" ||
-          data.chatType === "SRV_USER_AUDIO"
-        ) {
-          if (data.chatType === "SRV_USER_AUDIO") {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "deleteAllChat" &&
-                list.name !== "edit" &&
-                list.name !== "copy" &&
-                list.name !== "download"
-              );
-            });
-          } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "deleteAllChat" &&
-                list.name !== "edit" &&
-                list.name !== "copy"
-              );
-            });
-          }
+        if (data.chatType === "SRV_USER_IMAGE") {
+          this.newItem = item.filter(
+            (list) => !["deleteAllChat", "edit", "copy"].includes(list.name)
+          );
+        } else if (data.chatType === "SRV_USER_AUDIO") {
+          this.newItem = item.filter(
+            (list) => !["deleteAllChat", "edit", "copy", "download"].includes(list.name)
+          );
         } else {
-          this.newItem = item.filter((list) => {
-            return (
-              list.name !== "deleteAllChat" &&
-              list.name !== "edit" &&
-              list.name !== "download"
-            );
-          });
+          this.newItem = item.filter(
+            (list) => !["deleteAllChat", "edit", "download"].includes(list.name)
+          );
         }
       } else {
-        if (
-          data.chatType === "SRV_USER_IMAGE" ||
-          data.chatType === "SRV_USER_AUDIO"
-        ) {
-          if (data.chatType === "SRV_USER_IMAGE") {
-            this.newItem = item.filter((list) => {
-              return list.name !== "edit" && list.name !== "copy";
-            });
-          } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "edit" &&
-                list.name !== "copy" &&
-                list.name !== "download"
-              );
-            });
-          }
+        if (data.chatType === "SRV_USER_IMAGE") {
+          this.newItem = item.filter(
+            (list) => !["edit", "copy"].includes(list.name)
+          );
+        } else if (data.chatType === "SRV_USER_AUDIO") {
+          this.newItem = item.filter(
+            (list) => !["edit", "copy", "download"].includes(list.name)
+          );
         } else {
-          this.newItem = item.filter((list) => {
-            return list.name !== "download";
-          });
+          this.newItem = item.filter(
+            (list) => !["download"].includes(list.name)
+          );
         }
       }
-
       this.$contextmenu({
         items: this.newItem,
         // event,

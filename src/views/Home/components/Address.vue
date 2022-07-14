@@ -62,11 +62,17 @@ export default {
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
+      chatUser: (state) => state.ws.chatUser,
       groupList: (state) => state.ws.groupList,
       groupUser: (state) => state.ws.groupUser,
       myUserInfo: (state) => state.ws.myUserInfo,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
+  },
+  watch:{
+    chatUser(val){
+      JSON.stringify(val) === '{}' ? this.getDataList() : false;
+    }
   },
   methods: {
     ...mapMutations({

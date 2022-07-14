@@ -297,7 +297,7 @@ export default {
         });
         this.newCheckDataList = this.searchData
       }
-    },     
+    },  
   },
   computed: {
     ...mapState({

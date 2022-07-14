@@ -169,6 +169,8 @@ export default {
       addContactUser(parmas).then((res) => {
         if (res.code === 200) {
           this.successDialogShow = true
+        }else if(res.code === 20002){
+          this.disabled = false
         }
       });
     },

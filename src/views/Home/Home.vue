@@ -8,7 +8,7 @@
               class="home-user"
               :class="[
                 { 'QRcode-img': num === 0 },
-                { 'broadcast-img': num === 1 && ['address', 'contact'].includes(activeName)},
+                { 'broadcast-img': num === 1 && activeName === 'address'},
                 { 'promote-img': num === 2 },
               ]"
               @click="
@@ -18,55 +18,28 @@
             <span class="home-header-title">{{
               num === 0 ? "通讯录" : num === 1 ? "嗨聊" : "设定"
             }}</span>
-            <template v-if="num === 0">
-              <div>
-                <template v-if="['address', 'contact'].includes(activeName)">
-                  <router-link
-                    :to="'/AddUser'"
-                    :style="
-                      activeName === 'contact' ? 'visibility: hidden' : ''
-                    "
-                  >
-                    <div class="home-add-user address-img"></div>
-                  </router-link>
-                </template>
-                <template v-else-if="activeName === 'group'">
-                  <router-link :to="'/AddGroup'">
-                    <div class="home-add-user hichat-img"></div>
-                  </router-link>
-                </template>
-              </div>
-            </template>
-            <template v-if="num === 1">
-              <div>
-                <template
-                  v-if="['address', 'contact'].includes(hichatNav.type)"
+            <div v-if="num === 0 || num === 1">
+              <template v-if="['address', 'contact'].includes(activeName || hichatNav.type)">
+                <router-link
+                  :to="'/AddUser'"
+                  :style="
+                  ['contact'].includes(activeName || hichatNav.type) ? 'visibility: hidden' : ''
+                  "
                 >
-                  <router-link
-                    :to="'/AddUser'"
-                    :style="
-                      hichatNav.type === 'contact' ? 'visibility: hidden' : ''
-                    "
-                  >
-                    <div class="home-add-user address-img"></div>
-                  </router-link>
-                </template>
-                <template v-else-if="hichatNav.type === 'group'">
-                  <router-link :to="'/AddGroup'">
-                    <div class="home-add-user hichat-img"></div>
-                  </router-link>
-                </template>
-              </div>
-            </template>
-            <template v-if="num === 2">
-              <div>
-                <template>
-                  <router-link :to="'/EditUser'"
-                    ><div class="home-add-user setting-img"></div
-                  ></router-link>
-                </template>
-              </div>
-            </template>
+                  <div class="home-add-user address-img"></div>
+                </router-link>
+              </template>
+              <template v-else-if="['group'].includes(activeName || hichatNav.type)">
+                <router-link :to="'/AddGroup'">
+                  <div class="home-add-user hichat-img"></div>
+                </router-link>
+              </template>
+            </div>
+            <div v-else-if="num === 2">
+              <router-link :to="'/EditUser'"
+                ><div class="home-add-user setting-img"></div
+              ></router-link>
+            </div>
           </div>
           <div class="home-search" v-if="num !== 2">
             <el-input
@@ -134,54 +107,31 @@
               clearable
             >
             </el-input>
-            <template v-if="num === 0">
-              <div>
-                <template v-if="activeName === 'address'">
-                  <router-link :to="'/AddUser'">
-                    <img
-                      src="./../../../static/images/pc/user-plus.png"
-                      alt=""
-                    />
-                  </router-link>
-                </template>
+            <div v-if="num === 0 || num === 1">
+              <template v-if="['address'].includes(activeName || hichatNav.type)">
+                <router-link :to="'/Spread'" class="spread-style" v-if ="num === 1">
+                  <img
+                    src="./../../../static/images/pc/promotion.svg"
+                    alt=""
+                  />
+                </router-link>    
+                <router-link :to="'/AddUser'" :class="{'addimg-style': num === 1}">
+                  <img
+                    src="./../../../static/images/pc/user-plus.svg"
+                    alt=""
+                  />
+                </router-link>
+              </template>
 
-                <template v-else-if="activeName === 'group'">
-                  <router-link :to="'/AddGroup'">
-                    <img
-                      src="./../../../static/images/pc/message-plus.png"
-                      alt=""
-                    />
-                  </router-link>
-                </template>
-              </div>
-            </template>
-            <template v-if="num === 1">
-              <div>
-                <template v-if="hichatNav.type === 'address'">
-                  <router-link :to="'/Spread'" class="spread-style">
-                    <img
-                      src="./../../../static/images/pc/icon_spread.png"
-                      alt=""
-                    />
-                  </router-link>                
-                  <router-link :to="'/AddUser'" class="addimg-style">
-                    <img
-                      src="./../../../static/images/pc/user-plus.png"
-                      alt=""
-                    />
-                  </router-link>
-                </template>
-
-                <template v-else-if="hichatNav.type === 'group'">
-                  <router-link :to="'/AddGroup'">
-                    <img
-                      src="./../../../static/images/pc/message-plus.png"
-                      alt=""
-                    />
-                  </router-link>
-                </template>
-              </div>
-            </template>
+              <template v-else-if="['group'].includes(activeName || hichatNav.type)">
+                <router-link :to="'/AddGroup'">
+                  <img
+                    src="./../../../static/images/pc/message-plus.svg"
+                    alt=""
+                  />
+                </router-link>
+              </template>
+            </div>
           </div>
         </el-header>
         <div class="home-header" v-if="$route.name === 'Spread'" style="justify-content: center;">
@@ -234,7 +184,7 @@
         </template>
         <template v-else-if="infoMsg.infoMsgShow && !infoMsg.infoMsgChat">
           <div class="go-room-style">
-            <img src="./../../../static/images/msg-btn.png" alt="" />
+            <img src="./../../../static/images/msg-btn.svg" alt="" />
             <el-button @click="goChatRoom(chatUser, activeName)"
               >開始聊天</el-button
             >
@@ -839,11 +789,11 @@ export default {
           }
           .promote-img {
             background-color: #fff;
-            background-image: url("./../../../static/images/icon_promotion.png");
+            background-image: url("./../../../static/images/icon_share.png");
           }
           .broadcast-img{
             background-color: #fff;
-            background-image: url("./../../../static/images/icon_spread.png");
+            background-image: url("./../../../static/images/icon_promotion.png");
           }
           .home-add-user {
             background-color: #fff;
@@ -923,12 +873,13 @@ export default {
       .home-search{
         .spread-style{
           img{
-            left: 8px;
+            left: 7px;
+            height:1.4em;
           }
         }
         .addimg-style{
           img{
-            left: 12px;
+            left: 13px;
           }
         }
       }

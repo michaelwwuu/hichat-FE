@@ -2,7 +2,7 @@
   <div class="home-content" @touchmove="$root.handleTouch">
     <div class="user-data">
       <div class="icon_promotion-img" v-if="device === 'pc'" @click="promotionDialogShow = true">
-        <img src="./../../../../static/images/icon_promotion.png" alt="">
+        <img src="./../../../../static/images/icon_share.png" alt="">
       </div>
       <el-image
         v-if="myUserInfo.icon !== undefined"

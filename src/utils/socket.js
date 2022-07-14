@@ -55,12 +55,7 @@ const emitter = new Vue({
       };
       socket.onclose = function (e) {
         console.log("<--【连线斷開】------自動重新連線-->",e);
-        setTimeout(() => {
-          joinChatKey.chatType = "CLI_AUTH";
-          joinChatKey.id = Math.random();
-          emitter.connect(); 
-          socket.send(JSON.stringify(joinChatKey));
-        }, 1500);
+        setTimeout(() => emitter.connect(), 1500);
         
       };
     },
