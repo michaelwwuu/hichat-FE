@@ -121,7 +121,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div><img src="./../../../static/images/warn.svg" alt="" /></div>
         <span>確定要刪除對話</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -142,7 +142,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div><img src="./../../../static/images/warn.svg" alt="" /></div>
         <span v-if="groupData.isAdmin">
           <span>管理者退出將解散群組</span>
           <span>确认是否退出？</span>

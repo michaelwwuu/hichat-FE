@@ -161,7 +161,7 @@
     >
       <div class="loginOut-box">
         <div v-if="device === 'moblie'">
-          <img src="./../../../static/images/warn.png" alt="" />
+          <img src="./../../../static/images/warn.svg" alt="" />
         </div>
         <span
           >确认是否取消置頂？</span
@@ -190,7 +190,7 @@
     >
       <div class="loginOut-box">
         <div v-if="device === 'moblie'">
-          <img src="./../../../static/images/warn.png" alt="" />
+          <img src="./../../../static/images/warn.svg" alt="" />
         </div>
         <span
           >确认是否{{

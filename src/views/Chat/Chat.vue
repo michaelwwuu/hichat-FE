@@ -14,7 +14,7 @@
                   : groupUser.groupName
               }}</span>
             </span>
-            <el-dropdown trigger="click">
+            <el-dropdown trigger="click" v-if="showCheckBoxBtn">
               <div class="el-dropdown-link">
                 <div class="home-user-more"></div>
               </div>
@@ -43,6 +43,7 @@
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
+            <span class="el-dropdown close-choose" v-else @click="closeChooseAction">取消</span>
           </div>
 
         </el-header>
@@ -52,7 +53,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !== ''" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== ''&& showCheckBoxBtn" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
@@ -70,6 +71,7 @@
             :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
+            :checkDataList="checkDataList"
             :showCheckBoxBtn="showCheckBoxBtn"
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
@@ -109,9 +111,9 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <div class="checkbox-btn" v-if="!showCheckBoxBtn">
-            <el-button type="danger" v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
-            <el-button type="danger" @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+          <div class="checkbox-btn" v-if="!showCheckBoxBtn" @click="chooseDeleteAction">
+            <img src="./../../../static/images/icon_defalt.svg" alt="">
+            <span>{{ checkDataList.length === 0 ?'选择讯息':`已选择${checkDataList.length}则讯息`}}</span>
           </div>
           <message-input v-else :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
 
@@ -204,6 +206,27 @@
       </span>
     </el-dialog>
     <el-dialog
+      :visible.sync="isChooseDeleteShow"
+      class="el-dialog-choose-delete"
+      width="100%"
+      :modal="false"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :append-to-body="false"
+      center
+    >
+      <div class="loginOut-box">
+        <img src="./../../../static/images/warn.svg" alt="" />
+        <span class="choose-delete-title">刪除所選的訊息？</span>
+        <el-button type="danger" v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
+        <el-button type="danger" @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="footer-button" @click="isChooseDeleteShow = false">取消</el-button>
+      </span>
+    </el-dialog> 
+       
+    <el-dialog
       title="退出群組"
       :visible.sync="leaveGroupDialogShow"
       class="el-dialog-loginOut"
@@ -287,9 +310,12 @@ export default {
       authorityGroupData: {},
       readMsgData: [],
       contactList: [],
+      checkDataList:[],
       loading: false,
       isTopMsgShow: false,
       showCheckBoxBtn:true,
+      isChooseDeleteShow:false,
+
       allHistoruShow:false,
       isLeaveGroupShow: false,
       deleteGroupDialogShow: false,
@@ -374,6 +400,18 @@ export default {
       this.setHichatNav({ type: "address", num: 1 });
       this.setChatGroup({});
     },
+    closeChooseAction(){
+      this.showCheckBoxBtn = true;
+      this.$root.gotoBottom();
+    },    
+    chooseDeleteAction(){
+      if(this.checkDataList.length === 0){
+        this.$message({ message: "請勾選訊息", type: "error" });
+        return false
+      }else{
+        this.isChooseDeleteShow = true;
+      }
+    },    
     checkBoxDisabled(data){
       this.showCheckBoxBtn = data
     },
@@ -1018,7 +1056,18 @@ export default {
   color: #959393;
   align-items: center;
   padding: 0 10px;
+  img{
+    height:1.5em;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  span{
+    margin: 0 auto;
+    color:rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
+  }
 }
+
 .top-msg-bottom {
   height: 59px;
   background-color: #ffffff;
@@ -1092,6 +1141,76 @@ export default {
   }
   .top-msg-right {
     height: 1.2em;
+  }
+}
+.close-choose{
+  font-size: 17px;
+  cursor: pointer;
+}
+.el-dialog-choose-delete{
+  z-index: 2001;
+  position: absolute;
+  top: 0;
+  left: 300px;
+  width: 85%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  background: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  /deep/.el-dialog{
+    margin-top:0 !important;
+    .el-dialog__header{
+      padding: 0;
+      padding-bottom: 0;
+      border-bottom:0;
+    }
+    .el-dialog__body{
+      padding: 20px 30px 0 30px !important;
+      border-bottom:0;
+      text-align: center;
+      .loginOut-box{
+        background: #ffffff;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        .choose-delete-title{
+          color: rgba(0, 0, 0, 0.8);
+          margin:0 0 20px 0;
+        }
+        img {
+          height: 5em;
+          margin-bottom: 1.2em;
+        }
+        .el-button{
+          width: 100%;
+          padding: 15px 0 !important;
+          margin-bottom: 10px;
+        }
+        .el-button + .el-button{
+          margin-left: 0;
+        }
+      }
+
+    }
+    .el-dialog__footer{
+      padding: 0 30px 20px 30px;
+      
+      .dialog-footer{
+        justify-content: center !important;
+        .el-button.footer-button{
+          width: 100% !important;;
+          color:rgba(0, 0, 0, 0.4);
+          border: 1px solid rgba(0, 0, 0, 0.4) !important;
+          font-size:15px;
+          padding: 15px 0 !important;
+          &:nth-child(1) {
+            border-radius: 10px !important;
+          }
+        }
+      }   
+    }
+     
   }
 }
 </style>

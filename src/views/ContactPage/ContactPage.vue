@@ -191,7 +191,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div><img src="./../../../static/images/warn.svg" alt="" /></div>
         <span>確定要刪除對話</span>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -213,7 +213,7 @@
       center
     >
       <div class="loginOut-box">
-        <div><img src="./../../../static/images/warn.png" alt="" /></div>
+        <div><img src="./../../../static/images/warn.svg" alt="" /></div>
         <span>{{ dialogContent }}</span>
       </div>
       <span slot="footer" class="dialog-footer">

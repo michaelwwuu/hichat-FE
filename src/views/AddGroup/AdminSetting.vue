@@ -116,7 +116,7 @@
     >
       <div class="loginOut-box">
         <div v-if="device === 'moblie'">
-          <img src="./../../../static/images/warn.png" alt="" />
+          <img src="./../../../static/images/warn.svg" alt="" />
         </div>
         <span>是否確定要移除 {{ unAdminData.name }} 管理員</span>
       </div>

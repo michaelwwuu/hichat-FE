@@ -169,7 +169,7 @@
     >
       <div class="loginOut-box">
         <div v-if="device === 'moblie'">
-          <img src="./../../../static/images/warn.png" alt="" />
+          <img src="./../../../static/images/warn.svg" alt="" />
         </div>
         <div style="margin-bottom: 10px"><span>帐号已锁定。</span></div>
         <div><span>请至请至注册手机号码确认验证码以解锁帐号。</span></div>

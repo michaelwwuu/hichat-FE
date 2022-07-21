@@ -192,16 +192,13 @@ export default {
         this.newManagerAuthorityData[el.key] = newData[0].isCheck;
       });
       if (!this.groupPermissionData.addGroup) {
-        let parmaGroupId =
-          this.device === "moblie" ? this.$route.params : this.msgInfoPage.data;
-        let parmaMemberId =
-          this.device === "moblie" ? this.$route.params : this.msgInfoPage.data;
+        let parmasData = this.device === "moblie" ? this.$route.params : this.msgInfoPage.data;
         let params = {
-          groupId: parmaGroupId.groupId,
+          groupId: parmasData.groupId,
           groupManagerAuthorityVO: this.newManagerAuthorityData,
-          memberId: parmaMemberId.memberId,
+          memberId: parmasData.memberId,
         };
-        if (!parmaGroupId.isManager || parmaGroupId.isManager === undefined) {
+        if (!parmasData.isManager || parmasData.isManager === undefined) {
           addManager(params).then((res) => {
             if (res.code === 200) {
               this.groupActionCurrent()
@@ -219,16 +216,13 @@ export default {
         if (this.$route.params.isManager) {
           this.groupPermissionData.groupManagerAuthority.forEach((el) => {
             if (el.memberId === this.$route.params.contactId) {
-              el.addUser = this.newManagerAuthorityData.addUser;
-              el.checkUserInfo = this.newManagerAuthorityData.checkUserInfo;
-              el.delUser = this.newManagerAuthorityData.delUser;
-              el.banUserPost = this.newManagerAuthorityData.banUserPost;
-              el.disabledWord = this.newManagerAuthorityData.disabledWord;
-              el.pin = this.newManagerAuthorityData.pin;
-              el.sendMessage = this.newManagerAuthorityData.sendMessage;
-              el.sendImage = this.newManagerAuthorityData.sendImage;
-              el.sendLink = this.newManagerAuthorityData.sendLink;
-              el.updateGroupInfo = this.newManagerAuthorityData.updateGroupInfo;
+              for (let key in el) {
+                for (let key in this.newManagerAuthorityData) {
+                  if(key === key){
+                    el[key] = this.newManagerAuthorityData[key]
+                  }
+                }
+              }
             }
           });
         } else {

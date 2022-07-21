@@ -659,6 +659,25 @@ export default {
           background-color: #ffffff;
         }
       }
+      .message-layout-left,
+      .message-layout-right {
+        /deep/.el-checkbox__input {
+          .el-checkbox__inner {
+            width: 20px;
+            height: 20px;
+            &:after{
+              height: 12px;
+              width: 6px;
+              left: 5px;
+            }
+          }
+        }
+      }  
+      .el-checkbox.is-disabled{
+        /deep/.el-checkbox__label{
+          cursor: auto;
+        }
+      }    
       .message-audio {
         width: 190px;
         display: flex;
@@ -1085,7 +1104,8 @@ export default {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin: 2em 0;
+  margin: 0.5em 0;
+  color: #000000;
   span {
     background-color: rgba(0, 0, 0, 0.05);
     padding: 4px 15px;

@@ -810,17 +810,6 @@ export default {
         }
       }
 
-      if (
-        !JSON.parse(localStorage.getItem("groupData")).isAdmin &&
-        !JSON.parse(localStorage.getItem("groupData")).isManager
-      ) {
-        if (!JSON.parse(localStorage.getItem("groupAuthority")).pin) {
-          this.newItem = this.newItem.filter((list) => {
-            return list.name !== "upDown";
-          });
-        }
-      }
-
       if (JSON.parse(localStorage.getItem("groupData")).isManager) {
         if (
           JSON.parse(localStorage.getItem("groupAuthority")).pin ||
@@ -834,7 +823,18 @@ export default {
             return list.name !== "edit" && list.name !== "upDown";
           });
         }
+      } else if (
+        !JSON.parse(localStorage.getItem("groupData")).isAdmin &&
+        !JSON.parse(localStorage.getItem("groupData")).isManager
+      ) {
+        if (!JSON.parse(localStorage.getItem("groupAuthority")).pin) {
+          this.newItem = this.newItem.filter((list) => {
+            return list.name !== "upDown";
+          });
+        }
       }
+
+
 
       this.$contextmenu({
         items: this.newItem,
@@ -936,6 +936,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.hichat-pc{
+  .message-pabel-box{
+    .message-styles-box {
+      .message-layout-left,
+      .message-layout-right {
+        /deep/.el-checkbox__input {
+          .el-checkbox__inner {
+            width: 20px;
+            height: 20px;
+            &:after{
+              height: 12px;
+              width: 6px;
+              left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .message-pabel-box {
   padding: 0 10px 0 20px;
   flex: 1;
@@ -1255,7 +1276,6 @@ export default {
       }
     }
   }
-
 }
 
 .message-touch-carte {

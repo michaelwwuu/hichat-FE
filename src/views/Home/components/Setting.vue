@@ -87,7 +87,7 @@
       append-to-body
     >
       <div class="loginOut-box">
-        <div><img src="./../../../../static/images/warn.png" alt="" /></div>
+        <div><img src="./../../../../static/images/warn.svg" alt="" /></div>
         <span>确认要登出嗎？</span>
       </div>
       <span slot="footer" class="dialog-footer">
