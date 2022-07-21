@@ -44,6 +44,7 @@
               </el-dropdown-menu>
             </el-dropdown>
           </div>
+
         </el-header>
         <el-main
           v-loading="loading"
@@ -69,7 +70,10 @@
             :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
+            :showCheckBoxBtn="showCheckBoxBtn"
             @deleteMsgHistoryData="deleteMsgData"
+            @checkBoxDisabled="checkBoxDisabled"
+            @isCheckDataList="isCheckDataList"            
             @resetPinMsg="resetPinMsg"
           />
           <div
@@ -105,34 +109,12 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
+          <div class="checkbox-btn" v-if="!showCheckBoxBtn">
+            <el-button type="danger" v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
+            <el-button type="danger" @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+          </div>
+          <message-input v-else :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
 
-          <!-- <template v-if="groupUser.isAdmin">
-            <message-input
-              :userInfoData="userInfoData"
-              :groupData="groupUser"
-            />
-          </template>
-          <template v-else-if="groupUser.isManager">
-            <message-input
-              :userInfoData="userInfoData"
-              :groupData="groupUser"
-              v-if="authorityGroupData.sendMessage || authority.sendMessage"
-            />
-            <div class="top-msg-bottom" v-else>
-              <span>禁言狀態無法發送訊息</span>
-            </div>
-          </template>
-          <template v-else>
-            <message-input
-              :userInfoData="userInfoData"
-              :groupData="groupUser"
-              v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"
-            />
-            <div class="top-msg-bottom" v-else>
-              <span>禁言狀態無法發送訊息</span>
-            </div>
-          </template> -->
         </el-main>
       </el-main>
     </el-container>
@@ -307,6 +289,8 @@ export default {
       contactList: [],
       loading: false,
       isTopMsgShow: false,
+      showCheckBoxBtn:true,
+      allHistoruShow:false,
       isLeaveGroupShow: false,
       deleteGroupDialogShow: false,
       leaveGroupDialogShow: false,
@@ -348,6 +332,7 @@ export default {
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
       replyMsg: (state) => state.ws.replyMsg,
+      myUserInfo: (state) => state.ws.myUserInfo,
       calloutShow: (state) => state.ws.calloutShow,
       topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
@@ -389,6 +374,13 @@ export default {
       this.setHichatNav({ type: "address", num: 1 });
       this.setChatGroup({});
     },
+    checkBoxDisabled(data){
+      this.showCheckBoxBtn = data
+    },
+    isCheckDataList(data){
+      this.checkDataList = data
+      this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+    },
     getGroupAuthority() {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({ groupId }).then((res) => {
@@ -411,6 +403,7 @@ export default {
     },
     goTopMsgShow() {
       this.setTopMsgShow(false);
+      this.showCheckBoxBtn = true;
     },
     untopMsgAction() {
       let param = {
@@ -1017,13 +1010,12 @@ export default {
     }
   }
 }
-.disabled-user {
-  height: 50px;
-  background-color: rgba(225, 225, 225, 0.85);
+.checkbox-btn {
+  height: 60px;
+  background-color: #ffffff;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   color: #959393;
-  justify-content: center;
   align-items: center;
   padding: 0 10px;
 }
@@ -1038,6 +1030,7 @@ export default {
   padding: 0 10px;
   cursor: pointer;
 }
+
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);

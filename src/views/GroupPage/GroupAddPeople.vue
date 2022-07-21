@@ -249,9 +249,9 @@ export default {
                 content: "";
                 display: block;
                 position: absolute;
-                margin-top: 0.5em;
+                margin-top: 0.65em;
                 width: 100%;
-                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05) ;
+                border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
               }
             }
           }

@@ -7,7 +7,7 @@
           :class="{ 'PC-header': device === 'pc' }"
         >
           <template v-if="device === 'moblie'">
-            <div class="home-header">
+            <div class="home-header" :style="onlineTime === ''?'margin:1.5em 1em 1em 1em':''" v-if="showCheckBoxBtn">
               <span
                 class="home-user-link"
                 :style="!chatUser.isContact ? 'position:none;' : ''"
@@ -16,7 +16,10 @@
                   <div class="home-user"></div>
                 </router-link>
               </span>
-              <span class="home-header-title">{{ chatUser.name }}</span>
+              <span class="home-header-title">
+                <div>{{ chatUser.name }}</div>
+                <div class="online-text" :class="onlineTime === '在线'?'green-text':'gray-text'">{{ onlineTime }}</div>
+              </span>
               <div v-if="chatUser.isContact" class="home-user-search"></div>
               <span class="home-photo-link">
                 <router-link :to="'/ContactPage'" v-if="chatUser.isContact">
@@ -28,6 +31,15 @@
                   <img :src="noIconShow(chatUser)" />
                 </div>
               </span>
+            </div>
+            <div class="home-header" style="margin:1.5em 1em 1em 1em"  v-else>
+              <span class="home-user-link">
+                <router-link :to="'/HiChat'">
+                  <div class="home-user"></div>
+                </router-link>
+              </span>
+              <span class="home-header-title">{{ checkDataList.length === 0 ?'选择讯息':`已选择${checkDataList.length}则讯息`}}</span>
+              <span class="home-photo-link" @click="closeChooseAction">取消</span>
             </div>
           </template>
 
@@ -46,9 +58,11 @@
                     "
                   />
                 </div>
-                <span>{{
-                  chatUser.name === undefined ? userData.name : chatUser.name
-                }}</span>
+                <span>
+                  <div>{{ chatUser.name === undefined ? userData.name : chatUser.name }}</div> 
+                  <div class="online-text" :class="onlineTime === '在线'?'green-text':'gray-text'">{{ onlineTime }}</div>
+                </span>
+                
               </span>
               <template v-if="chatUser.isContact">
                 <!-- <div
@@ -160,7 +174,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !== ''" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
@@ -178,7 +192,11 @@
             :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
+            :checkDataList="checkDataList"
+            :showCheckBoxBtn="showCheckBoxBtn"
             @deleteMsgHistoryData="deleteMsgData"
+            @checkBoxDisabled="checkBoxDisabled"
+            @isCheckDataList="isCheckDataList"
             @resetPinMsg="resetPinMsg"            
           />
           <div
@@ -214,8 +232,11 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <div class="disabled-user" v-if="chatUser.isBlock">
+          <div class="disabled-user" v-else-if="chatUser.isBlock">
             <span>該用戶已被封鎖</span>
+          </div>
+          <div class="checkbox-btn" v-if="!showCheckBoxBtn" @click="chooseDeleteAction">
+            <img src="./../../../static/images/icon_defalt.svg" alt="">
           </div>
           <message-input
             :userInfoData="userInfoData"
@@ -259,6 +280,7 @@
         </div>
       </el-main>
     </el-container>
+
     <el-dialog
       :title="device === 'pc' ? '取消置頂' : ''"
       :visible.sync="isTopMsgShow"
@@ -412,6 +434,22 @@
       muted="muted"
       src="./../../../static/wav/receive.mp3"
     ></audio>
+    <el-dialog
+      :visible.sync="isChooseDeleteShow"
+      class="el-dialog-choose-delete"
+      width="100%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <el-button v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
+        <el-button @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isChooseDeleteShow = false">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -426,6 +464,7 @@ import {
   getSearchById,
   pinList,
   unpinHistory,
+  getMemberActivity,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
@@ -447,10 +486,15 @@ export default {
       userData: {},
       readMsgData: [],
       pinDataList: [],
+      checkDataList:[],
+      onlineTime:"",
       pinMsg: "",
       timeOut:0,
       loading: false,
       isTopMsgShow:false,
+      showCheckBoxBtn:true,
+      isChooseDeleteShow:false,
+      allHistoruShow:false,
       deleteDialogShow: false,
       successDialogShow: false,
       isBlockDialogShow: false,
@@ -477,7 +521,10 @@ export default {
           }
         });
       });
-    }
+    },
+    chatUser(val){
+      this.getUserMemberActivity(val)
+    },
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -488,9 +535,16 @@ export default {
     if (this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
     // this.getPinList();
+    this.getUserMemberActivity(this.chatUser)
+  },
+  mounted() {
+    this.memberTime = setInterval(() => {
+      this.getUserMemberActivity(this.chatUser)
+    }, 5000);  
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
+    clearInterval(this.memberTime)
   },
   computed: {
     ...mapState({
@@ -514,6 +568,46 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setTopMsgShow: "ws/setTopMsgShow",
     }),
+    closeChooseAction(){
+      this.showCheckBoxBtn = true;
+      this.$root.gotoBottom();
+    },
+    chooseDeleteAction(){
+      if(this.checkDataList.length === 0){
+        this.$message({ message: "請勾選訊息", type: "error" });
+        return false
+      }else{
+        this.isChooseDeleteShow = true;
+      }
+    },
+    checkBoxDisabled(data){
+      this.showCheckBoxBtn = data
+    },
+    isCheckDataList(data){
+      this.checkDataList = data
+      this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+    },
+    getUserMemberActivity(chatUser) {
+      let memberId = [chatUser.toChatId.replace("u", "")];
+      getMemberActivity({ memberId }).then((res) => {
+        if (res.code === 200) {
+          this.onlineTime = ""
+          if(res.data[0].lastActivityTime === 0 || this.chatUser.name === "嗨聊记事本" ) {
+            return this.onlineTime = ""
+          } else {
+            this.onlineTime = ""
+            let nowTime = res.data[0].currentTime
+            let lastTime = res.data[0].lastActivityTime
+            const diffInMills = nowTime - lastTime
+            if(diffInMills/1000 < 300){
+              return this.onlineTime = "在线"
+            } else{
+              return this.onlineTime = "上次上线于" + this.$root.formatTimeS(res.data[0].lastActivityTime)
+            }
+          }           
+        }
+      });
+    },
     goTopMsgShow() {
       this.setTopMsgShow(false);
     },
@@ -559,6 +653,7 @@ export default {
         }
       });
     },
+
     deleteMsgData(data) {
       this.messageData = this.messageData.filter((item) => {
         return item.historyId !== data.historyId;
@@ -991,7 +1086,7 @@ export default {
       position: relative;
       padding: 0;
       .home-header {
-        margin: 1.5em 1em 1em 1em;
+        margin: 1em;
         display: flex;
         align-items: center;
         .home-user-link {
@@ -1011,6 +1106,12 @@ export default {
           margin: 0 auto;
           color: #10686e;
           font-weight: 600;
+          text-align: center;
+          .online-text{
+            font-size: 12px;
+            font-weight: normal;
+            margin-top:3px;
+          }
         }
         .home-user-photo,
         .home-user-search {
@@ -1086,6 +1187,7 @@ export default {
             background-position: center;
             background-repeat: no-repeat;
           }
+          
         }
         .home-header-title {
           margin: 0 auto;
@@ -1118,6 +1220,11 @@ export default {
           display: flex;
           align-items: center;
           cursor: pointer;
+          .online-text{
+            font-size: 12px;
+            font-weight: normal;
+            margin-top: 3px;
+          }
           .home-user-photo {
             text-align: center;
             overflow: hidden;
@@ -1128,6 +1235,7 @@ export default {
               width: inherit;
             }
           }
+          
           span {
             font-size: 15px;
             padding-left: 10px;
@@ -1220,15 +1328,23 @@ export default {
     }
   }
 }
-.disabled-user {
-  height: 50px;
-  background-color: rgba(225, 225, 225, 0.85);
+.disabled-user,.checkbox-btn {
+  height: 55px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   color: #959393;
   justify-content: center;
   align-items: center;
   padding: 0 10px;
+}
+.disabled-user{
+  background-color: rgba(225, 225, 225, 0.85);
+}
+.checkbox-btn{
+  background-color: #ffffff;
+  img{
+    height:1.5em;
+  }
 }
 .top-msg-bottom {
   height: 59px;
@@ -1240,6 +1356,11 @@ export default {
   align-items: center;
   padding: 0 10px;
   cursor: pointer;
+}
+.hichat-moblie{
+  .top-msg-bottom{
+    height: 55px;
+  }
 }
 .reply-message {
   height: 50px;
@@ -1358,6 +1479,50 @@ export default {
   .top-msg-right {
     height: 1.2em;
     
+  }
+}
+/deep/.el-dialog-choose-delete{
+  .el-dialog {
+
+    margin: 0 auto;
+    background: #ffffff00;
+    box-sizing: border-box;
+    box-shadow:none;
+    width: 50%;
+    .el-dialog__header{
+      padding: 0;
+      padding-bottom: 0;
+    }
+    .el-dialog__body{
+      padding: 20px 30px 0 30px;
+      .loginOut-box{
+        background: #ffffff;
+        border-radius: 10px;
+        .el-button{
+          width: 100%;
+          border-radius: 0px;
+          border:0;
+          background: #ffffff00;
+          color: #ee5253;
+          padding: 20px;
+          &:nth-child(2){
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+          }
+
+        }
+        .el-button + .el-button{
+          margin-left: 0;
+        }
+      }
+
+    }
+    .dialog-footer{
+      justify-content: center !important;
+      .el-button{
+        width: 100% !important;;
+        color:rgba(0, 0, 0, 0.4)
+      }
+    }
   }
 }
 </style>

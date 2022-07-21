@@ -304,10 +304,6 @@ export default {
         width: 100%;
         padding-left: 0;
         .address-box {
-          background-color: #ffffff;
-          padding: 0.8em 1em;
-          display: flex;
-          align-items: center;
           .msg-box {
             span {
               display: block;
@@ -318,9 +314,9 @@ export default {
                 content: "";
                 display: block;
                 position: absolute;
-                margin-top: 0.5em;
+                margin-top: 0.65em;
                 width: 100%;
-                border-bottom: 0.1em solid rgba(0, 0, 0, 0.05);
+                border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
               }
             }
           }

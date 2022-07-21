@@ -289,6 +289,7 @@ import {
   groupListMember,
   getUserInfo,
   getContactList,
+  getMemberActivity,
   logout,
 } from "@/api";
 import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
@@ -443,9 +444,7 @@ export default {
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
-    broadcastAction(){
-      // this.$router.push({ name: "HiChat", params: data });
-    },
+
     goChatRoom(data, type) {
       this.setInfoMsg({
         infoMsgShow: false,
@@ -479,18 +478,19 @@ export default {
     },
     getContactDataList() {
       getContactList().then((res) => {
+        let memberActivityData = []
         this.addressDataList = res.data.list;
         this.addressDataList.forEach((el) => {
-          if (el.icon === undefined) {
-            el.icon = require("./../../../static/images/image_user_defult.png");
-          }
           if (el.contactId === localStorage.getItem("id")) {
             el.name = "嗨聊记事本";
             el.icon = require("./../../../static/images/image_savemessage.png");
             el.toChatId = "u" + el.memberId;
-          }
+          } else if (el.icon === undefined) {
+            el.icon = require("./../../../static/images/image_user_defult.png");
+          }    
+         memberActivityData.push(el.contactId)   
         });
-        this.setMyContactDataList(this.addressDataList);        
+        this.getUserMemberActivity(memberActivityData)
       });
       getGroupList().then((res) => {
         this.groupList = res.data.list;
@@ -504,7 +504,24 @@ export default {
         })
       });
     },
+    getUserMemberActivity(data){
+      let memberId = data
+      getMemberActivity({memberId}).then((res) => {
+        if(res.code === 200){
+          this.userTimeData = res.data
+          this.addressDataList.forEach((list)=>{
+            this.userTimeData.forEach((data) => {
+              if(list.contactId === JSON.stringify(data.memberId)){
+                list.currentTime = data.currentTime 
+                list.lastActivityTime = data.lastActivityTime
+              }
 
+            });
+          })
+          this.setMyContactDataList(this.addressDataList);
+        }
+      })
+    },
     getUserData() {
       getUserInfo().then((res) => {
         if (res.data.icon === undefined) {

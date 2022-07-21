@@ -2,43 +2,31 @@
   <div class="wrapper">
     <el-container v-if="topMsgShow">
       <el-main>
-        <el-header
-          :height="device === 'moblie' ? '55px' : '70px'"
-          :class="{ 'PC-header': device === 'pc' }"
-        >
-          <template v-if="device === 'moblie'">
-            <div class="home-header">
-              <span class="home-user-link">
-                <router-link :to="'/HiChat'">
-                  <div class="home-user"></div>
-                </router-link>
-              </span>
-              <span class="home-header-title">{{ groupData.groupName }}</span>
-              <!-- <div class="home-user-search"></div> -->
-              <span class="home-photo-link">
-                <router-link :to="'/GroupPage'">
-                  <div class="home-user-photo">
-                    <img :src="noIconShow(groupData)" />
-                  </div>
-                </router-link>
-              </span>
-            </div>
-          </template>
-          <template v-else>
-            <div class="home-header-pc">
-              <span class="home-photo-link">
+        <el-header height="55px">
+          <div class="home-header" v-if="showCheckBoxBtn">
+            <span class="home-user-link">
+              <router-link :to="'/HiChat'">
+                <div class="home-user"></div>
+              </router-link>
+            </span>
+            <span class="home-header-title">{{ groupData.groupName }}</span>
+            <span class="home-photo-link">
+              <router-link :to="'/GroupPage'">
                 <div class="home-user-photo">
-                  <img :src="noIconShow(groupUser)" />
+                  <img :src="noIconShow(groupData)" />
                 </div>
-                <span>{{
-                  groupUser.groupName === undefined
-                    ? groupData.groupName
-                    : groupUser.groupName
-                }}</span>
-              </span>
-              <div class="home-user-more"></div>
-            </div>
-          </template>
+              </router-link>
+            </span>
+          </div>
+          <div class="home-header" v-else>
+            <span class="home-user-link">
+              <router-link :to="'/HiChat'">
+                <div class="home-user"></div>
+              </router-link>
+            </span>
+            <span class="home-header-title">{{ checkDataList.length === 0 ?'选择讯息':`已选择${checkDataList.length}则讯息`}}</span>
+            <span class="home-photo-link" @click="closeChooseAction">取消</span>
+          </div>
         </el-header>
         <el-main
           v-loading="loading"
@@ -46,7 +34,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !==''" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !=='' && showCheckBoxBtn" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="">
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
@@ -60,7 +48,11 @@
             :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
+            :checkDataList="checkDataList"
+            :showCheckBoxBtn="showCheckBoxBtn"
             @deleteMsgHistoryData="deleteMsgData"
+            @checkBoxDisabled="checkBoxDisabled"
+            @isCheckDataList="isCheckDataList"
             @resetPinMsg="resetPinMsg"            
           />
           <div
@@ -96,23 +88,10 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
-
-          <!-- <template v-if="groupUser.isAdmin">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
-          </template> -->
-          <!-- <template v-else-if="groupUser.isManager">
-            <message-input :userInfoData="userInfoData" :groupData="groupUser" v-if="authorityGroupData.sendMessage || authority.sendMessage"/>
-            <div class="top-msg-bottom" v-else>
-              <span>禁言狀態無法發送訊息</span>
-            </div>
-          </template>
-          <template v-else>
-            <message-input :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority" v-if="!groupUser.isBanPost && authorityGroupData.sendMessage"/>
-            <div class="top-msg-bottom" v-else>
-              <span>禁言狀態無法發送訊息</span>
-            </div>
-          </template> -->
+          <div class="checkbox-btn" v-if="!showCheckBoxBtn" @click="chooseDeleteAction">
+            <img src="./../../../static/images/icon_defalt.svg" alt="">
+          </div>
+          <message-input v-else :userInfoData="userInfoData" :groupData="groupUser" :authorityGroupData="authorityGroupData" :authority="authority"/>
         </el-main>
       </el-main>
     </el-container>
@@ -166,7 +145,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
-          :class="device === 'moblie' ? 'border-red' : 'background-gray'"
+          class="border-red"
           @click="isTopMsgShow = false"
           >取消</el-button
         >
@@ -175,7 +154,22 @@
         >
       </span>
     </el-dialog>
-
+    <el-dialog
+      :visible.sync="isChooseDeleteShow"
+      class="el-dialog-choose-delete"
+      width="100%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <el-button v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
+        <el-button @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isChooseDeleteShow = false">取消</el-button>
+      </span>
+    </el-dialog>
     <el-dialog
       :visible.sync="isLeaveGroupShow"
       class="el-dialog-loginOut"
@@ -204,7 +198,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { groupListMember,pinList,unpinHistory,getGroupAuthoritySetting } from "@/api";
+import { groupListMember,pinList,unpinHistory,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
@@ -230,11 +224,14 @@ export default {
       readMsgData: [],
       contactList: [],
       pinDataList: [],
+      checkDataList:[],
       loading: false,
+      showCheckBoxBtn:true,
+      isChooseDeleteShow:false,
+      allHistoruShow:false,
       isTopMsgShow:false,
       isLeaveGroupShow:false,
       unGroupDisabledWord:false,
-      device: localStorage.getItem("device"),
 
       //加解密 key iv
       aesKey: "hichatisachatapp",
@@ -276,6 +273,7 @@ export default {
       groupUser: (state) => state.ws.groupUser,
       replyMsg: (state) => state.ws.replyMsg,
       topMsgShow: (state) => state.ws.topMsgShow,
+      myUserInfo: (state) => state.ws.myUserInfo,
       authority: (state) => state.ws.authority,
       contactListData: (state) => state.ws.contactListData,
     }),
@@ -291,8 +289,46 @@ export default {
       setAuthority:"ws/setAuthority",
       setAuthorityGroupData:"ws/setAuthorityGroupData",
     }),
+    closeChooseAction(){
+      this.showCheckBoxBtn = true;
+      this.$root.gotoBottom();
+    },
+    chooseDeleteAction(){
+      if(this.checkDataList.length === 0){
+        this.$message({ message: "請勾選訊息", type: "error" });
+        return false
+      }else{
+        this.isChooseDeleteShow = true;
+      }
+    },
     leaveGroupAction(){
       this.$router.push({ path: "/HiChat" });
+    },
+    checkBoxDisabled(data){
+      this.showCheckBoxBtn = data
+    },
+    isCheckDataList(data){
+      this.checkDataList = data
+      if((this.groupUser.isManager && !this.authority.delUserMessage) || (!this.groupUser.isManager && !this.groupUser.isAdmin)){
+        this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+      } 
+    },
+    deleteRecent(type) {
+      console.log(this.checkDataList,type)
+      // let parmas = {
+      //   fullDelete: type === "all",
+      //   historyId: data.historyId,
+      //   toChatId: data.toChatId,
+      // };
+      // deleteRecentChat(parmas)
+      //   .then((res) => {
+      //     if (res.code === 200) {
+      //       this.$emit("deleteMsgHistoryData", data);
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     this.$message({ message: err, type: "error" });
+      //   });
     },
     getGroupAuthority(){
       let groupId = this.groupData.groupId;
@@ -915,9 +951,9 @@ export default {
     }
   }
 }
-.disabled-user {
-  height: 50px;
-  background-color: rgba(225, 225, 225, 0.85);
+
+.disabled-user,.checkbox-btn {
+  height: 55px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   color: #959393;
@@ -925,8 +961,17 @@ export default {
   align-items: center;
   padding: 0 10px;
 }
+.disabled-user{
+  background-color: rgba(225, 225, 225, 0.85);
+}
+.checkbox-btn{
+  background-color: #ffffff;
+  img{
+    height:1.5em;
+  }
+}
 .top-msg-bottom {
-  height: 59px;
+  height: 55px;
   background-color: #ffffff;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
@@ -1046,6 +1091,50 @@ export default {
           border: 1px solid #fe5f3f;
           color: #fe5f3f;
         }
+      }
+    }
+  }
+}
+/deep/.el-dialog-choose-delete{
+  .el-dialog {
+
+    margin: 0 auto;
+    background: #ffffff00;
+    box-sizing: border-box;
+    box-shadow:none;
+    width: 50%;
+    .el-dialog__header{
+      padding: 0;
+      padding-bottom: 0;
+    }
+    .el-dialog__body{
+      padding: 20px 30px 0 30px;
+      .loginOut-box{
+        background: #ffffff;
+        border-radius: 10px;
+        .el-button{
+          width: 100%;
+          border-radius: 0px;
+          border:0;
+          background: #ffffff00;
+          color: #ee5253;
+          padding: 20px;
+          &:nth-child(2){
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+          }
+
+        }
+        .el-button + .el-button{
+          margin-left: 0;
+        }
+      }
+
+    }
+    .dialog-footer{
+      justify-content: center !important;
+      .el-button{
+        width: 100% !important;;
+        color:rgba(0, 0, 0, 0.4)
       }
     }
   }

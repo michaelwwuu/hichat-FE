@@ -97,9 +97,57 @@ body {
     //訊息內容
     .address-box {
       background-color: #ffffff;
-      padding: 1em;
+      padding: 1em 1em 0 1em;
       display: flex;
       align-items: center;
+      
+      .contont-box {
+        padding-left: 1em;
+        height: 48px;    
+        .msg-box {
+          height: 48px;
+          display: flex;
+          span {
+            display: block;
+            font-size: 16px;
+            &:nth-child(1) {
+              margin-bottom: 7px;
+            }
+          }
+          .content-text {
+            display: flex;
+            font-size: 14px;
+            opacity: 0.5;
+            height:20px;
+            span {
+              &:nth-child(1) {
+                width: 15em;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                margin-bottom: 0;
+                font-size: 13px;
+                display: flex;
+              }
+              &:nth-child(2) {
+                opacity: 1;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+
+      }   
+      .group{
+        padding-left: 1em;
+        height: 48px;
+        span {
+          font-size: 16px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+        }
+      }
     }
 
     .home-footer-nav {
@@ -807,6 +855,7 @@ body {
         }
       }
     }
+    
   }
 
   .home-footer-nav {
@@ -997,3 +1046,25 @@ body {
     width: 12em;
   }
 }
+.el-badge__content.is-fixed.is-dot{
+  top: auto;
+  bottom: 0px;
+  right: 8px;
+}
+.green-text{
+  color: #219653;
+}
+.gray-text{
+  opacity: 0.5;
+  color: #000000;
+}
+.contont-border-bottom {
+  width: 100vw;
+  border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
+  position: absolute;
+  margin-top: -1px;
+}
+.noOnline-tip{
+  display: flex;
+  align-items: center;
+}  

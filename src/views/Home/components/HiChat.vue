@@ -11,22 +11,27 @@
           ></el-badge>
         </span>
         <div
-          v-for="(item, index) in hiChatDataList"
+          v-for="(item, index) in newHiChatDataList"
           :key="index"
           class="address-box"
           @click="goChatRoom(item, 'ChatMsg')"
         >
-          <el-image :src="noIconShow(item, 'user')" />
+          <el-badge is-dot class="item" type="success" :class="{'no-show':!onlineMsg(item)}"
+            ><el-image :src="noIconShow(item, 'user')"
+          /></el-badge>
           <div class="contont-box">
             <div class="msg-box">
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
-                    isBase64(item.lastChat.text)
-                  }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
+                  <span
+                    v-else-if="item.lastChat.chatType === 'SRV_USER_SEND'"
+                    >{{ isBase64(item.lastChat.text) }}</span
+                  >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
+                    >{{ item.lastChat.text }}置顶了消息</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -35,7 +40,7 @@
                   >
                 </span>
               </div>
-              <div class="time" v-if ="item.lastChat !==null">
+              <div class="time" v-if="item.lastChat !== null">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
                 <div class="el-badge-box">
                   <el-badge
@@ -72,8 +77,13 @@
                 <span>{{ item.name }}</span>
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_SEND'" v-html="judgeTextMarking(isBase64(item.lastChat.text))"></span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
+                  <span
+                    v-else-if="item.lastChat.chatType === 'SRV_GROUP_SEND'"
+                    v-html="judgeTextMarking(isBase64(item.lastChat.text))"
+                  ></span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
+                    >{{ item.lastChat.text }}置顶了消息</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_AUDIO'"
                     >传送了语音</span
                   >
@@ -86,19 +96,29 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_DEL'"
                     >{{ item.lastChat.text }}離開了聊天室</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'"
+                  <span
+                    v-else-if="
+                      item.lastChat.chatType === 'SRV_GROUP_ADD_MANAGER_HISTORY'
+                    "
                     >{{ item.lastChat.text }}已被指定為管理員</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_REMOVE_MANAGER_HISTORY'"
+                  <span
+                    v-else-if="
+                      item.lastChat.chatType ===
+                      'SRV_GROUP_REMOVE_MANAGER_HISTORY'
+                    "
                     >{{ item.lastChat.text }}已被解除管理員身份</span
                   >
-                  <span v-else-if="item.lastChat.chatType === 'SRV_GROUP_CHANGE_ADMIN_HISTORY'"
+                  <span
+                    v-else-if="
+                      item.lastChat.chatType ===
+                      'SRV_GROUP_CHANGE_ADMIN_HISTORY'
+                    "
                     >群主變更為{{ item.lastChat.text }}</span
                   >
-                  
                 </span>
               </div>
-              <div class="time" v-if ="item.lastChat !==null">
+              <div class="time" v-if="item.lastChat !== null">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
                 <div class="el-badge-box">
                   <el-badge
@@ -145,7 +165,9 @@
                   <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
-                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'">{{ item.lastChat.text }}置顶了消息</span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
+                    >{{ item.lastChat.text }}置顶了消息</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -179,16 +201,15 @@
       :show-close="false"
       :close-on-click-modal="false"
       append-to-body
-      >
+    >
       <div @click="sendMessage">
-        <img src="./../../../../static/images/chat_icon.png" alt="">
+        <img src="./../../../../static/images/chat_icon.png" alt="" />
         <span>傳送訊息</span>
       </div>
       <div @click="deleteMessage">
-        <img src="./../../../../static/images/trash.png" alt="">
+        <img src="./../../../../static/images/trash.png" alt="" />
         <span>刪除訊息</span>
       </div>
-
     </el-dialog>
   </div>
 </template>
@@ -198,7 +219,14 @@ import Socket from "@/utils/socket";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
-import { getGroupList, groupListMember, getSearchById,getGroupAuthoritySetting,deleteRecentChat } from "@/api";
+import {
+  getGroupList,
+  groupListMember,
+  getSearchById,
+  getGroupAuthoritySetting,
+  deleteRecentChat,
+  getMemberActivity,
+} from "@/api";
 
 export default {
   name: "HiChat",
@@ -206,11 +234,12 @@ export default {
     return {
       searchKey: "",
       groupList: [],
-      authorityData:{},
+      authorityData: {},
       groupDataList: [],
       hiChatDataList: [],
       contactDataList: [],
       newMsgDataList: [],
+      newHiChatDataList:[],
       getHistoryMessage: {
         chatType: "",
         toChatId: "",
@@ -223,8 +252,8 @@ export default {
       },
       device: localStorage.getItem("device"),
       activeName: "address",
-      isDialogShow:false,
-      dialogData:{},
+      isDialogShow: false,
+      dialogData: {},
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -234,9 +263,13 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.getGroupDataList();
     this.setActiveName(this.hichatNav.type);
+    this.memberTime = setInterval(() => {
+      this.getUserMemberActivity(this.hiChatDataList)
+    }, 5000);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
+    clearInterval(this.memberTime)
   },
   computed: {
     ...mapState({
@@ -246,6 +279,7 @@ export default {
       hichatNav: (state) => state.ws.hichatNav,
       myUserInfo: (state) => state.ws.myUserInfo,
       contactUser: (state) => state.ws.contactUser,
+      myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
   mounted() {
@@ -261,79 +295,85 @@ export default {
   methods: {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
-      setTopMsg:"ws/setTopMsg",
+      setTopMsg: "ws/setTopMsg",
       setInfoMsg: "ws/setInfoMsg",
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
-      setAuthority:"ws/setAuthority",
+      setAuthority: "ws/setAuthority",
       setHichatNav: "ws/setHichatNav",
       setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
-      setTopMsgShow:"ws/setTopMsgShow",
+      setTopMsgShow: "ws/setTopMsgShow",
       setActiveName: "ws/setActiveName",
       setContactUser: "ws/setContactUser",
       setContactListData: "ws/setContactListData",
-      setAuthorityGroupData:"ws/setAuthorityGroupData",
+      setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
-    touchStart(item){
-      //手指触摸
-      clearTimeout(this.Loop); //再次清空定时器，防止重复注册定时器
-      this.Loop = setTimeout(()=> {
-        this.isDialogShow = true
-        this.dialogData = item
-      },500)
-    },
-    sendMessage(){
-      if(this.dialogData.isContact){
+    sendMessage() {
+      if (this.dialogData.isContact) {
         this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
         this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
         this.setChatUser(this.dialogData);
         this.$router.push({ path: "/ChatMsg" });
-      }else if(this.dialogData.isGroup){
+      } else if (this.dialogData.isGroup) {
         this.dialogData.icon = this.dialogData.icon;
         this.dialogData.groupName = this.dialogData.name;
         this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
-        this.dialogData.memberId = JSON.parse(this.dialogData.forChatId.replace("u", ""));
+        this.dialogData.memberId = JSON.parse(
+          this.dialogData.forChatId.replace("u", "")
+        );
         this.groupList.forEach((item) => {
           if (item.groupName === this.dialogData.groupName) {
-            this.dialogData.isBanPost = item.isBanPost
-            this.dialogData.isAdmin = item.isAdmin
-            this.dialogData.isManager = item.isManager
+            this.dialogData.isBanPost = item.isBanPost;
+            this.dialogData.isAdmin = item.isAdmin;
+            this.dialogData.isManager = item.isManager;
           }
         });
         this.setChatGroup(this.dialogData);
         this.getGroupListMember(this.dialogData);
-        this.getGroupAuthority(this.dialogData)
+        this.getGroupAuthority(this.dialogData);
         this.$router.push({ path: "/ChatGroupMsg" });
-      }else{
+      } else {
         this.setContactUser(data);
       }
     },
-    deleteMessage(){
+    deleteMessage() {
       let parmas = {
         fullDelete: true,
         historyId: "",
         toChatId: this.dialogData.toChatId,
       };
       deleteRecentChat(parmas).then((res) => {
-        let msg = resStatus[res.code] || res.message
+        let msg = resStatus[res.code] || res.message;
         if (res.code === 200) {
-          if(this.dialogData.isContact){
+          if (this.dialogData.isContact) {
             localStorage.removeItem("userData");
-          }else if(this.dialogData.isGroup){
+          } else if (this.dialogData.isGroup) {
             localStorage.removeItem("groupData");
           }
           this.setHichatNav({ type: this.hichatNav.type, num: 0 });
           this.$router.push({ path: "/Address" });
         }
-      }) 
+      });
     },
-    judgeTextMarking(data){
-      if(["@"+this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(data)){
-        return `<span style="color:#F00">【 有人@我 】</span>` + data
-      }else{
-        return data
+    judgeTextMarking(data) {
+      if (
+        ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(
+          data
+        )
+      ) {
+        if(this.device === "moblie"){
+          return `<div style="color:#F00">【 有人@我 】</div>` + data;
+        }else{
+          return `<div style="color:#F00">【 有人@我 】</div>` + (data.length > 8 ? data.slice(0,6) + '...' : data);
+        }
+      } else {
+         if(this.device === "moblie"){
+          return data
+        }else{
+          return data.length > 25 ? data.slice(0,10) + '...' : data
+        }
       }
     },
     noIconShow(iconData, key) {
@@ -348,14 +388,21 @@ export default {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
         this.getHistoryMessage.id = Math.random();
-      } else if( tab.name === "contact"){
+        this.memberTime = setInterval(() => {
+          this.getUserMemberActivity(this.hiChatDataList)
+        }, 5000);
+      } else if (tab.name === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.contactUser.toChatId;
         this.getHistoryMessage.id = Math.random();
+        this.memberTime = setInterval(() => {
+          this.getUserMemberActivity(this.hiChatDataList)
+        }, 5000);
       } else {
         this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.groupUser.toChatId;
         this.getHistoryMessage.id = Math.random();
+        clearInterval(this.memberTime)
       }
       Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
@@ -419,6 +466,8 @@ export default {
               this.contactNumBadge += item.unreadCount;
             }
           });
+          this.newHiChatDataList = this.hiChatDataList
+          this.getUserMemberActivity(this.hiChatDataList)
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -429,6 +478,41 @@ export default {
           this.getHiChatDataList();
           break;
       }
+    },
+    getUserMemberActivity(data) {
+      let memberId = [];
+      data.forEach(listNumber => {
+        memberId.push(listNumber.toChatId.replace("u", ""))
+      });
+      getMemberActivity({ memberId }).then((res) => {
+        if (res.code === 200) {
+          this.newHiChatDataList = []
+          this.userTimeData = res.data;
+          this.hiChatDataList.forEach((list) => {
+            this.userTimeData.forEach((data) => {
+              if (list.toChatId ==="u" +  data.memberId) {
+                list.currentTime = data.currentTime;
+                list.lastActivityTime = data.lastActivityTime;
+              }
+            });
+          });
+          this.newHiChatDataList = this.hiChatDataList
+        }
+      });
+    },
+    onlineMsg(data){
+      if(data.lastActivityTime === 0 || data.name === "嗨聊记事本" ) {
+        return false
+      } else {
+        let nowTime = data.currentTime
+        let lastTime = data.lastActivityTime
+        const diffInMills = nowTime - lastTime
+        if(diffInMills/1000 < 300){
+          return true
+        } else{
+          return false
+        }
+      } 
     },
     getGroupDataList() {
       getGroupList().then((res) => {
@@ -441,33 +525,33 @@ export default {
         this.setGroupList(this.groupList);
       });
     },
-    getGroupAuthority(data){
+    getGroupAuthority(data) {
       let groupId = data.toChatId.replace("g", "");
-      getGroupAuthoritySetting({groupId}).then((res)=>{
-        if(res.code === 200 ){
-          this.authorityGroupData = res.data
-          this.setAuthorityGroupData(this.authorityGroupData)
+      getGroupAuthoritySetting({ groupId }).then((res) => {
+        if (res.code === 200) {
+          this.authorityGroupData = res.data;
+          this.setAuthorityGroupData(this.authorityGroupData);
         }
-      })
-    },    
+      });
+    },
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
-          if (item.memberId === this.groupUser.memberId ){
-            this.groupUser.isAdmin = item.isAdmin
-            this.groupUser.isBanPost = item.isBanPost
-            this.groupUser.isManager = item.isManager
+          if (item.memberId === this.groupUser.memberId) {
+            this.groupUser.isAdmin = item.isAdmin;
+            this.groupUser.isBanPost = item.isBanPost;
+            this.groupUser.isManager = item.isManager;
           }
           if (item.icon === undefined) {
             item.icon = require("./../../../../static/images/image_user_defult.png");
           }
-          if (item.memberId === Number(localStorage.getItem("id"))){
-            if(item.isAdmin || (!item.isAdmin && !item.isManager)){
-              localStorage.removeItem("authority")
-            }else if(item.isManager){
-              this.setAuthority(item.authority)
+          if (item.memberId === Number(localStorage.getItem("id"))) {
+            if (item.isAdmin || (!item.isAdmin && !item.isManager)) {
+              localStorage.removeItem("authority");
+            } else if (item.isManager) {
+              this.setAuthority(item.authority);
             }
           }
         });
@@ -475,13 +559,14 @@ export default {
       });
     },
     goChatRoom(data, path) {
-      this.setTopMsgShow(true)
-      this.getGroupDataList()
-      this.setInfoMsg({infoMsgMap:'HiChat'});
+      this.setTopMsgShow(true);
+      this.getGroupDataList();
+      this.setInfoMsg({ infoMsgMap: "HiChat" });
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
         this.setChatUser(data);
+        clearInterval(this.memberTime)
       } else if (path === "ChatContact") {
         this.setContactUser(data);
       } else {
@@ -491,14 +576,14 @@ export default {
         data.memberId = JSON.parse(data.forChatId.replace("u", ""));
         this.groupList.forEach((item) => {
           if (item.groupName === data.groupName) {
-            data.isAdmin = item.isAdmin
-            data.isBanPost = item.isBanPost
-            data.isManager = item.isManager
+            data.isAdmin = item.isAdmin;
+            data.isBanPost = item.isBanPost;
+            data.isManager = item.isManager;
           }
         });
         this.setChatGroup(data);
         this.getGroupListMember(data);
-        this.getGroupAuthority(data)
+        this.getGroupAuthority(data);
       }
       if (this.device === "moblie") {
         this.$router.push({ name: path });
@@ -510,7 +595,7 @@ export default {
         } else if (!data.isBlock && !data.isContact && !data.isGroup) {
           this.type = "contact";
         }
-        
+
         this.setHichatNav({ type: this.type, num: 1 });
         this.setInfoMsg({
           infoMsgShow: false,
@@ -551,6 +636,11 @@ export default {
   &:hover {
     background-color: #ebeaea81;
   }
+  .no-show{
+    /deep/.el-badge__content{
+      display: none;
+    }
+  }
   .contont-box {
     padding-left: 1em;
     height: 48px;
@@ -568,7 +658,7 @@ export default {
         display: flex;
         font-size: 14px;
         opacity: 0.5;
-        height:20px;
+        height: 20px;
         span {
           &:nth-child(1) {
             width: 15em;
@@ -601,6 +691,7 @@ export default {
       width: 100vw;
       border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
       position: absolute;
+      margin-top: -1px;
     }
   }
 }
@@ -616,7 +707,7 @@ export default {
         .content-text {
           span {
             &:nth-child(1) {
-              width: 120px;
+              width: 140px;
             }
           }
         }
@@ -635,26 +726,26 @@ export default {
     width: 100%;
     .el-dialog__header {
       padding: 10px;
-      background-color: #F60;
+      background-color: #f60;
       border-radius: 10px 10px 0 0;
-      .el-dialog__title{
+      .el-dialog__title {
         color: #000000;
       }
     }
     .el-dialog__body {
       text-align: center;
       padding: 0;
-      div{
+      div {
         height: 3.5em;
-        line-height:3.5em;
+        line-height: 3.5em;
         font-size: 14px;
         cursor: pointer;
         display: flex;
-        align-items: center;  
+        align-items: center;
         justify-content: center;
-        img{
-          height:1.5em;
-          padding-right:5px;
+        img {
+          height: 1.5em;
+          padding-right: 5px;
         }
         &:nth-child(1) {
           border-bottom: 1px solid rgba(0, 0, 0, 0.05);

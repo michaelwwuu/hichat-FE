@@ -874,7 +874,7 @@ export default {
       position: relative;
       padding: 0;
       .home-header {
-        margin: 1.5em 1em 1em 1em;
+        margin: 1em;
         display: flex;
         align-items: center;
         .home-user-link {

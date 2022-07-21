@@ -185,6 +185,7 @@ export const mutations = {
   },
   //聯絡人 List
   setMyContactDataList(state, payload) {
+    state.myContactDataList = []
     state.myContactDataList = payload;
     localStorage.setItem("myContactDataList", JSON.stringify(payload));
   },

@@ -66,6 +66,16 @@ export const getContactList = (params) => {
   }
   return axios.request(postData)
 }
+// 取得用戶最後動作時間
+export const getMemberActivity = data => {
+  let postData = {
+    url: '/api/member/profile/getMemberActivity',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
 // 獲取群組清單
 export const getGroupList = (params) => {
   let postData = {
