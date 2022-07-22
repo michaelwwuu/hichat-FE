@@ -2,7 +2,7 @@
   <div class="home-content" @touchmove="$root.handleTouch">
     <el-tabs v-model="hichatNav.type" @tab-click="handleClick">
       <el-tab-pane label="联络人" name="address">
-        <span slot="label" v-if="hiChatDataList.length > 0">
+        <span slot="label" v-if="newHiChatDataList.length > 0">
           <span>联络人</span>
           <el-badge
             v-if="hiChatNumBadge > 0"
@@ -136,9 +136,9 @@
       <el-tab-pane
         label="陌生讯息"
         name="contact"
-        v-if="contactDataList.length > 0"
+        v-if="newContactDataList.length > 0"
       >
-        <span slot="label" v-if="contactDataList.length > 0">
+        <span slot="label" v-if="newContactDataList.length > 0">
           <span>陌生讯息</span>
           <el-badge
             v-if="contactNumBadge > 0"
@@ -147,7 +147,7 @@
           ></el-badge>
         </span>
         <div
-          v-for="(item, index) in contactDataList"
+          v-for="(item, index) in newContactDataList"
           :key="index"
           class="address-box"
           @click="
@@ -156,7 +156,9 @@
               : goChatRoom(item, 'ChatContact')
           "
         >
-          <el-image :src="noIconShow(item, 'user')" />
+          <el-badge is-dot class="item" type="success" :class="{'no-show':!onlineMsg(item)}"
+            ><el-image :src="noIconShow(item, 'user')"
+          /></el-badge>
           <div class="contont-box">
             <div class="msg-box">
               <div>
@@ -236,10 +238,10 @@ export default {
       groupList: [],
       authorityData: {},
       groupDataList: [],
-      hiChatDataList: [],
-      contactDataList: [],
       newMsgDataList: [],
       newHiChatDataList:[],
+      newContactDataList:[],
+      noGroupPeopleData:[],
       getHistoryMessage: {
         chatType: "",
         toChatId: "",
@@ -264,7 +266,7 @@ export default {
     this.getGroupDataList();
     this.setActiveName(this.hichatNav.type);
     this.memberTime = setInterval(() => {
-      this.getUserMemberActivity(this.hiChatDataList)
+      this.getUserMemberActivity(this.noGroupPeopleData)
     }, 5000);
   },
   beforeDestroy() {
@@ -307,6 +309,7 @@ export default {
       setTopMsgShow: "ws/setTopMsgShow",
       setActiveName: "ws/setActiveName",
       setContactUser: "ws/setContactUser",
+      setCheckBoxBtn: "ws/setCheckBoxBtn",
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
@@ -389,14 +392,14 @@ export default {
         this.getHistoryMessage.toChatId = this.chatUser.toChatId;
         this.getHistoryMessage.id = Math.random();
         this.memberTime = setInterval(() => {
-          this.getUserMemberActivity(this.hiChatDataList)
+          this.getUserMemberActivity(this.noGroupPeopleData)
         }, 5000);
       } else if (tab.name === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.contactUser.toChatId;
         this.getHistoryMessage.id = Math.random();
         this.memberTime = setInterval(() => {
-          this.getUserMemberActivity(this.hiChatDataList)
+          this.getUserMemberActivity(this.noGroupPeopleData)
         }, 5000);
       } else {
         this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
@@ -443,16 +446,9 @@ export default {
           this.groupNumBadge = 0;
           this.hiChatNumBadge = 0;
           this.contactNumBadge = 0;
-          this.hiChatDataList = [];
           this.groupDataList = [];
-          this.contactDataList = [];
           userInfo.recentChat.forEach((item) => {
-            if (item.isContact) {
-              if (item.forChatId === item.toChatId) {
-                item.name = "嗨聊记事本";
-                item.icon = require("./../../../../static/images/image_savemessage.png");
-              }
-              this.hiChatDataList.push(item);
+            if (item.isContact && (item.forChatId === item.toChatId)) {
               this.hiChatNumBadge += item.unreadCount;
             } else if (item.isGroup) {
               this.groupDataList.push(item);
@@ -462,12 +458,11 @@ export default {
               item.isContact !== null &&
               item.lastChat !== null
             ) {
-              this.contactDataList.push(item);
               this.contactNumBadge += item.unreadCount;
             }
           });
-          this.newHiChatDataList = this.hiChatDataList
-          this.getUserMemberActivity(this.hiChatDataList)
+          this.noGroupPeopleData = userInfo.recentChat.filter(res=> !res.isGroup)
+          this.getUserMemberActivity(this.noGroupPeopleData)
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -480,23 +475,26 @@ export default {
       }
     },
     getUserMemberActivity(data) {
+      console.log(data)
       let memberId = [];
       data.forEach(listNumber => {
         memberId.push(listNumber.toChatId.replace("u", ""))
       });
       getMemberActivity({ memberId }).then((res) => {
         if (res.code === 200) {
-          this.newHiChatDataList = []
           this.userTimeData = res.data;
-          this.hiChatDataList.forEach((list) => {
+          this.newHiChatDataList = []
+          this.newContactDataList = [] 
+          data.forEach((res)=>{
             this.userTimeData.forEach((data) => {
-              if (list.toChatId ==="u" +  data.memberId) {
-                list.currentTime = data.currentTime;
-                list.lastActivityTime = data.lastActivityTime;
+              if (res.toChatId ==="u" +  data.memberId) {
+                res.currentTime = data.currentTime;
+                res.lastActivityTime = data.lastActivityTime;
               }
             });
-          });
-          this.newHiChatDataList = this.hiChatDataList
+          })
+          this.newHiChatDataList = data.filter(list => list.isContact)
+          this.newContactDataList = data.filter(list => !list.isContact)
         }
       });
     },
@@ -562,11 +560,14 @@ export default {
       this.setTopMsgShow(true);
       this.getGroupDataList();
       this.setInfoMsg({ infoMsgMap: "HiChat" });
+      if(this.device === "moblie"){
+        clearInterval(this.memberTime)
+      }
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
         this.setChatUser(data);
-        clearInterval(this.memberTime)
+        
       } else if (path === "ChatContact") {
         this.setContactUser(data);
       } else {
@@ -603,6 +604,7 @@ export default {
         });
         this.getHistory(data, path);
         this.closeReplyMessage();
+        this.setCheckBoxBtn(true)
       }
     },
     closeReplyMessage() {

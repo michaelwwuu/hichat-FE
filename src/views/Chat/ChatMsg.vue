@@ -64,95 +64,90 @@
                 </span>
                 
               </span>
-              <template v-if="chatUser.isContact">
-                <!-- <div
-                  class="home-user-search"
-                  :style="
-                    chatUser.forChatId === chatUser.toChatId
-                      ? 'right: 30px'
-                      : ''
-                  "
-                ></div> -->
-                <el-dropdown
-                  trigger="click"
-                  v-if="chatUser.forChatId !== chatUser.toChatId"
-                >
-                  <div class="el-dropdown-link">
-                    <div class="home-user-more"></div>
+              <template v-if="showCheckBoxBtn">
+                <template v-if="chatUser.isContact">
+                  <el-dropdown
+                    trigger="click"
+                    v-if="chatUser.forChatId !== chatUser.toChatId"
+                  >
+                    <div class="el-dropdown-link">
+                      <div class="home-user-more"></div>
+                    </div>
+                    <el-dropdown-menu slot="dropdown" class="chat-more">
+                      <el-dropdown-item>
+                        <div class="logout-btn">
+                          <img
+                            src="./../../../static/images/pc/bell-off.png"
+                            alt=""
+                          />
+                          <span>關閉通知</span>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <div class="logout-btn" @click="isBlockDialogShow = true">
+                          <img
+                            src="./../../../static/images/pc/slash.png"
+                            alt=""
+                          />
+                          <span>{{
+                            chatUser.isBlock ? "解除封锁" : "封锁联络人"
+                          }}</span>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <div
+                          class="logout-btn"
+                          @click="deleteGroupDialogShow = true"
+                        >
+                          <img
+                            src="./../../../static/images/pc/trash.png"
+                            alt=""
+                          />
+                          <span style="color: #ee5253">删除對話</span>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <div
+                          class="logout-btn"
+                          @click="isDeleteContactDialogShow = true"
+                        >
+                          <img
+                            src="./../../../static/images/pc/trash.png"
+                            alt=""
+                          />
+                          <span style="color: #ee5253">删除联络人</span>
+                        </div>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </template>
+                <template v-else>
+                  <div class="contact-box">
+                    <ul>
+                      <li @click="deleteDialogShow = true">
+                        <img
+                          src="./.../../../../../static/images/pc/trash.png"
+                          alt=""
+                        />删除
+                      </li>
+                      <li @click="isBlockDialogShow = true">
+                        <img
+                          src="./.../../../../../static/images/pc/slash-red.png"
+                          alt=""
+                        />
+                        {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
+                      </li>
+                      <li @click="addUser(chatUser)">
+                        <img
+                          src="./.../../../../../static/images/pc/user-plus-block.png"
+                          alt=""
+                        />加入联络人
+                      </li>
+                    </ul>
                   </div>
-                  <el-dropdown-menu slot="dropdown" class="chat-more">
-                    <el-dropdown-item>
-                      <div class="logout-btn">
-                        <img
-                          src="./../../../static/images/pc/bell-off.png"
-                          alt=""
-                        />
-                        <span>關閉通知</span>
-                      </div>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <div class="logout-btn" @click="isBlockDialogShow = true">
-                        <img
-                          src="./../../../static/images/pc/slash.png"
-                          alt=""
-                        />
-                        <span>{{
-                          chatUser.isBlock ? "解除封锁" : "封锁联络人"
-                        }}</span>
-                      </div>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <div
-                        class="logout-btn"
-                        @click="deleteGroupDialogShow = true"
-                      >
-                        <img
-                          src="./../../../static/images/pc/trash.png"
-                          alt=""
-                        />
-                        <span style="color: #ee5253">删除對話</span>
-                      </div>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <div
-                        class="logout-btn"
-                        @click="isDeleteContactDialogShow = true"
-                      >
-                        <img
-                          src="./../../../static/images/pc/trash.png"
-                          alt=""
-                        />
-                        <span style="color: #ee5253">删除联络人</span>
-                      </div>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
+                </template>
               </template>
-              <template v-else>
-                <div class="contact-box">
-                  <ul>
-                    <li @click="deleteDialogShow = true">
-                      <img
-                        src="./.../../../../../static/images/pc/trash.png"
-                        alt=""
-                      />删除
-                    </li>
-                    <li @click="isBlockDialogShow = true">
-                      <img
-                        src="./.../../../../../static/images/pc/slash-red.png"
-                        alt=""
-                      />
-                      {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
-                    </li>
-                    <li @click="addUser(chatUser)">
-                      <img
-                        src="./.../../../../../static/images/pc/user-plus-block.png"
-                        alt=""
-                      />加入联络人
-                    </li>
-                  </ul>
-                </div>
-              </template>
+              <span class="el-dropdown close-choose" v-else @click="closeChooseAction">取消</span>
             </div>
           </template>
         </el-header>
@@ -237,6 +232,7 @@
           </div>
           <div class="checkbox-btn" v-if="!showCheckBoxBtn" @click="chooseDeleteAction">
             <img src="./../../../static/images/icon_defalt.svg" alt="">
+            <span v-if="device === 'pc'">{{ checkDataList.length === 0 ?'选择讯息':`已选择${checkDataList.length}则讯息`}}</span>
           </div>
           <message-input
             :userInfoData="userInfoData"
@@ -434,22 +430,31 @@
       muted="muted"
       src="./../../../static/wav/receive.mp3"
     ></audio>
+
     <el-dialog
       :visible.sync="isChooseDeleteShow"
       class="el-dialog-choose-delete"
       width="100%"
       :show-close="false"
       :close-on-click-modal="false"
+      :append-to-body="device === 'moblie'"
+      :modal="device === 'moblie'"
       center
     >
       <div class="loginOut-box">
-        <el-button v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
-        <el-button @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+        <template v-if="device === 'pc'">
+          <img src="./../../../static/images/warn.svg" alt="" />
+          <span class="choose-delete-title">刪除所選的訊息？</span>
+        </template>
+
+        <el-button :type="device === 'pc'? 'danger':''" v-show="!allHistoruShow" @click="deleteMessage('all')">在所有人对话纪录中删除</el-button>
+        <el-button :type="device === 'pc'? 'danger':''" @click="deleteMessage('only')">只在我的对话纪录中删除</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="isChooseDeleteShow = false">取消</el-button>
+        <el-button :class="device === 'pc' ? 'footer-button' : ''" @click="isChooseDeleteShow = false">取消</el-button>
       </span>
     </el-dialog>
+  
   </div>
 </template>
 
@@ -525,6 +530,9 @@ export default {
     chatUser(val){
       this.getUserMemberActivity(val)
     },
+    checkBoxBtn(val){
+      this.showCheckBoxBtn = val
+    }    
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -554,6 +562,7 @@ export default {
       replyMsg: (state) => state.ws.replyMsg,
       myUserInfo: (state) => state.ws.myUserInfo,
       topMsgShow: (state) => state.ws.topMsgShow,
+      checkBoxBtn: (state) => state.ws.checkBoxBtn,
     }),
   },
   methods: {
@@ -567,6 +576,7 @@ export default {
       setChatMsgData: "ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setTopMsgShow: "ws/setTopMsgShow",
+      setCheckBoxBtn: "ws/setCheckBoxBtn"
     }),
     closeChooseAction(){
       this.showCheckBoxBtn = true;
@@ -582,6 +592,7 @@ export default {
     },
     checkBoxDisabled(data){
       this.showCheckBoxBtn = data
+      this.setCheckBoxBtn(data)      
     },
     isCheckDataList(data){
       this.checkDataList = data
@@ -951,6 +962,23 @@ export default {
           this.$message({ message: err, type: "error" });
         });
     },
+    deleteMessage(type) {
+      console.log(this.checkDataList,type)
+      // let parmas = {
+      //   fullDelete: type === "all",
+      //   historyId: data.historyId,
+      //   toChatId: data.toChatId,
+      // };
+      // deleteRecentChat(parmas)
+      //   .then((res) => {
+      //     if (res.code === 200) {
+      //       this.$emit("deleteMsgHistoryData", data);
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     this.$message({ message: err, type: "error" });
+      //   });
+    },    
     blockSubmitBtn(data) {
       if (data.isBlock) {
         let blockIdList = [data.toChatId.replace("u", "")];
@@ -1346,6 +1374,7 @@ export default {
     height:1.5em;
   }
 }
+
 .top-msg-bottom {
   height: 59px;
   background-color: #ffffff;
@@ -1360,6 +1389,50 @@ export default {
 .hichat-moblie{
   .top-msg-bottom{
     height: 55px;
+  }
+  /deep/.el-dialog-choose-delete{
+    .el-dialog {
+
+      margin: 0 auto;
+      background: #ffffff00;
+      box-sizing: border-box;
+      box-shadow:none;
+      width: 50%;
+      .el-dialog__header{
+        padding: 0;
+        padding-bottom: 0;
+      }
+      .el-dialog__body{
+        padding: 20px 30px 0 30px;
+        .loginOut-box{
+          background: #ffffff;
+          border-radius: 10px;
+          .el-button{
+            width: 100%;
+            border-radius: 0px;
+            border:0;
+            background: #ffffff00;
+            color: #ee5253;
+            padding: 20px;
+            &:nth-child(2){
+              border-top: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+          }
+          .el-button + .el-button{
+            margin-left: 0;
+          }
+        }
+
+      }
+      .dialog-footer{
+        justify-content: center !important;
+        .el-button{
+          width: 100% !important;;
+          color:rgba(0, 0, 0, 0.4)
+        }
+      }
+    }
   }
 }
 .reply-message {
@@ -1405,6 +1478,91 @@ export default {
 .hichat-pc {
   .disabled-user {
     height: 59px;
+  }
+  .checkbox-btn {
+    height: 60px;
+    background-color: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    color: #959393;
+    align-items: center;
+    padding: 0 10px;
+    img{
+      height:1.5em;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    span{
+      margin: 0 auto;
+      color:rgba(0, 0, 0, 0.8);
+      letter-spacing: 2px;
+    }
+  }
+  .el-dialog-choose-delete{
+    z-index: 2001;
+    position: absolute;
+    top: 0;
+    left: 300px;
+    width: 85%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    background: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    /deep/.el-dialog{
+      margin-top:0 !important;
+      .el-dialog__header{
+        padding: 0;
+        padding-bottom: 0;
+        border-bottom:0;
+      }
+      .el-dialog__body{
+        padding: 20px 30px 0 30px !important;
+        border-bottom:0;
+        text-align: center;
+        .loginOut-box{
+          background: #ffffff;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          .choose-delete-title{
+            color: rgba(0, 0, 0, 0.8);
+            margin:0 0 20px 0;
+          }
+          img {
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+          .el-button{
+            width: 100%;
+            padding: 15px 0 !important;
+            margin-bottom: 10px;
+          }
+          .el-button + .el-button{
+            margin-left: 0;
+          }
+        }
+
+      }
+      .el-dialog__footer{
+        padding: 0 30px 20px 30px;
+        
+        .dialog-footer{
+          justify-content: center !important;
+          .el-button.footer-button{
+            width: 100% !important;;
+            color:rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 0, 0, 0.4) !important;
+            font-size:15px;
+            padding: 15px 0 !important;
+            &:nth-child(1) {
+              border-radius: 10px !important;
+            }
+          }
+        }   
+      }
+      
+    }
   }
 }
 /* width */
@@ -1481,48 +1639,11 @@ export default {
     
   }
 }
-/deep/.el-dialog-choose-delete{
-  .el-dialog {
-
-    margin: 0 auto;
-    background: #ffffff00;
-    box-sizing: border-box;
-    box-shadow:none;
-    width: 50%;
-    .el-dialog__header{
-      padding: 0;
-      padding-bottom: 0;
-    }
-    .el-dialog__body{
-      padding: 20px 30px 0 30px;
-      .loginOut-box{
-        background: #ffffff;
-        border-radius: 10px;
-        .el-button{
-          width: 100%;
-          border-radius: 0px;
-          border:0;
-          background: #ffffff00;
-          color: #ee5253;
-          padding: 20px;
-          &:nth-child(2){
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-          }
-
-        }
-        .el-button + .el-button{
-          margin-left: 0;
-        }
-      }
-
-    }
-    .dialog-footer{
-      justify-content: center !important;
-      .el-button{
-        width: 100% !important;;
-        color:rgba(0, 0, 0, 0.4)
-      }
-    }
-  }
+.close-choose{
+  font-size: 17px;
+  cursor: pointer;
 }
+
+
+
 </style>

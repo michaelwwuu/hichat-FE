@@ -163,8 +163,8 @@
       center
     >
       <div class="loginOut-box">
-        <el-button v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
-        <el-button @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+        <el-button v-show="!allHistoruShow" @click="deleteMessage('all')">在所有人对话纪录中删除</el-button>
+        <el-button @click="deleteMessage('only')">只在我的对话纪录中删除</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isChooseDeleteShow = false">取消</el-button>
@@ -313,7 +313,7 @@ export default {
         this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
       } 
     },
-    deleteRecent(type) {
+    deleteMessage(type) {
       console.log(this.checkDataList,type)
       // let parmas = {
       //   fullDelete: type === "all",
@@ -653,7 +653,6 @@ export default {
           });
           this.getHiChatDataList();
           break;
-          
         // 刪除訊息
         case "SRV_CHAT_DEL":
           this.messageData.forEach((res, index) => {

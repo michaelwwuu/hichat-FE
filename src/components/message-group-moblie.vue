@@ -352,9 +352,9 @@ export default {
     showCheckBoxBtn: {
       type: Boolean,
     },
-    checkDataList:{
+    checkDataList: {
       type: Array,
-    }
+    },
   },
   data() {
     return {
@@ -397,8 +397,8 @@ export default {
     checkList(val) {
       this.$emit("isCheckDataList", val);
     },
-    checkDataList(val){
-      this.checkList = val
+    checkDataList(val) {
+      this.checkList = val;
     },
     messageData(val) {
       //去除重复
@@ -695,114 +695,64 @@ export default {
           },
         },
       ];
+      let isAdmin = JSON.parse(localStorage.getItem("groupData")).isAdmin;
+      let isManager = JSON.parse(localStorage.getItem("groupData")).isManager;
+
       if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        if (
-          data.chatType === "SRV_GROUP_IMAGE" ||
-          data.chatType === "SRV_GROUP_AUDIO"
-        ) {
-          if (data.chatType === "SRV_GROUP_AUDIO") {
-            if (JSON.parse(localStorage.getItem("groupData")).isAdmin) {
-              this.newItem = item.filter((list) => {
-                return (
-                  list.name !== "edit" &&
-                  list.name !== "copy" &&
-                  list.name !== "download"
-                );
-              });
-            } else if (
-              JSON.parse(localStorage.getItem("groupData")).isManager
-            ) {
-              if (
-                JSON.parse(localStorage.getItem("authority")).delUserMessage
-              ) {
-                this.newItem = item.filter((list) => {
-                  return (
-                    list.name !== "edit" &&
-                    list.name !== "copy" &&
-                    list.name !== "download"
-                  );
-                });
-              }
-            } else {
-              this.newItem = item.filter((list) => {
-                return (
-                  list.name !== "deleteAllChat" &&
-                  list.name !== "edit" &&
-                  list.name !== "copy" &&
-                  list.name !== "download"
-                );
-              });
-            }
+        if ( data.chatType === "SRV_GROUP_AUDIO") {
+          if ( isAdmin ||
+            (isManager &&
+              JSON.parse(localStorage.getItem("authority")).delUserMessage)
+          ) {
+            this.newItem = item.filter(
+              (list) => !["edit", "copy", "download"].includes(list.name)
+            );
           } else {
-            if (JSON.parse(localStorage.getItem("groupData")).isAdmin) {
-              this.newItem = item.filter((list) => {
-                return list.name !== "edit" && list.name !== "copy";
-              });
-            } else if (
-              JSON.parse(localStorage.getItem("groupData")).isManager
-            ) {
-              if (
-                JSON.parse(localStorage.getItem("authority")).delUserMessage
-              ) {
-                this.newItem = item.filter((list) => {
-                  return list.name !== "edit" && list.name !== "copy";
-                });
-              }
-            } else {
-              this.newItem = item.filter((list) => {
-                return (
-                  list.name !== "deleteAllChat" &&
-                  list.name !== "edit" &&
-                  list.name !== "copy"
-                );
-              });
-            }
+            this.newItem = item.filter(
+              (list) =>
+                !["deleteAllChat", "edit", "copy", "download"].includes(
+                  list.name
+                )
+            );
           }
-        } else if (JSON.parse(localStorage.getItem("groupData")).isAdmin) {
-          this.newItem = item.filter((list) => {
-            return list.name !== "edit" && list.name !== "download";
-          });
-        } else if (JSON.parse(localStorage.getItem("groupData")).isManager) {
-          if (JSON.parse(localStorage.getItem("authority")).delUserMessage) {
-            this.newItem = item.filter((list) => {
-              return list.name !== "edit" && list.name !== "download";
-            });
+        } else if(data.chatType === "SRV_GROUP_IMAGE"){
+          if (
+            isAdmin ||
+            (isManager &&
+              JSON.parse(localStorage.getItem("authority")).delUserMessage)
+          ) {
+            this.newItem = item.filter(
+              (list) => !["edit", "copy"].includes(list.name)
+            );
           } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "edit" &&
-                list.name !== "download" &&
-                list.name !== "deleteAllChat"
-              );
-            });
+            this.newItem = item.filter(
+              (list) => !["deleteAllChat", "edit", "copy"].includes(list.name)
+            );
           }
         } else {
-          this.newItem = item.filter((list) => {
-            return (
-              list.name !== "deleteAllChat" &&
-              list.name !== "edit" &&
-              list.name !== "download"
+          if(isAdmin ||
+            (isManager &&
+              JSON.parse(localStorage.getItem("authority")).delUserMessage)
+          ) {
+            this.newItem = item.filter(
+              (list) => !["edit", "download"].includes(list.name)
             );
-          });
+          } else{
+            this.newItem = item.filter(
+              (list) => !["deleteAllChat", "edit", "download"].includes(list.name)
+            );
+          }
+     
         }
       } else {
-        if (
-          data.chatType === "SRV_GROUP_IMAGE" ||
-          data.chatType === "SRV_GROUP_AUDIO"
-        ) {
-          if (data.chatType === "SRV_GROUP_IMAGE") {
-            this.newItem = item.filter((list) => {
-              return list.name !== "edit" && list.name !== "copy";
-            });
-          } else {
-            this.newItem = item.filter((list) => {
-              return (
-                list.name !== "edit" &&
-                list.name !== "copy" &&
-                list.name !== "download"
-              );
-            });
-          }
+        if ( data.chatType === "SRV_GROUP_IMAGE" ) {
+          this.newItem = item.filter(
+            (list) => !["edit", "copy"].includes(list.name)
+          );
+        } else if( data.chatType === "SRV_GROUP_AUDIO"){
+          this.newItem = item.filter(
+            (list) => !["edit", "copy", "download"].includes(list.name)
+          );
         } else {
           this.newItem = item.filter((list) => {
             return list.name !== "download";
@@ -810,7 +760,7 @@ export default {
         }
       }
 
-      if (JSON.parse(localStorage.getItem("groupData")).isManager) {
+      if (isManager) {
         if (
           JSON.parse(localStorage.getItem("groupAuthority")).pin ||
           JSON.parse(localStorage.getItem("authority")).pin
@@ -823,18 +773,13 @@ export default {
             return list.name !== "edit" && list.name !== "upDown";
           });
         }
-      } else if (
-        !JSON.parse(localStorage.getItem("groupData")).isAdmin &&
-        !JSON.parse(localStorage.getItem("groupData")).isManager
-      ) {
+      } else if(!isAdmin && !isManager) {
         if (!JSON.parse(localStorage.getItem("groupAuthority")).pin) {
           this.newItem = this.newItem.filter((list) => {
             return list.name !== "upDown";
           });
         }
       }
-
-
 
       this.$contextmenu({
         items: this.newItem,
@@ -936,9 +881,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.hichat-pc{
-  .message-pabel-box{
+.hichat-pc {
+  .message-pabel-box {
     .message-styles-box {
       .message-layout-left,
       .message-layout-right {
@@ -946,7 +890,7 @@ export default {
           .el-checkbox__inner {
             width: 20px;
             height: 20px;
-            &:after{
+            &:after {
               height: 12px;
               width: 6px;
               left: 5px;
@@ -1264,13 +1208,13 @@ export default {
         }
       }
       .message-layout-left,
-      .message-layout-right{
-        /deep/.el-checkbox__label{
+      .message-layout-right {
+        /deep/.el-checkbox__label {
           cursor: pointer;
         }
       }
-      .el-checkbox.is-disabled{
-        /deep/.el-checkbox__label{
+      .el-checkbox.is-disabled {
+        /deep/.el-checkbox__label {
           cursor: auto;
         }
       }
@@ -1299,6 +1243,7 @@ export default {
   // border:1px solid #ebebeb;
   text-align: center;
   background-color: #fff;
+  color: #000;
   .el-icon-more {
     font-size: 20px;
   }

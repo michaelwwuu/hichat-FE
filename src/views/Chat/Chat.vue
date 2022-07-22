@@ -14,6 +14,7 @@
                   : groupUser.groupName
               }}</span>
             </span>
+
             <el-dropdown trigger="click" v-if="showCheckBoxBtn">
               <div class="el-dropdown-link">
                 <div class="home-user-more"></div>
@@ -45,7 +46,6 @@
             </el-dropdown>
             <span class="el-dropdown close-choose" v-else @click="closeChooseAction">取消</span>
           </div>
-
         </el-header>
         <el-main
           v-loading="loading"
@@ -53,7 +53,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !== ''&& showCheckBoxBtn" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
@@ -341,6 +341,9 @@ export default {
         });
       });
     },
+    checkBoxBtn(val){
+      this.showCheckBoxBtn = val
+    }
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
@@ -363,6 +366,7 @@ export default {
       topMsgShow: (state) => state.ws.topMsgShow,
       contactListData: (state) => state.ws.contactListData,
       authority: (state) => state.ws.authority,
+      checkBoxBtn: (state) => state.ws.checkBoxBtn,
     }),
   },
   methods: {
@@ -378,6 +382,7 @@ export default {
       setAuthority: "ws/setAuthority",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
       setContactListData: "ws/setContactListData",
+      setCheckBoxBtn: "ws/setCheckBoxBtn",
     }),
     deleteMessage() {
       let parmas = {
@@ -414,6 +419,7 @@ export default {
     },    
     checkBoxDisabled(data){
       this.showCheckBoxBtn = data
+      this.setCheckBoxBtn(data)
     },
     isCheckDataList(data){
       this.checkDataList = data

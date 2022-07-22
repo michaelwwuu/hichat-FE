@@ -94,14 +94,19 @@ export const state = {
     groupManagerAuthority: [],    
   },
   topMsgShow:true,
+  checkBoxBtn:false,
   authority:{},
   goAnchorMessage:{},
   authorityGroupData:{},
   spreadDataList:[],
+  
 };
 export const actions = {};
 
 export const mutations = {
+  setCheckBoxBtn(state, payload) {
+    state.checkBoxBtn = payload;
+  },     
   setSpreadDataList(state, payload) {
     state.spreadDataList = payload;
   },     

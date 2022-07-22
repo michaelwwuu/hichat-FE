@@ -206,6 +206,9 @@ export default {
     timeOut: {
       type: Number,
     },
+    showCheckBoxBtn: {
+      type: Boolean,
+    },    
     checkDataList:{
       type: Array,
     }
@@ -231,6 +234,9 @@ export default {
     };
   },
   watch: {
+    showCheckBoxBtn(val) {
+      this.checkBoxDisabled = val;
+    },
     checkList(val) {
       this.$emit("isCheckDataList", val);
     },
@@ -436,15 +442,15 @@ export default {
             this.copyPaste(data);
           },
         },
-        // {
-        //   name: "choose",
-        //   label: this.checkBoxDisabled ? "选择" : "取消选择",
-        //   onClick: () => {
-        //     this.checkList = [];
-        //     this.checkBoxDisabled = !this.checkBoxDisabled;
-        //     this.$emit("checkBoxDisabled", this.checkBoxDisabled);
-        //   },
-        // },
+        {
+          name: "choose",
+          label: this.checkBoxDisabled ? "选择" : "取消选择",
+          onClick: () => {
+            this.checkList = [];
+            this.checkBoxDisabled = !this.checkBoxDisabled;
+            this.$emit("checkBoxDisabled", this.checkBoxDisabled);
+          },
+        },
         {
           name: "reply",
           label: "回覆",
