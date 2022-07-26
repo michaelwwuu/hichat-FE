@@ -320,7 +320,7 @@ export default {
           margin: 1.3em 1em 1em 0.7em;
           .home-user-pc {
             background-color: #fff;
-            background-image: url("./../../../static/images/pc/arrow-left.png");
+            background-image: url("./../../../static/images/pc/arrow-left.svg");
             cursor: pointer;
           }
         }

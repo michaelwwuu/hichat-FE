@@ -12,7 +12,7 @@
                 >
                   <span style="padding-right: 10px" v-if="infoMsg.infoMsgChat || infoMsg.infoMsgMap === 'address'"
                     ><img
-                      src="./../../../static/images/pc/arrow-left.png"
+                      src="./../../../static/images/pc/arrow-left.svg"
                       alt=""
                   /></span>
                   <span>資訊</span>
@@ -165,7 +165,7 @@
                 >
                   <a>
                     <div class="setting-button-left">
-                      <img src="./../../../static/images/blockade.png" alt="" />
+                      <img src="./../../../static/images/pc/slash.svg" alt="" />
                       <span>{{
                         !chatUser.isBlock ? "封锁联络人" : "解除封锁"
                       }}</span>
@@ -180,14 +180,14 @@
                     <div class="setting-button-left">
                       <img
                         :src="
-                          require(`./../../../static/images/${
-                            chatUser.isContact === false ? 'add_user' : 'trash'
-                          }.png`)
+                          require(`./../../../static/images/pc/${
+                            !chatUser.isContact ? 'add-user' : 'trash'
+                          }.svg`)
                         "
                         alt=""
                       />
                       <span class="red-text">{{
-                        chatUser.isContact === false
+                        !chatUser.isContact
                           ? "加入联络人"
                           : "刪除联络人"
                       }}</span>
@@ -243,7 +243,7 @@
                 <div class="setting-button mt10-border">
                   <a @click="changeSettingAdminGroupShow('SettingGroup')">
                     <div class="setting-button-left">
-                      <img src="./../../../static/images/key.png" alt="" />
+                      <img src="./../../../static/images/pc/key.svg" alt="" />
                       <span>权限</span>
                     </div>
                   </a>
@@ -256,7 +256,7 @@
                 >
                   <a @click="changeSettingAdminGroupShow('SettingGroup')">
                     <div class="setting-button-left">
-                      <img src="./../../../static/images/key.png" alt="" />
+                      <img src="./../../../static/images/pc/key.svg" alt="" />
                       <span>权限</span>
                     </div>
                   </a>
@@ -265,7 +265,7 @@
               <div class="setting-button" v-if="groupUser.isAdmin">
                 <a @click="changeSettingAdminGroupShow('AdminChange')">
                   <div class="setting-button-left">
-                    <img src="./../../../static/images/shield.png" alt="" />
+                    <img src="./../../../static/images/pc/shield.svg" alt="" />
                     <span>转移群主权限</span>
                   </div>
                 </a>
@@ -385,7 +385,7 @@ export default {
         // },
         {
           name: "成員",
-          icon: require("./../../../static/images/pc/users.png"),
+          icon: require("./../../../static/images/pc/users.svg"),
           path: "GroupPeople",
         },
       ],
@@ -669,7 +669,7 @@ export default {
   .home-header {
     .home-add-user {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/edit_info.png");
+      background-image: url("./../../../static/images/pc/edit_info.svg");
     }
     .notAdmin {
       background-image: none;

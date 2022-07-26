@@ -106,8 +106,8 @@
             <img
               :src="
                 passwordType === 'password'
-                  ? require('../../../static/images/pc/eye-off.png')
-                  : require('./../../../static/images/eye-solid.svg')
+                  ? require('./../../../static/images/pc/eye-off.svg')
+                  : require('./../../../static/images/pc/eye.svg')
               "
               alt=""
             />
@@ -599,6 +599,9 @@ $light_gray: #eee;
     width: 370px;
     .show-pwd {
       cursor: pointer;
+      img {
+        height: 1.5em;
+      }
     }
     .remember-style {
       margin: 1em 0 2em 0;

@@ -244,7 +244,7 @@ export default {
           cursor: pointer;
         }
         .home-user-more {
-          background-image: url("./../../../static/images/pc/more.png");
+          background-image: url("./../../../static/images/pc/more.svg");
           cursor: pointer;
         }
         .home-photo-link {

@@ -265,6 +265,7 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { developmentMessage } from "@/assets/tools";
 import {
   groupListMember,
@@ -302,6 +303,7 @@ export default {
       this.groupData = JSON.parse(localStorage.getItem("groupData"));
     } else {
       this.groupData = this.groupUser;
+      Socket.$on("message", this.handleGetMessage);
     }
     if (JSON.parse(localStorage.getItem("authority")) !== undefined) {
       this.authority = JSON.parse(localStorage.getItem("authority"));
@@ -309,6 +311,7 @@ export default {
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.newContactList)
     }, 5000);
+
   },
   beforeDestroy() {
     clearInterval(this.memberTime)
@@ -356,13 +359,26 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
     }),
+    // 收取 socket 回来讯息 (全局讯息)
+    handleGetMessage(msg) {
+      let userInfo = JSON.parse(msg);
+      switch (userInfo.chatType) {
+        case "SRV_GROUP_DEL":
+        case "SRV_GROUP_JOIN":
+        case "SRV_GROUP_ADD_MANAGER_HISTORY":
+        case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
+        case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
+          this.getGroupListMember()
+          break
+      }
+    },
     getGroupListMember() {
       let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined) {
-            res.icon = require("./../../../static/images/image_user_defult.png");
+        this.contactList.forEach((item) => {
+          if (item.icon === undefined) {
+            item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
 
@@ -680,13 +696,13 @@ export default {
           .home-user {
             background-size: 75%;
             background-color: #fff;
-            background-image: url("./../../../static/images/pc/arrow-left.png");
+            background-image: url("./../../../static/images/pc/arrow-left.svg");
             cursor: pointer;
           }
           .home-add-user {
             background-size: 70%;
             background-color: #fff;
-            background-image: url("./../../../static/images/pc/add.png");
+            background-image: url("./../../../static/images/pc/add.svg");
             cursor: pointer;
           }
           .home-header-title {
@@ -695,7 +711,7 @@ export default {
           .home-user-edit {
             background-size: 70%;
             background-color: #fff;
-            background-image: url("./../../../static/images/pc/edit_info.png");
+            background-image: url("./../../../static/images/pc/edit_info.svg");
             cursor: pointer;
           }
         }
@@ -741,6 +757,10 @@ export default {
     }
     .el-dialog-loginOut {
       /deep/.el-dialog {
+        .el-dialog__header{
+          padding:0;
+          border-bottom:0;
+        }
         .el-dialog__footer {
           padding: 0;
           .el-button {

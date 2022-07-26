@@ -87,7 +87,7 @@
             <span class="home-header-title">设定</span>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <img src="./../../../static/images/pc/more.png" alt="" />
+                <img src="./../../../static/images/pc/more.svg" alt="" />
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
@@ -535,9 +535,9 @@ export default {
       let groupId = this.groupUser.toChatId.replace("g", "");
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
-        this.contactList.forEach((res) => {
-          if (res.icon === undefined) {
-            res.icon = require("./../../../static/images/image_user_defult.png");
+        this.contactList.forEach((item) => {
+          if (item.icon === undefined) {
+            item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
         this.setContactListData(this.contactList);

@@ -33,20 +33,20 @@
                 <ul>
                   <li @click="deleteDialogShow = true">
                     <img
-                      src="./.../../../../../static/images/pc/trash.png"
+                      src="./.../../../../../static/images/pc/trash.svg"
                       alt=""
                     />删除
                   </li>
                   <li @click="isBlockDialogShow = true">
                     <img
-                      src="./.../../../../../static/images/pc/slash-red.png"
+                      src="./.../../../../../static/images/pc/slash-red.svg"
                       alt=""
                     />
                     {{ contactUser.isBlock ? "解除封锁" : "封锁" }}
                   </li>
                   <li @click="addUser(contactUser)">
                     <img
-                      src="./.../../../../../static/images/pc/user-plus-block.png"
+                      src="./.../../../../../static/images/pc/add-user-block.svg"
                       alt=""
                     />加入联络人
                   </li>
@@ -173,7 +173,7 @@
             <div class="home-header-pc">
               <span class="home-photo-link" @click="setTopMsgShow(true)">
                 <span style="padding-right: 10px"
-                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  ><img src="./../../../static/images/pc/arrow-left.svg" alt=""
                 /></span>
                 <span>置顶訊息</span>
               </span>
@@ -373,6 +373,7 @@ import {
   pinList,
   unpinHistory,
   getMemberActivity,
+  deleteRecentChatMul,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
@@ -817,6 +818,12 @@ export default {
           });
           this.getHiChatDataList();
           break;
+        //多選刪除
+        case "SRV_CHAT_MUL_DEL":
+          this.messageData = this.messageData.filter(item => !userInfo.targetArray.includes(item.historyId))
+          this.checkDataList = this.checkDataList.filter(item => !userInfo.targetArray.includes(item.historyId))
+          this.getHiChatDataList();
+          break           
         // 撈取歷史訊息
         case "SRV_NEED_AUTH":
           this.getChatHistoryMessage();
@@ -872,22 +879,33 @@ export default {
         });
     },
     deleteMessage(type) {
-      console.log(this.checkDataList, type);
-      // let parmas = {
-      //   fullDelete: type === "all",
-      //   historyId: data.historyId,
-      //   toChatId: data.toChatId,
-      // };
-      // deleteRecentChat(parmas)
-      //   .then((res) => {
-      //     if (res.code === 200) {
-      //       this.$emit("deleteMsgHistoryData", data);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     this.$message({ message: err, type: "error" });
-      //   });
-    },
+      this.historyIdData = []
+      this.checkDataList.forEach(el => {
+        this.historyIdData.push(el.historyId)
+      });
+      let parmas = {
+        fullDelete: type === "all", // 是否完整删除,搭配historyId
+        haveOtherChat: type === "only", // 是否有不是自己的訊息
+        historyId: this.historyIdData, // 历史记录ID
+        toChatId: this.checkDataList[0].toChatId // 删除目标ID
+      }
+      deleteRecentChatMul(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            if(res.data.isCompletely){
+              this.$message({ message: "訊息删除成功", type: "success" });
+            }else{
+              this.$message({ message: "部分訊息無法刪除", type: "warning" });
+            }
+            this.isChooseDeleteShow = false
+            this.closeChooseAction();
+            this.$root.gotoBottom();
+          } 
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+        });
+    },        
     blockSubmitBtn(data) {
       if (data.isBlock) {
         let blockIdList = [data.toChatId.replace("u", "")];
@@ -1151,7 +1169,7 @@ export default {
           cursor: pointer;
         }
         .home-user-more {
-          background-image: url("./../../../static/images/pc/more.png");
+          background-image: url("./../../../static/images/pc/more.svg");
           cursor: pointer;
         }
         .home-photo-link {

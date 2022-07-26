@@ -77,7 +77,7 @@
                       <el-dropdown-item>
                         <div class="logout-btn">
                           <img
-                            src="./../../../static/images/pc/bell-off.png"
+                            src="./../../../static/images/pc/bell-off.svg"
                             alt=""
                           />
                           <span>關閉通知</span>
@@ -86,7 +86,7 @@
                       <el-dropdown-item>
                         <div class="logout-btn" @click="isBlockDialogShow = true">
                           <img
-                            src="./../../../static/images/pc/slash.png"
+                            src="./../../../static/images/pc/slash.svg"
                             alt=""
                           />
                           <span>{{
@@ -100,7 +100,7 @@
                           @click="deleteGroupDialogShow = true"
                         >
                           <img
-                            src="./../../../static/images/pc/trash.png"
+                            src="./../../../static/images/pc/trash.svg"
                             alt=""
                           />
                           <span style="color: #ee5253">删除對話</span>
@@ -112,7 +112,7 @@
                           @click="isDeleteContactDialogShow = true"
                         >
                           <img
-                            src="./../../../static/images/pc/trash.png"
+                            src="./../../../static/images/pc/trash.svg"
                             alt=""
                           />
                           <span style="color: #ee5253">删除联络人</span>
@@ -126,20 +126,20 @@
                     <ul>
                       <li @click="deleteDialogShow = true">
                         <img
-                          src="./.../../../../../static/images/pc/trash.png"
+                          src="./.../../../../../static/images/pc/trash.svg"
                           alt=""
                         />删除
                       </li>
                       <li @click="isBlockDialogShow = true">
                         <img
-                          src="./.../../../../../static/images/pc/slash-red.png"
+                          src="./.../../../../../static/images/pc/slash-red.svg"
                           alt=""
                         />
                         {{ chatUser.isBlock ? "解除封锁" : "封锁" }}
                       </li>
                       <li @click="addUser(chatUser)">
                         <img
-                          src="./.../../../../../static/images/pc/user-plus-block.png"
+                          src="./.../../../../../static/images/pc/add-user-block.svg"
                           alt=""
                         />加入联络人
                       </li>
@@ -263,7 +263,7 @@
             <div class="home-header-pc">
               <span class="home-photo-link" @click="setTopMsgShow(true)">
                 <span style="padding-right: 10px"
-                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  ><img src="./../../../static/images/pc/arrow-left.svg" alt=""
                 /></span>
                 <span>置顶訊息</span>
               </span>
@@ -437,7 +437,7 @@
       width="100%"
       :show-close="false"
       :close-on-click-modal="false"
-      :append-to-body="device === 'moblie'"
+      :append-to-body="false"
       :modal="device === 'moblie'"
       center
     >
@@ -470,6 +470,7 @@ import {
   pinList,
   unpinHistory,
   getMemberActivity,
+  deleteRecentChatMul,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
 import { mapState, mapMutations } from "vuex";
@@ -671,6 +672,34 @@ export default {
       });
       this.getHiChatDataList();
     },
+    deleteMessage(type) {
+      this.historyIdData = []
+      this.checkDataList.forEach(el => {
+        this.historyIdData.push(el.historyId)
+      });
+      let parmas = {
+        fullDelete: type === "all", // 是否完整删除,搭配historyId
+        haveOtherChat: type === "only", // 是否有不是自己的訊息
+        historyId: this.historyIdData, // 历史记录ID
+        toChatId: this.checkDataList[0].toChatId // 删除目标ID
+      }
+      deleteRecentChatMul(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            if(res.data.isCompletely){
+              this.$message({ message: "訊息删除成功", type: "success" });
+            }else{
+              this.$message({ message: "部分訊息無法刪除", type: "warning" });
+            }
+            this.isChooseDeleteShow = false
+            this.closeChooseAction();
+            this.$root.gotoBottom();
+          } 
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+        });
+    },        
     getUserId(data) {
       let id = data.toChatId.replace("u", "");
       getSearchById({ id }).then((res) => {
@@ -908,6 +937,12 @@ export default {
           });
           this.getHiChatDataList();
           break;
+        //多選刪除
+        case "SRV_CHAT_MUL_DEL":
+          this.messageData = this.messageData.filter(item => !userInfo.targetArray.includes(item.historyId))
+          this.checkDataList = this.checkDataList.filter(item => !userInfo.targetArray.includes(item.historyId))
+          this.getHiChatDataList();
+          break    
         // 撈取歷史訊息
         case "SRV_NEED_AUTH":
           this.getChatHistoryMessage();
@@ -962,23 +997,7 @@ export default {
           this.$message({ message: err, type: "error" });
         });
     },
-    deleteMessage(type) {
-      console.log(this.checkDataList,type)
-      // let parmas = {
-      //   fullDelete: type === "all",
-      //   historyId: data.historyId,
-      //   toChatId: data.toChatId,
-      // };
-      // deleteRecentChat(parmas)
-      //   .then((res) => {
-      //     if (res.code === 200) {
-      //       this.$emit("deleteMsgHistoryData", data);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     this.$message({ message: err, type: "error" });
-      //   });
-    },    
+ 
     blockSubmitBtn(data) {
       if (data.isBlock) {
         let blockIdList = [data.toChatId.replace("u", "")];
@@ -1239,7 +1258,7 @@ export default {
           cursor: pointer;
         }
         .home-user-more {
-          background-image: url("./../../../static/images/pc/more.png");
+          background-image: url("./../../../static/images/pc/more.svg");
           cursor: pointer;
         }
         .home-photo-link {
@@ -1390,51 +1409,51 @@ export default {
   .top-msg-bottom{
     height: 55px;
   }
-  /deep/.el-dialog-choose-delete{
-    .el-dialog {
-
-      margin: 0 auto;
-      background: #ffffff00;
-      box-sizing: border-box;
-      box-shadow:none;
-      width: 50%;
-      .el-dialog__header{
-        padding: 0;
-        padding-bottom: 0;
-      }
-      .el-dialog__body{
-        padding: 20px 30px 0 30px;
-        .loginOut-box{
-          background: #ffffff;
-          border-radius: 10px;
-          .el-button{
-            width: 100%;
-            border-radius: 0px;
-            border:0;
-            background: #ffffff00;
-            color: #ee5253;
-            padding: 20px;
-            &:nth-child(2){
-              border-top: 1px solid rgba(0, 0, 0, 0.05);
-            }
-
-          }
-          .el-button + .el-button{
-            margin-left: 0;
-          }
-        }
-
-      }
-      .dialog-footer{
-        justify-content: center !important;
+  .el-dialog-choose-delete{
+  /deep/.el-dialog {
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0);
+    box-sizing: border-box;
+    box-shadow:none;
+    width: 50%;
+    .el-dialog__header{
+      padding: 0;
+      padding-bottom: 0;
+    }
+    .el-dialog__body{
+      padding: 20px 30px 0 30px;
+      .loginOut-box{
+        background: #ffffff;
+        border-radius: 10px;
         .el-button{
-          width: 100% !important;;
-          color:rgba(0, 0, 0, 0.4)
+          width: 100%;
+          border-radius: 0px;
+          border:0;
+          background: #ffffff00;
+          color: #ee5253;
+          padding: 20px;
+          &:nth-child(2){
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+          }
+
         }
+        .el-button + .el-button{
+          margin-left: 0;
+        }
+      }
+
+    }
+    .dialog-footer{
+      justify-content: center !important;
+      .el-button{
+        width: 100% !important;;
+        color:rgba(0, 0, 0, 0.4)
       }
     }
   }
+  }
 }
+
 .reply-message {
   height: 50px;
   background-color: rgba(225, 225, 225, 0.85);
@@ -1643,7 +1662,6 @@ export default {
   font-size: 17px;
   cursor: pointer;
 }
-
 
 
 </style>

@@ -194,7 +194,7 @@ export default {
     }
     .home-user-pc {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/arrow-left.png");
+      background-image: url("./../../../static/images/pc/arrow-left.svg");
     }
   }
   .home-search {

@@ -334,14 +334,14 @@ export default {
   .home-header {
     .home-user-pc {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/arrow-left.png");
+      background-image: url("./../../../static/images/pc/arrow-left.svg");
     }
     .home-header-title{
       margin-left: 5px;
     }
     .home-edit-img{
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/edit_info.png");     
+      background-image: url("./../../../static/images/pc/edit_info.svg");     
     }
     .home-edit-img.hidden {
       visibility: hidden;

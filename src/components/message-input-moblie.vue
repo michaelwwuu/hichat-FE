@@ -122,6 +122,8 @@
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture"
+        multiple
+
       >
         <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">

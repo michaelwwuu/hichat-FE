@@ -449,6 +449,7 @@ export default {
           this.groupDataList = [];
           userInfo.recentChat.forEach((item) => {
             if (item.isContact && (item.forChatId === item.toChatId)) {
+              item.name = "嗨聊记事本"
               this.hiChatNumBadge += item.unreadCount;
             } else if (item.isGroup) {
               this.groupDataList.push(item);
@@ -475,7 +476,6 @@ export default {
       }
     },
     getUserMemberActivity(data) {
-      console.log(data)
       let memberId = [];
       data.forEach(listNumber => {
         memberId.push(listNumber.toChatId.replace("u", ""))
@@ -490,7 +490,7 @@ export default {
               if (res.toChatId ==="u" +  data.memberId) {
                 res.currentTime = data.currentTime;
                 res.lastActivityTime = data.lastActivityTime;
-              }
+              } 
             });
           })
           this.newHiChatDataList = data.filter(list => list.isContact)

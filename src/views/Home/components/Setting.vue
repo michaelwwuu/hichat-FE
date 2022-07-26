@@ -154,19 +154,19 @@ export default {
         {
           name: "密码管理",
           icon: require("./../../../../static/images/safe.png"),
-          pcIcon: require("./../../../../static/images/pc/shield.png"),
+          pcIcon: require("./../../../../static/images/pc/shield.svg"),
           path: "/PasswordMange",
         },
         {
           name: "封锁名单",
           icon: require("./../../../../static/images/blockade_green.png"),
-          pcIcon: require("./../../../../static/images/pc/slash.png"),
+          pcIcon: require("./../../../../static/images/pc/slash.svg"),
           path: "/BlockMange",
         },
         {
           name: "提醒",
           icon: require("./../../../../static/images/notification.png"),
-          pcIcon: require("./../../../../static/images/pc/bell.png"),
+          pcIcon: require("./../../../../static/images/pc/bell.svg"),
           path: "/Notify",
         },
         // {
@@ -213,7 +213,7 @@ export default {
         icon: "",
         name: "编辑个人资料",
         path: "/EditUser",
-        pcIcon: require("./../../../../static/images/pc/edit.png"),
+        pcIcon: require("./../../../../static/images/pc/edit.svg"),
       };
       this.settingData.unshift(this.editMyList);
       this.settingData.forEach((el) => {

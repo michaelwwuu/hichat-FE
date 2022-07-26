@@ -21,7 +21,7 @@
                 >
                   <span style="padding-right: 10px"
                     ><img
-                      src="./../../../static/images/pc/arrow-left.png"
+                      src="./../../../static/images/pc/arrow-left.svg"
                       alt=""
                   /></span>
                   <span>编辑群组</span>

@@ -57,7 +57,7 @@
                       : ''
                   "
                   @click="back()"
-                  ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                  ><img src="./../../../static/images/pc/arrow-left.svg" alt=""
                 /></span>
                 <span>管理员设定</span>
               </div>
@@ -194,9 +194,9 @@ export default {
         let groupId = this.groupData.groupId;
         groupListMember({ groupId }).then((res) => {
           this.contactList = res.data.list;
-          this.contactList.forEach((res) => {
-            if (res.icon === undefined) {
-              res.icon = require("./../../../static/images/image_user_defult.png");
+          this.contactList.forEach((item) => {
+            if (item.icon === undefined) {
+              item.icon = require("./../../../static/images/image_user_defult.png");
             }
           });
           this.isManagerList = this.contactList.filter((el) => el.isManager);
@@ -268,7 +268,7 @@ export default {
     }
     .home-user-pc {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/arrow-left.png");
+      background-image: url("./../../../static/images/pc/arrow-left.svg");
       cursor: pointer;
     }
     .home-add-user {
@@ -277,7 +277,7 @@ export default {
     }
     .home-add-user-pc {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/edit_info.png");
+      background-image: url("./../../../static/images/pc/edit_info.svg");
     }
   }
   .home-content {
@@ -402,7 +402,7 @@ export default {
     .home-header {
       .home-add-user {
         background-color: #fff;
-        background-image: url("./../../../static/images/pc/add.png");
+        background-image: url("./../../../static/images/pc/add.svg");
       }
     }
     .home-search {

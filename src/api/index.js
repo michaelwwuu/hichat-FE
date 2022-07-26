@@ -66,6 +66,7 @@ export const getContactList = (params) => {
   }
   return axios.request(postData)
 }
+
 // 取得用戶最後動作時間
 export const getMemberActivity = data => {
   let postData = {
@@ -165,6 +166,7 @@ export const forgetPassword = data => {
   }
   return axios.request(postData)
 }
+
 // 解鎖密碼
 export const unlockUser = data => {
   let postData = {
@@ -174,6 +176,7 @@ export const unlockUser = data => {
   }
   return axios.request(postData)
 }
+
 // 修改密碼
 export const updatePassword = data => {
   let postData = {
@@ -213,6 +216,7 @@ export const updateGroup = data => {
   }
   return axios.request(postData)
 }
+
 // 封鎖联络人
 export const addBlockContactUser = data => {
   let postData = {
@@ -222,6 +226,7 @@ export const addBlockContactUser = data => {
   }
   return axios.request(postData)
 }
+
 // 刪除陌生訊息
 export const deleteRecentChat = data => {
   let postData = {
@@ -231,6 +236,17 @@ export const deleteRecentChat = data => {
   }
   return axios.request(postData)
 }
+
+// 刪除多筆訊息
+export const deleteRecentChatMul = data => {
+  let postData = {
+    url: '/api/chat/deleteRecentChatMul',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
 // 置頂訊息
 export const pinHistory = data => {
   let postData = {
@@ -240,6 +256,7 @@ export const pinHistory = data => {
   }
   return axios.request(postData)
 }
+
 // 取消置頂訊息
 export const unpinHistory = data => {
   let postData = {
@@ -460,5 +477,6 @@ export const getManagerAuthority = (params) => {
   }
   return axios.request(postData)
 }
+
 
 

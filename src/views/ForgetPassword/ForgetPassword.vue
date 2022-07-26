@@ -218,8 +218,8 @@
               <img
                 :src="
                   passwordType === 'password'
-                    ? require('../../../static/images/pc/eye-off.png')
-                    : require('./../../../static/images/eye-solid.svg')
+                    ? require('./../../../static/images/pc/eye-off.svg')
+                    : require('./../../../static/images/pc/eye.svg')
                 "
                 alt=""
               />
@@ -252,8 +252,8 @@
               <img
                 :src="
                   passwordTypeAgain === 'password'
-                    ? require('../../../static/images/pc/eye-off.png')
-                    : require('./../../../static/images/eye-solid.svg')
+                    ? require('./../../../static/images/pc/eye-off.svg')
+                    : require('./../../../static/images/pc/eye.svg')
                 "
                 alt=""
               />
@@ -651,8 +651,11 @@ export default {
         }
       }
     }
-    .show-pwd{
+    .show-pwd {
       cursor: pointer;
+      img {
+        height: 1.5em;
+      }
     }
     .eye-off{
       img {

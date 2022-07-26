@@ -172,12 +172,12 @@ export default {
       groupListMember({ groupId })
         .then((res) => {
           this.contactList = res.data.list;
-          this.contactList.forEach((res) => {
-            if (res.icon === undefined) {
-              res.icon = require("./../../../static/images/image_user_defult.png");
+          this.contactList.forEach((item) => {
+            if (item.icon === undefined) {
+              item.icon = require("./../../../static/images/image_user_defult.png");
             }
-            if (res.memberId === this.groupData.memberId) {
-              this.checkList = res.memberId;
+            if (item.memberId === this.groupData.memberId) {
+              this.checkList = item.memberId;
             }
           });
           this.newContactList = this.contactList
@@ -347,7 +347,7 @@ export default {
         .home-header {
           .home-user-pc {
             background-color: #fff;
-            background-image: url("./../../../static/images/pc/arrow-left.png");
+            background-image: url("./../../../static/images/pc/arrow-left.svg");
             cursor: pointer;
           }
         }

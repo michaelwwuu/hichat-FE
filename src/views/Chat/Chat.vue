@@ -26,19 +26,19 @@
                     v-if="groupUser.isAdmin"
                     @click="changeGroupAdminShow"
                   >
-                    <img src="./../../../static/images/pc/key.png" alt="" />
+                    <img src="./../../../static/images/pc/shield.svg" alt="" />
                     <span>转移群主权限</span>
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <div class="logout-btn" @click="deleteGroupDialogShow = true">
-                    <img src="./../../../static/images/pc/trash.png" alt="" />
+                    <img src="./../../../static/images/pc/trash.svg" alt="" />
                     <span style="color: #ee5253">刪除對話</span>
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <div class="logout-btn" @click="leaveGroupDialogShow = true">
-                    <img src="./../../../static/images/pc/trash.png" alt="" />
+                    <img src="./../../../static/images/pc/trash.svg" alt="" />
                     <span style="color: #ee5253">退出群组</span>
                   </div>
                 </el-dropdown-item>
@@ -126,7 +126,7 @@
           <div class="home-header-pc">
             <span class="home-photo-link" @click="setTopMsgShow(true)">
               <span style="padding-right: 10px"
-                ><img src="./../../../static/images/pc/arrow-left.png" alt=""
+                ><img src="./../../../static/images/pc/arrow-left.svg" alt=""
               /></span>
               <span>{{ isBase64(pinMsg) }}</span>
             </span>
@@ -141,13 +141,13 @@
                     v-if="groupUser.isAdmin"
                     @click="changeGroupAdminShow"
                   >
-                    <img src="./../../../static/images/pc/key.png" alt="" />
+                    <img src="./../../../static/images/pc/shield.svg" alt="" />
                     <span>转移群主权限</span>
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <div class="logout-btn" @click="leaveGroupDialogShow = true">
-                    <img src="./../../../static/images/pc/trash.png" alt="" />
+                    <img src="./../../../static/images/pc/trash.svg" alt="" />
                     <span style="color: #ee5253">退出群组</span>
                   </div>
                 </el-dropdown-item>
@@ -200,7 +200,7 @@
           @click="deleteGroupDialogShow = false"
           >取消</el-button
         >
-        <el-button class="background-red" @click="deleteMessage"
+        <el-button class="background-red" @click="deleteRecent"
           >确认</el-button
         >
       </span>
@@ -218,8 +218,8 @@
       <div class="loginOut-box">
         <img src="./../../../static/images/warn.svg" alt="" />
         <span class="choose-delete-title">刪除所選的訊息？</span>
-        <el-button type="danger" v-show="!allHistoruShow" @click="deleteRecent('all')">在所有人对话纪录中删除</el-button>
-        <el-button type="danger" @click="deleteRecent('only')">只在我的对话纪录中删除</el-button>
+        <el-button type="danger" v-show="!allHistoruShow" @click="deleteMessage('all')">在所有人对话纪录中删除</el-button>
+        <el-button type="danger" @click="deleteMessage('only')">只在我的对话纪录中删除</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="footer-button" @click="isChooseDeleteShow = false">取消</el-button>
@@ -285,6 +285,7 @@ import {
   unpinHistory,
   getGroupAuthoritySetting,
   deleteRecentChat,
+  deleteRecentChatMul,
 } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
@@ -384,7 +385,7 @@ export default {
       setContactListData: "ws/setContactListData",
       setCheckBoxBtn: "ws/setCheckBoxBtn",
     }),
-    deleteMessage() {
+    deleteRecent() {
       let parmas = {
         fullDelete: true,
         historyId: "",
@@ -399,11 +400,40 @@ export default {
         }
       });
     },
+    deleteMessage(type) {
+      this.historyIdData = []
+      this.checkDataList.forEach(el => {
+        this.historyIdData.push(el.historyId)
+      });
+      let parmas = {
+        fullDelete: type === "all", // 是否完整删除,搭配historyId
+        haveOtherChat: type === "only", // 是否有不是自己的訊息
+        historyId: this.historyIdData, // 历史记录ID
+        toChatId: this.checkDataList[0].toChatId // 删除目标ID
+      }
+      deleteRecentChatMul(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            if(res.data.isCompletely){
+              this.$message({ message: "訊息删除成功", type: "success" });
+            }else{
+              this.$message({ message: "部分訊息無法刪除", type: "warning" });
+            }
+            this.isChooseDeleteShow = false
+            this.closeChooseAction();
+            this.$root.gotoBottom();
+          } 
+        })
+        .catch((err) => {
+          this.$message({ message: err, type: "error" });
+        });
+    },      
     leaveGroupAction() {
       this.isLeaveGroupShow = false;
       this.getHiChatDataList();
       this.setHichatNav({ type: "address", num: 1 });
       this.setChatGroup({});
+      this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
     },
     closeChooseAction(){
       this.showCheckBoxBtn = true;
@@ -423,7 +453,9 @@ export default {
     },
     isCheckDataList(data){
       this.checkDataList = data
-      this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+      if((this.groupUser.isManager && !this.authority.delUserMessage) || (!this.groupUser.isManager && !this.groupUser.isAdmin)){
+        this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+      } 
     },
     getGroupAuthority() {
       let groupId = this.groupData.groupId;
@@ -546,24 +578,21 @@ export default {
             this.groupUser.isAdmin = item.isAdmin;
             this.groupUser.isBanPost = item.isBanPost;
             this.groupUser.isManager = item.isManager;
+            if (item.memberId === Number(localStorage.getItem("id"))) {
+              if (item.isAdmin) {
+                localStorage.removeItem("authority");
+              } else if (item.isManager) {
+                this.setAuthority(item.authority);
+              } else if (!item.isAdmin && !item.isManager) {
+                localStorage.removeItem("authority");
+              }
+            }
           }
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
-          if (item.memberId === Number(localStorage.getItem("id"))) {
-            this.groupUser.isBanPost = item.isBanPost;
-            this.groupUser.isAdmin = item.isAdmin;
-            this.groupUser.isManager = item.isManager;
-            this.setChatGroup(this.groupUser);
-            if (item.isAdmin) {
-              localStorage.removeItem("authority");
-            } else if (item.isManager) {
-              this.setAuthority(item.authority);
-            } else if (!item.isAdmin && !item.isManager) {
-              localStorage.removeItem("authority");
-            }
-          }
         });
+        this.setChatGroup(this.groupUser);
         this.setContactListData(this.contactList);
       });
     },
@@ -681,7 +710,9 @@ export default {
             }
           }
           if(userInfo.chatType === "SRV_GROUP_JOIN"){
-            this.getGroupListMember();
+            setTimeout(() => {  
+              this.getGroupListMember();
+            }, 500);
           }
           break;
         case "SRV_CHAT_UNPIN":
@@ -693,7 +724,9 @@ export default {
         case "SRV_GROUP_MANAGER_AUTHORITY":
         case "SRV_GROUP_ADMIN_CHANGE":
         case "SRV_GROUP_BAN_POST":
-          this.getGroupListMember();
+          setTimeout(() => {  
+            this.getGroupListMember();
+          }, 500);
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
@@ -748,6 +781,12 @@ export default {
           });
           this.getHiChatDataList();
           break;
+        //多選刪除
+        case "SRV_CHAT_MUL_DEL":
+          this.messageData = this.messageData.filter(item => !userInfo.targetArray.includes(item.historyId))
+          this.checkDataList = this.checkDataList.filter(item => !userInfo.targetArray.includes(item.historyId))
+          this.getHiChatDataList();
+          break           
       }
     },
 
@@ -963,7 +1002,7 @@ export default {
           cursor: pointer;
         }
         .home-user-more {
-          background-image: url("./../../../static/images/pc/more.png");
+          background-image: url("./../../../static/images/pc/more.svg");
           cursor: pointer;
         }
         .home-photo-link {

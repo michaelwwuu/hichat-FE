@@ -1,5 +1,7 @@
 import axios from 'axios'
+import router from './../../router/index'
 import { getToken } from '../utils/utils.js'
+
 import { Message } from "element-ui";
 import resStatus from '@/constants/resStatus'
 
@@ -50,9 +52,10 @@ class HttpRequest {
       res = res.data
       if (res.code === 200) {
         return Promise.resolve(res)
-      } else if ([401,10001,10002,10003,10009,10013,10014,10015,20004,30005,40002].includes(res.code)) {
+      } else if ([401,10001,10002,10003,10009,10013,10014,10015,20004,30005,40002,10019].includes(res.code)) {
         let message = resStatus[res.code]
         Message({ message: message, type: "error", });
+        if(res.code === 10019) router.push('/login')
         return Promise.resolve(res)
       } else {
         let message = resStatus[res.code]

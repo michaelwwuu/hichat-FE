@@ -146,12 +146,12 @@ export default {
         let groupId = this.groupData.groupId;
         groupListMember({ groupId }).then((res) => {
           this.contactList = res.data.list;
-          this.contactList.forEach((res) => {
-            if (res.icon === undefined) {
-              res.icon = require("./../../../static/images/image_user_defult.png");
+          this.contactList.forEach((item) => {
+            if (item.icon === undefined) {
+              item.icon = require("./../../../static/images/image_user_defult.png");
             }
-            if (res.isBanPost) {
-              this.checkList.push(res.memberId);
+            if (item.isBanPost) {
+              this.checkList.push(item.memberId);
             }
           });
           this.contactList = this.contactList.filter((el) => {
@@ -221,7 +221,7 @@ export default {
     }
     .home-user-pc {
       background-color: #fff;
-      background-image: url("./../../../static/images/pc/arrow-left.png");
+      background-image: url("./../../../static/images/pc/arrow-left.svg");
       cursor: pointer;
     }
   }
