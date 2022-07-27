@@ -116,7 +116,7 @@
         </li>
       </div>
     </ul>
-    <div style="width: 95%; text-align: right;">
+    <div style="width: 90%; text-align: right;">
       <el-button
         class="scroll-bottom-btn"
         v-show="showScrollBar"

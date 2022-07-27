@@ -344,6 +344,9 @@ export default {
     },
     checkBoxBtn(val){
       this.showCheckBoxBtn = val
+    },
+    showCheckBoxBtn(val){
+      if(val) this.isChooseDeleteShow = false
     }
   },
   created() {
@@ -727,6 +730,10 @@ export default {
           setTimeout(() => {  
             this.getGroupListMember();
           }, 500);
+          if(userInfo.chatType === "SRV_GROUP_MANAGER_AUTHORITY"){
+            this.checkDataList = []
+            this.isChooseDeleteShow = false
+          }
           break;
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
@@ -1125,46 +1132,7 @@ export default {
   cursor: pointer;
 }
 
-.reply-message {
-  height: 50px;
-  background-color: rgba(225, 225, 225, 0.85);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  display: flex;
-  color: #959393;
-  // justify-content: center;
-  align-items: center;
-  padding: 10px;
-  .reply-message-box {
-    display: flex;
-    flex-direction: column;
-    padding-left: 10px;
-    span {
-      line-height: 20px;
-      color: #363636;
-      width: 90em;
-      word-wrap: break-word;
-    }
-    .replyMsg-Img {
-      img {
-        height: 2em;
-        border-radius: 5px;
-      }
-    }
-  }
-  .reply-close-btn {
-    position: absolute;
-    right: 20px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  /deep/.el-avatar {
-    overflow: initial;
-    img {
-      border-radius: 4px;
-      width: -webkit-fill-available;
-    }
-  }
-}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

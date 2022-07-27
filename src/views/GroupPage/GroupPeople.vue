@@ -310,7 +310,7 @@ export default {
     }
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.newContactList)
-    }, 5000);
+    }, 30000);
 
   },
   beforeDestroy() {

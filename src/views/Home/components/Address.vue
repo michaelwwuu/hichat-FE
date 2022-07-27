@@ -63,7 +63,7 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.memberActivityData)
-    }, 5000);
+    }, 30000);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -101,7 +101,7 @@ export default {
       if(this.activeName === "address"){
         this.memberTime = setInterval(() => {
           this.getUserMemberActivity(this.memberActivityData)
-        }, 5000);
+        }, 30000);
       }else{
         clearInterval(this.memberTime)
       }

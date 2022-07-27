@@ -32,7 +32,7 @@
                 </div>
               </span>
             </div>
-            <div class="home-header" style="margin:1.5em 1em 1em 1em"  v-else>
+            <div class="home-header" style="margin:1.6em 1em 1em 1em"  v-else>
               <span class="home-user-link">
                 <router-link :to="'/HiChat'">
                   <div class="home-user"></div>
@@ -209,8 +209,8 @@
             <div class="reply-message-box">
               <span>{{ replyMsg.name }}</span>
               <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
-                replyMsg.innerText.length > 110
-                  ? replyMsg.innerText.substr(0, 110) + " ..."
+                replyMsg.innerText.length > (device==="moblie" ? 30 :110)
+                  ? replyMsg.innerText.substr(0, device==="moblie" ? 30 :110) + " ..."
                   : replyMsg.innerText
               }}</span>
               <span
@@ -444,11 +444,11 @@
       <div class="loginOut-box">
         <template v-if="device === 'pc'">
           <img src="./../../../static/images/warn.svg" alt="" />
-          <span class="choose-delete-title">刪除所選的訊息？</span>
+          <span class="choose-delete-title">删除所择的讯息？</span>
         </template>
 
         <el-button :type="device === 'pc'? 'danger':''" v-show="!allHistoruShow" @click="deleteMessage('all')">在所有人对话纪录中删除</el-button>
-        <el-button :type="device === 'pc'? 'danger':''" @click="deleteMessage('only')">只在我的对话纪录中删除</el-button>
+        <el-button :type="device === 'pc'? 'danger':''" @click="deleteMessage('only')">{{chatUser.name === '嗨聊记事本' ? '删除选择讯息':'只在我的对话纪录中删除'}}</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button :class="device === 'pc' ? 'footer-button' : ''" @click="isChooseDeleteShow = false">取消</el-button>
@@ -533,7 +533,10 @@ export default {
     },
     checkBoxBtn(val){
       this.showCheckBoxBtn = val
-    }    
+    },   
+    showCheckBoxBtn(val){
+      if(val) this.isChooseDeleteShow = false
+    }
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -543,13 +546,12 @@ export default {
     }
     if (this.device === "moblie") this.getUserId(this.userData);
     Socket.$on("message", this.handleGetMessage);
-    // this.getPinList();
     this.getUserMemberActivity(this.chatUser)
   },
   mounted() {
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.chatUser)
-    }, 5000);  
+    }, 30000);  
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -597,7 +599,11 @@ export default {
     },
     isCheckDataList(data){
       this.checkDataList = data
-      this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+      if(this.chatUser.name === "嗨聊记事本"){
+        this.allHistoruShow = true
+      }else{
+        this.allHistoruShow = this.checkDataList.some(el=> el.userChatId !== "u"+ this.myUserInfo.id)
+      }
     },
     getUserMemberActivity(chatUser) {
       let memberId = [chatUser.toChatId.replace("u", "")];
@@ -830,6 +836,7 @@ export default {
               userInfo.chat.name = this.myUserInfo.nickname;
               userInfo.chat.icon = this.myUserInfo.icon;
             }
+
             if (userInfo.replyChat !== null) {
               if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
                 userInfo.replyChat.name = this.chatUser.name;
@@ -857,13 +864,12 @@ export default {
           }
           break;
         case "SRV_CHAT_UNPIN":
-          // this.pinMsg = "";
-          // this.getPinList();
           this.getChatHistoryMessage()
           break;     
         // 历史讯息
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";
+          this.getPinList();   
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -910,8 +916,7 @@ export default {
               if (this.device === "pc") this.getHiChatDataList();
               this.loading = false;
             }, this.timeOut);
-          });
-          this.getPinList();   
+          });   
           break;
         // 已讀
         case "SRV_MSG_READ":
@@ -1454,46 +1459,7 @@ export default {
   }
 }
 
-.reply-message {
-  height: 50px;
-  background-color: rgba(225, 225, 225, 0.85);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  display: flex;
-  color: rgba(0, 0, 0, 0.4);
-  // justify-content: center;
-  align-items: center;
-  padding: 10px;
-  .reply-message-box {
-    display: flex;
-    flex-direction: column;
-    padding-left: 10px;
-    span {
-      line-height: 20px;
-      color: #363636;
-      width: 90em;
-      word-wrap: break-word;
-    }
-    .replyMsg-Img {
-      img {
-        height: 2em;
-        border-radius: 5px;
-      }
-    }
-  }
-  .reply-close-btn {
-    position: absolute;
-    right: 20px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  /deep/.el-avatar {
-    overflow: initial;
-    img {
-      border-radius: 4px;
-      width: -webkit-fill-available;
-    }
-  }
-}
+
 .hichat-pc {
   .disabled-user {
     height: 59px;

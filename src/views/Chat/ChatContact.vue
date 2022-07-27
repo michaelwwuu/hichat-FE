@@ -111,8 +111,8 @@
             <div class="reply-message-box">
               <span>{{ replyMsg.name }}</span>
               <span v-if="replyMsg.chatType === 'SRV_USER_SEND'">{{
-                replyMsg.innerText.length > 110
-                  ? replyMsg.innerText.substr(0, 110) + " ..."
+                replyMsg.innerText.length > (device==="moblie" ? 30 :110)
+                  ? replyMsg.innerText.substr(0, device==="moblie" ? 30 :110) + " ..."
                   : replyMsg.innerText
               }}</span>
               <span
@@ -437,6 +437,9 @@ export default {
     checkBoxBtn(val) {
       this.showCheckBoxBtn = val;
     },
+    showCheckBoxBtn(val){
+      if(val) this.isChooseDeleteShow = false
+    }
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("contactUser"));
@@ -448,7 +451,7 @@ export default {
   mounted() {
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.contactUser);
-    }, 5000);
+    }, 30000);
   },
   beforeDestroy() {
     clearInterval(this.memberTime);
@@ -733,13 +736,14 @@ export default {
           break;
         // case "SRV_CHAT_PIN":
         case "SRV_CHAT_UNPIN":
-          // this.pinMsg = "";
-          // this.getPinList();
           this.getChatHistoryMessage();
           break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
-          this.pinMsg = "";
+          if(JSON.stringify(this.contactUser) !== '{}'){
+            this.pinMsg = "";
+            this.getPinList();
+          } 
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
@@ -791,7 +795,6 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)
                 this.readMsgShow(this.readMsg[0]);
               this.getHiChatDataList();
-              this.getPinList();
               this.loading = false;
             }, this.timeOut);
           });
@@ -841,7 +844,7 @@ export default {
             this.successDialogShow = true;
             data.isContact = true;
             this.setChatUser(data);
-            localStorage.removeItem("contactUser");
+            this.setContactUser({});
             if (this.device === "pc") {
               this.getHistory(data);
               this.getHiChatDataList();
@@ -1322,46 +1325,7 @@ export default {
   padding: 0 10px;
   cursor: pointer;
 }
-.reply-message {
-  height: 50px;
-  background-color: rgba(225, 225, 225, 0.85);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  display: flex;
-  color: #959393;
-  // justify-content: center;
-  align-items: center;
-  padding: 10px;
-  .reply-message-box {
-    display: flex;
-    flex-direction: column;
-    padding-left: 10px;
-    span {
-      line-height: 20px;
-      color: #363636;
-      width: 90em;
-      word-wrap: break-word;
-    }
-    .replyMsg-Img {
-      img {
-        height: 2em;
-        border-radius: 5px;
-      }
-    }
-  }
-  .reply-close-btn {
-    position: absolute;
-    right: 20px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  /deep/.el-avatar {
-    overflow: initial;
-    img {
-      border-radius: 4px;
-      width: -webkit-fill-available;
-    }
-  }
-}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
