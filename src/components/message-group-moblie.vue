@@ -642,15 +642,6 @@ export default {
           },
         },
         {
-          name: "choose",
-          label: this.checkBoxDisabled ? "选择" : "取消选择",
-          onClick: () => {
-            this.checkList = [];
-            this.checkBoxDisabled = !this.checkBoxDisabled;
-            this.$emit("checkBoxDisabled", this.checkBoxDisabled);
-          },
-        },
-        {
           name: "reply",
           label: "回覆",
           onClick: () => {
@@ -694,6 +685,15 @@ export default {
             this.deleteRecent(data, "only");
           },
         },
+        {
+          name: "choose",
+          label: this.checkBoxDisabled ? "选择" : "取消选择",
+          onClick: () => {
+            this.checkList = [];
+            this.checkBoxDisabled = !this.checkBoxDisabled;
+            this.$emit("checkBoxDisabled", this.checkBoxDisabled);
+          },
+        },        
       ];
       let isAdmin = JSON.parse(localStorage.getItem("groupData")).isAdmin;
       let isManager = JSON.parse(localStorage.getItem("groupData")).isManager;

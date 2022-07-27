@@ -443,15 +443,6 @@ export default {
           },
         },
         {
-          name: "choose",
-          label: this.checkBoxDisabled ? "选择" : "取消选择",
-          onClick: () => {
-            this.checkList = [];
-            this.checkBoxDisabled = !this.checkBoxDisabled;
-            this.$emit("checkBoxDisabled", this.checkBoxDisabled);
-          },
-        },
-        {
           name: "reply",
           label: "回覆",
           onClick: () => {
@@ -495,6 +486,15 @@ export default {
             this.deleteRecent(data, "only");
           },
         },
+        {
+          name: "choose",
+          label: this.checkBoxDisabled ? "选择" : "取消选择",
+          onClick: () => {
+            this.checkList = [];
+            this.checkBoxDisabled = !this.checkBoxDisabled;
+            this.$emit("checkBoxDisabled", this.checkBoxDisabled);
+          },
+        },        
       ];
       if (data.userChatId !== "u" + localStorage.getItem("id")) {
         if (data.chatType === "SRV_USER_IMAGE") {

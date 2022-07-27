@@ -2,6 +2,7 @@
   <div
     class="message-input-box"
     :style="device !== 'moblie' ? 'height:59px' : ''"
+    @touchmove="$root.handleTouch"
   >
     <div class="input-tools-right" v-if="device === 'moblie'">
       <div>
@@ -104,42 +105,52 @@
         </div>
       </template>
     </div>
+      
     <el-dialog
       title="上传图片"
+      :before-close="closeModel"
       :visible.sync="uploadImgShow"
-      width="100%"
-      :append-to-body="device !== 'pc'"
       :close-on-click-modal="false"
+      :modal-append-to-body="false"
+      :append-to-body="false"
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
       v-loading.fullscreen.lock="fullscreenLoading"
+      width="100%"
+      class="el-upload-img"
       element-loading-text="圖片上传中"
       center
     >
+      <div id="preview" class="preview-img" v-if="copyPicture" v-on:paste="onPasteUpload" >
+        <span>将图片按Ctrl+V 粘贴至此处</span>
+      </div>
       <el-upload
         class="upload-demo"
         action="#"
         :on-change="uploadImg"
+        :on-remove="handleRemove"
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture"
         multiple
-
+        
+        v-else
       >
         <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
           只能上传 jpg / png 图片，且不超过500kb
         </div>
       </el-upload>
+      
       <span slot="footer" class="dialog-footer">
         <template v-if="device === 'moblie'">
-          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+          <el-button type="success" @click="submitAvatar">确认</el-button>
           <el-button @click="uploadImgShow = false">取消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false"
+          <el-button class="background-gray" @click="closeModel()"
             >取消</el-button
           >
-          <el-button class="background-orange" @click="submitAvatarUpload"
+          <el-button class="background-orange" @click="copyPicture ? copySubmitAvatar() : submitAvatar()"
             >确认</el-button
           >
         </template>
@@ -216,6 +227,8 @@ export default {
       takePictureShow: false,
       fullscreenLoading: false,
       fileList: [],
+      file:{},
+      copyPicture:false,
       device: localStorage.getItem("device"),
       //錄音
       isVoice: false,
@@ -265,6 +278,9 @@ export default {
       soundNofiy: (state) => state.ws.soundNofiy,
     }),
   },
+  mounted() {
+     document.addEventListener('paste', this.onPasteUpload)
+  },
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
@@ -273,14 +289,63 @@ export default {
     pictureShow(val) {
       this.takePictureShow = val;
     },
+    handleRemove(file, fileList) {
+      this.fileList = fileList
+    },
     // 取得圖片
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
+    closeModel(){
+      this.fileList = [];
+      this.copyPicture = false   
+      this.uploadImgShow = false;
+      this.fullscreenLoading = false;
+    },
+    //貼上上傳圖片
+    onPasteUpload(event){
+      const items = (event.clipboardData || window.clipboardData).items;
+      let file = null;
+
+      if (!items || items.length === 0) {
+        this.$message.error("当前浏览器不支持本地");
+        return;
+      }
+      // 搜索剪切板items
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          file = items[i].getAsFile();
+          break;
+        }
+      }
+      console.log(file)
+      if (!file) {
+        return;
+      }else{
+        this.uploadImgShow = true
+        this.copyPicture = true
+      }
+      // 此时file就是我们的剪切板中的图片对象
+      // 如果需要预览，可以执行下面代码
+      const reader = new FileReader();
+      reader.onload = event => {
+        preview.innerHTML = `<img src="${event.target.result}">`;
+      };
+      reader.readAsDataURL(file);
+      this.file = file;
+    },
+    copySubmitAvatar(){
+      this.submitAvatarUpload(this.file)
+    },
+    submitAvatar() {
+      this.fileList.forEach((data)=>{
+        this.submitAvatarUpload(data.raw)
+      })
+    },
     // 上傳圖片
-    submitAvatarUpload() {
+    submitAvatarUpload(data) {
       let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
+      formData.append("file", data);
       this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
@@ -299,9 +364,15 @@ export default {
           this.fileList = [];
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
+          setTimeout(() => {
+            this.copyPicture = false   
+          }, 500);
         } else if (res.code === 40001) {
           this.fileList = [];
           this.fullscreenLoading = false;
+          setTimeout(() => {
+            this.copyPicture = false   
+          }, 500);
         }
       });
     },
@@ -725,10 +796,13 @@ export default {
         display: block;
       }
       .upload-demo {
-        line-height: 1.5em;
+        // line-height: 1.5em;
         .el-upload-list {
+          max-height: 400px;
+          overflow:auto;
           .el-upload-list__item {
-            margin-top: -72px;
+            // margin-top: -72px;    
+            margin-top: 10px;
           }
         }
         .hidden {
@@ -766,6 +840,23 @@ export default {
 .winClass {
   width: 300px;
 }
+.hichat-moblie{
+  .el-dialog__wrapper.el-upload-img{
+    .el-dialog {
+      .el-dialog__body{
+        .upload-demo{
+          overflow: hidden;
+          .el-upload-list{
+            .el-upload-list__item{
+              width: auto;
+              float: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .hichat-pc {
   .el-dialog__wrapper.el-dialog-takePicture {
     .el-dialog {
@@ -779,6 +870,18 @@ export default {
 
           &:nth-child(2) {
             border-left: 1px solid #efefef;
+          }
+        }
+      }
+    }
+  }
+  .el-dialog__wrapper.el-upload-img{
+    .el-dialog {
+      width: 500px !important;
+      .el-dialog__body{
+        .preview-img{
+          img{
+            height: 25em;
           }
         }
       }
