@@ -484,15 +484,10 @@ body {
         }
         .upload-demo {
           line-height: 1.5em;
-          max-height: 400px;
-          overflow:auto;
 
           .el-upload-list {
             .el-upload-list__item {
-              margin-top: 0;
-              width: 205px;
-              float: left;
-              margin: 10px 5px;
+              margin-top: -72px;
             }
           }
         }
@@ -928,15 +923,10 @@ body {
 
         .upload-demo {
           line-height: 1.5em;
-          max-height: 400px;
-          overflow:auto;
 
           .el-upload-list {
             .el-upload-list__item {
-              margin-top: 0;
-              width: 205px;
-              float: left;
-              margin: 10px 5px;
+              margin-top: -72px;
             }
           }
 
@@ -1078,3 +1068,42 @@ body {
   display: flex;
   align-items: center;
 }  
+.reply-message {
+  height: 50px;
+  background-color: rgba(225, 225, 225, 0.85);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  color: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  padding: 10px;
+  z-index: 9;
+  .reply-message-box {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    span {
+      line-height: 20px;
+      color: #363636;
+      word-wrap: break-word;
+    }
+    .replyMsg-Img {
+      img {
+        height: 2em;
+        border-radius: 5px;
+      }
+    }
+  }
+  .reply-close-btn {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  /deep/.el-avatar {
+    overflow: initial;
+    img {
+      border-radius: 4px;
+      width: -webkit-fill-available;
+    }
+  }
+}

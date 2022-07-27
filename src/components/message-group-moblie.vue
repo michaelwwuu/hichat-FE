@@ -278,7 +278,7 @@
         </el-checkbox-group>
       </div>
     </ul>
-    <div style="width: 95%; text-align: right">
+    <div style="width: 90%; text-align: right">
       <el-button
         class="scroll-bottom-btn"
         v-show="showScrollBar"
@@ -641,6 +641,7 @@ export default {
             this.copyPaste(data);
           },
         },
+
         {
           name: "reply",
           label: "回覆",
@@ -779,6 +780,12 @@ export default {
             return list.name !== "upDown";
           });
         }
+      }
+      
+      if(!this.checkBoxDisabled){
+        this.newItem = item.filter(
+          (list) => list.name === "choose"
+        );
       }
 
       this.$contextmenu({

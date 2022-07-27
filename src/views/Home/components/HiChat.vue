@@ -194,7 +194,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <el-dialog
+    <!-- <el-dialog
       title="選擇操作"
       class="el-dialog-msg-show"
       :visible.sync="isDialogShow"
@@ -212,7 +212,7 @@
         <img src="./../../../../static/images/trash.png" alt="" />
         <span>刪除訊息</span>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -224,9 +224,9 @@ import { getToken } from "_util/utils.js";
 import {
   getGroupList,
   groupListMember,
-  getSearchById,
+  // getSearchById,
   getGroupAuthoritySetting,
-  deleteRecentChat,
+  // deleteRecentChat,
   getMemberActivity,
 } from "@/api";
 
@@ -238,7 +238,6 @@ export default {
       groupList: [],
       authorityData: {},
       groupDataList: [],
-      newMsgDataList: [],
       newHiChatDataList:[],
       newContactDataList:[],
       noGroupPeopleData:[],
@@ -256,6 +255,7 @@ export default {
       activeName: "address",
       isDialogShow: false,
       dialogData: {},
+      
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -267,7 +267,7 @@ export default {
     this.setActiveName(this.hichatNav.type);
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.noGroupPeopleData)
-    }, 5000);
+    }, 30000);
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -313,53 +313,53 @@ export default {
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
-    sendMessage() {
-      if (this.dialogData.isContact) {
-        this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
-        this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
-        this.setChatUser(this.dialogData);
-        this.$router.push({ path: "/ChatMsg" });
-      } else if (this.dialogData.isGroup) {
-        this.dialogData.icon = this.dialogData.icon;
-        this.dialogData.groupName = this.dialogData.name;
-        this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
-        this.dialogData.memberId = JSON.parse(
-          this.dialogData.forChatId.replace("u", "")
-        );
-        this.groupList.forEach((item) => {
-          if (item.groupName === this.dialogData.groupName) {
-            this.dialogData.isBanPost = item.isBanPost;
-            this.dialogData.isAdmin = item.isAdmin;
-            this.dialogData.isManager = item.isManager;
-          }
-        });
-        this.setChatGroup(this.dialogData);
-        this.getGroupListMember(this.dialogData);
-        this.getGroupAuthority(this.dialogData);
-        this.$router.push({ path: "/ChatGroupMsg" });
-      } else {
-        this.setContactUser(data);
-      }
-    },
-    deleteMessage() {
-      let parmas = {
-        fullDelete: true,
-        historyId: "",
-        toChatId: this.dialogData.toChatId,
-      };
-      deleteRecentChat(parmas).then((res) => {
-        let msg = resStatus[res.code] || res.message;
-        if (res.code === 200) {
-          if (this.dialogData.isContact) {
-            localStorage.removeItem("userData");
-          } else if (this.dialogData.isGroup) {
-            localStorage.removeItem("groupData");
-          }
-          this.setHichatNav({ type: this.hichatNav.type, num: 0 });
-          this.$router.push({ path: "/Address" });
-        }
-      });
-    },
+    // sendMessage() {
+    //   if (this.dialogData.isContact) {
+    //     this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
+    //     this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
+    //     this.setChatUser(this.dialogData);
+    //     this.$router.push({ path: "/ChatMsg" });
+    //   } else if (this.dialogData.isGroup) {
+    //     this.dialogData.icon = this.dialogData.icon;
+    //     this.dialogData.groupName = this.dialogData.name;
+    //     this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
+    //     this.dialogData.memberId = JSON.parse(
+    //       this.dialogData.forChatId.replace("u", "")
+    //     );
+    //     this.groupList.forEach((item) => {
+    //       if (item.groupName === this.dialogData.groupName) {
+    //         this.dialogData.isBanPost = item.isBanPost;
+    //         this.dialogData.isAdmin = item.isAdmin;
+    //         this.dialogData.isManager = item.isManager;
+    //       }
+    //     });
+    //     this.setChatGroup(this.dialogData);
+    //     this.getGroupListMember(this.dialogData);
+    //     this.getGroupAuthority(this.dialogData);
+    //     this.$router.push({ path: "/ChatGroupMsg" });
+    //   } else {
+    //     this.setContactUser(data);
+    //   }
+    // },
+    // deleteMessage() {
+    //   let parmas = {
+    //     fullDelete: true,
+    //     historyId: "",
+    //     toChatId: this.dialogData.toChatId,
+    //   };
+    //   deleteRecentChat(parmas).then((res) => {
+    //     let msg = resStatus[res.code] || res.message;
+    //     if (res.code === 200) {
+    //       if (this.dialogData.isContact) {
+    //         localStorage.removeItem("userData");
+    //       } else if (this.dialogData.isGroup) {
+    //         localStorage.removeItem("groupData");
+    //       }
+    //       this.setHichatNav({ type: this.hichatNav.type, num: 0 });
+    //       this.$router.push({ path: "/Address" });
+    //     }
+    //   });
+    // },
     judgeTextMarking(data) {
       if (
         ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(
@@ -393,14 +393,14 @@ export default {
         this.getHistoryMessage.id = Math.random();
         this.memberTime = setInterval(() => {
           this.getUserMemberActivity(this.noGroupPeopleData)
-        }, 5000);
+        }, 30000);
       } else if (tab.name === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.contactUser.toChatId;
         this.getHistoryMessage.id = Math.random();
         this.memberTime = setInterval(() => {
           this.getUserMemberActivity(this.noGroupPeopleData)
-        }, 5000);
+        }, 30000);
       } else {
         this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
         this.getHistoryMessage.toChatId = this.groupUser.toChatId;

@@ -170,7 +170,7 @@
         </el-checkbox-group>
       </div>
     </ul>
-    <div style="width: 95%; text-align: right">
+    <div style="width: 90%; text-align: right;">
       <el-button
         class="scroll-bottom-btn"
         v-show="showScrollBar"
@@ -262,6 +262,11 @@ export default {
           newData;
       });
       this.$root.gotoBottom();
+
+      //TODO 至底按鈕出現 移除滾動
+      // if(!this.showScrollBar){
+      //   this.$root.gotoBottom();
+      // } 
     },
   },
   computed: {
@@ -442,6 +447,7 @@ export default {
             this.copyPaste(data);
           },
         },
+
         {
           name: "reply",
           label: "回覆",
@@ -525,6 +531,13 @@ export default {
           );
         }
       }
+
+      if(!this.checkBoxDisabled){
+        this.newItem = item.filter(
+          (list) => list.name === "choose"
+        );
+      }
+
       this.$contextmenu({
         items: this.newItem,
         // event,

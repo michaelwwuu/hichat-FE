@@ -89,11 +89,9 @@
         class="upload-demo"
         action="#"
         :on-change="uploadImg"
-        :on-remove="handleRemove"
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture"
-        multiple
       >
         <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
@@ -474,10 +472,10 @@ export default {
         display: block;
       }
       .upload-demo {
-        // line-height: 1.5em;
+        line-height: 1.5em;
         .el-upload-list {
           .el-upload-list__item {
-            // margin-top: -72px;
+            margin-top: -72px;
           }
         }
         .hidden {
