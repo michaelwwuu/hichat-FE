@@ -40,7 +40,8 @@
           class="disable-box"
           v-if="
             groupData.isManager &&
-            (!authorityGroupData.sendMessage && !authority.sendMessage)
+            !authorityGroupData.sendMessage &&
+            !authority.sendMessage
           "
           @click="disableTouch"
         >
@@ -160,7 +161,8 @@
           class="disable-box"
           v-if="
             groupData.isManager &&
-            (!authorityGroupData.sendMessage && !authority.sendMessage)
+            !authorityGroupData.sendMessage &&
+            !authority.sendMessage
           "
           @click="disableTouch"
         >
@@ -227,10 +229,9 @@
             </emoji-picker>
           </div>
         </template>
-        
       </div>
       <div class="input-tools-left">
-        <template  v-if="groupData.isAdmin">
+        <template v-if="groupData.isAdmin">
           <img
             src="./../../static/images/image.png"
             alt=""
@@ -242,7 +243,12 @@
             @click="takePictureShow = true"
           />
         </template>
-        <template  v-else-if="groupData.isManager && (authorityGroupData.sendImage || authority.sendImage)">
+        <template
+          v-else-if="
+            groupData.isManager &&
+            (authorityGroupData.sendImage || authority.sendImage)
+          "
+        >
           <img
             src="./../../static/images/image.png"
             alt=""
@@ -253,8 +259,14 @@
             alt=""
             @click="takePictureShow = true"
           />
-        </template>        
-        <template v-else-if="!groupData.isAdmin && !groupData.isManager && authorityGroupData.sendImage">
+        </template>
+        <template
+          v-else-if="
+            !groupData.isAdmin &&
+            !groupData.isManager &&
+            authorityGroupData.sendImage
+          "
+        >
           <img
             src="./../../static/images/image.png"
             alt=""
@@ -294,21 +306,36 @@
     </div>
     <el-dialog
       title="上传图片"
+      :before-close="closeModel"
       :visible.sync="uploadImgShow"
-      :append-to-body="device !== 'pc'"
+      :close-on-click-modal="false"
+      :modal-append-to-body="false"
+      :append-to-body="false"
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
-      width="100%"
       v-loading.fullscreen.lock="fullscreenLoading"
+      width="100%"
+      class="el-upload-img"
       element-loading-text="圖片上传中"
       center
     >
+      <div
+        id="preview"
+        class="preview-img"
+        v-if="copyPicture"
+        v-on:paste="onPasteUpload"
+      >
+        <span>将图片按Ctrl+V 粘贴至此处</span>
+      </div>
       <el-upload
         class="upload-demo"
         action="#"
         :on-change="uploadImg"
+        :on-remove="handleRemove"
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture"
+        multiple
+        v-else
       >
         <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
@@ -317,14 +344,16 @@
       </el-upload>
       <span slot="footer" class="dialog-footer">
         <template v-if="device === 'moblie'">
-          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
+          <el-button type="success" @click="submitAvatar">确认</el-button>
           <el-button @click="uploadImgShow = false">取消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false"
+          <el-button class="background-gray" @click="closeModel()"
             >取消</el-button
           >
-          <el-button class="background-orange" @click="submitAvatarUpload"
+          <el-button
+            class="background-orange"
+            @click="copyPicture ? copySubmitAvatar() : submitAvatar()"
             >确认</el-button
           >
         </template>
@@ -411,6 +440,8 @@ export default {
       banMessage: [],
       checkName: [],
       fileList: [],
+      file: {},
+      copyPicture: false,
       targetArray: [],
       searchContactData: [],
       device: localStorage.getItem("device"),
@@ -486,6 +517,9 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.getDisabledWord();
   },
+  mounted() {
+    document.addEventListener("paste", this.onPasteUpload);
+  },
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
@@ -522,31 +556,77 @@ export default {
     pictureShow(val) {
       this.takePictureShow = val;
     },
+    handleRemove(file, fileList) {
+      this.fileList = fileList;
+    },
     // 取得圖片
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
-    // 上傳圖片
-    submitAvatarUpload() {
-      if (!this.groupData.isAdmin && !this.groupData.isManager) {
-        if (!this.authorityGroupData.sendImage) {
-            this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
-            this.fileList = [];
-            this.uploadImgShow = false;
-            this.fullscreenLoading = false;
-            return false;
-        }
-      }else if(this.groupData.isManager){
-        if (!this.authorityGroupData.sendImage && !this.authority.sendImage) {
-            this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
-            this.fileList = [];
-            this.uploadImgShow = false;
-            this.fullscreenLoading = false;
-            return false;
+    closeModel() {
+      this.fileList = [];
+      this.copyPicture = false;
+      this.uploadImgShow = false;
+      this.fullscreenLoading = false;
+    },
+    //貼上上傳圖片
+    onPasteUpload(event) {
+      const items = (event.clipboardData || window.clipboardData).items;
+      let file = null;
+
+      if (!items || items.length === 0) {
+        this.$message.error("当前浏览器不支持本地");
+        return;
+      }
+      // 搜索剪切板items
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          file = items[i].getAsFile();
+          break;
         }
       }
+      console.log(file);
+      if (!file) {
+        return;
+      } else {
+        this.uploadImgShow = true;
+        this.copyPicture = true;
+      }
+      // 此时file就是我们的剪切板中的图片对象
+      // 如果需要预览，可以执行下面代码
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        preview.innerHTML = `<img src="${event.target.result}">`;
+      };
+      reader.readAsDataURL(file);
+      this.file = file;
+    },
+    copySubmitAvatar() {
+      this.submitAvatarUpload(this.file);
+    },
+    submitAvatar() {
+      if (
+        (!this.groupData.isAdmin &&
+          !this.groupData.isManager &&
+          !this.authorityGroupData.sendImage) ||
+        (this.groupData.isManager &&
+          !this.authorityGroupData.sendImage &&
+          !this.authority.sendImage)
+      ) {
+        this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
+        this.fileList = [];
+        this.uploadImgShow = false;
+        this.fullscreenLoading = false;
+        return false;
+      }
+      this.fileList.forEach((data) => {
+        this.submitAvatarUpload(data.raw);
+      });
+    },
+    // 上傳圖片
+    submitAvatarUpload(data) {
       let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
+      formData.append("file", data);
       this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
@@ -689,25 +769,22 @@ export default {
       this.sendAduioShow = false;
       this.audioMessageData = {};
     },
-    
+
     // 上傳錄音
     onAudioFile() {
-      if (!this.groupData.isAdmin && !this.groupData.isManager) {
-        if (!this.authorityGroupData.sendImage) {
-          this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
-          this.sendAduioShow = false;
-          this.fullscreenLoading = false;
-          this.audioMessageData = {};
-          return false;
-        }
-      }else if(this.groupData.isManager){
-        if (!this.authorityGroupData.sendImage && !this.authority.sendImage) {
-          this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
-          this.sendAduioShow = false;
-          this.fullscreenLoading = false;
-          this.audioMessageData = {};
-          return false;
-        }
+      if (
+        (!this.groupData.isAdmin &&
+          !this.groupData.isManager &&
+          !this.authorityGroupData.sendImage) ||
+        (this.groupData.isManager &&
+          !this.authorityGroupData.sendImage &&
+          !this.authority.sendImage)
+      ) {
+        this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
+        this.sendAduioShow = false;
+        this.fullscreenLoading = false;
+        this.audioMessageData = {};
+        return false;
       }
       let formData = new FormData();
       formData.append("file", this.audioMessageData, `${Date.now()}.mp3`);
@@ -806,28 +883,22 @@ export default {
         this.$message({ message: "不能发送空白消息", type: "error" });
         this.textArea = "";
         return false;
-      }      
-      if (!this.groupData.isAdmin && !this.groupData.isManager) {
-        if (!this.authorityGroupData.sendLink) {
-          var strRegex =
-            /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-          var re = new RegExp(strRegex);
-          if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
-            this.$message({ message: "无法发送超连结", type: "error" });
-            this.textArea = "";
-            return false;
-          }
-        }
-      }else if(this.groupData.isManager){
-        if (!this.authorityGroupData.sendLink && !this.authority.sendLink) {
-          var strRegex =
-            /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-          var re = new RegExp(strRegex);
-          if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
-            this.$message({ message: "无法发送超连结", type: "error" });
-            this.textArea = "";
-            return false;
-          }
+      }
+      if (
+        (!this.groupData.isAdmin &&
+          !this.groupData.isManager &&
+          !this.authorityGroupData.sendLink) ||
+        (this.groupData.isManager &&
+          !this.authorityGroupData.sendLink &&
+          !this.authority.sendLink)
+      ) {
+        var strRegex =
+          /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+        var re = new RegExp(strRegex);
+        if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
+          this.$message({ message: "无法发送超连结", type: "error" });
+          this.textArea = "";
+          return false;
         }
       }
       this.banMessageData = this.banMessage.filter((el) =>
@@ -1061,10 +1132,12 @@ export default {
         display: block;
       }
       .upload-demo {
-        line-height: 1.5em;
+        // line-height: 1.5em;
         .el-upload-list {
+          // max-height: 400px;
+          // overflow:auto;
           .el-upload-list__item {
-            margin-top: -72px;
+            // margin-top: -72px;
           }
         }
         .hidden {
@@ -1120,6 +1193,18 @@ export default {
       }
     }
   }
+  .el-dialog__wrapper.el-upload-img {
+    .el-dialog {
+      width: 500px !important;
+      .el-dialog__body {
+        .preview-img {
+          img {
+            width: 30em;
+          }
+        }
+      }
+    }
+  }
 }
 .hichat-moblie {
   .callout-message {
@@ -1132,6 +1217,28 @@ export default {
             line-height: 20px;
             color: #363636;
             word-wrap: break-word;
+          }
+        }
+      }
+    }
+  }
+  .el-dialog__wrapper.el-upload-img{
+    .el-dialog {
+      .el-dialog__body{
+        .upload-demo{
+          overflow: hidden;
+          .el-upload-list{
+            max-height: 307px;
+            overflow: auto;
+            .el-upload-list__item{
+              width: 90%;
+              float: none;
+            }
+          }
+        }
+        .preview-img{
+          img{
+            width: 9em;
           }
         }
       }

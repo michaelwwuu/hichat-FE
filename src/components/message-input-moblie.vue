@@ -132,7 +132,6 @@
         :file-list="fileList"
         list-type="picture"
         multiple
-        
         v-else
       >
         <el-button type="primary">点击上传</el-button>
@@ -318,7 +317,6 @@ export default {
           break;
         }
       }
-      console.log(file)
       if (!file) {
         return;
       }else{
@@ -798,8 +796,8 @@ export default {
       .upload-demo {
         // line-height: 1.5em;
         .el-upload-list {
-          max-height: 400px;
-          overflow:auto;
+          // max-height: 400px;
+          // overflow:auto;
           .el-upload-list__item {
             // margin-top: -72px;    
             margin-top: 10px;
@@ -847,10 +845,17 @@ export default {
         .upload-demo{
           overflow: hidden;
           .el-upload-list{
+            max-height: 307px;
+            overflow: auto;
             .el-upload-list__item{
-              width: auto;
+              width: 90%;
               float: none;
             }
+          }
+        }
+        .preview-img{
+          img{
+            width: 9em;
           }
         }
       }
@@ -881,7 +886,7 @@ export default {
       .el-dialog__body{
         .preview-img{
           img{
-            height: 25em;
+            width: 30em;
           }
         }
       }

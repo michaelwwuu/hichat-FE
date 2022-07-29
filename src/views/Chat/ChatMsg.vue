@@ -903,16 +903,12 @@ export default {
                     el.replyChat.nickName = this.myUserInfo.nickname;
                   }
                 }
-                if (el.toChatId === this.chatUser.toChatId) {
-                  this.messageList(el);
-                  this.messageData.unshift(this.chatRoomMsg);
-                }
+  
               });
               this.readMsg = historyMsgList.filter((el) => {
                 return el.chat.toChatId === "u" + localStorage.getItem("id");
               });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0)
-                this.readMsgShow(this.readMsg[0]);
+              if (historyMsgList.length > 0 && this.readMsg.length > 0)  this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
               this.loading = false;
             }, this.timeOut);

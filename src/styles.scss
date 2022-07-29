@@ -484,10 +484,15 @@ body {
         }
         .upload-demo {
           line-height: 1.5em;
-
+          max-height: 400px;
+          overflow:auto;
           .el-upload-list {
             .el-upload-list__item {
-              margin-top: -72px;
+              // margin-top: -72px;
+              margin-top: 0;
+              width: 205px;
+              display: inline-block;
+              margin: 10px 5px;
             }
           }
         }
@@ -923,10 +928,15 @@ body {
 
         .upload-demo {
           line-height: 1.5em;
-
+          max-height: 400px;
+          overflow:auto;
           .el-upload-list {
             .el-upload-list__item {
-              margin-top: -72px;
+              // margin-top: -72px;
+              margin-top: 0;
+              width: 205px;
+              display: inline-block;
+              margin: 10px 5px;
             }
           }
 
