@@ -137,11 +137,7 @@
                     :key="index"
                     @click="goContactPage(item)"
                   >
-                    <el-image
-                      :src="item.icon"
-                      v-if="item.icon !== undefined"
-                      lazy
-                    />
+                    <el-image :src="item.icon" />
                     <div class="contont-box">
                       <div class="msg-box">
                         <div :class="{'noOnline-tip':onlineMsg(item) === ''}">
@@ -411,6 +407,7 @@ export default {
             });
           });
           this.newContactList = this.contactList
+          console.log(this.newContactList)
         }
       });
     },

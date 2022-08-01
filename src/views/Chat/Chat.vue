@@ -569,6 +569,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
+          this.$root.gotoBottom();
         }
       });
     },
@@ -694,11 +695,7 @@ export default {
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
         case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
-          if (userInfo.chatType === "SRV_GROUP_DEL") {
-            if (userInfo.chat.fromChatId === "u" + localStorage.getItem("id")) {
-              this.isLeaveGroupShow = true;
-            }
-          }
+          
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if (userInfo.chat.text !== null) {
               this.base64Msg = this.isBase64(userInfo.chat.text);
@@ -710,6 +707,11 @@ export default {
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
             if (userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
               this.audioAction();
+            }
+          }
+          if (userInfo.chatType === "SRV_GROUP_DEL") {
+            if (userInfo.chat.fromChatId === "u" + localStorage.getItem("id")) {
+              this.isLeaveGroupShow = true;
             }
           }
           if(userInfo.chatType === "SRV_GROUP_JOIN"){

@@ -81,7 +81,7 @@
       </el-main>
     </el-container>
     <el-container v-else>
-      <el-aside width="300px">
+      <el-aside width="315px">
         <el-header style="height: 70px">
           <div class="home-header" v-if="num === 2">
             <span class="home-header-title">设定</span>
@@ -195,7 +195,7 @@
         </template>
       </el-main>
       <el-aside
-        width="300px"
+        width="315px"
         style="overflow: hidden"
         v-if="infoMsg.infoMsgShow"
       >

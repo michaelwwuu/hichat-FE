@@ -327,6 +327,7 @@ export const changeAdmin = data => {
   }
   return axios.request(postData)
 }
+
 // 更換管理者
 export const leaveGroup = data => {
   let postData = {
@@ -375,6 +376,7 @@ export const addManager = data => {
   }
   return axios.request(postData)
 }
+
 // 設定管理員权限
 export const setManagerAuthority = data => {
   let postData = {
@@ -425,7 +427,6 @@ export const getGroupDisabledWord = (params) => {
   return axios.request(postData)
 }
 
-
 // 設定禁言
 export const setBanPost = data => {
   let postData = {
@@ -446,7 +447,6 @@ export const setBanPostByPersonal = data => {
   return axios.request(postData)
 }
 
-
 // 取得群組权限設定
 export const getGroupAuthoritySetting = (params) => {
   let postData = {
@@ -466,7 +466,6 @@ export const setGroupAuthority = data => {
   }
   return axios.request(postData)
 }
-
 
 // 取得群組管理者权限設定
 export const getManagerAuthority = (params) => {

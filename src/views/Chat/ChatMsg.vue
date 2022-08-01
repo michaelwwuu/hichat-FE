@@ -227,10 +227,10 @@
               <i class="el-icon-close"></i>
             </div>
           </div>
-          <div class="disabled-user" v-else-if="chatUser.isBlock">
+          <div class="disabled-user" v-if="chatUser.isBlock">
             <span>該用戶已被封鎖</span>
           </div>
-          <div class="checkbox-btn" v-if="!showCheckBoxBtn" @click="chooseDeleteAction">
+          <div class="checkbox-btn" v-else-if="!showCheckBoxBtn" @click="chooseDeleteAction">
             <img src="./../../../static/images/icon_defalt.svg" alt="">
             <span v-if="device === 'pc'">{{ checkDataList.length === 0 ?'选择讯息':`已选择${checkDataList.length}则讯息`}}</span>
           </div>
@@ -667,7 +667,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          
+          this.$root.gotoBottom();
         }
       });
     },
@@ -903,7 +903,8 @@ export default {
                     el.replyChat.nickName = this.myUserInfo.nickname;
                   }
                 }
-  
+                this.messageList(el);
+                this.messageData.unshift(this.chatRoomMsg);
               });
               this.readMsg = historyMsgList.filter((el) => {
                 return el.chat.toChatId === "u" + localStorage.getItem("id");

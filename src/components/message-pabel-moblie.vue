@@ -289,6 +289,7 @@ export default {
           scrollTop.scrollHeight - scrollTop.scrollTop ===
           scrollTop.clientHeight
         );
+        console.log(document.querySelector(".el-checkbox"))
       },
       true
     );
