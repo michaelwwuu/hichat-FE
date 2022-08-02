@@ -43,10 +43,12 @@
             slot="emoji-invoker"
             slot-scope="{ events: { click: clickEvent } }"
             @click.stop="clickEvent"
+            @click="changIcon"
           >
             <div class="face-other-btn">
-              <img src="./../../static/images/emoji.png" alt="" />
-            </div>
+              <img v-if="emojichange" src="./../../static/images/emoji.png" alt="" />
+              <img v-else src="./../../static/images/keyboard.svg" alt="" />
+            </div>            
           </div>
           <div
             slot="emoji-picker"
@@ -128,10 +130,12 @@
         action="#"
         :on-change="uploadImg"
         :on-remove="handleRemove"
+        :on-exceed="limitCheck"
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture"
         multiple
+        :limit="10"
         v-else
       >
         <el-button type="primary">点击上传</el-button>
@@ -142,8 +146,8 @@
       
       <span slot="footer" class="dialog-footer">
         <template v-if="device === 'moblie'">
-          <el-button type="success" @click="submitAvatar">确认</el-button>
-          <el-button @click="uploadImgShow = false">取消</el-button>
+          <el-button type="success" @click="copyPicture ? copySubmitAvatar() : submitAvatar()">确认</el-button>
+          <el-button @click="closeModel()">取消</el-button>
         </template>
         <template v-else>
           <el-button class="background-gray" @click="closeModel()"
@@ -228,6 +232,7 @@ export default {
       fileList: [],
       file:{},
       copyPicture:false,
+      emojichange:true,
       device: localStorage.getItem("device"),
       //錄音
       isVoice: false,
@@ -269,6 +274,7 @@ export default {
     editMsg(val) {
       this.textArea = val.innerText;
     },
+
   },
   computed: {
     ...mapState({
@@ -278,18 +284,25 @@ export default {
     }),
   },
   mounted() {
-     document.addEventListener('paste', this.onPasteUpload)
+    document.addEventListener("paste", this.onPasteUpload)
   },
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    changIcon(){
+      this.emojichange = !this.emojichange
+    },
     pictureShow(val) {
       this.takePictureShow = val;
     },
     handleRemove(file, fileList) {
       this.fileList = fileList
+    },
+    // 选择的文件超出限制的文件总数量时触发
+    limitCheck() {
+      this.$message({ message: "最多只能上传10张图片", type: "warning" });
     },
     // 取得圖片
     uploadImg(file, fileList) {
@@ -696,7 +709,6 @@ export default {
       }
     }
     .footer-tools {
-      // text-align: right;
       .face-other-btn {
         margin-right: 10px;
         img {
@@ -726,6 +738,7 @@ export default {
         height: 20em;
         overflow: auto;
         line-height: 2em;
+        z-index: 9;
         .face-icon-box {
           padding: 20px;
           .face-box {
@@ -794,12 +807,8 @@ export default {
         display: block;
       }
       .upload-demo {
-        // line-height: 1.5em;
         .el-upload-list {
-          // max-height: 400px;
-          // overflow:auto;
           .el-upload-list__item {
-            // margin-top: -72px;    
             margin-top: 10px;
           }
         }
@@ -843,10 +852,7 @@ export default {
     .el-dialog {
       .el-dialog__body{
         .upload-demo{
-          overflow: hidden;
           .el-upload-list{
-            max-height: 307px;
-            overflow: auto;
             .el-upload-list__item{
               width: 90%;
               float: none;

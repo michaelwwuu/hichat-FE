@@ -633,14 +633,15 @@ export default {
             this.checkBoxDisabled = !this.checkBoxDisabled;
             this.$emit("checkBoxDisabled", this.checkBoxDisabled);
           },
-        },        
+        },
       ];
       let isAdmin = JSON.parse(localStorage.getItem("groupData")).isAdmin;
       let isManager = JSON.parse(localStorage.getItem("groupData")).isManager;
 
       if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        if ( data.chatType === "SRV_GROUP_AUDIO") {
-          if ( isAdmin ||
+        if (data.chatType === "SRV_GROUP_AUDIO") {
+          if (
+            isAdmin ||
             (isManager &&
               JSON.parse(localStorage.getItem("authority")).delUserMessage)
           ) {
@@ -655,7 +656,7 @@ export default {
                 )
             );
           }
-        } else if(data.chatType === "SRV_GROUP_IMAGE"){
+        } else if (data.chatType === "SRV_GROUP_IMAGE") {
           if (
             isAdmin ||
             (isManager &&
@@ -670,26 +671,27 @@ export default {
             );
           }
         } else {
-          if(isAdmin ||
+          if (
+            isAdmin ||
             (isManager &&
               JSON.parse(localStorage.getItem("authority")).delUserMessage)
           ) {
             this.newItem = item.filter(
               (list) => !["edit", "download"].includes(list.name)
             );
-          } else{
+          } else {
             this.newItem = item.filter(
-              (list) => !["deleteAllChat", "edit", "download"].includes(list.name)
+              (list) =>
+                !["deleteAllChat", "edit", "download"].includes(list.name)
             );
           }
-     
         }
       } else {
-        if ( data.chatType === "SRV_GROUP_IMAGE" ) {
+        if (data.chatType === "SRV_GROUP_IMAGE") {
           this.newItem = item.filter(
             (list) => !["edit", "copy"].includes(list.name)
           );
-        } else if( data.chatType === "SRV_GROUP_AUDIO"){
+        } else if (data.chatType === "SRV_GROUP_AUDIO") {
           this.newItem = item.filter(
             (list) => !["edit", "copy", "download"].includes(list.name)
           );
@@ -713,18 +715,16 @@ export default {
             return list.name !== "edit" && list.name !== "upDown";
           });
         }
-      } else if(!isAdmin && !isManager) {
+      } else if (!isAdmin && !isManager) {
         if (!JSON.parse(localStorage.getItem("groupAuthority")).pin) {
           this.newItem = this.newItem.filter((list) => {
             return list.name !== "upDown";
           });
         }
       }
-      
-      if(!this.checkBoxDisabled){
-        this.newItem = item.filter(
-          (list) => list.name === "choose"
-        );
+
+      if (!this.checkBoxDisabled) {
+        this.newItem = item.filter((list) => list.name === "choose");
       }
 
       this.$contextmenu({
@@ -950,7 +950,6 @@ export default {
       }
       .message-image {
         position: relative;
-        // margin-top: 1em;
         display: inline-block;
         padding: 9px 12px;
         font-weight: 600;
@@ -1032,7 +1031,7 @@ export default {
       }
       .message-image {
         position: relative;
-        // margin-top: 1em;
+
         display: inline-block;
         padding: 5px 6px 2px 6px;
         color: #333333;
@@ -1071,12 +1070,10 @@ export default {
     .message-disabled {
       position: relative;
       max-width: 100%;
-      // margin-top: 5px;
       display: inline-block;
       padding: 9px 12px;
       font-size: 14px;
       color: #333333;
-      // white-space: pre-line;
       word-break: break-all;
       .red {
         height: 1.5em;
@@ -1088,12 +1085,8 @@ export default {
     .message-audio {
       width: 190px;
       height: 2.5em;
-      // margin-top: 1em;
       display: inline-block;
       position: relative;
-      // margin-top: 1em;
-      display: inline-block;
-      // border: 1px solid #eeeeee;
       .images-more-btn {
         top: 10px !important;
       }

@@ -26,9 +26,11 @@
             slot="emoji-invoker"
             slot-scope="{ events: { click: clickEvent } }"
             @click.stop="clickEvent"
+            @click="changIcon"            
           >
             <div class="face-other-btn">
-              <img src="./../../static/images/emoji.png" alt="" />
+              <img v-if="emojichange" src="./../../static/images/emoji.png" alt="" />
+              <img v-else src="./../../static/images/keyboard.svg" alt="" />
             </div>
           </div>
           <div
@@ -148,6 +150,7 @@ export default {
       search: "",
       textArea: "",
       disabled:false,
+      emojichange:true,      
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
@@ -169,7 +172,10 @@ export default {
   methods: {
     ...mapMutations({
       setSpreadDataList:"ws/setSpreadDataList",
-    }),        
+    }),     
+    changIcon(){
+      this.emojichange = !this.emojichange
+    },       
     pictureShow(val) {
       this.takePictureShow = val;
     },
@@ -406,6 +412,7 @@ export default {
         height: 20em;
         overflow: auto;
         line-height: 2em;
+        z-index: 9;
         .face-icon-box {
           padding: 20px;
           .face-box {

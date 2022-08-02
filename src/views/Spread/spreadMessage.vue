@@ -53,9 +53,11 @@
                   slot="emoji-invoker"
                   slot-scope="{ events: { click: clickEvent } }"
                   @click.stop="clickEvent"
+                  @click="changIcon"       
                 >
                   <div class="face-other-btn">
-                    <img src="./../../../static/images/emoji.png" alt="" />
+                    <img v-if="emojichange" src="./../../../static/images/emoji.png" alt="" />
+                    <img v-else src="./../../../static/images/keyboard.svg" alt="" />
                   </div>
                 </div>
                 <div
@@ -160,7 +162,7 @@ export default {
       uploadImgShow: false,
       fullscreenLoading: false,
       fileList: [],
-
+      emojichange:true,      
       spreadDataList: [],
       device: localStorage.getItem("device"),
 
@@ -182,7 +184,9 @@ export default {
       if (category === "Places") return "旅游与地标";
       if (category === "Symbols") return "符号";
     },
-
+    changIcon(){
+      this.emojichange = !this.emojichange
+    },       
     // 表情符号
     insert(emoji) {
       this.textArea += emoji;
@@ -471,6 +475,7 @@ export default {
         height: 20em;
         overflow: auto;
         line-height: 2em;
+        z-index: 9;        
         .face-icon-box {
           padding: 20px;
           .face-box {

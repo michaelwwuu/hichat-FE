@@ -11,8 +11,8 @@ export const state = {
   activeName:"address",
   infoMsg:{
     infoMsgShow:false,
-    infoMsgNav:"ContactPage",
     infoMsgChat:false,
+    infoMsgNav:"ContactPage",
   },
   hichatNav:{
     type:"address",

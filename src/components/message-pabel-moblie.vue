@@ -532,13 +532,11 @@ export default {
           );
         }
       }
-
       if(!this.checkBoxDisabled){
         this.newItem = item.filter(
           (list) => list.name === "choose"
         );
       }
-
       this.$contextmenu({
         items: this.newItem,
         // event,
@@ -786,7 +784,7 @@ export default {
         }
         .el-image {
           width: -webkit-fill-available !important;
-          height: 11em !important;
+          height: 9em !important;
           top: 0;
           /deep/.el-image__inner {
             height: unset;
@@ -853,7 +851,7 @@ export default {
         }
         .el-image {
           width: -webkit-fill-available !important;
-          height: 11em !important;
+          height: 9em !important;
           top: 0;
           /deep/.el-image__inner {
             height: unset;
@@ -924,13 +922,13 @@ export default {
     .message-audio {
       width: 190px;
       height: 2.5em;
-      // margin-top: 1em;
+      
       display: inline-block;
       // border: 1px solid #eeeeee;
     }
     .message-image {
       position: relative;
-      // margin-top: 1em;
+      
       display: inline-block;
       padding: 5px 6px 2px 6px;
       color: #333333;
@@ -943,7 +941,7 @@ export default {
     }
     .message-mini-audio {
       position: relative;
-      // margin-top: 1em;
+      
       display: inline-block;
       border-radius: 10px;
     }

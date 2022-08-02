@@ -313,53 +313,6 @@ export default {
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
-    // sendMessage() {
-    //   if (this.dialogData.isContact) {
-    //     this.dialogData.contactId = this.dialogData.toChatId.replace("u", "");
-    //     this.dialogData.memberId = this.dialogData.toChatId.replace("u", "");
-    //     this.setChatUser(this.dialogData);
-    //     this.$router.push({ path: "/ChatMsg" });
-    //   } else if (this.dialogData.isGroup) {
-    //     this.dialogData.icon = this.dialogData.icon;
-    //     this.dialogData.groupName = this.dialogData.name;
-    //     this.dialogData.groupId = this.dialogData.toChatId.replace("g", "");
-    //     this.dialogData.memberId = JSON.parse(
-    //       this.dialogData.forChatId.replace("u", "")
-    //     );
-    //     this.groupList.forEach((item) => {
-    //       if (item.groupName === this.dialogData.groupName) {
-    //         this.dialogData.isBanPost = item.isBanPost;
-    //         this.dialogData.isAdmin = item.isAdmin;
-    //         this.dialogData.isManager = item.isManager;
-    //       }
-    //     });
-    //     this.setChatGroup(this.dialogData);
-    //     this.getGroupListMember(this.dialogData);
-    //     this.getGroupAuthority(this.dialogData);
-    //     this.$router.push({ path: "/ChatGroupMsg" });
-    //   } else {
-    //     this.setContactUser(data);
-    //   }
-    // },
-    // deleteMessage() {
-    //   let parmas = {
-    //     fullDelete: true,
-    //     historyId: "",
-    //     toChatId: this.dialogData.toChatId,
-    //   };
-    //   deleteRecentChat(parmas).then((res) => {
-    //     let msg = resStatus[res.code] || res.message;
-    //     if (res.code === 200) {
-    //       if (this.dialogData.isContact) {
-    //         localStorage.removeItem("userData");
-    //       } else if (this.dialogData.isGroup) {
-    //         localStorage.removeItem("groupData");
-    //       }
-    //       this.setHichatNav({ type: this.hichatNav.type, num: 0 });
-    //       this.$router.push({ path: "/Address" });
-    //     }
-    //   });
-    // },
     judgeTextMarking(data) {
       if (
         ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(
@@ -382,7 +335,7 @@ export default {
     noIconShow(iconData, key) {
       if ([undefined, null, ""].includes(iconData.icon)) {
         return require(`./../../../../static/images/image_${key}_defult.png`);
-      } else {
+      } else{
         return iconData.icon;
       }
     },
@@ -450,6 +403,7 @@ export default {
           userInfo.recentChat.forEach((item) => {
             if (item.isContact && (item.forChatId === item.toChatId)) {
               item.name = "嗨聊记事本"
+              item.icon = require("./../../../../static/images/image_savemessage.png");
               this.hiChatNumBadge += item.unreadCount;
             } else if (item.isGroup) {
               this.groupDataList.push(item);

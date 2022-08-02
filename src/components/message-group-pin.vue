@@ -505,7 +505,7 @@ export default {
       }
       .message-image {
         position: relative;
-        // margin-top: 1em;
+        
         display: inline-block;
         padding: 9px 12px;
         background-color: rgba(0, 0, 0, 0.05);
@@ -595,7 +595,7 @@ export default {
       }
       .message-image {
         position: relative;
-        // margin-top: 1em;
+        
         display: inline-block;
         padding: 5px 6px 2px 6px;
         color: #333333;
@@ -651,10 +651,10 @@ export default {
     .message-audio {
       width: 190px;
       height: 2.5em;
-      // margin-top: 1em;
+      
       display: inline-block;
       position: relative;
-      // margin-top: 1em;
+      
       display: inline-block;
       // border: 1px solid #eeeeee;
       .images-more-btn {
