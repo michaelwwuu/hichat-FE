@@ -207,7 +207,6 @@ export default {
       passwordType: "password",
       remember: true,
       disabled: true,
-      // readChecked: false,
       dialogShow: false,
       token: localStorage.getItem("token"),
       device: localStorage.getItem("device"),
@@ -315,18 +314,7 @@ export default {
       localStorage.setItem("UUID", "hiWeb" + number);
       this.loginForm.deviceId = "hiWeb" + number
     },
-    isBase64(data) {
-      var base64Rejex =
-        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
-      if (!base64Rejex.test(data)) {
-        return data;
-      }
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
-    },
+
     //登录&&註冊
     submitForm(rules) {
       if(!phoneValidator.isPhoneNumberValid(this.loginForm.phone, "CN")){

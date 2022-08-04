@@ -194,31 +194,12 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <!-- <el-dialog
-      title="選擇操作"
-      class="el-dialog-msg-show"
-      :visible.sync="isDialogShow"
-      width="70%"
-      center
-      :show-close="false"
-      :close-on-click-modal="false"
-      append-to-body
-    >
-      <div @click="sendMessage">
-        <img src="./../../../../static/images/chat_icon.png" alt="" />
-        <span>傳送訊息</span>
-      </div>
-      <div @click="deleteMessage">
-        <img src="./../../../../static/images/trash.png" alt="" />
-        <span>刪除訊息</span>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
 <script>
 import Socket from "@/utils/socket";
-import { Decrypt } from "@/utils/AESUtils.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
 import {
@@ -335,7 +316,7 @@ export default {
     noIconShow(iconData, key) {
       if ([undefined, null, ""].includes(iconData.icon)) {
         return require(`./../../../../static/images/image_${key}_defult.png`);
-      } else{
+      } else {
         return iconData.icon;
       }
     },
@@ -368,16 +349,7 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex =
-        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
-      if (!base64Rejex.test(data)) {
-        return data;
-      }
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
+      return AESBase64(data, this.aesKey ,this.aesIv)
     },
     getHiChatDataList() {
       let chatMsgKey = {

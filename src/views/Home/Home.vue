@@ -282,6 +282,7 @@
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
+import AESBase64 from "@/utils/AESBase64.js";
 import { getLocal, getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import {
@@ -292,7 +293,7 @@ import {
   getMemberActivity,
   logout,
 } from "@/api";
-import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
+import { Encrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
 import ChatContact from "./../Chat/ChatContact.vue";
@@ -465,16 +466,7 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex =
-        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
-      if (!base64Rejex.test(data)) {
-        return data;
-      }
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
+      return AESBase64(data, this.aesKey ,this.aesIv)
     },
     getContactDataList() {
       getContactList().then((res) => {
@@ -650,11 +642,11 @@ export default {
         }
       }
     },
-    noIconShow(iconData) {
+    noIconShow(iconData, key) {
       if ([undefined, null, ""].includes(iconData.icon)) {
-        return require("./../../../static/images/image_user_defult.png");
+        return require(`./../../../static/images/image_${key}_defult.png`);
       } else {
-        return iconData;
+        return iconData.icon;
       }
     },
     notifyMe(msgInfo, chatType) {
@@ -667,18 +659,15 @@ export default {
       this.chatDataList.forEach((el) => {
         if (el.toChatId === msgInfo.toChatId) {
           if (el.isContact) {
-            notify.icon = this.noIconShow(el.icon);
+            notify.icon = this.noIconShow(el,"user");
             notify.title = "(联络人)";
             notify.type = "address";
           } else if (el.isGroup) {
-            notify.icon =
-              el.icon === ""
-                ? require("./../../../static/images/image_group_defult.png")
-                : el.icon;
+            notify.icon = this.noIconShow(el,"group");
             notify.title = "(群组)";
             notify.type = "group";
           } else if (!el.isBlock && !el.isContact && !el.isGroup) {
-            notify.icon = this.noIconShow(el.icon);
+            notify.icon = this.noIconShow(el,"user");
             notify.title = "(陌生人)";
             notify.type = "contact";
           }

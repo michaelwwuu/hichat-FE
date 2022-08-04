@@ -41,7 +41,6 @@
 <script>
 import Socket from "@/utils/socket";
 import { getToken } from "_util/utils.js";
-
 import { mapState, mapMutations } from "vuex";
 import { getContactList, getGroupList, getSearchById,getMemberActivity } from "@/api";
 export default {
@@ -158,9 +157,9 @@ export default {
         let nowTime = data.currentTime
         let lastTime = data.lastActivityTime
         const diffInMills = nowTime - lastTime
-        if(diffInMills/1000 < 300){
-          return "在线"
-        } else{
+        if (diffInMills/1000 < 300){
+          return "在线";
+        } else {
           return "上次上线于" + this.$root.formatTimeS(data.lastActivityTime)
         }
       } 

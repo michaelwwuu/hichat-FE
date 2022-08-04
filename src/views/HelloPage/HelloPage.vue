@@ -2,7 +2,6 @@
   <div class="hello-page">
     <div class="hello-page-logo">
       <div><img src="./../../../static/images/ic_logo.png" alt="" /></div>
-      <!-- <div><img src="./../../../static/images/ic_text.png" alt="" /></div> -->
       <div>欢迎使用嗨聊</div>
     </div>
   </div>

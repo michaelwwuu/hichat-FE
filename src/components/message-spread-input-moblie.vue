@@ -21,44 +21,13 @@
       >
       </el-input>
       <div class="footer-tools" @touchmove="$root.handleTouch">
-        <emoji-picker @emoji="insert" :search="search">
-          <div
-            slot="emoji-invoker"
-            slot-scope="{ events: { click: clickEvent } }"
-            @click.stop="clickEvent"
-            @click="changIcon"            
-          >
-            <div class="face-other-btn">
-              <img v-if="emojichange" src="./../../static/images/emoji.png" alt="" />
-              <img v-else src="./../../static/images/keyboard.svg" alt="" />
-            </div>
-          </div>
-          <div
-            slot="emoji-picker"
-            slot-scope="{ emojis, insert }"
-            class="face-icon"
-          >
-            <div class="face-icon-box">
-              <div>
-                <div
-                  v-for="(emojiGroup, category) in emojis"
-                  :key="category"
-                  class="face-box"
-                >
-                  <h5>{{ emojiChine(category) }}</h5>
-                  <div>
-                    <span
-                      v-for="(emoji, emojiName) in emojiGroup"
-                      :key="emojiName"
-                      @click="insert(emoji)"
-                      >{{ emoji }}</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </emoji-picker>
+        <div class="face-other-btn" @click="showDialog = !showDialog">
+          <img v-if="!showDialog" src="./../../static/images/emoji.png" alt="" />
+          <img v-else src="./../../static/images/keyboard.svg" alt="" />
+        </div> 
+        <div class="face-icon" v-show="showDialog">
+          <VEmojiPicker :showSearch="false" :showCategories="false" :emojisByRow="10" @select="selectEmoji"/>
+        </div>
       </div>
     </div>
 
@@ -135,8 +104,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import EmojiPicker from "vue-emoji-picker";
-
+import {VEmojiPicker} from 'v-emoji-picker'
 import Photo from "./Photo.vue";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
@@ -149,8 +117,8 @@ export default {
     return {
       search: "",
       textArea: "",
-      disabled:false,
-      emojichange:true,      
+      showDialog: false,
+      disabled:false,    
       sendAduioShow: false,
       uploadImgShow: false,
       takePictureShow: false,
@@ -169,13 +137,20 @@ export default {
       spreadDataList: (state) => state.ws.spreadDataList,
     }),
   },
+  mounted() {
+    document.addEventListener("click", (e)=>{
+      if(e.target.className !== "emoji border"){
+        this.showDialog = false
+      }
+    })
+  },
   methods: {
     ...mapMutations({
       setSpreadDataList:"ws/setSpreadDataList",
     }),     
-    changIcon(){
-      this.emojichange = !this.emojichange
-    },       
+    selectEmoji(emoji) {// 选择emoji后调用的函数
+      this.textArea += emoji.data
+    },            
     pictureShow(val) {
       this.takePictureShow = val;
     },
@@ -310,6 +285,7 @@ export default {
       }, 1000);
       // 消息清空
       this.textArea = "";
+      this.showDialog = false;
     },
     audioAction(){
       let audioEl = document.getElementById("notify-send-audio")  
@@ -343,7 +319,7 @@ export default {
     },
   },
   components: {
-    EmojiPicker,
+    VEmojiPicker,
     Photo,
   },
 };
@@ -382,14 +358,6 @@ export default {
       }
     }
     .footer-tools {
-      // text-align: right;
-      .face-other-btn {
-        margin-right: 10px;
-        img {
-          height: 1.2em;
-        }
-      }
-
       .send-button {
         width: 90px;
         padding: 7px 10px;
@@ -402,17 +370,6 @@ export default {
         );
       }
       .face-icon {
-        position: absolute;
-        bottom: 57px;
-        left: 0;
-        background-color: #fff;
-        width: 100%;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0px 0 7px #ccc;
-        height: 20em;
-        overflow: auto;
-        line-height: 2em;
-        z-index: 9;
         .face-icon-box {
           padding: 20px;
           .face-box {

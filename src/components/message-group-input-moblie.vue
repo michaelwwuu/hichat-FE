@@ -70,44 +70,13 @@
           >
           </el-input>
           <div class="footer-tools" @touchmove="$root.handleTouch">
-            <emoji-picker @emoji="insert" :search="search">
-              <div
-                slot="emoji-invoker"
-                slot-scope="{ events: { click: clickEvent } }"
-                @click.stop="clickEvent"
-                @click="changIcon"    
-              >
-                <div class="face-other-btn">
-              <img v-if="emojichange" src="./../../static/images/emoji.png" alt="" />
+            <div class="face-other-btn" @click.stop="showDialog = !showDialog">
+              <img v-if="!showDialog" src="./../../static/images/emoji.png" alt="" />
               <img v-else src="./../../static/images/keyboard.svg" alt="" />
-                </div>
-              </div>
-              <div
-                slot="emoji-picker"
-                slot-scope="{ emojis, insert }"
-                class="face-icon"
-              >
-                <div class="face-icon-box">
-                  <div>
-                    <div
-                      v-for="(emojiGroup, category) in emojis"
-                      :key="category"
-                      class="face-box"
-                    >
-                      <h5>{{ emojiChine(category) }}</h5>
-                      <div>
-                        <span
-                          v-for="(emoji, emojiName) in emojiGroup"
-                          :key="emojiName"
-                          @click="insert(emoji)"
-                          >{{ emoji }}</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </emoji-picker>
+            </div> 
+            <div class="face-icon" v-show="showDialog">
+              <VEmojiPicker :showSearch="false" :showCategories="false" :emojisByRow="10" @select="selectEmoji"/>
+            </div>
           </div>
         </template>
       </div>
@@ -193,44 +162,13 @@
           >
           </el-input>
           <div class="footer-tools">
-            <emoji-picker @emoji="insert" :search="search">
-              <div
-                slot="emoji-invoker"
-                slot-scope="{ events: { click: clickEvent } }"
-                @click.stop="clickEvent"
-                @click="changIcon"
-              >
-                <div class="face-other-btn">
-                  <img v-if="emojichange" src="./../../static/images/emoji.png" alt="" />
-                  <img v-else src="./../../static/images/keyboard.svg" alt="" />
-                </div>
-              </div>
-              <div
-                slot="emoji-picker"
-                slot-scope="{ emojis, insert }"
-                class="face-icon"
-              >
-                <div class="face-icon-box">
-                  <div>
-                    <div
-                      v-for="(emojiGroup, category) in emojis"
-                      :key="category"
-                      class="face-box"
-                    >
-                      <h5>{{ emojiChine(category) }}</h5>
-                      <div>
-                        <span
-                          v-for="(emoji, emojiName) in emojiGroup"
-                          :key="emojiName"
-                          @click="insert(emoji)"
-                          >{{ emoji }}</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </emoji-picker>
+            <div class="face-other-btn" @click.stop="showDialog = !showDialog">
+              <img v-if="!showDialog" src="./../../static/images/emoji.png" alt="" />
+              <img v-else src="./../../static/images/keyboard.svg" alt="" />
+            </div> 
+            <div class="face-icon" v-show="showDialog">
+              <VEmojiPicker :showSearch="false" :showCategories="false" :emojisByRow="10" @select="selectEmoji"/>
+            </div>
           </div>
         </template>
       </div>
@@ -350,7 +288,11 @@
       </el-upload>
       <span slot="footer" class="dialog-footer">
         <template v-if="device === 'moblie'">
-          <el-button type="success" @click="copyPicture ? copySubmitAvatar() : submitAvatar()">确认</el-button>
+          <el-button
+            type="success"
+            @click="copyPicture ? copySubmitAvatar() : submitAvatar()"
+            >确认</el-button
+          >
           <el-button @click="closeModel()">取消</el-button>
         </template>
         <template v-else>
@@ -419,8 +361,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import EmojiPicker from "vue-emoji-picker";
-
+import { VEmojiPicker } from "v-emoji-picker";
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
 import { getToken } from "_util/utils.js";
@@ -438,6 +379,7 @@ export default {
     return {
       textArea: "",
       search: "",
+      showDialog: false,
       calloutShow: false,
       sendAduioShow: false,
       uploadImgShow: false,
@@ -448,7 +390,6 @@ export default {
       fileList: [],
       file: {},
       copyPicture: false,
-      emojichange:true,      
       targetArray: [],
       searchContactData: [],
       device: localStorage.getItem("device"),
@@ -499,6 +440,7 @@ export default {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
       editMsg: (state) => state.ws.editMsg,
+      groupUser: (state) => state.ws.groupUser,
       soundNofiy: (state) => state.ws.soundNofiy,
       contactListData: (state) => state.ws.contactListData,
     }),
@@ -526,6 +468,11 @@ export default {
   },
   mounted() {
     document.addEventListener("paste", this.onPasteUpload);
+    document.addEventListener("click", (e) => {
+      if (e.target.className !== "emoji border") {
+        this.showDialog = false;
+      }
+    });
   },
   methods: {
     ...mapMutations({
@@ -536,8 +483,9 @@ export default {
     limitCheck() {
       this.$message({ message: "最多只能上传10张图片", type: "warning" });
     },
-    changIcon(){
-      this.emojichange = !this.emojichange
+    selectEmoji(emoji) {
+      // 选择emoji后调用的函数
+      this.textArea += emoji.data;
     },
     disableTouch() {
       this.$message({ message: "已禁止發言", type: "warning" });
@@ -952,6 +900,7 @@ export default {
         this.targetArray = [];
         this.checkName = [];
         this.textArea = "";
+        this.showDialog = false;
       }
     },
     audioAction() {
@@ -996,7 +945,7 @@ export default {
     },
   },
   components: {
-    EmojiPicker,
+    VEmojiPicker,
     Photo,
   },
 };
@@ -1047,13 +996,6 @@ export default {
       }
     }
     .footer-tools {
-      .face-other-btn {
-        margin-right: 10px;
-        img {
-          height: 1.2em;
-        }
-      }
-
       .send-button {
         width: 90px;
         padding: 7px 10px;
@@ -1066,17 +1008,6 @@ export default {
         );
       }
       .face-icon {
-        position: absolute;
-        bottom: 57px;
-        left: 0;
-        background-color: #fff;
-        width: 100%;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0px 0 7px #ccc;
-        height: 20em;
-        overflow: auto;
-        line-height: 2em;
-        z-index: 9;
         .face-icon-box {
           padding: 20px;
           .face-box {
@@ -1227,19 +1158,19 @@ export default {
       }
     }
   }
-  .el-dialog__wrapper.el-upload-img{
+  .el-dialog__wrapper.el-upload-img {
     .el-dialog {
-      .el-dialog__body{
-        .upload-demo{
-          .el-upload-list{
-            .el-upload-list__item{
+      .el-dialog__body {
+        .upload-demo {
+          .el-upload-list {
+            .el-upload-list__item {
               width: 90%;
               float: none;
             }
           }
         }
-        .preview-img{
-          img{
+        .preview-img {
+          img {
             width: 9em;
           }
         }

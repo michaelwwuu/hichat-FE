@@ -20,8 +20,7 @@
 </template>
 
 <script>
-
-import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import { mapState } from "vuex";
 
 export default {
@@ -54,18 +53,9 @@ export default {
     );
   },
   methods: {
-
+    //判斷是否base64
     isBase64(data) {
-      var base64Rejex =
-        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
-      if (!base64Rejex.test(data)) {
-        return data;
-      }
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
+      return AESBase64(data, this.aesKey ,this.aesIv)
     },
     noIconShow(iconData) {
       if ([undefined, null, ""].includes(iconData.icon)) {

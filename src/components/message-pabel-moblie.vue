@@ -184,15 +184,15 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import {
   deleteRecentChat,
-  uploadMessageImage,
   pinHistory,
   unpinHistory,
 } from "@/api";
-import { Encrypt, Decrypt } from "@/utils/AESUtils.js";
+import { Encrypt } from "@/utils/AESUtils.js";
+import AESBase64 from "@/utils/AESBase64.js";
+
 import VueMarkdown from "vue-markdown";
 export default {
   name: "MessagePabel",
@@ -289,7 +289,6 @@ export default {
           scrollTop.scrollHeight - scrollTop.scrollTop ===
           scrollTop.clientHeight
         );
-        console.log(document.querySelector(".el-checkbox"))
       },
       true
     );
@@ -332,17 +331,9 @@ export default {
         document.getElementById(data).classList.remove("blink");
       }, 3000);
     },
+    //判斷是否base64
     isBase64(data) {
-      var base64Rejex =
-        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
-      if (!base64Rejex.test(data)) {
-        return data;
-      }
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
+      return AESBase64(data, this.aesKey ,this.aesIv)
     },
     noIconShow(iconData) {
       if ([undefined, null, ""].includes(iconData.icon)) {
@@ -350,33 +341,6 @@ export default {
       } else {
         return iconData.icon;
       }
-    },
-    // 上傳圖片
-    submitAvatarUpload() {
-      let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
-      this.fullscreenLoading = true;
-      uploadMessageImage(formData).then((res) => {
-        if (res.code === 200) {
-          let message = this.userInfoData;
-          message.chatType = "CLI_USER_IMAGE";
-          message.id = Math.random();
-          message.fromChatId = "u" + localStorage.getItem("id");
-          message.toChatId = this.chatUser.toChatId;
-          (message.text = Encrypt(res.data, this.aesKey, this.aesIv)), //TODO 加密
-            // message.text = res.data,
-            this.soundNofiy.forEach((res) => {
-              if (res.key === "private" && res.isNofity) this.audioAction();
-            });
-          Socket.send(message);
-          this.fileList = [];
-          this.uploadImgShow = false;
-          this.fullscreenLoading = false;
-        } else if (res.code === 40001) {
-          this.fileList = [];
-          this.fullscreenLoading = false;
-        }
-      });
     },
     audioAction() {
       let audioEl = document.getElementById("notify-send-audio");

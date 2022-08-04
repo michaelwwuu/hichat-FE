@@ -473,6 +473,8 @@ import {
   deleteRecentChatMul,
 } from "@/api";
 import { Decrypt } from "@/utils/AESUtils.js";
+import AESBase64 from "@/utils/AESBase64.js";
+
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-pabel-moblie";
@@ -757,16 +759,7 @@ export default {
     },
     //判斷是否base64
     isBase64(data) {
-      var base64Rejex =
-        /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
-      if (!base64Rejex.test(data)) {
-        return data;
-      }
-      try {
-        return Decrypt(data, this.aesKey, this.aesIv);
-      } catch (err) {
-        return data;
-      }
+      return AESBase64(data, this.aesKey ,this.aesIv)
     },
     // 獲取歷史訊息
     getChatHistoryMessage() {
@@ -1042,8 +1035,9 @@ export default {
           if (res.code === 200) {
             this.isDeleteContactDialogShow = false;
             data.isContact = false;
+            console.log(data)
             this.getHiChatDataList();
-            this.setChatUser(data);
+            this.setChatUser({});
             this.setHichatNav({ type: "address", num: 1 });
           }
         })

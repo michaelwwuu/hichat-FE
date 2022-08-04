@@ -141,7 +141,7 @@ import { getToken } from "_util/utils.js";
 import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import { logout } from "@/api";
-import { Decrypt,Encrypt} from "@/utils/AESUtils.js";
+import { Encrypt} from "@/utils/AESUtils.js";
 
 import { mapState } from "vuex";
 import { developmentMessage } from "@/assets/tools";

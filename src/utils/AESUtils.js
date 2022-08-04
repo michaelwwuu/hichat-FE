@@ -16,6 +16,7 @@ export function Encrypt(data, key, iv) {
   //返回base64
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 }
+
 //解密
 export function Decrypt(data, key, iv) {
   //编码

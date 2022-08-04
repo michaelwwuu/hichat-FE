@@ -262,7 +262,6 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { developmentMessage } from "@/assets/tools";
 import {
   groupListMember,
   removeMember,
@@ -290,7 +289,6 @@ export default {
       editBtnShow: false,
       successDialogShow: false,
       leaveUserDialogShow: false,
-      developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
     };
   },

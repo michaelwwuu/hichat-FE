@@ -166,7 +166,6 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
 import { uploadGroupIcon } from "@/api";
 
 export default {
@@ -185,7 +184,6 @@ export default {
       uploadImgShow: false,
       settingGroupShow: false,
       disableEditSubmit: true,
-      developmentMessage: developmentMessage,
       device: localStorage.getItem("device"),
     };
   },
