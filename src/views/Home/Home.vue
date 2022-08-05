@@ -729,20 +729,20 @@ export default {
               this.setChatGroup(this.notifyData[0]);
               this.getGroupListMember();
             }
-            this.getHistory(notify.type);
+            this.getHistory(notify.type,this.notifyData[0]);
             this.getHistorySetTimeout();
           },
         }
       );
     },
-    getHistory(type) {
+    getHistory(type,data) {
       if (type === "address" || type === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
+        this.getHistoryMessage.toChatId = data.toChatId ;
         this.getHistoryMessage.id = Math.random();
       } else {
         this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
+        this.getHistoryMessage.toChatId = data.toChatId;
         this.getHistoryMessage.id = Math.random();
       }
       Socket.send(this.getHistoryMessage);

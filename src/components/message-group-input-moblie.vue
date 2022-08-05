@@ -8,24 +8,8 @@
       <div class="input-tools-right">
         <div>
           <!-- <img src="./../../static/images/plus.png" alt=""> -->
-          <template v-if="groupData.isAdmin">
+          <template v-if="groupData.isAdmin || (groupData.isManager && (authorityGroupData.sendImage || authority.sendImage)) || authorityGroupData.sendImage">
             <img
-              src="./../../static/images/image.png"
-              alt=""
-              @click="uploadImgShow = true"
-            />
-          </template>
-          <template v-else-if="groupData.isManager">
-            <img
-              v-if="authorityGroupData.sendImage || authority.sendImage"
-              src="./../../static/images/image.png"
-              alt=""
-              @click="uploadImgShow = true"
-            />
-          </template>
-          <template v-else>
-            <img
-              v-if="authorityGroupData.sendImage"
               src="./../../static/images/image.png"
               alt=""
               @click="uploadImgShow = true"
@@ -49,7 +33,7 @@
         </div>
         <div
           class="disable-box"
-          v-if="
+          v-else-if="
             !groupData.isAdmin &&
             !groupData.isManager &&
             !authorityGroupData.sendMessage
@@ -141,7 +125,7 @@
         </div>
         <div
           class="disable-box"
-          v-if="
+          v-else-if="
             !groupData.isAdmin &&
             !groupData.isManager &&
             !authorityGroupData.sendMessage
@@ -173,42 +157,7 @@
         </template>
       </div>
       <div class="input-tools-left">
-        <template v-if="groupData.isAdmin">
-          <img
-            src="./../../static/images/image.png"
-            alt=""
-            @click="uploadImgShow = true"
-          />
-          <img
-            src="./../../static/images/camera.png"
-            alt=""
-            @click="takePictureShow = true"
-          />
-        </template>
-        <template
-          v-else-if="
-            groupData.isManager &&
-            (authorityGroupData.sendImage || authority.sendImage)
-          "
-        >
-          <img
-            src="./../../static/images/image.png"
-            alt=""
-            @click="uploadImgShow = true"
-          />
-          <img
-            src="./../../static/images/camera.png"
-            alt=""
-            @click="takePictureShow = true"
-          />
-        </template>
-        <template
-          v-else-if="
-            !groupData.isAdmin &&
-            !groupData.isManager &&
-            authorityGroupData.sendImage
-          "
-        >
+        <template v-if="groupData.isAdmin || (groupData.isManager && (authorityGroupData.sendImage || authority.sendImage)) || authorityGroupData.sendImage">
           <img
             src="./../../static/images/image.png"
             alt=""
@@ -535,7 +484,6 @@ export default {
     onPasteUpload(event) {
       const items = (event.clipboardData || window.clipboardData).items;
       let file = null;
-
       if (!items || items.length === 0) {
         this.$message.error("当前浏览器不支持本地");
         return;
@@ -547,7 +495,6 @@ export default {
           break;
         }
       }
-      console.log(file);
       if (!file) {
         return;
       } else {
@@ -772,16 +719,6 @@ export default {
         }
       });
     },
-    // 表情符号转简中
-    emojiChine(category) {
-      if (category === "Frequently used") return "经常使用";
-      if (category === "People") return "笑脸与人物";
-      if (category === "Nature") return "动物与大自然";
-      if (category === "Objects") return "活动与美食";
-      if (category === "Places") return "旅游与地标";
-      if (category === "Symbols") return "符号";
-    },
-
     // 表情符号
     insert(emoji) {
       this.textArea += emoji;

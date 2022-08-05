@@ -1,6 +1,7 @@
 import Vue from "vue";
 const baseWsUrl = process.env.NODE_ENV === 'test' ? 'test.hailiao.net':location.host
 const wsUrl = `wss://${baseWsUrl}/ws/im/echo`;//動態環境
+// const wsUrl = `wss://www.hailiao.info/ws/im/echo`;//動態環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   data() {

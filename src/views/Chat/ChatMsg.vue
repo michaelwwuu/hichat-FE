@@ -1035,7 +1035,6 @@ export default {
           if (res.code === 200) {
             this.isDeleteContactDialogShow = false;
             data.isContact = false;
-            console.log(data)
             this.getHiChatDataList();
             this.setChatUser({});
             this.setHichatNav({ type: "address", num: 1 });

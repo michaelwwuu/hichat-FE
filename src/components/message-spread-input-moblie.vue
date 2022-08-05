@@ -21,7 +21,7 @@
       >
       </el-input>
       <div class="footer-tools" @touchmove="$root.handleTouch">
-        <div class="face-other-btn" @click="showDialog = !showDialog">
+        <div class="face-other-btn" @click.stop="showDialog = !showDialog">
           <img v-if="!showDialog" src="./../../static/images/emoji.png" alt="" />
           <img v-else src="./../../static/images/keyboard.svg" alt="" />
         </div> 
@@ -47,6 +47,7 @@
     </div>
     <el-dialog
       title="上传图片"
+      :before-close="closeModel"
       :visible.sync="uploadImgShow"
       width="100%"
       :append-to-body="device !== 'pc'"
@@ -64,7 +65,7 @@
         :auto-upload="false"
         :file-list="fileList"
         list-type="picture"
-        multiple
+        :limit="1"        
       >
         <el-button type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">
@@ -73,14 +74,14 @@
       </el-upload>
       <span slot="footer" class="dialog-footer">
         <template v-if="device === 'moblie'">
-          <el-button type="success" @click="submitAvatarUpload">确认</el-button>
-          <el-button @click="uploadImgShow = false">取消</el-button>
+          <el-button type="success" @click="submitAvatar()">确认</el-button>
+          <el-button @click="closeModel()">取消</el-button>
         </template>
         <template v-else>
-          <el-button class="background-gray" @click="uploadImgShow = false"
+          <el-button class="background-gray" @click="closeModel()"
             >取消</el-button
           >
-          <el-button class="background-orange" @click="submitAvatarUpload"
+          <el-button class="background-orange" @click="submitAvatar()"
             >确认</el-button
           >
         </template>
@@ -138,11 +139,11 @@ export default {
     }),
   },
   mounted() {
-    document.addEventListener("click", (e)=>{
-      if(e.target.className !== "emoji border"){
-        this.showDialog = false
+    document.addEventListener("click", (e) => {
+      if (e.target.className !== "emoji border") {
+        this.showDialog = false;
       }
-    })
+    });
   },
   methods: {
     ...mapMutations({
@@ -158,10 +159,24 @@ export default {
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
+    closeModel(){
+      this.fileList = [];
+      this.copyPicture = false   
+      this.uploadImgShow = false;
+      this.fullscreenLoading = false;
+    },    
+    handleRemove(file, fileList) {
+      this.fileList = fileList;
+    },    
+    submitAvatar() {
+      this.fileList.forEach((data)=>{
+        this.submitAvatarUpload(data.raw)
+      })
+    },    
     // 上傳圖片
-    submitAvatarUpload() {
+    submitAvatarUpload(data) {
       let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
+      formData.append("file", data);
       this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
@@ -203,16 +218,6 @@ export default {
           this.fullscreenLoading = false;
         }
       });
-    },
-
-    // 表情符号转简中
-    emojiChine(category) {
-      if (category === "Frequently used") return "经常使用";
-      if (category === "People") return "笑脸与人物";
-      if (category === "Nature") return "动物与大自然";
-      if (category === "Objects") return "活动与美食";
-      if (category === "Places") return "旅游与地标";
-      if (category === "Symbols") return "符号";
     },
 
     // 表情符号
@@ -369,23 +374,7 @@ export default {
           rgba(19, 99, 255, 0.8)
         );
       }
-      .face-icon {
-        .face-icon-box {
-          padding: 20px;
-          .face-box {
-            word-break: break-word;
-            margin-bottom: 20px;
-            h5 {
-              font-weight: 600;
-            }
-          }
-          span {
-            cursor: pointer;
-            font-size: 1.2em;
-            margin-right: 10px;
-          }
-        }
-      }
+
     }
   }
 }

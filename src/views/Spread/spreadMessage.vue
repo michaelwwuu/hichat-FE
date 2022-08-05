@@ -48,7 +48,7 @@
             >
             </el-input>
             <div class="footer-tools" @touchmove="$root.handleTouch">
-              <div class="face-other-btn" @click="showDialog = !showDialog">
+              <div class="face-other-btn" @click.stop="showDialog = !showDialog">
                 <img v-if="!showDialog" src="./../../../static/images/emoji.png" alt="" />
                 <img v-else src="./../../../static/images/keyboard.svg" alt="" />
               </div> 
@@ -68,6 +68,7 @@
           </div>
           <el-dialog
             title="上传图片"
+            :before-close="closeModel"
             :visible.sync="uploadImgShow"
             width="100%"
             :modal-append-to-body="false"
@@ -81,9 +82,11 @@
               class="upload-demo"
               action="#"
               :on-change="uploadImg"
+              :on-remove="handleRemove"
               :auto-upload="false"
               :file-list="fileList"
               list-type="picture"
+              :limit="1"              
             >
               <el-button type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">
@@ -92,18 +95,18 @@
             </el-upload>
             <span slot="footer" class="dialog-footer">
               <template v-if="device === 'moblie'">
-                <el-button type="success" @click="submitAvatarUpload"
+                <el-button type="success" @click="submitAvatar()"
                   >确认</el-button
                 >
-                <el-button @click="uploadImgShow = false">取消</el-button>
+                <el-button @click="closeModel()">取消</el-button>
               </template>
               <template v-else>
                 <el-button
                   class="background-gray"
-                  @click="uploadImgShow = false"
+                  @click="closeModel()"
                   >取消</el-button
                 >
-                <el-button class="background-orange" @click="submitAvatarUpload"
+                <el-button class="background-orange" @click="submitAvatar()"
                   >确认</el-button
                 >
               </template>
@@ -151,15 +154,6 @@ export default {
     })
   },
   methods: {
-    // 表情符号转简中
-    emojiChine(category) {
-      if (category === "Frequently used") return "经常使用";
-      if (category === "People") return "笑脸与人物";
-      if (category === "Nature") return "动物与大自然";
-      if (category === "Objects") return "活动与美食";
-      if (category === "Places") return "旅游与地标";
-      if (category === "Symbols") return "符号";
-    },
     selectEmoji(emoji) {// 选择emoji后调用的函数
       this.textArea += emoji.data
     },        
@@ -177,9 +171,23 @@ export default {
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
-    submitAvatarUpload() {
+    closeModel(){
+      this.fileList = [];
+      this.copyPicture = false   
+      this.uploadImgShow = false;
+      this.fullscreenLoading = false;
+    },    
+    handleRemove(file, fileList) {
+      this.fileList = fileList;
+    },    
+    submitAvatar() {
+      this.fileList.forEach((data)=>{
+        this.submitAvatarUpload(data.raw)
+      })
+    },        
+    submitAvatarUpload(data) {
       let formData = new FormData();
-      formData.append("file", this.fileList[0].raw);
+      formData.append("file", data);
       this.fullscreenLoading = true;
       uploadMessageImage(formData).then((res) => {
         if (res.code === 200) {
@@ -432,34 +440,7 @@ export default {
           rgba(19, 99, 255, 0.8)
         );
       }
-      .face-icon {
-        position: absolute;
-        bottom: 57px;
-        left: 0;
-        background-color: #fff;
-        width: 100%;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0px 0 7px #ccc;
-        height: 20em;
-        overflow: auto;
-        line-height: 2em;
-        z-index: 9;        
-        .face-icon-box {
-          padding: 20px;
-          .face-box {
-            word-break: break-word;
-            margin-bottom: 20px;
-            h5 {
-              font-weight: 600;
-            }
-          }
-          span {
-            cursor: pointer;
-            font-size: 1.2em;
-            margin-right: 10px;
-          }
-        }
-      }
+
     }
   }
 }

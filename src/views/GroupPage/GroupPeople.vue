@@ -405,7 +405,6 @@ export default {
             });
           });
           this.newContactList = this.contactList
-          console.log(this.newContactList)
         }
       });
     },

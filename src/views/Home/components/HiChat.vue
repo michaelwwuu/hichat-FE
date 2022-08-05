@@ -164,7 +164,8 @@
               <div>
                 <span>{{ item.name }}</span>
                 <span class="content-text">
-                  <span v-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
+                  <span v-if="item.lastChat === null"></span>
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
                     isBase64(item.lastChat.text)
                   }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
@@ -178,7 +179,7 @@
                   >
                 </span>
               </div>
-              <div class="time">
+              <div class="time" v-if="item.lastChat !== null">
                 {{ $root.formatTimeDay(item.lastChat.sendTime) }}
                 <div class="el-badge-box">
                   <el-badge

@@ -508,17 +508,6 @@ export default {
         }
       });
     },
-
-    // 表情符号转简中
-    emojiChine(category) {
-      if (category === "Frequently used") return "经常使用";
-      if (category === "People") return "笑脸与人物";
-      if (category === "Nature") return "动物与大自然";
-      if (category === "Objects") return "活动与美食";
-      if (category === "Places") return "旅游与地标";
-      if (category === "Symbols") return "符号";
-    },
-
     // 表情符号
     insert(emoji) {
       this.textArea += emoji;
