@@ -17,24 +17,13 @@
     </div>
     <div class="text-send-box">
       <el-input
-        v-if="device === 'moblie'"
         type="textarea"
         resize="none"
         :autosize="{ minRows: 1, maxRows: 1 }"
         placeholder="Aa"
         maxlength="500"
         v-model="textArea"
-      >
-      </el-input>
-      <el-input
-        v-else
-        type="textarea"
-        resize="none"
-        :autosize="{ minRows: 1, maxRows: 1 }"
-        placeholder="Aa"
-        maxlength="500"
-        v-model="textArea"
-        @keyup.native="keyUp"
+        @keyup.native="device === 'pc'?keyUp($event):false"
       >
       </el-input>
       <div class="footer-tools" @touchmove="$root.handleTouch">
@@ -521,6 +510,7 @@ export default {
     },
     // 按Enter发送消息
     keyUp(event) {
+      console.log(123)
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
