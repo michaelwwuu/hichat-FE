@@ -608,10 +608,7 @@ export default {
           data.chat.icon = item.icon;
           data.chat.name = item.name;
           data.chat.username = item.username;
-        } else if (
-          data.chat.icon === undefined &&
-          data.chat.name === undefined
-        ) {
+        } else {
           data.chat.icon = require("./../../../static/images/image_user_defult.png");
           data.chat.name = "无此成员";
         }
@@ -686,7 +683,6 @@ export default {
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
         case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
-          
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if (userInfo.chat.text !== null) {
               this.base64Msg = this.isBase64(userInfo.chat.text);
@@ -732,9 +728,9 @@ export default {
         case "SRV_GROUP_HISTORY_RSP":
           this.pinMsg = "";
           this.getPinList();
+          this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.loading = true;
           this.timeOut =
             historyMsgList.length < 10
               ? historyMsgList.length * 400

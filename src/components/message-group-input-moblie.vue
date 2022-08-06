@@ -8,7 +8,7 @@
       <div class="input-tools-right">
         <div>
           <!-- <img src="./../../static/images/plus.png" alt=""> -->
-          <template v-if="groupData.isAdmin || (groupData.isManager && (authorityGroupData.sendImage || authority.sendImage)) || authorityGroupData.sendImage">
+          <template v-if="groupData.isAdmin || (groupData.isManager && (authority.sendImage || authorityGroupData.sendImage)) || authorityGroupData.sendImage">
             <img
               src="./../../static/images/image.png"
               alt=""
@@ -22,21 +22,9 @@
       <div class="text-send-box">
         <div
           class="disable-box"
-          v-if="
-            groupData.isManager &&
-            !authorityGroupData.sendMessage &&
-            !authority.sendMessage
-          "
-          @click="disableTouch"
-        >
-          已禁止發言
-        </div>
-        <div
-          class="disable-box"
-          v-else-if="
-            !groupData.isAdmin &&
-            !groupData.isManager &&
-            !authorityGroupData.sendMessage
+          v-if="(groupData.isManager && !authority.sendMessage) || 
+                (!groupData.isAdmin && !groupData.isManager) && 
+                !authorityGroupData.sendMessage 
           "
           @click="disableTouch"
         >
@@ -114,21 +102,9 @@
       <div class="text-send-box">
         <div
           class="disable-box"
-          v-if="
-            groupData.isManager &&
-            !authorityGroupData.sendMessage &&
-            !authority.sendMessage
-          "
-          @click="disableTouch"
-        >
-          已禁止發言
-        </div>
-        <div
-          class="disable-box"
-          v-else-if="
-            !groupData.isAdmin &&
-            !groupData.isManager &&
-            !authorityGroupData.sendMessage
+          v-if="(groupData.isManager && !authority.sendMessage) || 
+                (!groupData.isAdmin && !groupData.isManager) && 
+                !authorityGroupData.sendMessage 
           "
           @click="disableTouch"
         >
@@ -515,12 +491,9 @@ export default {
     },
     submitAvatar() {
       if (
-        (!this.groupData.isAdmin &&
-          !this.groupData.isManager &&
-          !this.authorityGroupData.sendImage) ||
-        (this.groupData.isManager &&
-          !this.authorityGroupData.sendImage &&
-          !this.authority.sendImage)
+        ((!this.groupData.isAdmin && !this.groupData.isManager) ||
+        (this.groupData.isManager && !this.authority.sendImage)) && 
+        !this.authorityGroupData.sendImage
       ) {
         this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
         this.fileList = [];
@@ -682,12 +655,9 @@ export default {
     // 上傳錄音
     onAudioFile() {
       if (
-        (!this.groupData.isAdmin &&
-          !this.groupData.isManager &&
-          !this.authorityGroupData.sendImage) ||
-        (this.groupData.isManager &&
-          !this.authorityGroupData.sendImage &&
-          !this.authority.sendImage)
+        ((!this.groupData.isAdmin && !this.groupData.isManager) ||
+        (this.groupData.isManager && !this.authority.sendImage)) && 
+        !this.authorityGroupData.sendImage
       ) {
         this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
         this.sendAduioShow = false;
@@ -784,12 +754,9 @@ export default {
         return false;
       }
       if (
-        (!this.groupData.isAdmin &&
-          !this.groupData.isManager &&
-          !this.authorityGroupData.sendLink) ||
-        (this.groupData.isManager &&
-          !this.authorityGroupData.sendLink &&
-          !this.authority.sendLink)
+          ((!this.groupData.isAdmin && !this.groupData.isManager) ||
+          (this.groupData.isManager && !this.authority.sendLink)) && 
+          !this.authorityGroupData.sendLink
       ) {
         var strRegex =
           /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;

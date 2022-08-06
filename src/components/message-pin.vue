@@ -176,7 +176,10 @@ export default {
       "scroll",
       () => {
         let scrollTop =  document.querySelector(".message-pabel-box")
-        this.showScrollBar = !(scrollTop.scrollHeight -  scrollTop.scrollTop ===  scrollTop.clientHeight)
+        this.showScrollBar = !(
+          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.199951171875 : 0.60009765625)  <=
+          scrollTop.clientHeight
+        );
       },
       true
     );

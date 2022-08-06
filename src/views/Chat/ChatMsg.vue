@@ -867,7 +867,6 @@ export default {
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 400 : historyMsgList.length * 40;
-
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
