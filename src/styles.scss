@@ -72,7 +72,6 @@ body {
       overflow-x: hidden;
       flex: 1;
       overflow-y: auto;
-
       .user-data {
         margin: 1.5em auto 2.5em auto;
         text-align: center;
@@ -216,15 +215,16 @@ body {
       z-index: 8;
 
       .el-tabs__header {
-        position: fixed;
-        top: 105px;
+        // position: fixed;
+        // top: 105px;
         width: 100vw;
         z-index: 9;
         background-color: #eaf5fa;
         display: flex;
         justify-content: space-evenly;
         margin: 0;
-        padding: 5px 0;
+        // padding: 5px 0;
+        height: 49px;
 
         .el-tabs__nav-wrap {
           &:after {
@@ -258,7 +258,7 @@ body {
 
       .el-tabs__content {
         position: relative;
-        top: 2.4em;
+        // top: 2.4em;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         z-index: 5;
@@ -745,10 +745,10 @@ body {
       width: 100%;
 
       .el-tabs__header {
-        top: 70px;
+        // top: 70px;
         width: 314px;
         height: 54px;
-        position: absolute;
+        position: relative;
         background-color: #FFFFFF !important;
         padding: 0;
 
@@ -775,8 +775,8 @@ body {
 
       .el-tabs__content {
         border-top: 0.01em solid rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-        top: 3.4em;
+        overflow-y: auto;
+        // top: 3.4em;
       }
     }
 

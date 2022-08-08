@@ -757,6 +757,28 @@ export default {
         isPing:false,
       };
     },
+    // 訊息過濾比對名稱
+    messageReorganization(data){
+      if (data.toChatId === this.chatUser.toChatId) {
+        data.name = this.chatUser.name;
+        data.icon = this.chatUser.icon;
+        data.nickName = this.chatUser.name;
+      } else {
+        data.name = this.myUserInfo.nickname;
+        data.icon = this.myUserInfo.icon;
+      }
+      if (data.isRplay !== null) {
+        if (data.isRplay.fromChatId === this.chatUser.toChatId) {
+          data.isRplay.name = this.chatUser.name;
+          data.isRplay.icon = this.chatUser.icon;
+          data.isRplay.nickName = this.chatUser.name;
+        } else {
+          data.isRplay.name = this.myUserInfo.nickname;
+          data.isRplay.icon = this.myUserInfo.icon;
+          data.isRplay.nickName = this.myUserInfo.nickname;
+        }
+      }
+    },    
     //判斷是否base64
     isBase64(data) {
       return AESBase64(data, this.aesKey ,this.aesIv)
@@ -818,40 +840,12 @@ export default {
         case "SRV_USER_SEND":
         case "SRV_CHAT_PIN":       
           if (userInfo.toChatId === this.chatUser.toChatId) {
-            if (userInfo.chat.fromChatId === this.chatUser.toChatId) {
-              userInfo.chat.name = this.chatUser.name;
-              userInfo.chat.icon = this.chatUser.icon;
-              userInfo.chat.nickName = this.chatUser.name;
-            } else if (
-              userInfo.chat.fromChatId ===
-              "u" + JSON.parse(localStorage.getItem("id"))
-            ) {
-              userInfo.chat.name = this.myUserInfo.nickname;
-              userInfo.chat.icon = this.myUserInfo.icon;
-            }
-
-            if (userInfo.replyChat !== null) {
-              if (userInfo.replyChat.fromChatId === this.chatUser.toChatId) {
-                userInfo.replyChat.name = this.chatUser.name;
-                userInfo.replyChat.icon = this.chatUser.icon;
-                userInfo.replyChat.nickName = this.chatUser.name;
-              } else if (
-                userInfo.replyChat.fromChatId ===
-                "u" + JSON.parse(localStorage.getItem("id"))
-              ) {
-                userInfo.replyChat.name = this.myUserInfo.nickname;
-                userInfo.replyChat.icon = this.myUserInfo.icon;
-                userInfo.replyChat.nickName = this.myUserInfo.nickname;
-              }
-            }
             this.messageList(userInfo);
+            this.messageReorganization(this.chatRoomMsg)
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
             if (this.device === "pc") this.getHiChatDataList();
-            if (
-              userInfo.chat.fromChatId !==
-              "u" + JSON.parse(localStorage.getItem("id"))
-            ) {
+            if (userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))) {
               this.audioAction();
             }
           }
@@ -866,36 +860,11 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.timeOut = historyMsgList.length < 10 ? historyMsgList.length * 400 : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
-                if (el.chat.fromChatId === this.chatUser.toChatId) {
-                  el.chat.name = this.chatUser.name;
-                  el.chat.icon = this.chatUser.icon;
-                  el.chat.nickName = this.chatUser.name;
-                } else if (
-                  el.chat.fromChatId ===
-                  "u" + JSON.parse(localStorage.getItem("id"))
-                ) {
-                  el.chat.name = this.myUserInfo.nickname;
-                  el.chat.icon = this.myUserInfo.icon;
-                }
-                if (el.replyChat !== null) {
-                  if (el.replyChat.fromChatId === this.chatUser.toChatId) {
-                    el.replyChat.name = this.chatUser.name;
-                    el.replyChat.icon = this.chatUser.icon;
-                    el.replyChat.nickName = this.chatUser.name;
-                  } else if (
-                    el.replyChat.fromChatId ===
-                    "u" + JSON.parse(localStorage.getItem("id"))
-                  ) {
-                    el.replyChat.name = this.myUserInfo.nickname;
-                    el.replyChat.icon = this.myUserInfo.icon;
-                    el.replyChat.nickName = this.myUserInfo.nickname;
-                  }
-                }
                 this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
                 this.messageData.unshift(this.chatRoomMsg);
               });
               this.readMsg = historyMsgList.filter((el) => {
@@ -904,7 +873,7 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)  this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
               this.loading = false;
-            }, this.timeOut);
+            }, 1000);
           });   
           break;
         // 已讀

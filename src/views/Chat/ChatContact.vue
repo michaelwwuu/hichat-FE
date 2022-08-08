@@ -616,6 +616,28 @@ export default {
         isRplay: data.replyChat === null ? null : data.replyChat,
       };
     },
+    // 訊息過濾比對名稱
+    messageReorganization(data){
+      if (data.toChatId === this.contactUser.toChatId) {
+        data.name = this.contactUser.name;
+        data.icon = this.contactUser.icon;
+        data.nickName = this.contactUser.name;
+      } else {
+        data.name = this.myUserInfo.nickname;
+        data.icon = this.myUserInfo.icon;
+      }
+      if (data.isRplay !== null) {
+        if (data.isRplay.fromChatId === this.contactUser.toChatId) {
+          data.isRplay.name = this.contactUser.name;
+          data.isRplay.icon = this.contactUser.icon;
+          data.isRplay.nickName = this.contactUser.name;
+        } else {
+          data.isRplay.name = this.myUserInfo.nickname;
+          data.isRplay.icon = this.myUserInfo.icon;
+          data.isRplay.nickName = this.myUserInfo.nickname;
+        }
+      }
+    },        
     //判斷是否base64
     isBase64(data) {
       return AESBase64(data, this.aesKey ,this.aesIv)
@@ -637,8 +659,8 @@ export default {
       this.setMsgInfoPage({ pageShow: true, type: "" });
       this.setInfoMsg({
         infoMsgShow: true,
-        infoMsgNav: "ContactPage",
         infoMsgChat: true,
+        infoMsgNav: "ContactPage",
       });
     },
     // 已讀
@@ -679,55 +701,16 @@ export default {
         case "SRV_USER_SEND":
         case "SRV_CHAT_PIN":
           if (userInfo.toChatId === this.contactUser.toChatId) {
-            if (userInfo.chat.fromChatId === this.contactUser.toChatId) {
-              userInfo.chat.name = this.contactUser.name;
-              userInfo.chat.icon = this.contactUser.icon;
-              userInfo.chat.nickName = this.contactUser.name;
-            } else if (
-              userInfo.chat.fromChatId ===
-              "u" + JSON.parse(localStorage.getItem("id"))
-            ) {
-              userInfo.chat.name = JSON.parse(
-                localStorage.getItem("myUserInfo")
-              ).nickname;
-              userInfo.chat.icon = JSON.parse(
-                localStorage.getItem("myUserInfo")
-              ).icon;
-            }
-            if (userInfo.replyChat !== null) {
-              if (userInfo.replyChat.fromChatId === this.contactUser.toChatId) {
-                userInfo.replyChat.name = this.contactUser.name;
-                userInfo.replyChat.icon = this.contactUser.icon;
-                userInfo.replyChat.nickName = this.contactUser.name;
-              } else if (
-                userInfo.replyChat.fromChatId ===
-                "u" + JSON.parse(localStorage.getItem("id"))
-              ) {
-                userInfo.replyChat.name = JSON.parse(
-                  localStorage.getItem("myUserInfo")
-                ).nickname;
-                userInfo.replyChat.icon = JSON.parse(
-                  localStorage.getItem("myUserInfo")
-                ).icon;
-                userInfo.replyChat.nickName = JSON.parse(
-                  localStorage.getItem("myUserInfo")
-                ).nickname;
-              }
-            }
-
             this.getHiChatDataList();
             this.messageList(userInfo);
+            this.messageReorganization(this.chatRoomMsg)
             this.messageData.push(this.chatRoomMsg);
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if (
-              userInfo.chat.fromChatId !==
-              "u" + JSON.parse(localStorage.getItem("id"))
-            ) {
+            if (userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))) {
               this.audioAction();
             }
           }
           break;
-        // case "SRV_CHAT_PIN":
         case "SRV_CHAT_UNPIN":
           this.getChatHistoryMessage();
           break;
@@ -740,46 +723,11 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.timeOut = historyMsgList.length * 15;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
-                if (el.chat.fromChatId === this.contactUser.toChatId) {
-                  el.chat.name = this.contactUser.name;
-                  el.chat.icon = this.contactUser.icon;
-                  el.chat.nickName = this.contactUser.name;
-                } else if (
-                  el.chat.fromChatId ===
-                  "u" + JSON.parse(localStorage.getItem("id"))
-                ) {
-                  el.chat.name = JSON.parse(
-                    localStorage.getItem("myUserInfo")
-                  ).nickname;
-                  el.chat.icon = JSON.parse(
-                    localStorage.getItem("myUserInfo")
-                  ).icon;
-                }
-                if (el.replyChat !== null) {
-                  if (el.replyChat.fromChatId === this.contactUser.toChatId) {
-                    el.replyChat.name = this.contactUser.name;
-                    el.replyChat.icon = this.contactUser.icon;
-                    el.replyChat.nickName = this.contactUser.name;
-                  } else if (
-                    el.replyChat.fromChatId ===
-                    "u" + JSON.parse(localStorage.getItem("id"))
-                  ) {
-                    el.replyChat.name = JSON.parse(
-                      localStorage.getItem("myUserInfo")
-                    ).nickname;
-                    el.replyChat.icon = JSON.parse(
-                      localStorage.getItem("myUserInfo")
-                    ).icon;
-                    el.replyChat.nickName = JSON.parse(
-                      localStorage.getItem("myUserInfo")
-                    ).nickname;
-                  }
-                }
                 this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
                 this.messageData.unshift(this.chatRoomMsg);
               });
               this.readMsg = historyMsgList.filter((el) => {
@@ -789,7 +737,7 @@ export default {
                 this.readMsgShow(this.readMsg[0]);
               this.getHiChatDataList();
               this.loading = false;
-            }, this.timeOut);
+            }, 1000);
           });
           break;
         // 已讀

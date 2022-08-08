@@ -392,6 +392,7 @@ export default {
       }
     }
     .home-content {
+
       .el-checkbox {
         width: 100%;
       }

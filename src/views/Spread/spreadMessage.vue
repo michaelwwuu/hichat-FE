@@ -157,10 +157,6 @@ export default {
     selectEmoji(emoji) {// 选择emoji后调用的函数
       this.textArea += emoji.data
     },        
-    // 表情符号
-    insert(emoji) {
-      this.textArea += emoji;
-    },
     getSpreadDataList() {
       this.spreadDataList = this.$route.params.spreadData;
     },

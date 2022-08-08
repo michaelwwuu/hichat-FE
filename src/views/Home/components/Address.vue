@@ -68,6 +68,9 @@ export default {
     Socket.$off("message", this.handleGetMessage);
     clearInterval(this.memberTime)
   },
+  mounted() {
+    this.homeScrollHeight()
+  },
   computed: {
     ...mapState({
       wsRes: (state) => state.ws.wsRes,
@@ -94,6 +97,12 @@ export default {
       setActiveName: "ws/setActiveName",
       setMyContactDataList:"ws/setMyContactDataList"
     }),
+    homeScrollHeight(){
+      let scrollTop = document.querySelector(".home-content");
+      let headerScrollTop = document.querySelector(".is-top");
+      let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
+      document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';       
+    },
     handleClick() {
       this.setInfoMsg({ infoMsgShow: false });
       this.setActiveName(this.activeName);

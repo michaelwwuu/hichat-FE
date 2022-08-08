@@ -516,6 +516,29 @@ export default {
         isPing: false,
       };
     },
+    // 訊息過濾比對名稱
+    messageReorganization(data){
+      this.contactListData.forEach((item) => {
+        if (data.userChatId === "u" + item.memberId) {
+          data.icon = item.icon;
+          data.name = item.name;
+          data.username = item.username;
+        } else if (
+          data.icon === undefined &&
+          data.name === undefined
+        ) {
+          data.icon = require("./../../../static/images/image_user_defult.png");
+          data.name = "无此成员";
+        }
+        if (
+          data.isRplay !== null &&
+          data.isRplay.fromChatId === "u" + item.memberId
+        ) {
+          data.isRplay.icon = item.icon;
+          data.isRplay.nickName = item.name;
+        }        
+      })      
+    },    
     //判斷是否base64
     isBase64(data) {
       return AESBase64(data, this.aesKey ,this.aesIv)
@@ -556,6 +579,7 @@ export default {
           });
       }
     },
+
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -572,44 +596,22 @@ export default {
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
         case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
-          if (userInfo.chatType === "SRV_GROUP_DEL") {
-            if (userInfo.chat.fromChatId === "u" + localStorage.getItem("id")) {
-              this.isLeaveGroupShow = true;
-            }
-          }
           if (this.groupUser.toChatId === userInfo.toChatId) {
             if (userInfo.chat.text !== null) {
               this.base64Msg = this.isBase64(userInfo.chat.text);
               userInfo.chat.newContent = this.base64Msg.split(" ");
             }
-            this.groupListData = JSON.parse(
-              localStorage.getItem("groupListMember")
-            );
-            this.groupListData.forEach((item) => {
-              if (userInfo.chat.fromChatId === "u" + item.memberId) {
-                userInfo.chat.icon = item.icon;
-                userInfo.chat.name = item.name;
-                userInfo.chat.username = item.username;
-              } else if (
-                userInfo.chat.icon === undefined &&
-                userInfo.chat.name === undefined
-              ) {
-                userInfo.chat.icon = require("./../../../static/images/image_user_defult.png");
-                userInfo.chat.name = "无此成员";
-              }
-              if (
-                userInfo.replyChat !== null &&
-                userInfo.replyChat.fromChatId === "u" + item.memberId
-              ) {
-                userInfo.replyChat.icon = item.icon;
-                userInfo.replyChat.nickName = item.name;
-              }
-            });
             this.messageList(userInfo);
+            this.messageReorganization(this.chatRoomMsg)
             this.readMsgShow(userInfo);
             this.messageData.push(this.chatRoomMsg);
             if (userInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
               this.audioAction();
+            }
+          }
+          if (userInfo.chatType === "SRV_GROUP_DEL") {
+            if (userInfo.chat.fromChatId === "u" + localStorage.getItem("id")) {
+              this.isLeaveGroupShow = true;
             }
           }
           break;
@@ -637,45 +639,19 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.timeOut =
-            historyMsgList.length < 10
-              ? historyMsgList.length * 400
-              : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
-                this.groupListData = JSON.parse(
-                  localStorage.getItem("groupListMember")
-                );
-                this.groupListData.forEach((item) => {
-                  if (el.chat.fromChatId === "u" + item.memberId) {
-                    el.chat.icon = item.icon;
-                    el.chat.name = item.name;
-                    el.chat.username = item.username;
-                  } else if (
-                    el.chat.icon === undefined &&
-                    el.chat.name === undefined
-                  ) {
-                    el.chat.icon = require("./../../../static/images/image_user_defult.png");
-                    el.chat.name = "无此成员";
-                  }
-                  if (
-                    el.replyChat !== null &&
-                    el.replyChat.fromChatId === "u" + item.memberId
-                  ) {
-                    el.replyChat.icon = item.icon;
-                    el.replyChat.nickName = item.name;
-                  }
-                });
                 this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
                 this.messageData.unshift(this.chatRoomMsg);
               });
               if (historyMsgList.length > 0)
                 this.readMsgShow(historyMsgList[0]);
               this.loading = false;
-            }, this.timeOut);
+            }, 1000);
           });
           break;
         // 已讀
@@ -686,7 +662,7 @@ export default {
           break;
         // 編輯訊息
         case "SRV_CHAT_EDIT":
-          this.messageData = this.messageData.forEach((res) => {
+          this.messageData.forEach((res) => {
             if (res.historyId === userInfo.historyId) {
               res.message.content = userInfo.chat.text;
               res.newContent = this.isBase64(userInfo.chat.text).split(" ");

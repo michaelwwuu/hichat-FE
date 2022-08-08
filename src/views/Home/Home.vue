@@ -376,9 +376,6 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.getContactDataList();
     this.getUserData();
-    // if(localStorage.getItem("nofity") === null){
-    //   this.setNofiy(this.nofity)
-    // }
     if (localStorage.getItem("soundNofiy") === null) {
       this.setSoundNofiy(this.soundNofiy);
     }
@@ -747,29 +744,21 @@ export default {
       }
       Socket.send(this.getHistoryMessage);
     },
-    // loginOut() {
-    //   logout()
-    //     .then((res) => {
-    //       if (res.code === 200 && res.message === "登出成功") {
-    //         this.$router.push({ path: "/login" });
-    //         localStorage.removeItem("id");
-    //         localStorage.removeItem("token");
-    //         localStorage.removeItem("myUserInfo");
-    //         localStorage.removeItem("myUserList");
-    //         window.location.reload();
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       return false;
-    //     });
-    // },
     loginOut() {
-      this.$router.push({ path: "/login" });
-      localStorage.removeItem("id");
-      localStorage.removeItem("token");
-      localStorage.removeItem("myUserInfo");
-      localStorage.removeItem("myUserList");
-      window.location.reload();
+      logout()
+        .then((res) => {
+          if (res.code === 200 && res.message === "登出成功") {
+            this.$router.push({ path: "/login" });
+            localStorage.removeItem("id");
+            localStorage.removeItem("token");
+            localStorage.removeItem("myUserInfo");
+            localStorage.removeItem("myUserList");
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          return false;
+        });
     },
   },
   components: {

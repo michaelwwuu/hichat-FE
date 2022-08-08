@@ -46,7 +46,6 @@
                     class="message-classic"
                     @contextmenu.prevent.stop="onContextmenu(el)"
                     @dblclick="dblclick(el)"
-                    :id="el.historyId"
                   >
                     <div class="message-box">
                       <div
@@ -382,6 +381,7 @@ export default {
         });
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
           newData;
+          
       });
       this.$root.gotoBottom();
     },
@@ -392,7 +392,7 @@ export default {
       () => {
         let scrollTop = document.querySelector(".message-pabel-box");
         this.showScrollBar = !(
-          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.199951171875 : 0.60009765625)  <=
+          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
       },
@@ -513,20 +513,14 @@ export default {
         return;
       } else {
         this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
-        if (this.device === "moblie") {
-          if (
-            data === JSON.parse(localStorage.getItem("myUserInfo")).username
-          ) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
-            this.$router.push({ name: "ContactPage" });
-          }
+        if (
+          data === JSON.parse(localStorage.getItem("myUserInfo")).username
+        ) {
+          this.$message({ message: "此即为您的帐号", type: "warning" });
         } else {
-          if (
-            data === JSON.parse(localStorage.getItem("myUserInfo")).username
-          ) {
-            this.$message({ message: "此即为您的帐号", type: "warning" });
-          } else {
+          if (this.device === "moblie"){
+            this.$router.push({ name: "ContactPage" });
+          } else{
             this.carteContact[0].type = "address";
             this.setInfoMsg({
               infoMsgShow: true,

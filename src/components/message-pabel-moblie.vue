@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box" @touchmove="$root.handleTouch">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch"  >
     <ul class="message-styles-box">
       <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
@@ -12,8 +12,9 @@
             :label="el"
             :disabled="checkBoxDisabled"
             :class="judgeClass(item[index])"
+            @scroll="paperScroll(el.message.content)"
           >
-            <li>
+            <li >
               <template v-if="el.chatType !== 'SRV_CHAT_PIN'">
                 <p
                   :class="[
@@ -33,7 +34,7 @@
                     class="message-classic"
                     v-if="el.chatType === 'SRV_USER_SEND'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)"
+                    @dblclick="dblclick(el)" 
                   >
                     <template v-if="el.isRplay !== null">
                       <div
@@ -190,7 +191,6 @@ import {
   pinHistory,
   unpinHistory,
 } from "@/api";
-import { Encrypt } from "@/utils/AESUtils.js";
 import AESBase64 from "@/utils/AESBase64.js";
 
 import VueMarkdown from "vue-markdown";
@@ -289,6 +289,7 @@ export default {
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.199951171875 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
+        // console.log(document.querySelector(".el-checkbox__label"))
       },
       true
     );
@@ -302,9 +303,12 @@ export default {
   methods: {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
-      setMyUserInfo: "ws/setMyUserInfo",
       setReplyMsg: "ws/setReplyMsg",
+      setMyUserInfo: "ws/setMyUserInfo",
     }),
+    paperScroll(event){
+      console.log(event)
+    },
     IsURL(str_url) {
       var strRegex =
         /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
@@ -315,7 +319,6 @@ export default {
         return false;
       }
     },
-
     pinUserName(data) {
       if (data === this.myUserInfo.username) {
         return (data = "你");

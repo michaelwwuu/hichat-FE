@@ -219,12 +219,6 @@ export default {
         }
       });
     },
-
-    // 表情符号
-    insert(emoji) {
-      this.textArea += emoji;
-    },
-
     // 消息过滤
     textAreaTran() {
       return this.textArea

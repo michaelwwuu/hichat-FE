@@ -603,23 +603,6 @@ export default {
     },
     // 訊息統一格式
     messageList(data) {
-      this.contactListData.forEach((item) => {
-        if (data.chat.fromChatId === "u" + item.memberId) {
-          data.chat.icon = item.icon;
-          data.chat.name = item.name;
-          data.chat.username = item.username;
-        } else {
-          data.chat.icon = require("./../../../static/images/image_user_defult.png");
-          data.chat.name = "无此成员";
-        }
-        if (
-          data.replyChat !== null &&
-          data.replyChat.fromChatId === "u" + item.memberId
-        ) {
-          data.replyChat.icon = item.icon;
-          data.replyChat.nickName = item.name;
-        }
-      });
       this.chatRoomMsg = {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
@@ -638,6 +621,29 @@ export default {
         isPing: false,
       };
     },
+    // 訊息過濾比對名稱
+    messageReorganization(data){
+      this.contactListData.forEach((item) => {
+        if (data.userChatId === "u" + item.memberId) {
+          data.icon = item.icon;
+          data.name = item.name;
+          data.username = item.username;
+        } else if (
+          data.icon === undefined &&
+          data.name === undefined
+        ) {
+          data.icon = require("./../../../static/images/image_user_defult.png");
+          data.name = "无此成员";
+        }
+        if (
+          data.isRplay !== null &&
+          data.isRplay.fromChatId === "u" + item.memberId
+        ) {
+          data.isRplay.icon = item.icon;
+          data.isRplay.nickName = item.name;
+        }        
+      })      
+    },        
     //判斷是否base64
     isBase64(data) {
       return AESBase64(data, this.aesKey ,this.aesIv)
@@ -668,6 +674,7 @@ export default {
           });
       }
     },
+
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
@@ -689,6 +696,7 @@ export default {
               userInfo.chat.newContent = this.base64Msg.split(" ");
             }
             this.messageList(userInfo);
+            this.messageReorganization(this.chatRoomMsg)
             this.messageData.push(this.chatRoomMsg);
             this.getHiChatDataList();
             if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
@@ -731,16 +739,13 @@ export default {
           this.loading = true;
           this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
-          this.timeOut =
-            historyMsgList.length < 10
-              ? historyMsgList.length * 400
-              : historyMsgList.length * 40;
           this.$nextTick(() => {
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
                 this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
                 this.messageData.unshift(this.chatRoomMsg);
               });
               if (historyMsgList.length > 0) {
@@ -748,7 +753,7 @@ export default {
               }
               this.loading = false;
               this.getHiChatDataList();
-            }, this.timeOut);
+            }, 1000);
           });
           break;
         // 已讀

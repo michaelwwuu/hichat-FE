@@ -268,6 +268,7 @@ export default {
   },
   mounted() {
     this.getHiChatDataList();
+    this.homeScrollHeight()
   },
   watch: {
     contactDataList(val) {
@@ -295,6 +296,12 @@ export default {
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
+    homeScrollHeight(){
+      let scrollTop = document.querySelector(".home-content");
+      let headerScrollTop = document.querySelector(".is-top");
+      let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
+      document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';       
+    },    
     judgeTextMarking(data) {
       if (
         ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(
@@ -322,16 +329,9 @@ export default {
       }
     },
     handleClick(tab) {
-      if (tab.name === "address") {
+      if (tab.name === "address" || tab.name === "contact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-        this.memberTime = setInterval(() => {
-          this.getUserMemberActivity(this.noGroupPeopleData)
-        }, 30000);
-      } else if (tab.name === "contact") {
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.contactUser.toChatId;
+        this.getHistoryMessage.toChatId = tab.name === "address" ? this.chatUser.toChatId : this.contactUser.toChatId;
         this.getHistoryMessage.id = Math.random();
         this.memberTime = setInterval(() => {
           this.getUserMemberActivity(this.noGroupPeopleData)
@@ -571,23 +571,8 @@ export default {
     }
   }
   .contont-box {
-    padding-left: 1em;
-    height: 48px;
     .msg-box {
-      height: 48px;
-      display: flex;
-      span {
-        display: block;
-        font-size: 16px;
-        &:nth-child(1) {
-          margin-bottom: 7px;
-        }
-      }
       .content-text {
-        display: flex;
-        font-size: 14px;
-        opacity: 0.5;
-        height: 20px;
         span {
           &:nth-child(1) {
             width: 15em;
@@ -615,12 +600,6 @@ export default {
           }
         }
       }
-    }
-    .contont-border-bottom {
-      width: 100vw;
-      border-bottom: 0.02em solid rgba(0, 0, 0, 0.05);
-      position: absolute;
-      margin-top: -1px;
     }
   }
 }
@@ -682,5 +661,8 @@ export default {
       }
     }
   }
+}
+.home-content{
+  overflow: hidden !important;
 }
 </style>

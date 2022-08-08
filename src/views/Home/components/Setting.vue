@@ -252,29 +252,21 @@ export default {
         duration: 1000,
       });
     },
-    // loginOut() {
-    //   logout().then((res) => {
-    //     if(res.code === 200 && res.message === "登出成功"){
-    //       this.$router.push({ path: "/login" });
-    //       localStorage.removeItem("id");
-    //       localStorage.removeItem("token");
-    //       localStorage.removeItem("myUserInfo");
-    //       localStorage.removeItem("myUserList");
-    //       window.location.reload();
-    //     }
-    //   })
-    //   .catch((err)=>{
-    //     return false
-    //   })
-    // },
     loginOut() {
-      this.$router.push({ path: "/login" });
-      localStorage.removeItem("id");
-      localStorage.removeItem("token");
-      localStorage.removeItem("myUserInfo");
-      localStorage.removeItem("myUserList");
-      window.location.reload();
-    },  
+      logout().then((res) => {
+        if(res.code === 200 && res.message === "登出成功"){
+          this.$router.push({ path: "/login" });
+          localStorage.removeItem("id");
+          localStorage.removeItem("token");
+          localStorage.removeItem("myUserInfo");
+          localStorage.removeItem("myUserList");
+          window.location.reload();
+        }
+      })
+      .catch((err)=>{
+        return false
+      })
+    },
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       let userInfo = JSON.parse(msg);
