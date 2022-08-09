@@ -378,6 +378,7 @@ export default {
         let textAreaSearchData = val.split(" ");
         textAreaSearchData.forEach((el) => {
           this.searchContactData = this.contactListData.filter((item) => {
+            console.log(item)
             return item.name.indexOf(el.replace("@", "")) !== -1;
           });
         });

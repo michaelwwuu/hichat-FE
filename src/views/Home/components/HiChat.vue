@@ -494,7 +494,6 @@ export default {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
         this.setChatUser(data);
-        
       } else if (path === "ChatContact") {
         this.setContactUser(data);
       } else {
@@ -523,7 +522,6 @@ export default {
         } else if (!data.isBlock && !data.isContact && !data.isGroup) {
           this.type = "contact";
         }
-
         this.setHichatNav({ type: this.type, num: 1 });
         this.setInfoMsg({
           infoMsgShow: false,
