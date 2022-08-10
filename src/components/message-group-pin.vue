@@ -22,22 +22,14 @@
                 <div class="message-name">{{ el.chat.name }}</div>
                 <div class="message-box-content">
                   <span
-                    v-if="
-                      isBase64(el.chat.text).match(
-                        /(http|https):\/\/([\w.]+\/?)\S*/gi
-                      ) === null
-                    "
+                    v-if="!IsURL(isBase64(el.chat.text))"
                     @click.prevent.stop="
                       device === 'moblie' ? onContextmenu(el) : false
                     "
                     v-html="isBase64(el.chat.text)"
                   ></span>
                   <div
-                    v-else-if="
-                      isBase64(el.chat.text).match(
-                        /(http|https):\/\/([\w.]+\/?)\S*/gi
-                      )
-                    "
+                    v-else-if="IsURL(isBase64(el.chat.text))"
                   >
                     <div
                       v-if="device === 'moblie'"
@@ -198,6 +190,16 @@ export default {
       setTopMsgShow: "ws/setTopMsgShow",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
+    IsURL(str_url) {
+      var strRegex =
+        /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+      var re = new RegExp(strRegex);
+      if (re.test(str_url)) {
+        return true;
+      } else {
+        return false;
+      }
+    },    
     goMessageAction(data) {
       this.setGoAnchorMessage(data);
       this.setTopMsgShow(true);
@@ -212,13 +214,12 @@ export default {
           this.pinDataList = res.data.reverse();
           this.newMessageData = {};
           this.pinDataList.forEach((el) => {
-            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
-              [];
+            this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] = [];
             this.contactListData.forEach((list) => {
               if (el.chat.fromChatId === "u" + list.memberId) {
                 el.chat.name = list.name;
                 el.chat.icon = list.icon;
-              }else{
+              } else if(el.chat.icon === undefined && el.chat.name === undefined) {
                 el.chat.icon = require("./../../static/images/image_user_defult.png");
                 el.chat.name = "无此成员";
               }

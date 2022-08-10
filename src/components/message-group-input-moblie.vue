@@ -4,149 +4,88 @@
     :style="device !== 'moblie' ? 'height:59px' : ''"
     @touchmove="$root.handleTouch"
   >
-    <template v-if="device === 'moblie'">
-      <div class="input-tools-right">
-        <div>
-          <!-- <img src="./../../static/images/plus.png" alt=""> -->
-          <template v-if="groupData.isAdmin || (groupData.isManager && (authority.sendImage || authorityGroupData.sendImage)) || authorityGroupData.sendImage">
-            <img
-              src="./../../static/images/image.png"
-              alt=""
-              @click="uploadImgShow = true"
-            />
-          </template>
-          <!-- <img src="./../../static/images/camera.png" alt=""> -->
-        </div>
-      </div>
-
-      <div class="text-send-box">
-        <div
-          class="disable-box"
-          v-if="(groupData.isManager && !authority.sendMessage) || 
-                (!groupData.isAdmin && !groupData.isManager) && 
-                !authorityGroupData.sendMessage 
-          "
-          @click="disableTouch"
-        >
-          已禁止發言
-        </div>
-        <template v-else>
-          <el-input
-            type="textarea"
-            resize="none"
-            :autosize="{ minRows: 1, maxRows: 1 }"
-            placeholder="Aa"
-            v-model="textArea"
-            maxlength="500"
-            @keyup.native="callout"
-          >
-          </el-input>
-          <div class="footer-tools" @touchmove="$root.handleTouch">
-            <div class="face-other-btn" @click.stop="showDialog = !showDialog">
-              <img v-if="!showDialog" src="./../../static/images/emoji.png" alt="" />
-              <img v-else src="./../../static/images/keyboard.svg" alt="" />
-            </div> 
-            <div class="face-icon" v-show="showDialog">
-              <VEmojiPicker :showSearch="false" :showCategories="false" :emojisByRow="10" @select="selectEmoji"/>
-            </div>
-          </div>
-        </template>
-      </div>
-
-      <div class="input-tools-left">
-        <template v-if="groupData.isAdmin">
-          <div v-if="textArea === ''" @click="sendAduio">
-            <img src="./../../static/images/audio.png" alt="" />
-          </div>
-          <div
-            v-else
-            @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
-          >
-            <img src="./../../static/images/send.png" alt="" />
-          </div>
-        </template>
-        <template v-else-if="groupData.isManager">
-          <div
-            v-if="
-              textArea === '' &&
-              (authorityGroupData.sendImage || authority.sendImage)
-            "
-            @click="sendAduio"
-          >
-            <img src="./../../static/images/audio.png" alt="" />
-          </div>
-          <div
-            v-else-if="authorityGroupData.sendMessage || authority.sendMessage"
-            @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
-          >
-            <img src="./../../static/images/send.png" alt="" />
-          </div>
-        </template>
-        <template v-else>
-          <div
-            v-if="textArea === '' && authorityGroupData.sendImage"
-            @click="sendAduio"
-          >
-            <img src="./../../static/images/audio.png" alt="" />
-          </div>
-          <div
-            v-else-if="authorityGroupData.sendMessage"
-            @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
-          >
-            <img src="./../../static/images/send.png" alt="" />
-          </div>
-        </template>
-      </div>
-    </template>
-    <template v-else>
-      <div class="text-send-box">
-        <div
-          class="disable-box"
-          v-if="(groupData.isManager && !authority.sendMessage) || 
-                (!groupData.isAdmin && !groupData.isManager) && 
-                !authorityGroupData.sendMessage 
-          "
-          @click="disableTouch"
-        >
-          已禁止發言
-        </div>
-        <template v-else>
-          <el-input
-            type="textarea"
-            resize="none"
-            :autosize="{ minRows: 1, maxRows: 1 }"
-            placeholder="Aa"
-            v-model="textArea"
-            maxlength="500"
-            @keyup.native="keyUp"
-          >
-          </el-input>
-          <div class="footer-tools">
-            <div class="face-other-btn" @click.stop="showDialog = !showDialog">
-              <img v-if="!showDialog" src="./../../static/images/emoji.png" alt="" />
-              <img v-else src="./../../static/images/keyboard.svg" alt="" />
-            </div> 
-            <div class="face-icon" v-show="showDialog">
-              <VEmojiPicker :showSearch="false" :showCategories="false" :emojisByRow="10" @select="selectEmoji"/>
-            </div>
-          </div>
-        </template>
-      </div>
-      <div class="input-tools-left">
-        <template v-if="groupData.isAdmin || (groupData.isManager && (authorityGroupData.sendImage || authority.sendImage)) || authorityGroupData.sendImage">
+ 
+    <div class="input-tools-right" v-if="device === 'moblie'">
+      <div>
+        <!-- <img src="./../../static/images/plus.png" alt=""> -->
+        <template v-if="authorityGroupSendImg(groupData)">
           <img
             src="./../../static/images/image.png"
             alt=""
             @click="uploadImgShow = true"
           />
-          <img
-            src="./../../static/images/camera.png"
-            alt=""
-            @click="takePictureShow = true"
-          />
         </template>
+        <!-- <img src="./../../static/images/camera.png" alt=""> -->
       </div>
-    </template>
+    </div>
+    <div class="text-send-box">
+      <div
+        class="disable-box"
+        v-if="authorityGroupSendMessage(groupData,'disable')"
+        @click="disableTouch"
+      >
+        已禁止發言
+      </div>
+      <template v-else>
+        <el-input
+          type="textarea"
+          resize="none"
+          :autosize="{ minRows: 1, maxRows: 1 }"
+          placeholder="Aa"
+          v-model="textArea"
+          maxlength="500"
+          @keyup.native="device === 'moblie' ? callout() : keyUp($event)"
+        >
+        </el-input>
+        <div class="footer-tools" @touchmove="$root.handleTouch">
+          <div class="face-other-btn" @click.stop="showDialog = !showDialog">
+            <img
+              v-if="!showDialog"
+              src="./../../static/images/emoji.png"
+              alt=""
+            />
+            <img v-else src="./../../static/images/keyboard.svg" alt="" />
+          </div>
+          <div class="face-icon" v-show="showDialog">
+            <VEmojiPicker
+              :showSearch="false"
+              :showCategories="false"
+              :emojisByRow="10"
+              @select="selectEmoji"
+            />
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="input-tools-left">
+      <template v-if="device === 'moblie'">
+        <div
+          v-if="textArea === '' && authorityGroupSendImg(groupData)"
+          @click="sendAduio"
+        >
+          <img src="./../../static/images/audio.png" alt="" />
+        </div>
+        <div
+          v-else-if="authorityGroupSendMessage(groupData,'send')
+          "
+          @click="editMsg.innerText === '' ? sendMessage() : editMessage()"
+        >
+          <img src="./../../static/images/send.png" alt="" />
+        </div>
+      </template>
+      <template v-else-if="device === 'pc' && authorityGroupSendImg(groupData)">
+        <img
+          src="./../../static/images/image.png"
+          alt=""
+          @click="uploadImgShow = true"
+        />
+        <img
+          src="./../../static/images/camera.png"
+          alt=""
+          @click="takePictureShow = true"
+        />
+      </template>
+    </div>
 
     <div
       class="callout-message"
@@ -166,7 +105,17 @@
         >
           <el-avatar shape="square" size="small" :src="item.icon"></el-avatar>
           <div class="callout-message-box">
-            <span>{{ item.name }}</span>
+            <span
+              >{{ item.name
+              }}<span
+                style="
+                  font-size: 12px;
+                  color: rgba(0, 0, 0, 0.5);
+                  margin-left: 16px;
+                "
+                >{{ item.username }}</span
+              ></span
+            >
           </div>
         </li>
       </ul>
@@ -378,7 +327,6 @@ export default {
         let textAreaSearchData = val.split(" ");
         textAreaSearchData.forEach((el) => {
           this.searchContactData = this.contactListData.filter((item) => {
-            console.log(item)
             return item.name.indexOf(el.replace("@", "")) !== -1;
           });
         });
@@ -405,6 +353,16 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
     }),
+    authorityGroupSendImg(user){ 
+      return user.isAdmin || (user.isManager && (this.authority.sendImage || this.authorityGroupData.sendImage)) || this.authorityGroupData.sendImage
+    },
+    authorityGroupSendMessage(user,type){ 
+      if(type === "send"){
+        return user.isAdmin || (user.isManager && (this.authority.sendMessage || this.authorityGroupData.sendMessage)) || this.authorityGroupData.sendMessage
+      }else{
+        return (user.isManager && !this.authority.sendMessage) || (!user.isAdmin && !user.isManager && !this.authorityGroupData.sendMessage)
+      }
+    },
     // 选择的文件超出限制的文件总数量时触发
     limitCheck() {
       this.$message({ message: "最多只能上传10张图片", type: "warning" });
@@ -493,7 +451,7 @@ export default {
     submitAvatar() {
       if (
         ((!this.groupData.isAdmin && !this.groupData.isManager) ||
-        (this.groupData.isManager && !this.authority.sendImage)) && 
+          (this.groupData.isManager && !this.authority.sendImage)) &&
         !this.authorityGroupData.sendImage
       ) {
         this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
@@ -657,7 +615,7 @@ export default {
     onAudioFile() {
       if (
         ((!this.groupData.isAdmin && !this.groupData.isManager) ||
-        (this.groupData.isManager && !this.authority.sendImage)) && 
+          (this.groupData.isManager && !this.authority.sendImage)) &&
         !this.authorityGroupData.sendImage
       ) {
         this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
@@ -751,9 +709,9 @@ export default {
         return false;
       }
       if (
-          ((!this.groupData.isAdmin && !this.groupData.isManager) ||
-          (this.groupData.isManager && !this.authority.sendLink)) && 
-          !this.authorityGroupData.sendLink
+        ((!this.groupData.isAdmin && !this.groupData.isManager) ||
+          (this.groupData.isManager && !this.authority.sendLink)) &&
+        !this.authorityGroupData.sendLink
       ) {
         var strRegex =
           /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;

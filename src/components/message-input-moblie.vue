@@ -505,7 +505,6 @@ export default {
     },
     // 按Enter发送消息
     keyUp(event) {
-      console.log(123)
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {

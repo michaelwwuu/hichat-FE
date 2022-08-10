@@ -348,7 +348,7 @@ export default {
                     span {
                       &::after {
                         content: "";
-                        margin-top: 1em;
+                        margin-top: 0.95em;
                       }
                     }
                   }

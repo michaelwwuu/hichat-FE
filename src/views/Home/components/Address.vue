@@ -242,45 +242,49 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.address-box {
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-  .contont-box {
-    .msg-box {
-      height: 48px;
-      display: flex;
-      span {
-        display: block;
-        font-size: 16px;
-        &:nth-child(1) {
-          margin-bottom: 7px;
-        }
-      }
-      .content-text {
-        display: flex;
-        font-size: 14px;
-        opacity: 0.5;
-        height:20px;
-        span {
-          &:nth-child(1) {
-            width: 15em;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin-bottom: 0;
-            font-size: 14px;
-          }
-          &:nth-child(2) {
-            opacity: 1;
-            font-size: 14px;
-          }
-        }
-      }
+.home-content{
+  overflow: hidden !important;
+  .address-box {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
     }
+    .contont-box {
+      .msg-box {
+        height: 48px;
+        display: flex;
+        span {
+          display: block;
+          font-size: 16px;
+          &:nth-child(1) {
+            margin-bottom: 7px;
+          }
+        }
+        .content-text {
+          display: flex;
+          font-size: 14px;
+          opacity: 0.5;
+          height:20px;
+          span {
+            &:nth-child(1) {
+              width: 15em;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              margin-bottom: 0;
+              font-size: 14px;
+            }
+            &:nth-child(2) {
+              opacity: 1;
+              font-size: 14px;
+            }
+          }
+        }
+      }
 
-  } 
+    } 
+  }
 }
+
 </style>
 

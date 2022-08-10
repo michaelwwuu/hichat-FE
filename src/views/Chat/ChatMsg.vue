@@ -472,7 +472,6 @@ import {
   getMemberActivity,
   deleteRecentChatMul,
 } from "@/api";
-import { Decrypt } from "@/utils/AESUtils.js";
 import AESBase64 from "@/utils/AESBase64.js";
 
 import { mapState, mapMutations } from "vuex";
@@ -542,18 +541,18 @@ export default {
   },
   created() {
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    if (this.userData !== null) {
-      this.setChatUser(this.userData);
-      if (this.device === "moblie") this.getChatHistoryMessage();
-    }
-    if (this.device === "moblie") this.getUserId(this.userData);
+    this.setChatUser(this.userData);
+    this.getUserMemberActivity(this.userData)
     Socket.$on("message", this.handleGetMessage);
-    this.getUserMemberActivity(this.chatUser)
   },
   mounted() {
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.chatUser)
     }, 30000);  
+    if (this.device === "moblie") {
+      this.getUserId(this.userData);
+      this.getChatHistoryMessage();
+    }
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);

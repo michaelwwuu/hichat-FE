@@ -141,11 +141,13 @@
                         >
                           <div
                             v-if="!IsURL(item)"
-                            @click.prevent.stop="
-                              !item.startsWith('@') ? onContextmenu(el) : false
-                            "
+                            @click.prevent.stop="onContextmenu(el)"
                           >
                             <span v-html="item"></span>
+                            <!--TODO @標註-->
+                            <!-- @click.prevent.stop="
+                              !item.startsWith('@') ? onContextmenu(el) : false
+                            " -->
                             <!-- @click="
                                 item.startsWith('@')
                                   ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))

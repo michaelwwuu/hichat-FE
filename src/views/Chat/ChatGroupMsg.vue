@@ -450,10 +450,8 @@ export default {
           this.pinDataList = res.data;
           this.pinDataList.forEach((list) => {
             this.messageData.forEach((data) => {
-              if (data.chatType !== "SRV_CHAT_PIN") {
-                if (list.historyId === data.historyId) {
-                  data.isPing = true;
-                }
+              if (data.chatType !== "SRV_CHAT_PIN" && (list.historyId === data.historyId)) {
+                data.isPing = true;
               }
             });
           });

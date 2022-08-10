@@ -314,7 +314,7 @@ export default {
           return `<div style="color:#F00">【 有人@我 】</div>` + (data.length > 8 ? data.slice(0,6) + '...' : data);
         }
       } else {
-         if(this.device === "moblie"){
+        if(this.device === "moblie"){
           return data
         }else{
           return data.length > 25 ? data.slice(0,10) + '...' : data

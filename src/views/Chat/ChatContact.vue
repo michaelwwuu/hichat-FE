@@ -445,9 +445,9 @@ export default {
   created() {
     this.userData = JSON.parse(localStorage.getItem("contactUser"));
     this.setContactUser(this.userData);
-    Socket.$on("message", this.handleGetMessage);
     this.getPinList();
     this.getUserMemberActivity(this.contactUser);
+    Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
     this.memberTime = setInterval(() => {
