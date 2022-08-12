@@ -16,7 +16,6 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_GROUP_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <div class="message-name">{{ el.chat.name }}</div>
@@ -55,7 +54,6 @@
               class="message-audio"
               v-else-if="el.chat.chatType === 'SRV_GROUP_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @dblclick="dblclick(el)"
             >
               <div class="message-box">
                 <div class="message-name">{{ el.chat.name }}</div>
@@ -74,8 +72,7 @@
             <span
               class="message-image"
               v-else-if="el.chat.chatType === 'SRV_GROUP_IMAGE'"
-              @contextmenu.prevent.stop="onContextmenu(el)"
-              @dblclick="dblclick(el)"
+              @contextmenu.prevent.stop="onContextmenu(el)"  
             >
               <div class="message-box">
                 <div class="message-name">{{ el.chat.name }}</div>
@@ -170,6 +167,9 @@ export default {
       contactListData: (state) => state.ws.contactListData,
     }),
   },
+  created() {
+    this.groupAuthority = JSON.parse(localStorage.getItem("groupAuthority"))
+  },
   mounted() {
     window.addEventListener(
       "scroll",
@@ -183,7 +183,6 @@ export default {
       true
     );
     this.getPinList();
-    this.groupAuthority = JSON.parse(localStorage.getItem("groupAuthority"))
   },
   methods: {
     ...mapMutations({
@@ -233,6 +232,10 @@ export default {
             this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
               newData;
           });
+          if(JSON.stringify(this.newMessageData) === '{}') {
+            this.setTopMsgShow(true);
+            this.$emit("resetPinMsg");
+          }
           this.$root.gotoBottom();
         }
       });
@@ -719,6 +722,8 @@ export default {
   .message-touch-carte {
     color: #10686e;
     cursor: pointer;
+    display: inline-block;
+    margin-right: 6px;    
   }
 }
 .hichat-moblie {

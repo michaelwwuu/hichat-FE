@@ -69,7 +69,7 @@
           <!-- 置頂訊息 -->
           <div
             class="top-msg"
-            v-if="pinMsg !== '' && showCheckBoxBtn"
+            v-if="pinMsg !== '' && showCheckBoxBtn && pinDataList.length !==0"
             @click="goTopMsgShow"
           >
             <div class="top-msg-left">
@@ -86,7 +86,6 @@
             />
           </div>
           <message-pabel
-            :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
             :checkDataList="checkDataList"
@@ -400,7 +399,6 @@ export default {
       checkDataList: [],
       onlineTime: "",
       pinMsg: "",
-      timeOut: 0,
       loading: false,
       isTopMsgShow: false,
       showCheckBoxBtn: true,
@@ -694,26 +692,6 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-        // 发送影片照片讯息成功
-        // 发送讯息成功
-        case "SRV_USER_IMAGE":
-        case "SRV_USER_AUDIO":
-        case "SRV_USER_SEND":
-        case "SRV_CHAT_PIN":
-          if (userInfo.toChatId === this.contactUser.toChatId) {
-            this.getHiChatDataList();
-            this.messageList(userInfo);
-            this.messageReorganization(this.chatRoomMsg)
-            this.messageData.push(this.chatRoomMsg);
-            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if (userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))) {
-              this.audioAction();
-            }
-          }
-          break;
-        case "SRV_CHAT_UNPIN":
-          this.getChatHistoryMessage();
-          break;
         // 历史讯息
         case "SRV_HISTORY_RSP":
           if(JSON.stringify(this.contactUser) !== '{}'){
@@ -739,7 +717,32 @@ export default {
               this.loading = false;
             }, 1000);
           });
+          break;        
+        // 发送影片照片讯息成功
+        // 发送讯息成功
+        case "SRV_USER_IMAGE":
+        case "SRV_USER_AUDIO":
+        case "SRV_USER_SEND":
+        case "SRV_CHAT_PIN":
+          if (userInfo.toChatId === this.contactUser.toChatId) {
+            this.getHiChatDataList();
+            this.messageList(userInfo);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.push(this.chatRoomMsg);
+            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            if (userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))) {
+              this.audioAction();
+            }
+          }
           break;
+        // 移除置頂  
+        case "SRV_CHAT_UNPIN":
+          this.messageData.forEach((res) => {
+            if (res.historyId === userInfo.replyHistoryId) {
+              res.isPing = false;
+            }
+          });
+          break;          
         // 已讀
         case "SRV_MSG_READ":
           this.messageData.forEach((res) => (res.isRead = true));

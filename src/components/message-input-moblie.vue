@@ -426,6 +426,7 @@ export default {
         success: (res) => {
           this.isVoice = true;
           this.endDisabledPlay = false;
+          this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
         },
         error: (e) => {
           this.resetTime();
@@ -436,7 +437,6 @@ export default {
           this.$message({ message: e, type: "warning" });
         },
       });
-      this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
     },
 
     // 结束录音

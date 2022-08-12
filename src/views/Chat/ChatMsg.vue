@@ -169,7 +169,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn && pinDataList.length !==0" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
@@ -184,7 +184,6 @@
             />
           </div>
           <message-pabel
-            :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
             :checkDataList="checkDataList"
@@ -249,7 +248,7 @@
           :class="{ 'PC-header': device === 'pc' }"
         >
           <template v-if="device === 'moblie'">
-            <div class="home-header">
+            <div class="home-header" style="margin-top:1.5em">
               <span
                 class="home-user-link"
                 :style="!chatUser.isContact ? 'position:none;' : ''"
@@ -425,11 +424,7 @@
         <el-button class="background-red" @click="deleteRecent(chatUser,'message')">确认</el-button>
       </span>
     </el-dialog>
-    <audio
-      id="notify-receive-audio"
-      muted="muted"
-      src="./../../../static/wav/receive.mp3"
-    ></audio>
+
 
     <el-dialog
       :visible.sync="isChooseDeleteShow"
@@ -454,7 +449,13 @@
         <el-button :class="device === 'pc' ? 'footer-button' : ''" @click="isChooseDeleteShow = false">取消</el-button>
       </span>
     </el-dialog>
-  
+    
+    <!-- 音效 -->
+    <audio
+      id="notify-receive-audio"
+      muted="muted"
+      src="./../../../static/wav/receive.mp3"
+    ></audio>
   </div>
 </template>
 
@@ -496,7 +497,6 @@ export default {
       checkDataList:[],
       onlineTime:"",
       pinMsg: "",
-      timeOut:0,
       loading: false,
       isTopMsgShow:false,
       showCheckBoxBtn:true,
@@ -832,27 +832,7 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-        // 发送影片照片讯息成功
-        // 发送讯息成功
-        case "SRV_USER_IMAGE":
-        case "SRV_USER_AUDIO":
-        case "SRV_USER_SEND":
-        case "SRV_CHAT_PIN":       
-          if (userInfo.toChatId === this.chatUser.toChatId) {
-            this.messageList(userInfo);
-            this.messageReorganization(this.chatRoomMsg)
-            this.messageData.push(this.chatRoomMsg);
-            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
-            if (this.device === "pc") this.getHiChatDataList();
-            if (userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))) {
-              this.audioAction();
-            }
-          }
-          break;
-        case "SRV_CHAT_UNPIN":
-          this.getChatHistoryMessage()
-          break;     
-        // 历史讯息
+        // 历史讯息    
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";
           this.getPinList();   
@@ -874,7 +854,32 @@ export default {
               this.loading = false;
             }, 1000);
           });   
+          break;        
+        // 发送影片照片讯息成功
+        // 发送讯息成功
+        case "SRV_USER_IMAGE":
+        case "SRV_USER_AUDIO":
+        case "SRV_USER_SEND":
+        case "SRV_CHAT_PIN":       
+          if (userInfo.toChatId === this.chatUser.toChatId) {
+            this.messageList(userInfo);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.push(this.chatRoomMsg);
+            if (this.hichatNav.num === 1) this.readMsgShow(userInfo);
+            if (this.device === "pc") this.getHiChatDataList();
+            if (userInfo.chat.fromChatId !== "u" + JSON.parse(localStorage.getItem("id"))) {
+              this.audioAction();
+            }
+          }
           break;
+        // 移除置頂
+        case "SRV_CHAT_UNPIN":
+          this.messageData.forEach((res) => {
+            if (res.historyId === userInfo.replyHistoryId) {
+              res.isPing = false;
+            }
+          });
+          break;          
         // 已讀
         case "SRV_MSG_READ":
           if (userInfo.toChatId === this.chatUser.toChatId) {

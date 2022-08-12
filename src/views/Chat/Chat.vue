@@ -53,7 +53,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn && pinDataList.length !==0" @click="goTopMsgShow">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_GROUP_IMAGE'">
@@ -68,7 +68,6 @@
             />
           </div>
           <message-pabel
-            :timeOut="timeOut"
             :messageData="messageData"
             :userInfoData="userInfoData"
             :checkDataList="checkDataList"
@@ -307,7 +306,6 @@ export default {
         tokenType: 0,
       },
       pinMsg: "",
-      timeOut: 0,
       groupData: {},
       authorityGroupData: {},
       readMsgData: [],
@@ -680,12 +678,37 @@ export default {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
+        // 历史讯息
+        case "SRV_GROUP_HISTORY_RSP":
+          this.pinMsg = "";
+          this.getPinList();
+          this.loading = true;
+          this.messageData = [];
+          let historyMsgList = userInfo.historyMessage.list;
+          this.$nextTick(() => {
+            setTimeout(() => {
+              historyMsgList.forEach((el) => {
+                this.base64Msg = this.isBase64(el.chat.text);
+                el.chat.newContent = this.base64Msg.split(" ");
+                this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
+                this.messageData.unshift(this.chatRoomMsg);
+              });
+              if (historyMsgList.length > 0) {
+                this.readMsgShow(historyMsgList[0]);
+              }
+              this.loading = false;
+              this.getHiChatDataList();
+            }, 1000);
+          });
+          break;        
         // 发送影片照片讯息成功
+        // 发送讯息成功
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
-        case "SRV_GROUP_DEL":
         case "SRV_GROUP_JOIN":
+        case "SRV_GROUP_DEL":
         case "SRV_CHAT_PIN":
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
@@ -715,9 +738,7 @@ export default {
             }, 500);
           }
           break;
-        case "SRV_CHAT_UNPIN":
-          this.getChatHistoryMessage();
-          break;
+        //變更權限
         case "SRV_GROUP_AUTHORITY":
           this.getGroupAuthority();
           break;
@@ -732,30 +753,14 @@ export default {
             this.isChooseDeleteShow = false
           }
           break;
-        // 历史讯息
-        case "SRV_GROUP_HISTORY_RSP":
-          this.pinMsg = "";
-          this.getPinList();
-          this.loading = true;
-          this.messageData = [];
-          let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(() => {
-            setTimeout(() => {
-              historyMsgList.forEach((el) => {
-                this.base64Msg = this.isBase64(el.chat.text);
-                el.chat.newContent = this.base64Msg.split(" ");
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-              if (historyMsgList.length > 0) {
-                this.readMsgShow(historyMsgList[0]);
-              }
-              this.loading = false;
-              this.getHiChatDataList();
-            }, 1000);
+        // 移除置頂
+        case "SRV_CHAT_UNPIN":
+          this.messageData.forEach((res) => {
+            if (res.historyId === userInfo.replyHistoryId) {
+              res.isPing = false;
+            }
           });
-          break;
+          break;          
         // 已讀
         case "SRV_MSG_READ":
           this.messageData.forEach((res) => {
@@ -790,7 +795,6 @@ export default {
           break           
       }
     },
-
     submitBtn() {
       let groupId = this.groupUser.groupId;
       leaveGroup({ groupId })

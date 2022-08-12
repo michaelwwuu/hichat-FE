@@ -86,6 +86,16 @@ export const getGroupList = (params) => {
   }
   return axios.request(postData)
 }
+// 獲取群組清單
+export const groupMemberList = (params) => {
+  let postData = {
+    url: '/api/group/groupMemberList',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
 
 // 添加联络人
 export const addContactUser = data => {

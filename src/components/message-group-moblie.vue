@@ -100,7 +100,6 @@
                       </template>
 
                       <div
-                        v-if="device === 'pc'"
                         :class="{
                           'reply-content': el.isRplay !== null,
                         }"
@@ -113,66 +112,49 @@
                               item.startsWith('@') && item.length > 1,
                           }"
                         >
-                          <vue-markdown :anchor-attributes="linkAttrs">{{
-                            item
-                          }}</vue-markdown>
-
-                          <!-- @click="
-                              item.startsWith('@')
-                                ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
-                                : false
-                            " -->
-                        </span>
-                      </div>
-
-                      <div
-                        v-else
-                        :class="{
-                          'reply-content': el.isRplay !== null,
-                        }"
-                      >
-                        <div
-                          v-for="(item, index) in el.newContent"
-                          :key="index"
-                          :class="{
-                            'message-touch-carte':
-                              item.startsWith('@') && item.length > 1,
-                          }"
-                        >
-                          <div
-                            v-if="!IsURL(item)"
-                            @click.prevent.stop="onContextmenu(el)"
-                          >
-                            <span v-html="item"></span>
-                            <!--TODO @標註-->
-                            <!-- @click.prevent.stop="
-                              !item.startsWith('@') ? onContextmenu(el) : false
-                            " -->
-                            <!-- @click="
-                                item.startsWith('@')
-                                  ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
-                                  : false
-                              " -->
-                          </div>
-                          <div v-else-if="IsURL(item)">
+                          <template v-if="device === 'pc'">
+                            <vue-markdown :anchor-attributes="linkAttrs">{{
+                              calloutTextAreaConvert(item)
+                            }}</vue-markdown>
+                          </template>
+                          <template v-else>
                             <div
-                              v-if="device === 'moblie'"
-                              class="images-more-btn"
-                              style="top: 5px"
-                              @click.prevent.stop="
-                                device === 'moblie' ? onContextmenu(el) : false
-                              "
+                              v-if="!IsURL(item)"
+                              @click.prevent.stop="onContextmenu(el)"
                             >
-                              <i class="el-icon-more"></i>
+                              <vue-markdown :anchor-attributes="linkAttrs">{{
+                                calloutTextAreaConvert(item)
+                              }}</vue-markdown>
+                              <!-- <span v-html="item"></span> -->
+                              <!--TODO @標註-->
+                              <!-- @click.prevent.stop="
+                                !item.startsWith('@') ? onContextmenu(el) : false
+                              " -->
+                              <!-- @click="
+                                  item.startsWith('@')
+                                    ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
+                                    : false
+                                " -->
                             </div>
-                            <vue-markdown
-                              :class="device === 'moblie' ? 'link-style' : ''"
-                              :anchor-attributes="linkAttrs"
-                              >{{ item }}</vue-markdown
-                            >
-                          </div>
-                          <span v-else v-html="item"></span>
-                        </div>
+                            <div v-else-if="IsURL(item)">
+                              <div
+                                class="images-more-btn"
+                                style="top: 5px"
+                                @click.prevent.stop="
+                                  device === 'moblie' ? onContextmenu(el) : false
+                                "
+                              >
+                                <i class="el-icon-more"></i>
+                              </div>
+                              <vue-markdown
+                                class="link-style"
+                                :anchor-attributes="linkAttrs"
+                                >{{ item }}</vue-markdown
+                              >
+                            </div>
+                            <span v-else v-html="item"></span>
+                          </template>
+                        </span>
                       </div>
                     </div>
                   </span>
@@ -313,9 +295,6 @@ export default {
     messageData: {
       type: Array,
     },
-    timeOut: {
-      type: Number,
-    },
     showCheckBoxBtn: {
       type: Boolean,
     },
@@ -401,11 +380,10 @@ export default {
       true
     );
     if (this.goAnchorMessage.historyId !== undefined) {
-      let newTime = this.timeOut + 3000;
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
         this.setGoAnchorMessage({});
-      }, newTime);
+      }, 3000);
     }
   },
   methods: {
@@ -417,15 +395,41 @@ export default {
       setMyUserInfo: "ws/setMyUserInfo",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
+    calloutTextAreaConvert(data){
+      // if(data.match("@")){
+      //   this.deleteNewline = data.replace(/\n|\r/g, "<br>").split(' ')
+      // }else{
+      //   this.deleteNewline = data.split(' ')
+      // }
+
+      // console.log(this.deleteNewline)
+      // this.deleteNewline = data.split(' ')
+      // this.newData = this.deleteNewline.forEach((res)=>{
+      //   if(res.match(/\n|\r/g) && res.match("@")){
+      //     return res.replace(/\n|\r/g, " ")
+      //   }
+      // })
+      // console.log(this.newData)
+      // data = this.deleteNewline.toString().replace(/,/g, " ")
+      // return data
+      if(!data.match("@") || ["@所有成員","@所有成员"].includes(data)){
+        return data
+      }else{
+        this.newArr = this.contactListData.find((el)=>{
+          return "@" + el.memberId + "\u200B" === data
+        })
+        if(this.newArr !== undefined){
+          return data = "@" + this.newArr.name
+        }else{
+          return data
+        }
+      }
+    },
     showCheckBtn(status, data) {
       if (status) {
         return status;
       } else if (!status) {
-        if (
-          ["SRV_GROUP_SEND", "SRV_GROUP_IMAGE", "SRV_GROUP_AUDIO"].includes(
-            data.chatType
-          )
-        ) {
+        if (["SRV_GROUP_SEND", "SRV_GROUP_IMAGE", "SRV_GROUP_AUDIO"].includes(data.chatType)) {
           return status;
         } else {
           return !status;
@@ -1152,6 +1156,8 @@ export default {
 .message-touch-carte {
   color: #10686e;
   cursor: pointer;
+  display: inline-block;
+  margin-right: 6px;
 }
 
 .reply-aduio {

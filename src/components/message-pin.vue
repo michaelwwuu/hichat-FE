@@ -15,7 +15,6 @@
               class="message-classic"
               v-if="el.chatType === 'SRV_USER_SEND'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @dblclick="dblclick(el)"
             >
               <div>
                 <span
@@ -51,7 +50,6 @@
               class="message-mini-audio"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @dblclick="dblclick(el)"
             >
               <div
                 v-if="device === 'moblie'"
@@ -71,7 +69,6 @@
               class="message-image"
               v-else-if="el.chatType === 'SRV_USER_IMAGE'"
               @contextmenu.prevent.stop="onContextmenu(el)"
-              @dblclick="dblclick(el)"
             >
               <div
                 v-if="device === 'moblie'"
@@ -222,6 +219,10 @@ export default {
             this.newMessageData[this.$root.formatTimeDay(el.chat.sendTime)] =
               newData;
           });
+          if(JSON.stringify(this.newMessageData) === '{}') {
+            this.setTopMsgShow(true);
+            this.$emit("resetPinMsg");
+          }
           this.$root.gotoBottom();
         }
       });
@@ -236,23 +237,6 @@ export default {
       } else {
         return iconData.icon;
       }
-    },
-    audioAction() {
-      let audioEl = document.getElementById("notify-send-audio");
-      var playPromise = audioEl.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then((_) => {
-            audioEl.pause();
-          })
-          .catch((error) => {});
-      }
-      audioEl.src = ""; // 移除src, 防止之后播放空白音频
-      setTimeout(() => {
-        // 用setTimeout模拟一个2秒的延迟
-        audioEl.src = require("./../../static/wav/send.mp3");
-        audioEl.play();
-      }, 150);
     },
     // 判断讯息Class名称
     judgeClass(item) {
@@ -309,6 +293,7 @@ export default {
       });
       return false;
     },
+    //下載圖片
     downloadImages(data) {
       let hreLocal = "";
       hreLocal = this.isBase64(data.chat.text);
@@ -339,6 +324,7 @@ export default {
       link.click();
       link.remove();
     },
+
     topMsgAction(data) {
       let param = {
         historyId: data.historyId,

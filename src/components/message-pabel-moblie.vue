@@ -1,18 +1,18 @@
 <template>
-  <div class="message-pabel-box" @touchmove="$root.handleTouch"  >
+  <div class="message-pabel-box" @touchmove="$root.handleTouch"  @scroll="paperScroll($event)">
     <ul class="message-styles-box">
-      <div v-for="(item, index) in newMessageData" :key="index">
+      <div v-for="(item, index) in newMessageData" :key="index" >
         <div class="now-time">
           <span>{{ index }}</span>
         </div>
-        <el-checkbox-group v-model="checkList">
+        <el-checkbox-group v-model="checkList" >
           <el-checkbox
             v-for="(el, index) in item"
             :key="index"
             :label="el"
             :disabled="checkBoxDisabled"
             :class="judgeClass(item[index])"
-            @scroll="paperScroll(el.message.content)"
+            
           >
             <li >
               <template v-if="el.chatType !== 'SRV_CHAT_PIN'">
@@ -29,6 +29,7 @@
                     },
                   ]"
                   :id="el.historyId"
+                  ref="viewBox"
                 >
                   <span
                     class="message-classic"
@@ -203,9 +204,6 @@ export default {
     messageData: {
       type: Array,
     },
-    timeOut: {
-      type: Number,
-    },
     showCheckBoxBtn: {
       type: Boolean,
     },    
@@ -261,7 +259,7 @@ export default {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
           newData;
       });
-      this.$root.gotoBottom();
+      // this.$root.gotoBottom();
 
       //TODO 至底按鈕出現 移除滾動
       // if(!this.showScrollBar){
@@ -289,15 +287,19 @@ export default {
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.199951171875 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
+        console.log(this.$refs.viewBox)
+        this.$refs.viewBox.forEach((res)=>{
+          console.log(res.id)
+        })
         // console.log(document.querySelector(".el-checkbox__label"))
       },
       true
     );
     if (this.goAnchorMessage.historyId !== undefined) {
-      let newTime = this.timeOut + 1000;
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
-      }, newTime);
+        this.setGoAnchorMessage({});
+      }, 3000);
     }
   },
   methods: {
@@ -307,7 +309,7 @@ export default {
       setMyUserInfo: "ws/setMyUserInfo",
     }),
     paperScroll(event){
-      console.log(event)
+      // console.log(event.target)
     },
     IsURL(str_url) {
       var strRegex =

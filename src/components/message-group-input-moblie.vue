@@ -252,6 +252,7 @@ export default {
   data() {
     return {
       textArea: "",
+      newTextArea:"",
       search: "",
       showDialog: false,
       calloutShow: false,
@@ -567,6 +568,7 @@ export default {
         success: (res) => {
           this.isVoice = true;
           this.endDisabledPlay = false;
+          this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
         },
         error: (e) => {
           this.resetTime();
@@ -578,7 +580,6 @@ export default {
           this.$message({ message: e, type: "warning" });
         },
       });
-      this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
     },
     // 结束录音
     onEndVoice() {
@@ -669,6 +670,7 @@ export default {
       this.textArea.split(" ").forEach((res) => {
         this.calloutShow = res.startsWith("@");
       });
+      // this.textArea = this.textArea.replace(/(\n*$)/g,"");
       if (event.shiftKey && event.keyCode === 13) {
         return this.textArea;
       } else if (event.key === "Enter") {
@@ -703,12 +705,22 @@ export default {
     },
     // 发送消息
     sendMessage() {
+      const dictionary = this.textArea.replace(/(\n*$)/g,"").split(" ")
+
+      // //先找到x的位置，等會要用c來取代x
+      this.contactListData.forEach((item) => {
+        const xIndex = dictionary.indexOf("@"+item.name)
+        if (xIndex > -1) {
+          dictionary.splice(xIndex, 1, "@" + item.memberId + "\u200B")
+        }
+      })
+      this.calloutTextArea = dictionary.toString().replace(/,/g, " ")
+
       if (this.textArea.replace(/\s+/g, "") === "") {
         this.$message({ message: "不能发送空白消息", type: "error" });
         this.textArea = "";
         return false;
-      }
-      if (
+      }else if (
         ((!this.groupData.isAdmin && !this.groupData.isManager) ||
           (this.groupData.isManager && !this.authority.sendLink)) &&
         !this.authorityGroupData.sendLink
@@ -740,15 +752,18 @@ export default {
               : "",
           targetArray: this.targetArray,
           text: Encrypt(
-            this.textArea.replace(/(\s*$)/g, ""),
+            // this.textArea.replace(/(\s*$)/g, ""),
+            this.calloutTextArea,//TODO @memberId
             this.aesKey,
             this.aesIv
           ), //TODO 加密
+          
           // text: this.textArea,
           token: getToken("token"),
           deviceId: localStorage.getItem("UUID"),
           tokenType: 0,
         };
+        console.log(this.textArea.replace(/(\s*$)/g, ""))
         // 发送服务器
         this.soundNofiy.forEach((res) => {
           if (res.key === "group" && res.isNofity) this.audioAction();

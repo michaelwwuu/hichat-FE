@@ -209,6 +209,7 @@ import {
   // getSearchById,
   getGroupAuthoritySetting,
   // deleteRecentChat,
+  groupMemberList,
   getMemberActivity,
 } from "@/api";
 
@@ -233,6 +234,7 @@ export default {
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
+      groupMemberDataList:{},
       device: localStorage.getItem("device"),
       activeName: "address",
       isDialogShow: false,
@@ -246,6 +248,7 @@ export default {
   created() {
     Socket.$on("message", this.handleGetMessage);
     this.getGroupDataList();
+    this.getGroupMemberList()
     this.setActiveName(this.hichatNav.type);
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.noGroupPeopleData)
@@ -301,19 +304,39 @@ export default {
       let headerScrollTop = document.querySelector(".is-top");
       let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
       document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';       
-    },    
+    }, 
+    getGroupMemberList(){
+      groupMemberList().then((res)=>{
+        if(res.code === 200){
+          this.groupMemberDataList = res.data
+          for (let item in this.groupMemberDataList) {
+            this.groupDataList.forEach((el)=>{
+              if(this.groupMemberDataList[item].groupId === Number(el.toChatId.replace("g", ""))){
+                const dictionary = this.isBase64(el.lastChat.text).split(" ")
+                this.groupMemberDataList[item].memberList.forEach((name)=> {
+                  const xIndex = dictionary.indexOf("@"+name.memberId + "\u200B")
+                  if (xIndex > -1) {
+                    dictionary.splice(xIndex, 1, "@" + name.name)
+                  }
+                });
+                return el.lastChat.text = dictionary.toString().replace(/,/g, " ")
+              }
+            })
+          }
+
+        }
+      })
+    },
     judgeTextMarking(data) {
-      if (
-        ["@" + this.myUserInfo.nickname, "@所有成員", "@所有成员"].includes(
-          data
-        )
-      ) {
+      let judgeTextData = data.replace(/\n|\r/g, "").split(" ")
+      const xIndex = judgeTextData.indexOf("@" + this.myUserInfo.nickname)
+      if (xIndex > -1 || ["@所有成員","@所有成员"].includes(data)) {
         if(this.device === "moblie"){
           return `<div style="color:#F00">【 有人@我 】</div>` + data;
         }else{
           return `<div style="color:#F00">【 有人@我 】</div>` + (data.length > 8 ? data.slice(0,6) + '...' : data);
         }
-      } else {
+      } else{
         if(this.device === "moblie"){
           return data
         }else{
@@ -391,6 +414,7 @@ export default {
           });
           this.noGroupPeopleData = userInfo.recentChat.filter(res=> !res.isGroup)
           this.getUserMemberActivity(this.noGroupPeopleData)
+          this.getGroupMemberList()
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":

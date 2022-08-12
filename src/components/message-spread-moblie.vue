@@ -64,87 +64,11 @@ export default {
         return iconData.icon;
       }
     },
-
   },
-
 };
 </script>
 
 <style lang="scss" scoped>
-.hichat-pc {
-  .message-pabel-box {
-    .message-styles-box {
-      .message-layout-left {
-        p {
-          .el-image {
-            width: -webkit-fill-available !important;
-            height: 11em !important;
-            top: 0;
-            /deep/.el-image__inner {
-              height: 100%;
-            }
-          }
-        }
-        .reply {
-          .message-classic {
-            padding: 0;
-          }
-        }
-      }
-      .message-layout-right {
-        p {
-          .el-image {
-            width: -webkit-fill-available !important;
-            height: 11em !important;
-            top: 0;
-            /deep/.el-image__inner {
-              height: 100%;
-            }
-          }
-        }
-        .reply {
-          .message-classic {
-            padding: 0;
-          }
-        }
-        .message-image {
-          background-color: #ffffff;
-        }
-      }
-      .message-audio {
-        width: 190px;
-        display: flex;
-      }
-      .vueAudioBetter {
-        box-shadow: none;
-        background-image: none;
-        width: auto;
-        margin: 0;
-        /deep/.operate {
-          span {
-            &:nth-child(3) {
-              color: rgba(0, 0, 0, 0.8) !important;
-            }
-          }
-        }
-        /deep/.slider {
-          display: none;
-        }
-        /deep/.icon-notificationfill {
-          &:before {
-            content: "\E66A";
-            display: none;
-          }
-        }
-      }
-    }
-    /deep/.el-dialog-takePicture {
-      .el-dialog {
-        width: 450px !important;
-      }
-    }
-  }
-}
 
 .message-pabel-box {
   padding: 0 10px 0 20px;

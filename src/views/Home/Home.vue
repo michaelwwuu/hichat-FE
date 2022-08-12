@@ -291,6 +291,7 @@ import {
   getUserInfo,
   getContactList,
   getMemberActivity,
+  groupMemberList,
   logout,
 } from "@/api";
 import { Encrypt } from "@/utils/AESUtils.js";
@@ -340,6 +341,7 @@ export default {
       searchData: [],
       chatDataList: [],
       addressDataList: [],
+      groupMemberDataList:{},
       downloadFilename: "",
       logoutDialogShow: false,
       infoMsgAsideShow: false,
@@ -578,6 +580,7 @@ export default {
             }
             this.setBadgeNum(numNumber);
           });
+          this.getGroupMemberList()
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -620,6 +623,13 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
+    getGroupMemberList(){
+      groupMemberList().then((res)=>{
+        if(res.code === 200){
+          this.groupMemberDataList = res.data
+        }
+      })
+    },    
     openNotify(msgInfo, chatType) {
       // 判断浏览器是否支持Notification
       if (!window.Notification) {
@@ -674,7 +684,22 @@ export default {
       switch (chatType) {
         case "SRV_USER_SEND":
         case "SRV_GROUP_SEND":
-          this.bodyMsg = msgInfo.chat.text;
+          if(chatType === "SRV_GROUP_SEND"){
+            for (let item in this.groupMemberDataList) {
+              if(this.groupMemberDataList[item].groupId === Number(msgInfo.chat.toChatId.replace("g", ""))){
+                const dictionary = this.isBase64(msgInfo.chat.text).split(" ")
+                this.groupMemberDataList[item].memberList.forEach((name)=> {
+                  const xIndex = dictionary.indexOf("@"+name.memberId + "\u200B")
+                  if (xIndex > -1) {
+                    dictionary.splice(xIndex, 1, "@" + name.name)
+                  }
+                });
+                this.bodyMsg = dictionary.toString().replace(/,/g, " ")
+              }
+            } 
+          }else{
+            this.bodyMsg = msgInfo.chat.text;
+          }    
           break;
         case "SRV_USER_IMAGE":
         case "SRV_GROUP_IMAGE":
