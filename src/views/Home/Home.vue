@@ -589,7 +589,7 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
-            setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 1000);
+            setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 500);
           }
           if (this.device === "moblie") {
             this.getHiChatDataList();

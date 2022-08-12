@@ -852,7 +852,7 @@ export default {
               if (historyMsgList.length > 0 && this.readMsg.length > 0)  this.readMsgShow(this.readMsg[0]);
               if (this.device === "pc") this.getHiChatDataList();
               this.loading = false;
-            }, 1000);
+            }, 500);
           });   
           break;        
         // 发送影片照片讯息成功

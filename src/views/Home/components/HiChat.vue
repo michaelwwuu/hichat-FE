@@ -56,7 +56,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="群组" name="group">
-        <span slot="label" v-if="groupDataList.length > 0">
+        <span slot="label" v-if="newGroupDataList.length > 0">
           <span>群组</span>
           <el-badge
             v-if="groupNumBadge > 0"
@@ -65,7 +65,7 @@
           ></el-badge>
         </span>
         <div
-          v-for="(item, index) in groupDataList"
+          v-for="(item, index) in newGroupDataList"
           :key="index"
           class="address-box"
           @click="goChatRoom(item, 'ChatGroupMsg')"
@@ -221,6 +221,7 @@ export default {
       groupList: [],
       authorityData: {},
       groupDataList: [],
+      newGroupDataList:[],
       newHiChatDataList:[],
       newContactDataList:[],
       noGroupPeopleData:[],
@@ -284,17 +285,17 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setTopMsg: "ws/setTopMsg",
+      setTopMsgShow: "ws/setTopMsgShow",
       setInfoMsg: "ws/setInfoMsg",
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
+      setChatGroup: "ws/setChatGroup",
+      setContactUser: "ws/setContactUser",
       setAuthority: "ws/setAuthority",
       setHichatNav: "ws/setHichatNav",
-      setChatGroup: "ws/setChatGroup",
       setGroupList: "ws/setGroupList",
-      setTopMsgShow: "ws/setTopMsgShow",
       setActiveName: "ws/setActiveName",
-      setContactUser: "ws/setContactUser",
       setCheckBoxBtn: "ws/setCheckBoxBtn",
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
@@ -323,7 +324,7 @@ export default {
               }
             })
           }
-
+          this.newGroupDataList = this.groupDataList
         }
       })
     },

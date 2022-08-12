@@ -396,22 +396,6 @@ export default {
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
     calloutTextAreaConvert(data){
-      // if(data.match("@")){
-      //   this.deleteNewline = data.replace(/\n|\r/g, "<br>").split(' ')
-      // }else{
-      //   this.deleteNewline = data.split(' ')
-      // }
-
-      // console.log(this.deleteNewline)
-      // this.deleteNewline = data.split(' ')
-      // this.newData = this.deleteNewline.forEach((res)=>{
-      //   if(res.match(/\n|\r/g) && res.match("@")){
-      //     return res.replace(/\n|\r/g, " ")
-      //   }
-      // })
-      // console.log(this.newData)
-      // data = this.deleteNewline.toString().replace(/,/g, " ")
-      // return data
       if(!data.match("@") || ["@所有成員","@所有成员"].includes(data)){
         return data
       }else{

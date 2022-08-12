@@ -601,7 +601,7 @@ export default {
               if (historyMsgList.length > 0)
                 this.readMsgShow(historyMsgList[0]);
               this.loading = false;
-            }, 1000);
+            }, 500);
           });
           break;        
         // 发送影片照片讯息成功
@@ -634,7 +634,6 @@ export default {
             }
           }
           break;
-
         //變更權限          
         case "SRV_GROUP_AUTHORITY":
           this.getGroupAuthority();

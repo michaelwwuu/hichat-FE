@@ -1,7 +1,7 @@
 <template>
-  <div class="message-pabel-box" @touchmove="$root.handleTouch"  @scroll="paperScroll($event)">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
-      <div v-for="(item, index) in newMessageData" :key="index" >
+      <div v-for="(item, index) in newMessageData" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
         </div>
@@ -12,7 +12,6 @@
             :label="el"
             :disabled="checkBoxDisabled"
             :class="judgeClass(item[index])"
-            
           >
             <li >
               <template v-if="el.chatType !== 'SRV_CHAT_PIN'">
@@ -213,6 +212,7 @@ export default {
   },
   data() {
     return {
+      count:0,
       newData: [],
       message: [],
       checkList:[],
@@ -259,7 +259,7 @@ export default {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
           newData;
       });
-      // this.$root.gotoBottom();
+      this.$root.gotoBottom();
 
       //TODO 至底按鈕出現 移除滾動
       // if(!this.showScrollBar){
@@ -287,10 +287,10 @@ export default {
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.199951171875 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
-        console.log(this.$refs.viewBox)
-        this.$refs.viewBox.forEach((res)=>{
-          console.log(res.id)
-        })
+        // console.log(this.$refs.viewBox)
+        // this.$refs.viewBox.forEach((res)=>{
+        //   console.log(res.id)
+        // })
         // console.log(document.querySelector(".el-checkbox__label"))
       },
       true
@@ -308,6 +308,7 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setMyUserInfo: "ws/setMyUserInfo",
     }),
+
     paperScroll(event){
       // console.log(event.target)
     },

@@ -715,7 +715,7 @@ export default {
                 this.readMsgShow(this.readMsg[0]);
               this.getHiChatDataList();
               this.loading = false;
-            }, 1000);
+            }, 500);
           });
           break;        
         // 发送影片照片讯息成功

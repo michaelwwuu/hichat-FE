@@ -699,7 +699,7 @@ export default {
               }
               this.loading = false;
               this.getHiChatDataList();
-            }, 1000);
+            }, 500);
           });
           break;        
         // 发送影片照片讯息成功
