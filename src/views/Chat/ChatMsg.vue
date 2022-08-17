@@ -75,12 +75,11 @@
                     </div>
                     <el-dropdown-menu slot="dropdown" class="chat-more">
                       <el-dropdown-item>
-                        <div class="logout-btn">
-                          <img
-                            src="./../../../static/images/pc/bell-off.svg"
-                            alt=""
-                          />
-                          <span>關閉通知</span>
+                        <div class="logout-btn" @click="isMuteDialogShow = true">
+                          <img :src="chatUser.mute ? muteImg : noMuteImg" v-if="device ==='pc'"/>
+                          <span>{{
+                            chatUser.mute ? "开启通知" : "关闭通知"
+                          }}</span>
                         </div>
                       </el-dropdown-item>
                       <el-dropdown-item>
@@ -307,6 +306,34 @@
 
     <el-dialog
       :title="
+        device === 'pc' ? `${chatUser.mute ? '开启' : '关闭'}通知` : ''
+      "
+      :visible.sync="isMuteDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span
+          >确认是否{{ chatUser.mute ? "开启通知" : "关闭通知" }}</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          class="background-gray"
+          @click="isMuteDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      :title="
         device === 'pc' ? `${chatUser.isBlock ? '解除封锁' : '封锁'}联络人` : ''
       "
       :visible.sync="isBlockDialogShow"
@@ -424,8 +451,6 @@
         <el-button class="background-red" @click="deleteRecent(chatUser,'message')">确认</el-button>
       </span>
     </el-dialog>
-
-
     <el-dialog
       :visible.sync="isChooseDeleteShow"
       class="el-dialog-choose-delete"
@@ -504,11 +529,13 @@ export default {
       allHistoruShow:false,
       deleteDialogShow: false,
       successDialogShow: false,
+      isMuteDialogShow: false,
       isBlockDialogShow: false,
       deleteGroupDialogShow: false,
       isDeleteContactDialogShow: false,
       device: localStorage.getItem("device"),
-
+      muteImg:require("./../../../static/images/icon_notification.svg"),
+      noMuteImg:require("./../../../static/images/volume.svg"),
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",

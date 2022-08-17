@@ -13,7 +13,6 @@
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="searchUserData(searchKey)"
             >
             </el-input>
           </div>
@@ -54,7 +53,7 @@
               :style="
                 !groupPermissionData.addGroup
                   ? 'position: relative; left: 1px; top: 1px;'
-                  : 'position: relative; left: 1px;'
+                  : ''
               "
               >管理员设定</span
             >
@@ -67,7 +66,6 @@
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
             >
             </el-input>
           </div>

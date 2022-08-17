@@ -22,12 +22,12 @@
           <div class="contont-box">
             <div class="msg-box">
               <div>
-                <span>{{ item.name }}</span>
+                <span>{{ item.name }} <img :src="muteImg" v-if="device ==='pc' && !item.mute" style="padding-left:5px;"/></span>
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
                   <span
                     v-else-if="item.lastChat.chatType === 'SRV_USER_SEND'"
-                    >{{ isBase64(item.lastChat.text) }}</span
+                    >{{ judgeTextMarking(isBase64(item.lastChat.text)) }}</span
                   >
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
                     >{{ item.lastChat.text }}置顶了消息</span
@@ -74,7 +74,7 @@
           <div class="contont-box">
             <div class="msg-box">
               <div>
-                <span>{{ item.name }}</span>
+                <span>{{ item.name }} <img :src="muteImg" v-if="device ==='pc' && item.mute" style="padding-left:5px;"/></span>
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
                   <span
@@ -166,7 +166,7 @@
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_SEND'">{{
-                    isBase64(item.lastChat.text)
+                    judgeTextMarking(isBase64(item.lastChat.text))
                   }}</span>
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
                     >{{ item.lastChat.text }}置顶了消息</span
@@ -206,9 +206,7 @@ import { getToken } from "_util/utils.js";
 import {
   getGroupList,
   groupListMember,
-  // getSearchById,
   getGroupAuthoritySetting,
-  // deleteRecentChat,
   groupMemberList,
   getMemberActivity,
 } from "@/api";
@@ -217,7 +215,6 @@ export default {
   name: "HiChat",
   data() {
     return {
-      searchKey: "",
       groupList: [],
       authorityData: {},
       groupDataList: [],
@@ -240,7 +237,8 @@ export default {
       activeName: "address",
       isDialogShow: false,
       dialogData: {},
-      
+      muteImg:require("./../../../../static/images/icon_notification.svg"),
+      noMuteImg:require("./../../../../static/images/volume.svg"),
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -267,6 +265,7 @@ export default {
       hichatNav: (state) => state.ws.hichatNav,
       myUserInfo: (state) => state.ws.myUserInfo,
       contactUser: (state) => state.ws.contactUser,
+      chatMsgKey: (state) => state.ws.chatMsgKey,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
@@ -339,7 +338,7 @@ export default {
         }
       } else{
         if(this.device === "moblie"){
-          return data
+          return data.length > 30 ? data.slice(0,30) + '...' : data
         }else{
           return data.length > 25 ? data.slice(0,10) + '...' : data
         }
@@ -509,12 +508,6 @@ export default {
       });
     },
     goChatRoom(data, path) {
-      this.setTopMsgShow(true);
-      this.getGroupDataList();
-      this.setInfoMsg({ infoMsgMap: "HiChat" });
-      if(this.device === "moblie"){
-        clearInterval(this.memberTime)
-      }
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
@@ -538,6 +531,8 @@ export default {
         this.getGroupAuthority(data);
       }
       if (this.device === "moblie") {
+        clearInterval(this.memberTime)
+        this.setInfoMsg({ infoMsgMap: "HiChat" });
         this.$router.push({ name: path });
       } else {
         if (data.isContact) {
@@ -551,11 +546,14 @@ export default {
         this.setInfoMsg({
           infoMsgShow: false,
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
+          infoMsgMap: "HiChat"
         });
         this.getHistory(data, path);
         this.closeReplyMessage();
         this.setCheckBoxBtn(true)
       }
+      this.setTopMsgShow(true);
+      this.getGroupDataList();      
     },
     closeReplyMessage() {
       this.setReplyMsg({
@@ -597,14 +595,6 @@ export default {
     .msg-box {
       .content-text {
         span {
-          &:nth-child(1) {
-            width: 15em;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin-bottom: 0;
-            font-size: 14px;
-          }
           &:nth-child(2) {
             opacity: 1;
             font-size: 14px;

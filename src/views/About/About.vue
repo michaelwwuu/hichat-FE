@@ -50,7 +50,7 @@ export default {
         {
           name: "使用版本",
           path: "",
-          version: "1.4.0",
+          version: "1.4.2",
         },
         // {
         //   name: "服务条款",

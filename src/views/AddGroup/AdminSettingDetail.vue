@@ -98,7 +98,6 @@ export default {
   name: "AdminSetting",
   data() {
     return {
-      searchKey: "",
       groupManagerAuthorityVO: [
         {
           name: "传送文字讯息",
@@ -236,6 +235,8 @@ export default {
             res.authority = this.newManagerAuthorityData;
           }
         });
+        // console.log(this.groupPermissionData)
+        this.setGroupPermissionData(this.groupPermissionData)
         this.$router.push({ path: "/AdminSetting" });
       }
     },

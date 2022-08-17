@@ -62,7 +62,6 @@
               placeholder="搜寻"
               prefix-icon="el-icon-search"
               v-model="searchKey"
-              @keyup.native.enter="developmentMessage(searchKey)"
             >
             </el-input>
           </div>

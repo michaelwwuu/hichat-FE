@@ -213,19 +213,14 @@ body {
     .el-tabs {
       width: 100vw;
       z-index: 8;
-
+      
       .el-tabs__header {
-        // position: fixed;
-        // top: 105px;
-        width: 100vw;
-        z-index: 9;
-        background-color: #eaf5fa;
+        height: 50px;
         display: flex;
         justify-content: space-evenly;
+        background-color: #eaf5fa;
         margin: 0;
-        // padding: 5px 0;
-        height: 49px;
-
+        z-index: 9;
         .el-tabs__nav-wrap {
           &:after {
             content: "";
@@ -743,19 +738,12 @@ body {
 
     .el-tabs {
       width: 100%;
-
       .el-tabs__header {
-        // top: 70px;
-        width: 314px;
-        height: 54px;
-        position: relative;
+        height: 55px;
         background-color: #FFFFFF !important;
-        padding: 0;
-
         .el-tabs__nav-wrap {
           display: flex;
           align-items: center;
-
           .el-tabs__nav {
             width: 100%;
 
@@ -913,6 +901,9 @@ body {
             margin-bottom: 0 !important;
             height: 22px;
             line-height: 22px;
+            img{
+              height: 1em;
+            }
           }
         }
       }
@@ -1184,5 +1175,18 @@ body {
 	background-color: #F5F5F5;
 }
 .el-tabs__content::-webkit-scrollbar-thumb{
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+//scrollbar 自訂樣式
+.home-content::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+.home-content::-webkit-scrollbar{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+.home-content::-webkit-scrollbar-thumb{
 	background-color: rgba(0, 0, 0, 0.5);
 }

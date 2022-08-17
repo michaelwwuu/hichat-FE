@@ -202,6 +202,12 @@ const routes = [
     meta: { keepAlive: false },
   },
   {
+    path: "/MuteSound",
+    name: "MuteSound",
+    component: () => import(/* webpackChunkName: "Notify" */ '@/views/Notify/MuteSound.vue'),
+    meta: { keepAlive: false },
+  },  
+  {
     path: "/SpreadChange",
     name: "SpreadChange",
     component: () => import(/* webpackChunkName: "Spread" */ '@/views/Spread/SpreadChange.vue'),

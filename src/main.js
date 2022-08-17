@@ -12,14 +12,14 @@ import "reset-css";
 
 //fontawesome icon 引入
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
+import { faHatWizard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 //超连结
 import linkify from 'vue-linkify'
 Vue.directive('linkified', linkify)
-library.add(fas);
 
+library.add(faHatWizard);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 //导入全局样式

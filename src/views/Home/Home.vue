@@ -283,7 +283,7 @@ import VueQr from "vue-qr";
 import urlCopy from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import AESBase64 from "@/utils/AESBase64.js";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import {
   getGroupList,

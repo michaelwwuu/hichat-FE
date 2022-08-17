@@ -763,7 +763,6 @@ export default {
           deviceId: localStorage.getItem("UUID"),
           tokenType: 0,
         };
-        console.log(this.textArea.replace(/(\s*$)/g, ""))
         // 发送服务器
         this.soundNofiy.forEach((res) => {
           if (res.key === "group" && res.isNofity) this.audioAction();

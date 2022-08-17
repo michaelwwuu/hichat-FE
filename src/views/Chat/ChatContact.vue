@@ -568,7 +568,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          this.$root.gotoBottom();
+          // this.$root.gotoBottom();
         }
       });
     },

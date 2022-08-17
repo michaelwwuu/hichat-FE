@@ -21,6 +21,15 @@
               </div>
               <el-dropdown-menu slot="dropdown" class="chat-more">
                 <el-dropdown-item>
+                  <div class="logout-btn" @click="isMuteDialogShow = true">
+                  {{groupUser.mute}}
+                    <img :src="groupUser.mute ? muteImg : noMuteImg"/>
+                    <span>{{
+                      groupUser.mute ? "开启通知" : "关闭通知"
+                    }}</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
                   <div
                     class="logout-btn"
                     v-if="groupUser.isAdmin"
@@ -266,6 +275,31 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :title="`${groupUser.mute ? '开启' : '关闭'}通知`"
+      :visible.sync="isMuteDialogShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <span
+          >确认是否{{ groupUser.mute ? "开启通知" : "关闭通知" }}</span
+        >
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          class="background-gray"
+          @click="isMuteDialogShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red"
+          >确认</el-button
+        >
+      </span>
+    </el-dialog>    
     <audio
       id="notify-receive-audio"
       muted="muted"
@@ -317,10 +351,13 @@ export default {
       isChooseDeleteShow:false,
 
       allHistoruShow:false,
+      isMuteDialogShow:false,
       isLeaveGroupShow: false,
       deleteGroupDialogShow: false,
       leaveGroupDialogShow: false,
       pinDataList: [],
+      muteImg:require("./../../../static/images/icon_notification.svg"),
+      noMuteImg:require("./../../../static/images/volume.svg"),
       //加解密 key iv
       aesKey: "hichatisachatapp",
       aesIv: "hichatisachatapp",
@@ -357,6 +394,7 @@ export default {
   mounted() {
     this.getGroupListMember();
     this.getGroupAuthority();
+    this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
@@ -792,7 +830,11 @@ export default {
           this.messageData = this.messageData.filter(item => !userInfo.targetArray.includes(item.historyId))
           this.checkDataList = this.checkDataList.filter(item => !userInfo.targetArray.includes(item.historyId))
           this.getHiChatDataList();
-          break           
+          break   
+        // 撈取歷史訊息
+        case "SRV_NEED_AUTH":
+          this.getChatHistoryMessage();
+          break;           
       }
     },
     submitBtn() {

@@ -177,7 +177,6 @@ export default {
       groupForm: {
         name: "",
       },
-      searchKey: "",
       groupIcon: "",
       fileList: [],
       disabled: true,
@@ -241,12 +240,12 @@ export default {
       let uniqueArr = [...new Set(this.groupPermissionData.memberList)]
       this.groupPermissionData.memberList = uniqueArr
       this.groupPermissionData.addGroup = true
-      let groupList = {
-        groupName:this.groupForm.name,
-        icon:this.groupIcon,
-        isAdmin:true,
-      }
-      localStorage.setItem("groupData",JSON.stringify(groupList))
+      // let groupList = {
+      //   groupName:this.groupForm.name,
+      //   icon:this.groupIcon,
+      //   isAdmin:true,
+      // }
+      // localStorage.setItem("groupData",JSON.stringify(groupList))
       this.setGroupPermissionData(this.groupPermissionData)
       this.$router.push({ path: '/SettingGroup'})
     },

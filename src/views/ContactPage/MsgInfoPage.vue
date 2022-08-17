@@ -107,42 +107,8 @@
                   <img src="./../../../static/images/next.png" alt="" />
                 </a>
               </div>
-              <!-- <div
-               v-if="chatUser.name !== '嗨聊记事本'"
-                class="setting-notification"
-                @click="developmentMessage('提醒通知')"
-              >
-                <div class="setting-button-left">
-                  <span>提醒通知</span>
-                </div>
-                <el-switch
-                  v-model="notification"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                  disabled
-                >
-                </el-switch>
-              </div> -->
-              <template v-if="groupUser.isAdmin && infoMsg.infoMsgMap === 'GroupPeople'">
+              <template v-if="(groupUser.isAdmin|| groupUser.isManager) && infoMsg.infoMsgMap === 'GroupPeople'">
                 <div
-                  class="setting-button mt10"
-                  @click="
-                    dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')
-                  "
-                >
-                  <a>
-                    <div class="setting-button-left">
-                      <img src="./../../../static/images/octagon.png" alt="" />
-                      <span>{{
-                        !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
-                      }}</span>
-                    </div>
-                  </a>
-                </div>
-              </template>
-              <template v-if="groupUser.isManager && infoMsg.infoMsgMap === 'GroupPeople'">
-                <div
-                  v-if="!chatUser.isAdmin && !chatUser.isManager"
                   class="setting-button mt10"
                   @click="
                     dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')
@@ -159,6 +125,19 @@
                 </div>
               </template>
               <template v-if="chatUser.name !== '嗨聊记事本'">
+                <div
+                  class="setting-button"
+                  @click="dialogShow(!chatUser.mute ? 'mute' : 'unMute')"
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img :src="chatUser.mute  ? muteImg : noMuteImg"/>
+                      <span>{{
+                        !chatUser.mute  ? "关闭通知" : "开启通知"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
                 <div
                   class="setting-button"
                   @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
@@ -210,21 +189,6 @@
                     : groupUser.groupName
                 }}</span>
               </div>
-              <!-- <div
-                class="setting-notification"
-                @click="developmentMessage('提醒通知')"
-              >
-                <div class="setting-button-left">
-                  <span>提醒通知</span>
-                </div>
-                <el-switch
-                  v-model="notification"
-                  active-color="#fd5f3f"
-                  inactive-color="#666666"
-                  disabled
-                >
-                </el-switch>
-              </div> -->
               <div
                 class="setting-button"
                 v-for="(item, index) in settingGroupData"
@@ -404,6 +368,8 @@ export default {
       dialogContent: "",
       contactList: [],
       groupDataList: [],
+      muteImg:require("./../../../static/images/icon_notification.svg"),
+      noMuteImg:require("./../../../static/images/volume.svg"),      
       notification: true,
       successDialogShow: false,
       settingDialogShow: false,
@@ -491,6 +457,7 @@ export default {
     },
 
     dialogShow(type) {
+      console.log(type)
       this.settingDialogShow = true;
       switch (type) {
         case "block":
@@ -500,15 +467,18 @@ export default {
             type === "block" ? "封锁" : "解除封锁"
           }联络人${this.chatUser.name}？`;
           break;
-        case "delete":
-          this.dialogTitle = `${type === "delete" ? "删除" : ""}联络人`;
-          this.dialogContent = `确认是否${
-            type === "delete" ? "删除" : ""
-          }联络人${this.chatUser.name}？`;
-          break;
         case "add":
-          this.dialogTitle = "加入联络人";
-          this.dialogContent = `确认是否将${this.chatUser.name}加入联络人`;
+        case "delete":  
+          this.dialogTitle = `${type === "add" ? "加入" : "删除"}联络人`;
+          this.dialogContent = `确认是否${ type === "add" ? `将${this.chatUser.name}加入联络人` : `删除联络人${this.chatUser.name}？`
+          }`;
+          break;
+        case "mute":  
+        case "unMute":
+          this.dialogTitle = `${type === "unMute" ? "开启" : "关闭"}通知`;
+          this.dialogContent = `确认是否${
+            type === "unMute" ? "开启" : "关闭"
+          }通知？`;
           break;
       }
     },
@@ -573,6 +543,19 @@ export default {
               this.setChatUser(this.chatUser);
             }
           });
+          break;
+        case `确认是否${this.chatUser.mute ? "开启" : "关闭"
+          }通知？`:
+         let mute = this.chatUser.toChatId.replace("u", "");
+          // addBlockContactUser({ mute }).then((res) => {
+          //   if (res.code === 200) {
+          //     this.successDialogShow = true;
+          //     this.settingDialogShow =false;
+          //     this.chatUser.isBlock = true;
+          //     this.setChatUser(this.chatUser);
+          //   }
+          // });
+          break;
       }
     },
     getHiChatDataList() {

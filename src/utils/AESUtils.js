@@ -12,6 +12,7 @@ export function Encrypt(data, key, iv) {
     iv: iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.ZeroPadding
+    // padding: CryptoJS.pad.Pkcs7 //TODO Pkcs7
   });
   //返回base64
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
@@ -29,7 +30,8 @@ export function Decrypt(data, key, iv) {
   const decrypt = CryptoJS.AES.decrypt(base64Str, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.ZeroPadding
+    padding: CryptoJS.pad.ZeroPadding,
+    // padding: CryptoJS.pad.Pkcs7 //TODO Pkcs7
   });
   let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
   return decryptedStr.toString();

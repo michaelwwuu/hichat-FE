@@ -24,29 +24,17 @@
                   !editBtnShow ? contactList.length : checkDataList.length
                 }})
               </span>
-              <template v-if="groupData.isAdmin && !editBtnShow">
+              <template v-if="(groupData.isAdmin || groupData.isManager) && !editBtnShow">
                 <router-link
+                  v-if="groupData.isAdmin || authority.addUser"
                   :to="'GroupAddPeople'"
                   style="position: absolute; right: 50px"
+                  :style="!groupData.isAdmin && !authority.delUser ? 'right: 5px' : ''"
                 >
                   <div class="home-add-user"></div>
                 </router-link>
                 <div
-                  class="home-user-edit"
-                  @click="(editBtnShow = true) && (checkList = [])"
-                ></div>
-              </template>
-              <template v-if="groupData.isManager && !editBtnShow">
-                <router-link
-                  v-if="authority.addUser"
-                  :to="'GroupAddPeople'"
-                  style="position: absolute; right: 50px"
-                  :style="!authority.delUser ? 'right: 5px' : ''"
-                >
-                  <div class="home-add-user"></div>
-                </router-link>
-                <div
-                  v-if="authority.delUser"
+                  v-if="groupData.isAdmin || authority.delUser"
                   class="home-user-edit"
                   @click="(editBtnShow = true) && (checkList = [])"
                 ></div>
@@ -87,27 +75,14 @@
                 }})
               </span>
 
-              <template v-if="groupData.isAdmin && !editBtnShow">
+              <template v-if="(groupData.isAdmin || groupData.isManager) && !editBtnShow">
                 <div
                   class="home-add-user"
                   @click="addGroupPeople"
                   style="position: absolute; right: 50px"
                 ></div>
                 <div
-                  class="home-user-edit"
-                  @click="(editBtnShow = true) && (checkList = [])"
-                ></div>
-              </template>
-              <template v-if="groupData.isManager && !editBtnShow">
-                <div
-                  v-if="authority.addUser"
-                  class="home-add-user"
-                  @click="addGroupPeople"
-                  style="position: absolute; right: 50px"
-                  :style="!authority.delUser ? 'right: 5px' : ''"
-                ></div>
-                <div
-                  v-if="authority.delUser"
+                  v-if="groupData.isAdmin || authority.delUser"
                   class="home-user-edit"
                   @click="(editBtnShow = true) && (checkList = [])"
                 ></div>
@@ -144,26 +119,16 @@
                           <span style="margin-bottom: 3px"
                             >{{ item.name }}
                             <span
-                              v-if="item.isManager"
+                    
                               style="
                                 color: #fe5f3f;
                                 padding-left: 0.5em;
                                 display: inline-block;
                                 margin-bottom: 0;
                               "
-                              >★ 管理员</span
+                              >{{item.isAdmin ? '♔ 群主' : item.isManager ? '★ 管理员':  ''}}</span
                             >
-                            <span
-                              v-if="item.isAdmin"
-                              style="
-                                color: #fe5f3f;
-                                padding-left: 0.5em;
-                                display: inline-block;
-                                margin-bottom: 0;
-                              "
-                              >♔ 群主</span
-                            ></span
-                          >
+                          </span>
                           <span
                             class="content-text"
                             :class="
@@ -202,15 +167,15 @@
               </el-checkbox>
             </el-checkbox-group>
           </div>
+          <div class="home-footer-btn">
+            <el-button
+              :class="disabled ? 'gray-btn' : 'red-btn'"
+              :disabled="disabled"
+              @click="leaveUserDialogShow = true"
+              >移除成员</el-button
+            >
+          </div>
         </template>
-        <div class="home-footer-btn" v-if="editBtnShow">
-          <el-button
-            :class="disabled ? 'gray-btn' : 'red-btn'"
-            :disabled="disabled"
-            @click="leaveUserDialogShow = true"
-            >移除成员</el-button
-          >
-        </div>
       </el-main>
     </el-container>
     <el-dialog
@@ -263,10 +228,10 @@
 <script>
 import Socket from "@/utils/socket";
 import {
-  groupListMember,
   removeMember,
-  getGroupAuthoritySetting,
+  groupListMember,
   getMemberActivity,
+  getGroupAuthoritySetting,
 } from "@/api";
 import { mapState, mapMutations } from "vuex";
 
@@ -274,10 +239,7 @@ export default {
   name: "GroupPeople",
   data() {
     return {
-      authority: {
-        addUser: true,
-        delUser: true,
-      },
+      authority: {},
       groupData: {},
       checkList: [],
       contactList: [],
@@ -293,19 +255,11 @@ export default {
     };
   },
   created() {
-    if (this.device === "moblie") {
-      this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    } else {
-      this.groupData = this.groupUser;
-      Socket.$on("message", this.handleGetMessage);
-    }
-    if (JSON.parse(localStorage.getItem("authority")) !== undefined) {
-      this.authority = JSON.parse(localStorage.getItem("authority"));
-    }
+    this.groupData = JSON.stringify(this.groupUser) === '{}' ? JSON.parse(localStorage.getItem("groupData")) :this.groupUser;
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.newContactList)
     }, 30000);
-
+    Socket.$on("message", this.handleGetMessage);
   },
   beforeDestroy() {
     clearInterval(this.memberTime)
@@ -350,6 +304,7 @@ export default {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
+      setAuthority:"ws/setAuthority",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setContactListData: "ws/setContactListData",
     }),
@@ -362,21 +317,44 @@ export default {
         case "SRV_GROUP_ADD_MANAGER_HISTORY":
         case "SRV_GROUP_REMOVE_MANAGER_HISTORY":
         case "SRV_GROUP_CHANGE_ADMIN_HISTORY":
-          this.getGroupListMember()
+          this.getGroupListMember();
           break
+        //變更權限          
+        case "SRV_GROUP_AUTHORITY":
+          this.getGroupAuthority();
+          break;
+        case "SRV_GROUP_MANAGER_AUTHORITY":
+        case "SRV_GROUP_ADMIN_CHANGE":
+        case "SRV_GROUP_BAN_POST":
+          this.getGroupListMember();
+  
       }
     },
     getGroupListMember() {
       let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
-        this.contactList.forEach((item) => {
+         this.contactList.forEach((item) => {
+          if (item.memberId === this.groupData.memberId) {
+            this.groupData.isAdmin = item.isAdmin;
+            this.groupData.isBanPost = item.isBanPost;
+            this.groupData.isManager = item.isManager;
+            if (item.memberId === Number(localStorage.getItem("id"))) {
+              if (item.isAdmin) {
+                localStorage.removeItem("authority");
+              } else if (item.isManager) {
+                this.authority = item.authority;
+              } else if (!item.isAdmin && !item.isManager) {
+                localStorage.removeItem("authority");
+              }
+            }
+          }
           if (item.icon === undefined) {
             item.icon = require("./../../../static/images/image_user_defult.png");
           }
         });
-
         this.setContactListData(this.contactList);
+
         this.checkDataList = this.contactList.filter(
           (el) =>
             el.memberId !== this.groupData.memberId &&

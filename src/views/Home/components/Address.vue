@@ -4,7 +4,7 @@
       <el-tab-pane label="联络人" name="address">
         <div
           class="address-box"
-          v-for="(item, index) in myContactDataList"
+          v-for="(item, index) in contactList"
           :key="index"
           @click="goContactPage(item, 'ContactPage')"
         >
@@ -23,7 +23,7 @@
       <el-tab-pane label="群组" name="group">
         <div
           class="address-box"
-          v-for="(item, index) in groupList"
+          v-for="(item, index) in groupData"
           :key="index"
           @click="goContactPage(item, 'GroupPage')"
         >
@@ -47,10 +47,9 @@ export default {
   name: "Address",
   data() {
     return {
-      searchKey: "",
       activeName: "address",
-      contactList: [],
       groupData: [],
+      contactList: [],
       memberActivityData:[],
       device: localStorage.getItem("device"),
     };
@@ -85,6 +84,12 @@ export default {
     chatUser(val){
       JSON.stringify(val) === '{}' ? this.getDataList() : false;
     },
+    myContactDataList(val){
+      this.contactList = val
+    },
+    groupList(val){
+      this.groupData = val
+    },
   },
   methods: {
     ...mapMutations({
@@ -101,7 +106,7 @@ export default {
       let scrollTop = document.querySelector(".home-content");
       let headerScrollTop = document.querySelector(".is-top");
       let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
-      document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';       
+      document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';      
     },
     handleClick() {
       this.setInfoMsg({ infoMsgShow: false });
@@ -130,16 +135,16 @@ export default {
         this.getUserMemberActivity(this.memberActivityData)
       });
       getGroupList().then((res) => {
-        this.groupData = res.data.list;
-        this.groupData.forEach((el) => {
+        res.data.list.forEach((el) => {
           if (el.icon === "") {
             el.icon = require("./../../../../static/images/image_group_defult.png");
           }
+          return el.groupId !== 488
         });
-        this.newGroupList = this.groupData.filter((el)=>{
+        this.groupData = res.data.list.filter((el)=>{
           return el.groupName !== undefined
         })
-        this.setGroupList(this.newGroupList);
+        this.setGroupList(this.groupData);
       });
     },
     getUserMemberActivity(data){
@@ -251,29 +256,8 @@ export default {
     }
     .contont-box {
       .msg-box {
-        height: 48px;
-        display: flex;
-        span {
-          display: block;
-          font-size: 16px;
-          &:nth-child(1) {
-            margin-bottom: 7px;
-          }
-        }
         .content-text {
-          display: flex;
-          font-size: 14px;
-          opacity: 0.5;
-          height:20px;
           span {
-            &:nth-child(1) {
-              width: 15em;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              margin-bottom: 0;
-              font-size: 14px;
-            }
             &:nth-child(2) {
               opacity: 1;
               font-size: 14px;
