@@ -306,6 +306,7 @@ export default {
       setChatUser: "ws/setChatUser",
       setAuthority:"ws/setAuthority",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setGroupUserCheck:"ws/setGroupUserCheck",
       setContactListData: "ws/setContactListData",
     }),
     // 收取 socket 回来讯息 (全局讯息)
@@ -334,7 +335,7 @@ export default {
       let groupId = this.groupData.groupId;
       groupListMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
-         this.contactList.forEach((item) => {
+        this.contactList.forEach((item) => {
           if (item.memberId === this.groupData.memberId) {
             this.groupData.isAdmin = item.isAdmin;
             this.groupData.isBanPost = item.isBanPost;
@@ -399,7 +400,7 @@ export default {
           return "上次上线于" + this.$root.formatTimeS(data.lastActivityTime);
         }
       }
-    },
+    },    
     getGroupAuthority() {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({ groupId }).then((res) => {
@@ -448,12 +449,26 @@ export default {
       }
     },
     goInfoMsgContactPage(data) {
-      if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
-        this.$message({ message: "此即为您的帐号", type: "warning" });
-      } else {
+      // if (data.memberId === JSON.parse(localStorage.getItem("id"))) {
+      //   // this.$message({ message: "此即为您的帐号", type: "warning" });
+      //   data.contactId = data.toChatId.replace("u", "");
+      //   data.memberId = data.toChatId.replace("u", "");
+        
+      // } else {
         data.toChatId = "u" + data.memberId;
         if (this.device === "moblie") {
-          this.$router.push({ name: "ContactPage" });
+          if (data.memberId === JSON.parse(localStorage.getItem("id"))){
+            data.contactId = data.toChatId.replace("u", "");
+            data.memberId = data.toChatId.replace("u", "");
+            data.isContact = true
+            data.name = "嗨聊记事本"
+            data.icon = require("./../../../static/images/image_savemessage.png");
+            this.$router.push({ name: "ChatMsg" });
+          }else{
+            this.$router.push({ name: "ContactPage" });
+          }
+          this.setChatUser(data);
+          
         } else {
           if (this.infoMsg.infoMsgMap === "address") {
             this.setInfoMsg({
@@ -468,6 +483,20 @@ export default {
               page: "GroupPeople",
             });
           } else {
+            this.isContact = this.contactList.filter((el)=>{
+              return "u"+ el.memberId === data.toChatId
+            })
+            if(this.isContact[0].length !== 0 ){
+              this.isContact[0].isContact = true
+            } else{
+              data.isContact = false
+              this.isContact[0] = data
+            }
+            if (data.memberId === JSON.parse(localStorage.getItem("id"))){
+              this.isContact[0].name = "嗨聊记事本"
+              this.isContact[0].icon = require("./../../../static/images/image_savemessage.png");
+            }
+            this.isContact[0].toChatId = "u" + data.memberId;
             this.setInfoMsg({
               infoMsgShow: true,
               infoMsgChat: true,
@@ -479,10 +508,11 @@ export default {
               type: "ContactPage",
               page: "GroupPeople",
             });
+            this.setGroupUserCheck(this.isContact[0])
           }
         }
-        this.setChatUser(data);
-      }
+        // 
+      // }
     },
     goContactPage(data) {
       if (this.device === "moblie") {

@@ -1,7 +1,9 @@
 export const state = {
   badgeNum:0,
+  maybeKnowNum:0,
   wsRes: {},
   chatUser:{},
+  groupUserCheck:{},
   groupUser:{},
   myUserInfo:{},
   contactUser:{},
@@ -104,6 +106,9 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setGroupUserCheck(state, payload) {
+    state.groupUserCheck = payload;
+  },     
   setCheckBoxBtn(state, payload) {
     state.checkBoxBtn = payload;
   },     
@@ -146,6 +151,9 @@ export const mutations = {
   },
   setBadgeNum(state, num){
     state.badgeNum = num
+  },
+  setMaybeKnowNum(state, num){
+    state.maybeKnowNum = num
   },
   setMsgInfoPage(state, payload){
     state.msgInfoPage = payload;

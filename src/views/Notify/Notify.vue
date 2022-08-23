@@ -44,7 +44,8 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">靜音</div>
+          <!-- 靜音 -->
+          <!-- <div class="setting-title">靜音</div>
           <router-link :to="'/MuteSound'">
             <div class="setting-button">
               <div class="setting-box">
@@ -56,7 +57,8 @@
                 </div>
               </div>
             </div>      
-          </router-link>
+          </router-link> -->
+          <!-- 提醒 -->
           <div class="setting-title">應用內提醒</div>
           <div
             class="setting-button"

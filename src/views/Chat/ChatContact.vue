@@ -364,6 +364,7 @@
 <script>
 import Socket from "@/utils/socket";
 import {
+  getContactList,
   addContactUser,
   addBlockContactUser,
   unBlockContactUser,
@@ -478,6 +479,7 @@ export default {
       setMsgInfoPage: "ws/setMsgInfoPage",
       setTopMsgShow: "ws/setTopMsgShow",
       setCheckBoxBtn: "ws/setCheckBoxBtn",
+      setMyContactDataList: "ws/setMyContactDataList",
     }),
     closeChooseAction() {
       this.showCheckBoxBtn = true;
@@ -777,6 +779,12 @@ export default {
           break;
       }
     },
+    getAddressList() {
+      getContactList().then((res) => {
+        this.contactList = res.data.list
+        this.setMyContactDataList(this.contactList)
+      });
+    },
     addUser(data) {
       let parmas = {
         contactId: data.toChatId.replace("u", ""),
@@ -793,6 +801,7 @@ export default {
               this.getHistory(data);
               this.getHiChatDataList();
               this.setHichatNav({ type: "address", num: 1 });
+              this.getAddressList()
             }
           } else {
             this.$message({ message: res.message, type: "error" });
@@ -813,9 +822,12 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.deleteDialogShow = false;
-            localStorage.removeItem("userData");
+            localStorage.removeItem("contactUser");
             if (this.device === "pc") {
-              this.setHichatNav({ type: "contact", num: 1 });
+              
+              this.setHichatNav({ type: "address", num: 1 });
+              
+              this.setContactUser({})
               window.location.reload();
               this.getHiChatDataList();
             }

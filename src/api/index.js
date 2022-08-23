@@ -28,15 +28,7 @@ export const register = data => {
   }
   return axios.request(postData)
 }
-// 用户信息
-export const getUserInfo = (params) => {
-  let postData = {
-    url: '/api/member/profile/my',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
+
 // 產生驗證碼
 export const genAuthCode = (params) => {
   let postData = {
@@ -47,6 +39,15 @@ export const genAuthCode = (params) => {
   return axios.request(postData)
 }
 
+// 用户信息
+export const getUserInfo = (params) => {
+  let postData = {
+    url: '/api/member/profile/my',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
 // 搜尋用戶
 export const searchByEmailUsername = (params) => {
   let postData = {
@@ -76,26 +77,6 @@ export const getMemberActivity = data => {
   }
   return axios.request(postData)
 }
-
-// 獲取群組清單
-export const getGroupList = (params) => {
-  let postData = {
-    url: '/api/group/list',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
-// 獲取群組清單
-export const groupMemberList = (params) => {
-  let postData = {
-    url: '/api/group/groupMemberList',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
-
 
 // 添加联络人
 export const addContactUser = data => {
@@ -127,6 +108,68 @@ export const updateContactNickName = (data,contactId) => {
   return axios.request(postData)
 }
 
+// 獲取會員訊息
+export const getSearchById = (params) => {
+  let postData = {
+    url: '/api/member/profile/searchById',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+// 封鎖联络人
+export const addBlockContactUser = data => {
+  let postData = {
+    url: '/api/member/block/add',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 解除封鎖联络人
+export const unBlockContactUser = data => {
+  let postData = {
+    url: '/api/member/block/delete',
+    method: 'post',
+    data
+  }
+  return axios.request(postData)
+}
+
+// 刪除联络人
+export const deleteContactUser = data => {
+  let postData = {
+    url: `/api/member/contact/delete/${data}`,
+    method: 'delete',
+    data
+  }
+  
+  return axios.request(postData)
+}
+
+//查询用户封锁名單
+export const blockListMember = (params) => {
+  let postData = {
+    url: '/api/member/block/list',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+//可能認識的人
+export const maybeKnow = (params) => {
+  let postData = {
+    url: '/api/member/contact/maybeKnow',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+
 // 上傳頭像
 export const uploadIcon = data => {
   let postData = {
@@ -150,7 +193,7 @@ export const uploadGroupIcon = data => {
 // 上傳圖片
 export const uploadMessageImage = data => {
   let postData = {
-    url: 'file/upload/uploadMessageImage',
+    url: '/file/upload/uploadMessageImage',
     method: 'post',
     data
   }
@@ -160,7 +203,7 @@ export const uploadMessageImage = data => {
 // 上傳檔案
 export const uploadMessageFile = data => {
   let postData = {
-    url: 'file/upload/uploadMessageFile',
+    url: '/file/upload/uploadMessageFile',
     method: 'post',
     data
   }
@@ -191,46 +234,6 @@ export const unlockUser = data => {
 export const updatePassword = data => {
   let postData = {
     url: '/api/sso/cnUpdatePassword',
-    method: 'post',
-    data
-  }
-  return axios.request(postData)
-}
-
-// 獲取會員訊息
-export const getSearchById = (params) => {
-  let postData = {
-    url: '/api/member/profile/searchById',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
-
-// 新增群組
-export const addGroup = data => {
-  let postData = {
-    url: '/api/group/add',
-    method: 'post',
-    data
-  }
-  return axios.request(postData)
-}
-
-// 修改群組
-export const updateGroup = data => {
-  let postData = {
-    url: '/api/group/update',
-    method: 'put',
-    data
-  }
-  return axios.request(postData)
-}
-
-// 封鎖联络人
-export const addBlockContactUser = data => {
-  let postData = {
-    url: '/api/member/block/add',
     method: 'post',
     data
   }
@@ -287,27 +290,57 @@ export const pinList = (params) => {
   return axios.request(postData)
 }
 
-// 解除封鎖联络人
-export const unBlockContactUser = data => {
+
+
+// 獲取群組清單
+export const getGroupList = (params) => {
   let postData = {
-    url: '/api/member/block/delete',
+    url: '/api/group/list',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+// 獲取群組清單
+export const groupMemberList = (params) => {
+  let postData = {
+    url: '/api/group/groupMemberList',
+    method: 'get',
+    params
+  }
+  return axios.request(postData)
+}
+
+// 更改音訊開關
+export const updateGroupSetting = data => {
+  let postData = {
+    url: '/api/group/updateGroupSetting',
     method: 'post',
     data
   }
   return axios.request(postData)
 }
 
-// 刪除联络人
-export const deleteContactUser = data => {
+//新增群組
+export const addGroup = data => {
   let postData = {
-    url: `/api/member/contact/delete/${data}`,
-    method: 'delete',
+    url: '/api/group/add',
+    method: 'post',
     data
   }
-  
   return axios.request(postData)
 }
 
+// 修改群組
+export const updateGroup = data => {
+  let postData = {
+    url: '/api/group/update',
+    method: 'put',
+    data
+  }
+  return axios.request(postData)
+}
 // 移除成員
 export const removeMember = data => {
   let postData = {
@@ -358,14 +391,7 @@ export const addMember = data => {
 }
 
 // 查詢封鎖名單
-export const blockListMember = (params) => {
-  let postData = {
-    url: '/api/member/block/list',
-    method: 'get',
-    params
-  }
-  return axios.request(postData)
-}
+
 
 // 設定管理這权限
 export const setAdminAuthority = data => {

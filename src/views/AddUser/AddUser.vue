@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import {mapMutations } from "vuex";
 import { searchByEmailUsername, addContactUser } from "@/api";
 
 export default {
@@ -122,10 +123,13 @@ export default {
     };
   },
   created() {
-    if (this.getUrlParam("username") !== "")
+  if (this.getUrlParam("username") !== "")
       this.searchUserData(this.getUrlParam("username"));
   },
   methods: {
+      ...mapMutations({
+      setChatUser: "ws/setChatUser",
+    }),
     // 獲取URL key
     getUrlParam(paraName) {
       let url = document.location.toString();

@@ -9,9 +9,7 @@
                 <img :src="noIconShow(groupUser)" />
               </div>
               <span>{{
-                groupUser.groupName === undefined
-                  ? groupData.groupName
-                  : groupUser.groupName
+                groupUser.groupName 
               }}</span>
             </span>
 
@@ -20,15 +18,14 @@
                 <div class="home-user-more"></div>
               </div>
               <el-dropdown-menu slot="dropdown" class="chat-more">
-                <el-dropdown-item>
+                <!-- <el-dropdown-item>
                   <div class="logout-btn" @click="isMuteDialogShow = true">
-                  {{groupUser.mute}}
                     <img :src="groupUser.mute ? muteImg : noMuteImg"/>
                     <span>{{
                       groupUser.mute ? "开启通知" : "关闭通知"
                     }}</span>
                   </div>
-                </el-dropdown-item>
+                </el-dropdown-item> -->
                 <el-dropdown-item>
                   <div
                     class="logout-btn"
@@ -136,7 +133,7 @@
               <span style="padding-right: 10px"
                 ><img src="./../../../static/images/pc/arrow-left.svg" alt=""
               /></span>
-              <span>{{ isBase64(pinMsg) }}</span>
+              <span>置顶訊息</span>
             </span>
             <el-dropdown trigger="click">
               <div class="el-dropdown-link">
@@ -725,6 +722,7 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
             setTimeout(() => {
+              this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");
@@ -845,7 +843,6 @@ export default {
             this.leaveGroupDialogShow = false;
             this.setHichatNav({ type: "group", num: 1 });
             this.setChatGroup({});
-            this.getHiChatDataList();
           }
         })
         .catch((err) => {

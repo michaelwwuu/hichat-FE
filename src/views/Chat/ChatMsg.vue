@@ -59,7 +59,7 @@
                   />
                 </div>
                 <span>
-                  <div>{{ chatUser.name === undefined ? userData.name : chatUser.name }}</div> 
+                  <div>{{ chatUser.name }}</div> 
                   <div class="online-text" :class="onlineTime === '在线'?'green-text':'gray-text'">{{ onlineTime }}</div>
                 </span>
                 
@@ -74,14 +74,14 @@
                       <div class="home-user-more"></div>
                     </div>
                     <el-dropdown-menu slot="dropdown" class="chat-more">
-                      <el-dropdown-item>
+                      <!-- <el-dropdown-item>
                         <div class="logout-btn" @click="isMuteDialogShow = true">
                           <img :src="chatUser.mute ? muteImg : noMuteImg" v-if="device ==='pc'"/>
                           <span>{{
                             chatUser.mute ? "开启通知" : "关闭通知"
                           }}</span>
                         </div>
-                      </el-dropdown-item>
+                      </el-dropdown-item> -->
                       <el-dropdown-item>
                         <div class="logout-btn" @click="isBlockDialogShow = true">
                           <img
@@ -573,9 +573,11 @@ export default {
     Socket.$on("message", this.handleGetMessage);
   },
   mounted() {
-    this.memberTime = setInterval(() => {
-      this.getUserMemberActivity(this.chatUser)
-    }, 30000);  
+    if(JSON.stringify(this.chatUser) !== '{}'){
+      this.memberTime = setInterval(() => {
+        this.getUserMemberActivity(this.chatUser)
+      }, 30000);  
+    }
     if (this.device === "moblie") {
       this.getUserId(this.userData);
       this.getChatHistoryMessage();
@@ -594,6 +596,7 @@ export default {
       myUserInfo: (state) => state.ws.myUserInfo,
       topMsgShow: (state) => state.ws.topMsgShow,
       checkBoxBtn: (state) => state.ws.checkBoxBtn,
+      myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
   methods: {
@@ -607,7 +610,8 @@ export default {
       setChatMsgData: "ws/setChatMsgData",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setTopMsgShow: "ws/setTopMsgShow",
-      setCheckBoxBtn: "ws/setCheckBoxBtn"
+      setCheckBoxBtn: "ws/setCheckBoxBtn",
+      setMyContactDataList: "ws/setMyContactDataList",
     }),
     closeChooseAction(){
       this.showCheckBoxBtn = true;
@@ -864,9 +868,9 @@ export default {
           this.pinMsg = "";
           this.getPinList();   
           this.loading = true;
-          this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
+            this.messageData = [];
             setTimeout(() => {
               historyMsgList.forEach((el) => {
                 this.messageList(el);
@@ -1037,6 +1041,10 @@ export default {
             this.getHiChatDataList();
             this.setChatUser({});
             this.setHichatNav({ type: "address", num: 1 });
+            this.newContact = this.myContactDataList.filter((el)=>{
+              return data.forChatId !== "u"+ el.contactId
+            })
+            this.setMyContactDataList(this.newContact)
           }
         })
         .catch((err) => {

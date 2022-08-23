@@ -313,14 +313,14 @@ export default {
   },
   computed: {
     ...mapState({
-      // chatUser: (state) => state.ws.chatUser,
+      chatUser: (state) => state.ws.chatUser,
       groupUser: (state) => state.ws.groupUser,
       infoMsg: (state) => state.ws.infoMsg,
       myUserInfo: (state) => state.ws.myUserInfo,
     }),
   },
   created() {
-    this.chatUser = JSON.parse(localStorage.getItem("userData"));
+    // this.chatUser = JSON.parse(localStorage.getItem("userData"));
     this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
     this.setMyUserInfo(this.myInfo)
     this.getUserId();
@@ -391,7 +391,7 @@ export default {
         case "banPost":
         case "unBanPost":
           this.dialogContent = `确认是否${
-            type === "block" ? "禁言" : "解除禁言"
+            type === "banPost" ? "禁言" : "解除禁言"
           }联络人${this.chatUser.name}？`;
           break;
         case "block":

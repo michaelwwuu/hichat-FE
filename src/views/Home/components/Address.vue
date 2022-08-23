@@ -8,7 +8,7 @@
           :key="index"
           @click="goContactPage(item, 'ContactPage')"
         >
-          <el-image :src="item.icon" />
+          <el-image :src="noIconShow(item,'user')" />
           <div class="contont-box">
             <div class="msg-box">
               <div :class="{'noOnline-tip':onlineMsg(item) === ''}">
@@ -27,14 +27,55 @@
           :key="index"
           @click="goContactPage(item, 'GroupPage')"
         >
-          <el-image :src="item.icon" />
+          <el-image :src="noIconShow(item,'group')" />
           <div class="contont-box group">
             <span>{{ item.groupName }}</span>
             <div class="contont-border-bottom"></div>
           </div>
         </div>
       </el-tab-pane>
+      <el-tab-pane label="可能认识" name="maybeKnow" v-if="maybeKnowDataList.length !== 0">
+        <div
+          class="address-box"
+          v-for="(item, index) in maybeKnowDataList"
+          :key="index"
+        >
+          <!-- @click="goContactPage(item, 'GroupPage')" -->
+          <el-image :src="noIconShow(item,'user')" />
+          <div class="contont-box group">
+            <div style="display: flex; align-items: center;">
+              <span>{{ item.nickname }}</span>
+              <div style="position: absolute; right: 1.5em;" @click="addContactBoxShow(item)">
+                <img v-if="device === 'pc'" src="./../../../../static/images/pc/user-plus.svg" alt=""  >
+                <img v-else src="./../../../../static/images/add_user.png" alt="" style="height: 1.5em">
+              </div>
+            </div>
+            <div class="contont-border-bottom"></div>
+          </div>
+        </div>
+      </el-tab-pane>
     </el-tabs>
+    <el-dialog
+      :title="device === 'pc' ? '新增联络人':''"
+      :visible.sync="addContactShow"
+      class="el-dialog-loginOut"
+      width="70%"
+      :show-close="false"
+      :modal-append-to-body="false"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="loginOut-box">
+        <div v-if="device !== 'pc'"><img src="./../../../../static/images/warn.svg" alt="" /></div>
+        <span>确认是否加为联络人</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button :class="device === 'pc' ? 'background-gray' : 'border-red'" @click="addContactShow = false"
+          >取消</el-button
+        >
+        <el-button class="background-red" @click="addContact()">确认</el-button>
+      </span>
+    </el-dialog>    
   </div>
 </template>
 
@@ -42,20 +83,24 @@
 import Socket from "@/utils/socket";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import { getContactList, getGroupList, getSearchById,getMemberActivity } from "@/api";
+import { getContactList, getGroupList, getSearchById,getMemberActivity,maybeKnow,addContactUser } from "@/api";
 export default {
   name: "Address",
   data() {
     return {
       activeName: "address",
+      addInfo:{},
       groupData: [],
       contactList: [],
       memberActivityData:[],
+      maybeKnowDataList:[],
+      addContactShow:false,
       device: localStorage.getItem("device"),
     };
   },
   created() {
     this.getDataList();
+    this.getMaybeKnow()
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setActiveName(this.activeName);
     Socket.$on("message", this.handleGetMessage);
@@ -82,7 +127,10 @@ export default {
   },
   watch:{
     chatUser(val){
-      JSON.stringify(val) === '{}' ? this.getDataList() : false;
+      if(JSON.stringify(val) === '{}'){
+        this.getDataList()
+        this.getMaybeKnow()
+      }
     },
     myContactDataList(val){
       this.contactList = val
@@ -100,6 +148,7 @@ export default {
       setGroupList: "ws/setGroupList",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setActiveName: "ws/setActiveName",
+      setMaybeKnowNum:"ws/setMaybeKnowNum",
       setMyContactDataList:"ws/setMyContactDataList"
     }),
     homeScrollHeight(){
@@ -107,6 +156,25 @@ export default {
       let headerScrollTop = document.querySelector(".is-top");
       let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
       document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';      
+    },
+    addContactBoxShow(data){
+      this.addContactShow = true
+      this.addInfo = data
+    },
+    addContact(){
+      let parmas = {
+        contactId: this.addInfo.memberId,
+        name: this.addInfo.nickname,
+      };
+      addContactUser(parmas)
+        .then((res) => {
+          if (res.code === 200) {
+            this.$message({ message: '添加成功', type: "success" });
+            this.addContactShow = false;
+            this.addInfo = {}
+            this.getMaybeKnow()
+          } 
+        })
     },
     handleClick() {
       this.setInfoMsg({ infoMsgShow: false });
@@ -146,7 +214,23 @@ export default {
         })
         this.setGroupList(this.groupData);
       });
+ 
     },
+    getMaybeKnow(){
+      maybeKnow().then((res) => {
+        this.maybeKnowDataList = res.data
+        this.setMaybeKnowNum(this.maybeKnowDataList.length)
+        this.getDataList()
+        if(this.maybeKnowDataList.length === 0) this.activeName = "address"
+      })
+    },
+    noIconShow(iconData, key) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
+        return require(`./../../../../static/images/image_${key}_defult.png`);
+      } else {
+        return iconData.icon;
+      }
+    },    
     getUserMemberActivity(data){
       let memberId = data
       getMemberActivity({memberId}).then((res) => {
@@ -231,6 +315,9 @@ export default {
         case "SRV_GROUP_SEND":
           this.getHiChatDataList();
           break;
+        case "SRV_EDIT_CONTACT":  
+          this.getMaybeKnow();
+          break
       }
     },
     getHiChatDataList() {
@@ -270,5 +357,63 @@ export default {
   }
 }
 
+/deep/.el-dialog-loginOut {
+  .el-dialog__footer {
+    padding: 0 !important;
+
+    .el-button {
+      padding: 20px !important;
+      border-radius: 0 !important;
+
+      &:nth-child(2) {
+        border-left: 1px solid #efefef !important;
+      }
+    }
+  }
+}
+.hichat-moblie{
+  .el-dialog-loginOut {
+    /deep/.el-dialog{
+      border-radius: 20px;
+      position: relative;
+      .el-dialog__header{
+        padding: 10px
+      }
+      .el-dialog__body{
+        text-align: center;
+        padding: 25px 25px 15px;
+        .loginOut-box {
+          img{
+            height: 5em;
+            margin-bottom: 1.2em;
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding: 20px !important;
+        padding-top: 10px !important;
+        text-align: right;
+        box-sizing: border-box;
+        .dialog-footer{
+          display: flex;
+          justify-content: space-between;
+          .el-button {
+            width: 100%;
+            border-radius: 8px !important;
+            padding: 12px 20px !important;
+          }
+          .background-red {
+            background-color: #ee5253;
+            color: #fff;
+          }
+          .border-red {
+            border: 1px solid #fe5f3f;
+            color: #fe5f3f;
+          }
+        }
+      }
+    }
+  }
+}
 </style>
 

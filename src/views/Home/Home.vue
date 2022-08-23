@@ -12,7 +12,7 @@
                 { 'promote-img': num === 2 },
               ]"
               @click="
-                num === 0 || num === 2 ? (centerDialogVisible = true) : $router.push({ name: 'SpreadChange'})
+                num === 0 || num === 2 ? (centerDialogVisible = true) : activeName === 'address' ? $router.push({ name: 'SpreadChange'}) : false
               "
             ></div>
             <span class="home-header-title">{{
@@ -70,6 +70,13 @@
                     :value="badgeNum"
                     class="item"
                     v-if="badgeNum !== 0"
+                  ></el-badge>
+                </div>
+                <div class="el-badge-box" v-if="index === 0">
+                  <el-badge
+                    :value="maybeKnowNum"
+                    class="item"
+                    v-if="maybeKnowNum !== 0"
                   ></el-badge>
                 </div>
                 <img :src="index !== num ? item.icon : item.active"
@@ -130,6 +137,7 @@
                     alt=""
                   />
                 </router-link>
+                
               </template>
             </div>
           </div>
@@ -155,6 +163,13 @@
                     :value="badgeNum"
                     class="item"
                     v-if="badgeNum !== 0"
+                  ></el-badge>
+                </div>
+                <div class="el-badge-box" v-if="index === 0">
+                  <el-badge
+                    :value="maybeKnowNum"
+                    class="item"
+                    v-if="maybeKnowNum !== 0"
                   ></el-badge>
                 </div>
                 <img :src="index !== num ? item.icon : item.active"
@@ -419,6 +434,7 @@ export default {
       infoMsg: (state) => state.ws.infoMsg,
       chatUser: (state) => state.ws.chatUser,
       badgeNum: (state) => state.ws.badgeNum,
+      maybeKnowNum: (state) => state.ws.maybeKnowNum,
       groupUser: (state) => state.ws.groupUser,
       hichatNav: (state) => state.ws.hichatNav,
       activeName: (state) => state.ws.activeName,
@@ -589,7 +605,13 @@ export default {
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
           if (msgInfo.chat.fromChatId !== "u" + localStorage.getItem("id")) {
-            setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 500);
+            this.groupList.forEach((list)=>{
+              if(("u" + list.memberId === msgInfo.forChatId) && ("g" + list.groupId === msgInfo.toChatId)){
+                if(list.setting.prompt){
+                  setTimeout(() => this.openNotify(msgInfo, msgInfo.chatType), 500);
+                } 
+              }
+            })
           }
           if (this.device === "moblie") {
             this.getHiChatDataList();

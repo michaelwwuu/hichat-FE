@@ -19,20 +19,20 @@
           </div>
         </div>
         <div class="home-content" @touchmove="$root.handleTouch">
-          <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tabs v-model="activeName" >
             <el-tab-pane label="联络人" name="address">
               <div
                 class="address-box"
                 v-for="(item, index) in newContactList"
                 :key="index"
               >
-                <el-image :src="item.icon" />
+                <el-image :src="noIconShow(item,'user')" />
                 <div class="contont-box">
                   <div class="msg-box">
                     <div>
                       <span>{{ item.name }}</span>
                     </div>
-                    <div class="time" @click="muteActional(item)">
+                    <div class="time" @click="muteActional(item,'user')">
                       <img :src="item.mute ? muteImg : noMuteImg" />
                     </div>
                   </div>
@@ -47,14 +47,14 @@
                 "
                 :key="index"
               >
-                <el-image :src="item.icon" />
+                <el-image :src="noIconShow(item,'group')" />
                 <div class="contont-box">
                   <div class="msg-box">
                     <div>
                       <span>{{ item.groupName }}</span>
                     </div>
-                    <div class="time" @click="muteActional(item)">
-                      <img :src="item.mute ? muteImg : noMuteImg" />
+                    <div class="time" @click="muteActional(item,'group')">
+                      <img :src="item.setting.prompt ? muteImg : noMuteImg" />
                     </div>
                   </div>
                   <div class="contont-border-bottom"></div>
@@ -70,7 +70,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { getContactList, getGroupList } from "@/api";
+import { getContactList, getGroupList,updateGroupSetting } from "@/api";
 
 export default {
   name: "Notify",
@@ -130,9 +130,6 @@ export default {
         this.contactList = res.data.list;
         this.contactList.forEach((el) => {
           el.mute = true
-          if (el.icon === undefined) {
-            el.icon = require("./../../../static/images/image_user_defult.png");
-          }       
         }); 
         this.newContactList = this.contactList.filter((name)=>{
           return name.contactId !== localStorage.getItem("id")
@@ -141,23 +138,39 @@ export default {
       getGroupList().then((res) => {
         this.newGroupList=[]
         this.groupList = res.data.list;
-        this.groupList.forEach((el) => {
-          el.mute = true
-          if (el.icon === "") {
-            el.icon = require("./../../../static/images/image_group_defult.png");
-          }
-        });
         this.groupList = this.groupList.filter((el)=>{
           return el.groupName !== undefined
         })
-        this.newGroupList=this.groupList
+        this.newGroupList = this.groupList
       });
     },
-    muteActional(item){
-      item.mute = !item.mute;
-      this.newContactList = this.contactList.filter((name)=>{
-        return name.contactId !== localStorage.getItem("id")
-      })
+    noIconShow(iconData, key) {
+      if ([undefined, null, ""].includes(iconData.icon)) {
+        return require(`./../../../static/images/image_${key}_defult.png`);
+      } else {
+        return iconData.icon;
+      }
+    },    
+    muteActional(item,type){
+      if(type === "user"){
+        item.mute = !item.mute
+        this.newContactList = this.contactList.filter((name)=>{
+          return name.contactId !== localStorage.getItem("id")
+        })
+      }else{
+        item.setting.prompt = !item.setting.prompt
+        let parmas = {
+          groupId: item.groupId,
+          setting: {
+            prompt: item.setting.prompt
+          }
+        }
+        updateGroupSetting(parmas).then(res =>{
+          if(res.code === 200){
+            this.$message({ message: !item.setting.prompt ? "静音":"關閉靜音", type: !item.setting.prompt ? "success" : "warning" });
+          }
+        })
+      }
     },
     homeScrollHeight(){
       let scrollTop = document.querySelector(".home-content");
@@ -165,10 +178,6 @@ export default {
       let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
       document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';      
     },    
-    handleClick(){
-
-    },
-
     back() {
       this.$router.back(-1);
     },

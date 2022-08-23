@@ -752,8 +752,8 @@ export default {
               : "",
           targetArray: this.targetArray,
           text: Encrypt(
-            // this.textArea.replace(/(\s*$)/g, ""),
-            this.calloutTextArea,//TODO @memberId
+            this.textArea.replace(/(\s*$)/g, ""),
+            // this.calloutTextArea,//TODO @memberId
             this.aesKey,
             this.aesIv
           ), //TODO 加密

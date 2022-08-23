@@ -22,7 +22,9 @@
           <div class="contont-box">
             <div class="msg-box">
               <div>
-                <span>{{ item.name }} <img :src="muteImg" v-if="device ==='pc' && !item.mute" style="padding-left:5px;"/></span>
+                <span>{{ item.name }} 
+                  <!-- <img :src="muteImg" v-if="device ==='pc' && item.setting.prompt" style="padding-left:5px;"/> -->
+                </span>
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
                   <span
@@ -74,7 +76,9 @@
           <div class="contont-box">
             <div class="msg-box">
               <div>
-                <span>{{ item.name }} <img :src="muteImg" v-if="device ==='pc' && item.mute" style="padding-left:5px;"/></span>
+                <span>{{ item.name }}
+                  <!-- <img :src="muteImg" v-if="device ==='pc' && !item.setting.prompt" style="padding-left:5px;"/> -->
+                </span>
                 <span class="content-text">
                   <span v-if="item.lastChat === null"></span>
                   <span
@@ -247,11 +251,13 @@ export default {
   created() {
     Socket.$on("message", this.handleGetMessage);
     this.getGroupDataList();
-    this.getGroupMemberList()
     this.setActiveName(this.hichatNav.type);
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.noGroupPeopleData)
     }, 30000);
+  },
+  mounted() {
+    this.getGroupMemberList()
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -312,21 +318,31 @@ export default {
           for (let item in this.groupMemberDataList) {
             this.groupDataList.forEach((el)=>{
               if(this.groupMemberDataList[item].groupId === Number(el.toChatId.replace("g", ""))){
-                const dictionary = this.isBase64(el.lastChat.text).split(" ")
-                this.groupMemberDataList[item].memberList.forEach((name)=> {
-                  const xIndex = dictionary.indexOf("@"+name.memberId + "\u200B")
-                  if (xIndex > -1) {
-                    dictionary.splice(xIndex, 1, "@" + name.name)
-                  }
-                });
-                return el.lastChat.text = dictionary.toString().replace(/,/g, " ")
+                if(el.lastChat === null){
+                  return this.newGroupDataList = this.groupDataList
+                }else{
+                  const dictionary = this.isBase64(el.lastChat.text).split(" ")
+                  this.groupMemberDataList[item].memberList.forEach((name)=> {
+                    const xIndex = dictionary.indexOf("@"+name.memberId + "\u200B")
+                    if (xIndex > -1) {
+                      dictionary.splice(xIndex, 1, "@" + name.name)
+                    }
+                  });
+                  return el.lastChat.text = dictionary.toString().replace(/,/g, " ")
+                }
               }
+              this.groupList.forEach((list)=>{
+                if((el.forChatId === "u"+list.memberId) && (el.toChatId === "g" +  list.groupId )){
+                  return el.setting = list.setting
+                }
+              })
             })
           }
           this.newGroupDataList = this.groupDataList
         }
       })
     },
+
     judgeTextMarking(data) {
       let judgeTextData = data.replace(/\n|\r/g, "").split(" ")
       const xIndex = judgeTextData.indexOf("@" + this.myUserInfo.nickname)
@@ -422,6 +438,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+        case "SRV_GROUP_DEL":
           this.getHiChatDataList();
           break;
       }
@@ -465,12 +482,7 @@ export default {
     },
     getGroupDataList() {
       getGroupList().then((res) => {
-        this.groupList = res.data.list;
-        this.groupList.forEach((el) => {
-          if (el.icon === "") {
-            el.icon = require("./../../../../static/images/image_group_defult.png");
-          }
-        });
+        this.groupList = res.data.list;       
         this.setGroupList(this.groupList);
       });
     },

@@ -70,27 +70,50 @@
             <template v-if="infoMsg.infoMsgNav === 'ContactPage'">
               <div class="user-data">
                 <el-image
-                  v-if="chatUser.icon !== undefined"
+                  v-if="chatUser.icon !== undefined && infoMsg.infoMsgMap === 'address'"
                   :src="noIconShow(chatUser, 'user')"
                   :preview-src-list="[noIconShow(chatUser, 'user')]"
                 />
-                <span>{{ chatUser.name }}</span>
+                <el-image
+                  v-if="groupUserCheck.icon !== undefined && infoMsg.infoMsgMap === 'GroupPeople'"
+                  :src="noIconShow(groupUserCheck, 'user')"
+                  :preview-src-list="[noIconShow(groupUserCheck, 'user')]"
+                />
+                <span>{{infoMsg.infoMsgMap === 'address'? chatUser.name : groupUserCheck.name}}</span>
                 <span
                   class="user-data-id"
-                  v-if="chatUser.name !== '嗨聊记事本'"
+                  v-if="chatUser.name !== '嗨聊记事本' && groupUserCheck.name !== '嗨聊记事本'"
                 >
-                  ID :
-                  <span
-                    class="user-paste"
-                    @click="
-                      copyPaste(
-                        chatUserId === '' ? chatUser.username : chatUserId
-                      )
-                    "
-                    >{{
-                      chatUserId === "" ? chatUser.username : chatUserId
-                    }}</span
-                  ></span
+
+                  <template v-if="infoMsg.infoMsgMap === 'address'">
+                    ID :
+                    <span
+                      class="user-paste"
+                      @click="
+                        copyPaste(
+                          chatUserId === '' ? chatUser.username : chatUserId
+                        )
+                      "
+                      >{{
+                        chatUserId === "" ? chatUser.username : chatUserId
+                      }}</span
+                    >
+                  </template>
+                  <template v-else>
+                      ID :
+                    <span
+                      class="user-paste"
+                      @click="
+                        copyPaste(
+                          chatUserId === '' ? groupUserCheck.username : chatUserId
+                        )
+                      "
+                      >{{
+                        chatUserId === "" ? groupUserCheck.username : chatUserId
+                      }}</span
+                    >
+                  </template>
+                </span
                 >
               </div>
               <div
@@ -107,25 +130,9 @@
                   <img src="./../../../static/images/next.png" alt="" />
                 </a>
               </div>
-              <template v-if="(groupUser.isAdmin|| groupUser.isManager) && infoMsg.infoMsgMap === 'GroupPeople'">
-                <div
-                  class="setting-button mt10"
-                  @click="
-                    dialogShow(!chatUser.isBanPost ? 'banPost' : 'unBanPost')
-                  "
-                >
-                  <a>
-                    <div class="setting-button-left">
-                      <img src="./../../../static/images/octagon.png" alt="" />
-                      <span>{{
-                        !chatUser.isBanPost ? "禁言联络人" : "解除禁言"
-                      }}</span>
-                    </div>
-                  </a>
-                </div>
-              </template>
-              <template v-if="chatUser.name !== '嗨聊记事本'">
-                <div
+              
+              <template v-if="chatUser.name !== '嗨聊记事本' && infoMsg.infoMsgMap === 'address'">
+                <!-- <div
                   class="setting-button"
                   @click="dialogShow(!chatUser.mute ? 'mute' : 'unMute')"
                 >
@@ -137,7 +144,7 @@
                       }}</span>
                     </div>
                   </a>
-                </div>
+                </div> -->
                 <div
                   class="setting-button"
                   @click="dialogShow(!chatUser.isBlock ? 'block' : 'unBlock')"
@@ -174,8 +181,75 @@
                   </a>
                 </div>
               </template>
-
+              <template v-if="groupUserCheck.name !== '嗨聊记事本' && infoMsg.infoMsgMap === 'GroupPeople'">
+                <template v-if="(groupUser.isAdmin|| groupUser.isManager) && infoMsg.infoMsgMap === 'GroupPeople'">
+                  <div
+                    class="setting-button mt10"
+                    @click="
+                      dialogShow(!groupUserCheck.isBanPost ? 'banPost' : 'unBanPost')
+                    "
+                  >
+                    <a>
+                      <div class="setting-button-left">
+                        <img src="./../../../static/images/pc/icon_x-octagon.svg" alt="" />
+                        <span>{{
+                          !groupUserCheck.isBanPost ? "禁言联络人" : "解除禁言"
+                        }}</span>
+                      </div>
+                    </a>
+                  </div>
+                </template>
+                <!-- <div
+                  class="setting-button"
+                  @click="dialogShow(!groupUserCheck.mute ? 'mute' : 'unMute')"
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img :src="groupUserCheck.mute  ? muteImg : noMuteImg"/>
+                      <span>{{
+                        !groupUserCheck.mute  ? "关闭通知" : "开启通知"
+                      }}</span>
+                    </div>
+                  </a>
+                </div> -->
+                <div
+                  class="setting-button"
+                  @click="dialogShow(!groupUserCheck.isBlock ? 'block' : 'unBlock')"
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img src="./../../../static/images/pc/slash.svg" alt="" />
+                      <span>{{
+                        !groupUserCheck.isBlock ? "封锁联络人" : "解除封锁"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
+                <div
+                  class="setting-button"
+                  @click="dialogShow(!groupUserCheck.isContact ? 'add' : 'delete')"
+                >
+                  <a>
+                    <div class="setting-button-left">
+                      <img
+                        :src="
+                          require(`./../../../static/images/pc/${
+                            !groupUserCheck.isContact ? 'add-user' : 'trash'
+                          }.svg`)
+                        "
+                        alt=""
+                      />
+                      <span class="red-text">{{
+                        !groupUserCheck.isContact
+                          ? "加入联络人"
+                          : "刪除联络人"
+                      }}</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
             </template>
+
             <template v-else>
               <div class="user-data">
                 <el-image
@@ -305,6 +379,7 @@ import {
   addBlockContactUser,
   unBlockContactUser,
   deleteContactUser,
+  setBanPostByPersonal,
 } from "@/api";
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
@@ -384,6 +459,7 @@ export default {
       myUserInfo: (state) => state.ws.myUserInfo,
       msgInfoPage: (state) => state.ws.msgInfoPage,
       authority: (state) => state.ws.authority,
+      groupUserCheck: (state) => state.ws.groupUserCheck,
       myContactDataList: (state) => state.ws.myContactDataList,
     }),
   },
@@ -404,6 +480,7 @@ export default {
       setContactUser:"ws/setContactUser",
       setHichatNav: "ws/setHichatNav",
       setMsgInfoPage: "ws/setMsgInfoPage",
+      setGroupUserCheck:"ws/setGroupUserCheck",
       setContactListData: "ws/setContactListData",
     }),
     getGroupListMember(data) {
@@ -457,7 +534,6 @@ export default {
     },
 
     dialogShow(type) {
-      console.log(type)
       this.settingDialogShow = true;
       switch (type) {
         case "block":
@@ -465,12 +541,19 @@ export default {
           this.dialogTitle = `${type === "block" ? "封锁" : "解除封锁"}联络人`;
           this.dialogContent = `确认是否${
             type === "block" ? "封锁" : "解除封锁"
-          }联络人${this.chatUser.name}？`;
+          }联络人${this.infoMsg.infoMsgMap === 'address' ?this.chatUser.name : this.groupUserCheck.name }？`;
           break;
+        case "banPost":
+        case "unBanPost":
+          this.dialogTitle = `${type === "banPost" ? "禁言" : "解除禁言"}联络人`;
+          this.dialogContent = `确认是否${
+            type === "banPost" ? "禁言" : "解除禁言"
+          }联络人${ this.groupUserCheck.name }？`;
+          break;          
         case "add":
         case "delete":  
           this.dialogTitle = `${type === "add" ? "加入" : "删除"}联络人`;
-          this.dialogContent = `确认是否${ type === "add" ? `将${this.chatUser.name}加入联络人` : `删除联络人${this.chatUser.name}？`
+          this.dialogContent = `确认是否${ type === "add" ? `将${this.infoMsg.infoMsgMap === 'address'? this.chatUser.name : this.groupUserCheck.name}加入联络人` : `删除联络人${this.infoMsg.infoMsgMap === 'address'? this.chatUser.name : this.groupUserCheck.name}？`
           }`;
           break;
         case "mute":  
@@ -484,26 +567,36 @@ export default {
     },
     submitBtn(dialogContent) {
       switch (dialogContent) {
-        case `确认是否封锁联络人${this.chatUser.name}？`:
-          let blockId = this.chatUser.toChatId.replace("u", "");
+        case `确认是否封锁联络人${this.infoMsg.infoMsgMap === 'address' ?this.chatUser.name : this.groupUserCheck.name }？`:
+          let blockId = this.infoMsg.infoMsgMap === 'address' ? this.chatUser.toChatId.replace("u", "") :  this.groupUserCheck.toChatId.replace("u", "")
           addBlockContactUser({ blockId }).then((res) => {
             if (res.code === 200) {
               this.successDialogShow = true;
               this.settingDialogShow =false;
-              this.chatUser.isBlock = true;
-              this.setChatUser(this.chatUser);
+              if(this.infoMsg.infoMsgMap === 'address'){
+                this.chatUser.isBlock = true;
+                this.setChatUser(this.chatUser);
+              }else{
+                this.groupUserCheck.isBlock = true;
+                this.setGroupUserCheck(this.groupUserCheck);                
+              }
             }
           });
           break;
-        case `确认是否解除封锁联络人${this.chatUser.name}？`:
-          let blockIdList = [this.chatUser.toChatId.replace("u", "")];
+        case `确认是否解除封锁联络人${this.infoMsg.infoMsgMap === 'address' ?this.chatUser.name : this.groupUserCheck.name }？`:
+          let blockIdList = [this.infoMsg.infoMsgMap === 'address' ? this.chatUser.toChatId.replace("u", "") :  this.groupUserCheck.toChatId.replace("u", "")];
           unBlockContactUser({ blockIdList })
             .then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
                 this.settingDialogShow =false;
-                this.chatUser.isBlock = false;
-                this.setChatUser(this.chatUser);
+                if(this.infoMsg.infoMsgMap === 'address'){
+                  this.chatUser.isBlock = false;
+                  this.setChatUser(this.chatUser);
+                }else{
+                  this.groupUserCheck.isBlock = false;
+                  this.setGroupUserCheck(this.groupUserCheck);
+                }
               }
             })
             .catch((err) => {
@@ -511,16 +604,52 @@ export default {
               return false;
             });
           break;
-        case `确认是否删除联络人${this.chatUser.name}？`:
+        case `确认是否禁言联络人${this.groupUserCheck.name }？`:
+          let banPost ={
+            groupId: this.groupUserCheck.groupId,
+            isBanPost: true,
+            memberId: this.groupUserCheck.memberId,
+          }
+          setBanPostByPersonal(banPost).then((res) => {
+            if (res.code === 200) {
+              this.successDialogShow = true;
+              this.settingDialogShow =false;
+              this.groupUserCheck.isBanPost = true;
+              this.setGroupUserCheck(this.groupUserCheck);
+            }
+          });
+          break;
+        case `确认是否解除禁言联络人${this.groupUserCheck.name }？`:
+          let unBanPost ={
+            groupId: this.groupUserCheck.groupId,
+            isBanPost: false,
+            memberId: this.groupUserCheck.memberId,
+          }
+          setBanPostByPersonal(unBanPost).then((res) => {
+            if (res.code === 200) {
+              this.successDialogShow = true;
+              this.settingDialogShow =false;
+              this.groupUserCheck.isBanPost = false;
+              this.setGroupUserCheck(this.groupUserCheck);
+            }
+          })
+          break;
+        case `确认是否删除联络人${this.infoMsg.infoMsgMap === 'address' ?this.chatUser.name : this.groupUserCheck.name }？`:
           let contactId = this.chatUser.toChatId.replace("u", "");
           deleteContactUser(contactId)
             .then((res) => {
               if (res.code === 200) {
                 this.successDialogShow = true;
                 this.settingDialogShow =false;
-                this.chatUser.isContact = false;
-                this.setChatUser({});
-                this.setContactUser(this.chatUser);
+                if(this.infoMsg.infoMsgMap === 'address'){
+                  this.chatUser.isContact = false;
+                  this.setChatUser({});
+                  this.setContactUser(this.chatUser);
+                }else{
+                this.groupUserCheck.isContact = false;
+                  this.setGroupUserCheck({});
+                  this.setGroupUserCheck(this.groupUserCheck);                  
+                }
                 this.closeInfoMsgShow()
                 this.getHiChatDataList()
               }
@@ -530,17 +659,22 @@ export default {
               return false;
             });
           break;
-        case `确认是否将${this.chatUser.name}加入联络人`:
+        case `确认是否将${this.infoMsg.infoMsgMap === 'address' ?this.chatUser.name : this.groupUserCheck.name }加入联络人`:
           let parmas = {
-            contactId: this.chatUser.memberId,
-            name: this.chatUser.username,
+            contactId:this.infoMsg.infoMsgMap === 'address' ? this.chatUser.memberId :  this.groupUserCheck.memberId,
+            name: this.infoMsg.infoMsgMap === 'address' ? this.chatUser.username :  this.groupUserCheck.username,
           };
           addContactUser(parmas).then((res) => {
             if (res.code === 200) {
               this.settingDialogShow = false;
-              this.chatUser.isContact = true;
               this.addContactDialogShow = true;
-              this.setChatUser(this.chatUser);
+              if(this.infoMsg.infoMsgMap === 'address'){
+                this.chatUser.isContact = true;
+                this.setChatUser(this.chatUser);
+              }else{
+                this.groupUserCheck.isContact = true;
+                this.setGroupUserCheck(this.groupUserCheck);
+              }
             }
           });
           break;

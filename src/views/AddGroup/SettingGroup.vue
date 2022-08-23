@@ -82,8 +82,9 @@
           </div>
         </el-header>
         <div class="home-content">
-          <div class="setting-title">群组成员</div>
+          
           <template v-if="groupData.isAdmin">
+            <div class="setting-title">群组成员</div>
             <div
               class="setting-button"
               v-for="(item, index) in messagePermissionData"
@@ -206,7 +207,7 @@ export default {
     }),
   },  
   created() {
-    this.groupData = JSON.parse(localStorage.getItem("groupData"))
+    this.groupData = this.groupPermissionData.addGroup ? JSON.parse(localStorage.getItem("addGroupData")): JSON.parse(localStorage.getItem("groupData"))
   },
   mounted() {
     if(!this.groupPermissionData.addGroup) this.getGroupAuthority()
@@ -290,6 +291,7 @@ export default {
         delete this.groupPermissionData.addGroup
         delete this.groupPermissionData.peopleData
         this.groupPermissionData.groupAdminAuthority = this.newAuthorityData
+        localStorage.removeItem('addGroupData')
         addGroup(this.groupPermissionData).then((res)=>{
           if(res.code === 200){
             let groupData = {
