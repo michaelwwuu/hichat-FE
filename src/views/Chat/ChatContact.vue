@@ -803,6 +803,7 @@ export default {
               this.setHichatNav({ type: "address", num: 1 });
               this.getAddressList()
             }
+            this.$root.getMaybeKnow()
           } else {
             this.$message({ message: res.message, type: "error" });
           }

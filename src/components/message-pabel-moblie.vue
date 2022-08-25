@@ -10,7 +10,7 @@
             v-for="(el, index) in item"
             :key="index"
             :label="el"
-            :disabled="checkBoxDisabled"
+            :disabled="showCheckBtn(checkBoxDisabled, el)"
             :class="judgeClass(item[index])"
           >
             <li >
@@ -260,11 +260,6 @@ export default {
           newData;
       });
       this.$root.gotoBottom();
-
-      //TODO 至底按鈕出現 移除滾動
-      // if(!this.showScrollBar){
-      //   this.$root.gotoBottom();
-      // } 
     },
   },
   computed: {
@@ -284,14 +279,9 @@ export default {
       () => {
         let scrollTop = document.querySelector(".message-pabel-box");
         this.showScrollBar = !(
-          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.199951171875 : 0.60009765625)  <=
+          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.60009765625 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
-        // console.log(this.$refs.viewBox)
-        // this.$refs.viewBox.forEach((res)=>{
-        //   console.log(res.id)
-        // })
-        // console.log(document.querySelector(".el-checkbox__label"))
       },
       true
     );
@@ -311,6 +301,17 @@ export default {
 
     paperScroll(event){
       // console.log(event.target)
+    },
+    showCheckBtn(status, data) {
+      if (status) {
+        return status;
+      } else if (!status) {
+        if (["SRV_USER_SEND", "SRV_USER_IMAGE", "SRV_USER_AUDIO"].includes(data.chatType)) {
+          return status;
+        } else {
+          return !status;
+        }
+      }
     },
     IsURL(str_url) {
       var strRegex =

@@ -305,6 +305,29 @@ export default {
       setContactListData: "ws/setContactListData",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
+    // TODO 右鍵
+    onContextmenu(data,type) {
+      let item = [
+        {
+          name: "close",
+          label: "關閉提醒",
+          icon:"el-icon-bell",
+          onClick: () => {
+          },
+        },
+      ];
+      this.$contextmenu({
+        items: item,
+        // event,
+        x: event.clientX,
+        y: event.clientY,
+        customClass: "custom-class",
+        zIndex: 6,
+        width:130,
+        minWidth: 130,
+      });
+      return false;
+    },    
     homeScrollHeight(){
       let scrollTop = document.querySelector(".home-content");
       let headerScrollTop = document.querySelector(".is-top");

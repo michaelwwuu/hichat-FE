@@ -97,9 +97,6 @@
         v-else
       >
         <el-button type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">
-          只能上传 jpg / png 图片，且不超过500kb
-        </div>
       </el-upload>
       
       <span slot="footer" class="dialog-footer">

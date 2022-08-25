@@ -959,6 +959,7 @@ export default {
             data.isContact = true;
             this.setChatUser(data);
             this.setHichatNav({ type: "address", num: 1 });
+            this.$root.getMaybeKnow()
             if (this.device === "pc") {
               this.getHiChatDataList();
             }
@@ -1045,6 +1046,7 @@ export default {
               return data.forChatId !== "u"+ el.contactId
             })
             this.setMyContactDataList(this.newContact)
+            this.$root.getMaybeKnow()
           }
         })
         .catch((err) => {

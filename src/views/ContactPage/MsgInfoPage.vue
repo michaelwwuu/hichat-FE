@@ -84,35 +84,31 @@
                   class="user-data-id"
                   v-if="chatUser.name !== '嗨聊记事本' && groupUserCheck.name !== '嗨聊记事本'"
                 >
-
-                  <template v-if="infoMsg.infoMsgMap === 'address'">
-                    ID :
-                    <span
-                      class="user-paste"
-                      @click="
-                        copyPaste(
-                          chatUserId === '' ? chatUser.username : chatUserId
-                        )
-                      "
-                      >{{
-                        chatUserId === "" ? chatUser.username : chatUserId
-                      }}</span
-                    >
-                  </template>
-                  <template v-else>
-                      ID :
-                    <span
-                      class="user-paste"
-                      @click="
-                        copyPaste(
-                          chatUserId === '' ? groupUserCheck.username : chatUserId
-                        )
-                      "
-                      >{{
-                        chatUserId === "" ? groupUserCheck.username : chatUserId
-                      }}</span
-                    >
-                  </template>
+                  ID :
+                  <span
+                    v-if="infoMsg.infoMsgMap === 'address'"
+                    class="user-paste"
+                    @click="
+                      copyPaste(
+                        chatUserId === '' ? chatUser.username : chatUserId
+                      )
+                    "
+                    >{{
+                      chatUserId === "" ? chatUser.username : chatUserId
+                    }}</span
+                  >
+                  <span
+                    v-else
+                    class="user-paste"
+                    @click="
+                      copyPaste(
+                        chatUserId === '' ? groupUserCheck.username : chatUserId
+                      )
+                    "
+                    >{{
+                      chatUserId === "" ? groupUserCheck.username : chatUserId
+                    }}</span
+                  >
                 </span
                 >
               </div>
@@ -652,6 +648,7 @@ export default {
                 }
                 this.closeInfoMsgShow()
                 this.getHiChatDataList()
+                this.$root.getMaybeKnow()
               }
             })
             .catch((err) => {

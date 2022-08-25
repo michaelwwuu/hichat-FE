@@ -19,7 +19,7 @@
               num === 0 ? "通讯录" : num === 1 ? "嗨聊" : "设定"
             }}</span>
             <div v-if="num === 0 || num === 1">
-              <template v-if="['address', 'contact'].includes(activeName || hichatNav.type)">
+              <template v-if="['address', 'contact', 'maybeKnow'].includes(activeName || hichatNav.type)">
                 <router-link
                   :to="'/AddUser'"
                   :style="
@@ -115,7 +115,7 @@
             >
             </el-input>
             <div v-if="num === 0 || num === 1">
-              <template v-if="['address'].includes(activeName || hichatNav.type)">
+              <template v-if="['address','maybeKnow'].includes(activeName || hichatNav.type)">
                 <router-link :to="'/Spread'" class="spread-style" v-if ="num === 1">
                   <img
                     src="./../../../static/images/pc/promotion.svg"
@@ -307,6 +307,7 @@ import {
   getContactList,
   getMemberActivity,
   groupMemberList,
+  maybeKnow,
   logout,
 } from "@/api";
 import { Encrypt } from "@/utils/AESUtils.js";
@@ -356,6 +357,7 @@ export default {
       searchData: [],
       chatDataList: [],
       addressDataList: [],
+      maybeKnowDataList:[],
       groupMemberDataList:{},
       downloadFilename: "",
       logoutDialogShow: false,
@@ -392,6 +394,7 @@ export default {
         : 2;
     Socket.$on("message", this.handleGetMessage);
     this.getContactDataList();
+    this.getMaybeKnow();
     this.getUserData();
     if (localStorage.getItem("soundNofiy") === null) {
       this.setSoundNofiy(this.soundNofiy);
@@ -414,18 +417,26 @@ export default {
       let searchKeyData = val.split(" ");
       searchKeyData.forEach((el) => {
         let searchCase =
-          this.activeName === "address" ? this.addressDataList : this.newGroupList;
+          this.activeName === "address" 
+          ? this.addressDataList 
+          : this.activeName === "group" 
+          ? this.newGroupList
+          : this.maybeKnowDataList;
         this.searchData = searchCase.filter((item) => {
           if (this.activeName === "address") {
             return item.name.indexOf(el.replace("@", "")) !== -1;
-          } else {
+          } else if(this.activeName === "group") {
             return item.groupName.indexOf(el.replace("@", "")) !== -1;
+          } else {
+            return item.nickname.indexOf(el.replace("@", "")) !== -1;
           }
         });
       });
       this.activeName === "address"
         ? this.setMyContactDataList(this.searchData)
-        : this.setGroupList(this.searchData);
+        : this.activeName === "group" 
+        ? this.setGroupList(this.searchData)
+        : this.setMaybeKnowList(this.searchData)
     },
   },
   computed: {
@@ -457,6 +468,7 @@ export default {
       setTopMsgShow: "ws/setTopMsgShow",
       setMyUserInfo: "ws/setMyUserInfo",
       setContactUser: "ws/setContactUser",
+      setMaybeKnowList:"ws/setMaybeKnowList",
       setContactListData: "ws/setContactListData",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
@@ -511,6 +523,11 @@ export default {
         })
       });
     },
+    getMaybeKnow(){
+      maybeKnow().then((res) => {
+        this.maybeKnowDataList = res.data
+      })
+    },    
     getUserMemberActivity(data){
       let memberId = data
       getMemberActivity({memberId}).then((res) => {
@@ -633,6 +650,10 @@ export default {
           break;
         case "SRV_CHAT_DEL":
           this.getHiChatDataList();
+          break;
+        case "SRV_EDIT_CONTACT":  
+          this.getMaybeKnow();
+          break  
       }
     },
     getHiChatDataList() {
@@ -731,6 +752,7 @@ export default {
         case "SRV_GROUP_AUDIO":
           this.bodyMsg = "传送了语音";
           break;
+
       }
       // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification#Parameters
       this.$notification.show(

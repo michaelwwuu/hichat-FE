@@ -24,6 +24,7 @@ export const state = {
     pageShow:true,
     type:"",
   },
+  maybeKnowList:[],
   replyMsg:{
     name:"",
     icon:"",
@@ -106,106 +107,109 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
-  setGroupUserCheck(state, payload) {
-    state.groupUserCheck = payload;
-  },     
-  setCheckBoxBtn(state, payload) {
-    state.checkBoxBtn = payload;
-  },     
-  setSpreadDataList(state, payload) {
-    state.spreadDataList = payload;
-  },     
-  setAuthority(state, payload) {
-    state.authority = payload;
-    localStorage.setItem("authority",JSON.stringify(payload))
+  setMaybeKnowList(state, maybeKnowList) {
+    state.maybeKnowList = maybeKnowList;
   },    
-  setAuthorityGroupData(state, payload) {
-    state.authorityGroupData = payload;
-    localStorage.setItem("groupAuthority",JSON.stringify(payload))
+  setGroupUserCheck(state, groupUserCheck) {
+    state.groupUserCheck = groupUserCheck;
+  },     
+  setCheckBoxBtn(state, checkBoxBtn) {
+    state.checkBoxBtn = checkBoxBtn;
+  },     
+  setSpreadDataList(state, spreadDataList) {
+    state.spreadDataList = spreadDataList;
+  },     
+  setAuthority(state, authority) {
+    state.authority = authority;
+    localStorage.setItem("authority",JSON.stringify(authority))
+  },    
+  setAuthorityGroupData(state, authorityGroupData) {
+    state.authorityGroupData = authorityGroupData;
+    localStorage.setItem("groupAuthority",JSON.stringify(authorityGroupData))
   },  
-  setGroupPermissionData(state, payload) {
-    state.groupPermissionData = payload;
+  setGroupPermissionData(state, groupPermissionData) {
+    state.groupPermissionData = groupPermissionData;
   },  
-  setGoAnchorMessage(state, payload) {
-    state.goAnchorMessage = payload;
+  setGoAnchorMessage(state, goAnchorMessage) {
+    state.goAnchorMessage = goAnchorMessage;
   },
-  setTopMsgShow(state, payload) {
-    state.topMsgShow = payload;
+  setTopMsgShow(state, topMsgShow) {
+    state.topMsgShow = topMsgShow;
   },
-  setNofiy(state, payload) {
-    state.nofity = payload;
-    localStorage.setItem("nofity", JSON.stringify(payload));
+  setNofiy(state, nofity) {
+    state.nofity = nofity;
+    localStorage.setItem("nofity", JSON.stringify(nofity));
   },
-  setSoundNofiy(state, payload) {
-    state.soundNofiy = payload;
-    localStorage.setItem("soundNofiy", JSON.stringify(payload));
+  setSoundNofiy(state, soundNofiy) {
+    state.soundNofiy = soundNofiy;
+    localStorage.setItem("soundNofiy", JSON.stringify(soundNofiy));
   },
-  setActiveName(state, payload) {
-    state.activeName = payload;
+  setActiveName(state, activeName) {
+    state.activeName = activeName;
   },
-  setEditMsg(state, payload) {
-    state.editMsg = payload;
+  setEditMsg(state, editMsg) {
+    state.editMsg = editMsg;
   },
-  setWsRes(state, payload) {
-    state.wsRes = payload;
+  setWsRes(state, wsRes) {
+    state.wsRes = wsRes;
   },
-  setBadgeNum(state, num){
-    state.badgeNum = num
+  setBadgeNum(state, badgeNum){
+    state.badgeNum = badgeNum
   },
-  setMaybeKnowNum(state, num){
-    state.maybeKnowNum = num
+  setMaybeKnowNum(state, maybeKnowNum){
+    state.maybeKnowNum = maybeKnowNum
   },
-  setMsgInfoPage(state, payload){
-    state.msgInfoPage = payload;
+  setMsgInfoPage(state, msgInfoPage){
+    state.msgInfoPage = msgInfoPage;
   },
-  setHichatNav(state, payload) {
-    state.hichatNav = payload;
+  setHichatNav(state, hichatNav) {
+    state.hichatNav = hichatNav;
   },  
-  setGroupList(state, payload) {
-    state.groupList = payload;
+  setGroupList(state, groupList) {
+    state.groupList = groupList;
   },
-  setInfoMsg(state, payload) {
-    state.infoMsg = payload;
+  setInfoMsg(state, infoMsg) {
+    state.infoMsg = infoMsg;
   },
-  setReplyMsg(state, payload) {
-    state.replyMsg = payload;
+  setReplyMsg(state, replyMsg) {
+    state.replyMsg = replyMsg;
   },
   //個人資料
-  setMyUserInfo(state, payload){
-    state.myUserInfo = payload;
-    localStorage.setItem("myUserInfo", JSON.stringify(payload));
+  setMyUserInfo(state, myUserInfo){
+    state.myUserInfo = myUserInfo;
+    localStorage.setItem("myUserInfo", JSON.stringify(myUserInfo));
   },
   //對話中對象
-  setChatUser(state, payload) {
-    state.chatUser = payload;
-    if(payload.type !== "address"){
-      localStorage.setItem("userData", JSON.stringify(payload));
+  setChatUser(state, chatUser) {
+    state.chatUser = chatUser;
+    if(chatUser.type !== "address"){
+      localStorage.setItem("userData", JSON.stringify(chatUser));
     }
   },
   //對話中群組
-  setChatGroup(state, payload) {
-    state.groupUser = payload;
-    if(payload.type !== "address"){
-      localStorage.setItem("groupData", JSON.stringify(payload));
+  setChatGroup(state, groupUser) {
+    state.groupUser = groupUser;
+    if(groupUser.type !== "address"){
+      localStorage.setItem("groupData", JSON.stringify(groupUser));
     }
   },
   //對話中陌生人
-  setContactUser(state, payload) {
-    state.contactUser = payload;
-    if(payload.type !== "address"){
-      localStorage.setItem("contactUser", JSON.stringify(payload));
+  setContactUser(state, contactUser) {
+    state.contactUser = contactUser;
+    if(contactUser.type !== "address"){
+      localStorage.setItem("contactUser", JSON.stringify(contactUser));
     }
   },
   //聯絡人 List
-  setMyContactDataList(state, payload) {
+  setMyContactDataList(state, myContactDataList) {
     state.myContactDataList = []
-    state.myContactDataList = payload;
-    localStorage.setItem("myContactDataList", JSON.stringify(payload));
+    state.myContactDataList = myContactDataList;
+    localStorage.setItem("myContactDataList", JSON.stringify(myContactDataList));
   },
   //群組 List
-  setContactListData(state, payload) {
-    state.contactListData = payload;
-    localStorage.setItem("groupListMember", JSON.stringify(payload));
+  setContactListData(state, contactListData) {
+    state.contactListData = contactListData;
+    localStorage.setItem("groupListMember", JSON.stringify(contactListData));
   },
 };
 export const getters = {};

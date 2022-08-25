@@ -1,4 +1,8 @@
+import { maybeKnow } from "@/api";
+import { mapMutations } from "vuex";
+
 const rootMixins = {
+  
   data() {
     return {}
   },
@@ -7,6 +11,14 @@ const rootMixins = {
   created() {
   },
   methods: {
+    ...mapMutations({
+      setMaybeKnowNum:"ws/setMaybeKnowNum",
+    }),
+    getMaybeKnow(){
+      maybeKnow().then((res) => {
+        this.setMaybeKnowNum(res.data.length)
+      })
+    },
     //鎖定滾動
     handleTouch (e) {
       e._isScroller = true

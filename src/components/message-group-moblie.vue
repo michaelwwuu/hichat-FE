@@ -1282,6 +1282,7 @@ export default {
 }
 .scroll-bottom-btn {
   position: fixed;
+  right: 30px;
   bottom: 80px;
   border-radius: 50px;
   border: 1px solid rgba(0, 0, 0, 0.05);

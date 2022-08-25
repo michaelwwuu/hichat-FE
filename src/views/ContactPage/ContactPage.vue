@@ -440,6 +440,7 @@ export default {
                 this.successDialogShow = true;
                 this.chatUser.isContact = false;
                 this.setChatUser(this.chatUser);
+                this.$root.getMaybeKnow()
               }
             })
             .catch((err) => {
