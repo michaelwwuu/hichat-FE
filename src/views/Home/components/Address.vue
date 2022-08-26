@@ -45,7 +45,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane
+      <!-- <el-tab-pane
         label="可能认识"
         name="maybeKnow"
         v-if="maybeKnowDataList.length !== 0"
@@ -81,7 +81,7 @@
             <div class="contont-border-bottom"></div>
           </div>
         </div>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
     <el-dialog
       :title="device === 'pc' ? '添加联络人' : ''"

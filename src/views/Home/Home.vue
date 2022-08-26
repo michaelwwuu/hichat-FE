@@ -72,13 +72,13 @@
                     v-if="badgeNum !== 0"
                   ></el-badge>
                 </div>
-                <div class="el-badge-box" v-if="index === 0">
+                <!-- <div class="el-badge-box" v-if="index === 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
                     v-if="maybeKnowNum !== 0"
                   ></el-badge>
-                </div>
+                </div> -->
                 <img :src="index !== num ? item.icon : item.active"
               /></span>
               <span>{{ item.name }}</span>
@@ -165,13 +165,13 @@
                     v-if="badgeNum !== 0"
                   ></el-badge>
                 </div>
-                <div class="el-badge-box" v-if="index === 0">
+                <!-- <div class="el-badge-box" v-if="index === 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
                     v-if="maybeKnowNum !== 0"
                   ></el-badge>
-                </div>
+                </div> -->
                 <img :src="index !== num ? item.icon : item.active"
               /></span>
             </router-link>
