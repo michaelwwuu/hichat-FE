@@ -906,9 +906,9 @@ export default {
           this.getPinList();   
           this.loading = true;
           let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(() => {
-            this.messageData = [];
+          this.$nextTick(() => {   
             setTimeout(() => {
+              this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.messageList(el);
                 this.messageReorganization(this.chatRoomMsg)

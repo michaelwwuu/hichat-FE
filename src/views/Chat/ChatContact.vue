@@ -736,10 +736,10 @@ export default {
             this.getPinList();
           } 
           this.loading = true;
-          this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
             setTimeout(() => {
+              this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.messageList(el);
                 this.messageReorganization(this.chatRoomMsg)

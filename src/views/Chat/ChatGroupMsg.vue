@@ -624,10 +624,10 @@ export default {
           this.pinMsg = "";
           this.getPinList();
           this.loading = true;
-          this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
             setTimeout(() => {
+              this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");

@@ -443,7 +443,7 @@ export default {
           });
           this.setMsgInfoPage({ pageShow: true, type: "" });
         } else {
-          this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true });
+          this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true, infoMsgNav: "GroupPage", });
           this.setMsgInfoPage({ pageShow: true });
         }
       }
