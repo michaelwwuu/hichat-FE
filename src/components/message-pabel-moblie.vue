@@ -105,6 +105,24 @@
                       <span v-else v-html="el.message.content"></span>
                     </div>
                   </span>
+                  <span
+                    class="message-classic"
+                    v-else-if="el.chatType === 'SRV_USER_FILE'"
+                    @contextmenu.prevent.stop="onContextmenu(el)"
+                    @dblclick="dblclick(el)" 
+                    @click.prevent.stop="
+                      device === 'moblie' ? onContextmenu(el) : false
+                    "
+                  >
+                    <div class="message-file-box" id="file-download">
+                      <div class="file-box"></div>
+                      <div class="file-message">
+                        <span>{{fileBoxName(el.message.content)}}</span>
+                        <span>档案大小　: {{ formatFileSize(el.fileSize) }}</span>
+                      </div>
+ 
+                    </div>
+                  </span>
 
                   <span
                     class="message-mini-audio"
@@ -298,7 +316,32 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setMyUserInfo: "ws/setMyUserInfo",
     }),
-
+    fileBoxName(data){
+      let url = data
+      let index = url.lastIndexOf("\/");
+      let str = url.substring(index + 1,url.length);
+      return str 
+    },
+    formatFileSize(fileSize) {
+      var temp = fileSize / (1024*1024);
+      temp = temp.toFixed(2);
+      return temp + 'MB';
+      // if (fileSize < 1024) {
+      //     return fileSize + 'B';
+      // } else if (fileSize < (1024*1024)) {
+      //     var temp = fileSize / 1024;
+      //     temp = temp.toFixed(2);
+      //     return temp + 'KB';
+      // } else if (fileSize < (1024*1024*1024)) {
+      //     var temp = fileSize / (1024*1024);
+      //      temp = temp.toFixed(2);
+      //      return temp + 'MB';
+      // } else {
+      //     var temp = fileSize / (1024*1024*1024);
+      //     temp = temp.toFixed(2);
+      //     return temp + 'GB';
+      // }
+    },
     paperScroll(event){
       // console.log(event.target)
     },
@@ -306,7 +349,7 @@ export default {
       if (status) {
         return status;
       } else if (!status) {
-        if (["SRV_USER_SEND", "SRV_USER_IMAGE", "SRV_USER_AUDIO"].includes(data.chatType)) {
+        if (["SRV_USER_SEND", "SRV_USER_IMAGE", "SRV_USER_AUDIO","SRV_USER_FILE"].includes(data.chatType)) {
           return status;
         } else {
           return !status;
@@ -393,6 +436,7 @@ export default {
         replyHistoryId: event.historyId,
         name: event.name,
         icon: event.icon,
+        fileSize:event.fileSize,
       });
     },
     onContextmenu(data) {
@@ -431,6 +475,7 @@ export default {
               replyHistoryId: data.historyId,
               name: data.name,
               icon: data.icon,
+              fileSize:data.fileSize,
             });
           },
         },
@@ -438,7 +483,11 @@ export default {
           name: "download",
           label: "下载",
           onClick: () => {
-            this.downloadImages(data);
+            if(data.chatType === "SRV_USER_IMAGE"){
+              this.downloadImages(data);
+            }else{
+              this.downloadFile(data)
+            }
           },
         },
         {
@@ -475,7 +524,7 @@ export default {
         },        
       ];
       if (data.userChatId !== "u" + localStorage.getItem("id")) {
-        if (data.chatType === "SRV_USER_IMAGE") {
+        if (data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_FILE") {
           this.newItem = item.filter(
             (list) => !["deleteAllChat", "edit", "copy"].includes(list.name)
           );
@@ -489,7 +538,7 @@ export default {
           );
         }
       } else {
-        if (data.chatType === "SRV_USER_IMAGE") {
+        if (data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_FILE") {
           this.newItem = item.filter(
             (list) => !["edit", "copy"].includes(list.name)
           );
@@ -538,7 +587,17 @@ export default {
         });
       }
     },
+    downloadFile(filename) {
+      var text = document.getElementById("file-download")
+      var element = document.createElement('a');
+      element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+      element.setAttribute('download', this.isBase64(filename.message.content));
+      document.body.appendChild(element);
+      element.click();
+      //document.body.removeChild(element);
+    },
     downloadImages(data) {
+      console.log(data)
       let hreLocal = "";
       hreLocal = this.isBase64(data.message.content);
       this.downloadByBlob(hreLocal, "images");
@@ -890,6 +949,30 @@ export default {
         height: 6em;
       }
     }
+    .message-classic{
+      .message-file-box{
+        display: flex;
+        align-items: center;
+        padding-right: 45px;
+        cursor: pointer;
+        .file-box{
+          width: 4em;
+          height: 4em;
+          background-color: #000;
+          border-radius: 10px;
+          background-image: url("./../../static/images/icon_file.svg");
+          background-repeat: no-repeat;
+          background-size:65%;        
+          background-position: center;
+        }
+        .file-message{
+          display: flex;
+          flex-direction: column;
+          padding-left: 10px;
+        }
+      }
+    }
+    
     .message-audio {
       width: 190px;
       height: 2.5em;
@@ -899,12 +982,12 @@ export default {
     }
     .message-image {
       position: relative;
-      
       display: inline-block;
       padding: 5px 6px 2px 6px;
       color: #333333;
       background-color: #e5e4e4;
       border-radius: 10px;
+      font-weight: 600;     
       img {
         border-radius: 8px;
         width: 6em;

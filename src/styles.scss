@@ -484,6 +484,9 @@ body {
               width: 205px;
               display: inline-block;
               margin: 10px 5px 0 5px;
+              .el-upload-list__item-name{
+                font-size: 18px;
+              }
             }
           }
         }
@@ -973,24 +976,6 @@ body {
           margin-top: 2em;
           display: block;
         }
-
-        .upload-demo {
-          line-height: 1.5em;
-          .el-upload-list {
-            max-height: 400px;
-            overflow: auto;
-            .el-upload-list__item {
-              margin-top: 0;
-              width: 205px;
-              display: inline-block;
-              margin: 10px 5px 0 5px;
-            }
-          }
-
-          .hidden {
-            visibility: hidden;
-          }
-        }
       }
 
       .el-dialog__footer {
@@ -1148,6 +1133,11 @@ body {
         height: 2em;
         border-radius: 5px;
       }
+    }
+    .replyMsg-file{
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
     }
   }
   .reply-close-btn {

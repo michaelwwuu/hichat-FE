@@ -94,8 +94,15 @@
               <span v-else-if="replyMsg.chatType === 'SRV_GROUP_AUDIO'"
                 >回復語音訊息</span
               >
+              <div
+                v-else-if="replyMsg.chatType === 'SRV_GROUP_FILE'"
+                class="replyMsg-file"
+              >
+                <span>{{fileBoxName(replyMsg.innerText)}}</span>
+                <span>档案大小　: {{ formatFileSize(replyMsg.fileSize) }}</span>
+              </div>              
             </div>
-            <div class="reply-close-btn" @click="closeReplyMessage">
+            <div class="reply-close-btn" @click="$root.closeReplyMessage">
               <i class="el-icon-close"></i>
             </div>
           </div>
@@ -311,6 +318,32 @@ export default {
       setAuthority: "ws/setAuthority",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
+    fileBoxName(data){
+      let url = data
+      let index = url.lastIndexOf("\/");
+      let str = url.substring(index + 1,url.length);
+      return str 
+    },
+    formatFileSize(fileSize) {
+      var temp = fileSize / (1024*1024);
+      temp = temp.toFixed(2);
+      return temp + 'MB';      
+      // if (fileSize < 1024) {
+      //     return fileSize + 'B';
+      // } else if (fileSize < (1024*1024)) {
+      //     var temp = fileSize / 1024;
+      //     temp = temp.toFixed(2);
+      //     return temp + 'KB';
+      // } else if (fileSize < (1024*1024*1024)) {
+      //     var temp = fileSize / (1024*1024);
+      //      temp = temp.toFixed(2);
+      //      return temp + 'MB';
+      // } else {
+      //     var temp = fileSize / (1024*1024*1024);
+      //     temp = temp.toFixed(2);
+      //     return temp + 'GB';
+      // }
+    },        
     closeChooseAction() {
       this.showCheckBoxBtn = true;
       this.$root.gotoBottom();
@@ -417,17 +450,18 @@ export default {
         return iconData.icon;
       }
     },
-    closeReplyMessage() {
-      this.setReplyMsg({
-        name: "",
-        icon: "",
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
-      });
-      this.setEditMsg({ innerText: "" });
-    },
+    // closeReplyMessage() {
+    //   this.setReplyMsg({
+    //     name: "",
+    //     icon: "",
+    //     chatType: "",
+    //     clickType: "",
+    //     innerText: "",
+    //     replyHistoryId: "",
+    //     fileSize:"",   
+    //   });
+    //   this.setEditMsg({ innerText: "" });
+    // },
     getHiChatDataList() {
       let chatMsgKey = {
         chatType: "CLI_RECENT_CHAT",
@@ -456,7 +490,9 @@ export default {
           if (this.pinDataList.length !== 0) {
             if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
               this.pinMsg = "語音訊息";
-            } else {
+            } else if(this.pinDataList[0].chatType === "SRV_GROUP_FILE"){
+              this.pinMsg = this.fileBoxName(this.isBase64(this.pinDataList[0].chat.text));
+            }else {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
@@ -510,6 +546,7 @@ export default {
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing: false,
+        fileSize:data.fileSize !== undefined ? data.fileSize : "",        
       };
     },
     // 訊息過濾比對名稱
@@ -609,6 +646,7 @@ export default {
         case "SRV_GROUP_IMAGE":
         case "SRV_GROUP_AUDIO":
         case "SRV_GROUP_SEND":
+        case "SRV_GROUP_FILE":            
         case "SRV_GROUP_JOIN":
         case "SRV_GROUP_DEL":
         case "SRV_CHAT_PIN":

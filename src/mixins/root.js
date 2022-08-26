@@ -12,6 +12,8 @@ const rootMixins = {
   },
   methods: {
     ...mapMutations({
+      setReplyMsg:"ws/setReplyMsg",
+      setEditMsg:"ws/setEditMsg",
       setMaybeKnowNum:"ws/setMaybeKnowNum",
     }),
     getMaybeKnow(){
@@ -19,6 +21,18 @@ const rootMixins = {
         this.setMaybeKnowNum(res.data.length)
       })
     },
+    closeReplyMessage() {
+      this.setReplyMsg({
+        name: "",
+        icon: "",
+        chatType: "",
+        clickType: "",
+        innerText: "",
+        replyHistoryId: "",
+        fileSize:"",   
+      });
+      this.setEditMsg({ innerText: "" });
+    },    
     //鎖定滾動
     handleTouch (e) {
       e._isScroller = true

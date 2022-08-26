@@ -34,6 +34,9 @@
                   <span v-else-if="item.lastChat.chatType === 'SRV_CHAT_PIN'"
                     >{{ item.lastChat.text }}置顶了消息</span
                   >
+                  <span v-else-if="item.lastChat.chatType === 'SRV_USER_FILE'"
+                    >传送了档案</span
+                  >
                   <span v-else-if="item.lastChat.chatType === 'SRV_USER_AUDIO'"
                     >传送了语音</span
                   >
@@ -408,7 +411,7 @@ export default {
       this.setInfoMsg({ infoMsgShow: false });
       this.setActiveName(this.hichatNav.type);
       this.setTopMsgShow(true);
-      this.closeReplyMessage();
+      this.$root.closeReplyMessage();
     },
     //判斷是否base64
     isBase64(data) {
@@ -584,23 +587,24 @@ export default {
           infoMsgMap: "HiChat"
         });
         this.getHistory(data, path);
-        this.closeReplyMessage();
+        this.$root.closeReplyMessage();
         this.setCheckBoxBtn(true)
       }
       this.setTopMsgShow(true);
       this.getGroupDataList();      
     },
-    closeReplyMessage() {
-      this.setReplyMsg({
-        name: "",
-        icon: "",
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
-      });
-      this.setEditMsg({ innerText: "" });
-    },
+    // closeReplyMessage() {
+    //   this.setReplyMsg({
+    //     name: "",
+    //     icon: "",
+    //     chatType: "",
+    //     clickType: "",
+    //     innerText: "",
+    //     replyHistoryId: "",
+    //     fileSize:"",   
+    //   });
+    //   this.setEditMsg({ innerText: "" });
+    // },
     getHistory(data, path) {
       if (path === "ChatMsg" || path === "ChatContact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";

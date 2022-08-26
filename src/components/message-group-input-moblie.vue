@@ -5,10 +5,10 @@
     @touchmove="$root.handleTouch"
   >
  
-    <div class="input-tools-right" v-if="device === 'moblie'">
+    <div class="input-tools-right">
       <div>
-        <!-- <img src="./../../static/images/plus.png" alt=""> -->
-        <template v-if="authorityGroupSendImg(groupData)">
+        <img src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true">
+        <template v-if="authorityGroupSendImg(groupData) && device === 'moblie'">
           <img
             src="./../../static/images/image.png"
             alt=""
@@ -222,6 +222,47 @@
         v-on:closePictureShow="pictureShow"
       ></Photo>
     </el-dialog>
+    <el-dialog
+      title="上傳檔案"
+      :before-close="closeModel"
+      :visible.sync="uploadFileShow"
+      :close-on-click-modal="false"
+      :modal-append-to-body="false"
+      :append-to-body="false"
+      :class="{ 'el-dialog-loginOut': device === 'pc' }"
+      v-loading.fullscreen.lock="fullscreenLoading"
+      width="100%"
+      class="el-upload-img"
+      center
+    >
+      <el-upload
+        class="upload-demo"
+        action="#"
+        :on-change="handleChange"
+        :on-remove="handleRemove"
+        :on-exceed="limitFileCheck"
+        :auto-upload="false"
+        :file-list="fileData"
+        :multiple="false"
+        :limit="1"
+        >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <template v-if="device === 'moblie'">
+          <el-button type="success" @click="submitFile()">确认</el-button>
+          <el-button @click="closeModel()">取消</el-button>
+        </template>
+        <template v-else>
+          <el-button class="background-gray" @click="closeModel()"
+            >取消</el-button
+          >
+          <el-button class="background-orange" @click="submitFile()"
+            >确认</el-button
+          >
+        </template>
+      </span>
+    </el-dialog>      
     <audio
       id="notify-send-audio"
       src="./../../static/wav/send.mp3"
@@ -255,11 +296,13 @@ export default {
       calloutShow: false,
       sendAduioShow: false,
       uploadImgShow: false,
+      uploadFileShow:false,      
       takePictureShow: false,
       fullscreenLoading: false,
       banMessage: [],
       checkName: [],
       fileList: [],
+      fileData:[],      
       file: {},
       copyPicture: false,
       targetArray: [],
@@ -365,6 +408,9 @@ export default {
     limitCheck() {
       this.$message({ message: "最多只能上传10张图片", type: "warning" });
     },
+    limitFileCheck(){
+      this.$message({ message: "最多只能上传1个档案", type: "warning" });
+    },
     selectEmoji(emoji) {
       // 选择emoji后调用的函数
       this.textArea += emoji.data;
@@ -403,12 +449,16 @@ export default {
     handleRemove(file, fileList) {
       this.fileList = fileList;
     },
+    handleChange(file, fileList) {
+      this.fileData = fileList
+    },      
     // 取得圖片
     uploadImg(file, fileList) {
       this.fileList = fileList;
     },
     closeModel() {
       this.fileList = [];
+      this.fileData = [];
       this.copyPicture = false;
       this.uploadImgShow = false;
       this.fullscreenLoading = false;
@@ -490,7 +540,36 @@ export default {
         }
       });
     },
-
+    submitFile(){
+      let formData = new FormData();
+      formData.append("file", this.fileData[0].raw);
+      formData.append("type", "FILE");
+      this.fullscreenLoading = true;
+      uploadMessageFile(formData).then((res) => {
+        if (res.code === 200) {
+          let message ={
+            chatType: "CLI_GROUP_FILE",
+            deviceId: localStorage.getItem("UUID"),
+            fileSize: JSON.stringify(this.fileData[0].size),
+            fromChatId:"u" + localStorage.getItem("id"),
+            id:Math.random(),
+            replyHistoryId:"",
+            targetArray :[],
+            text:Encrypt(res.data,this.aesKey,this.aesIv),//TODO 加密  
+            toChatId:"g" + this.groupData.groupId,
+            token:getToken("token"),
+            tokenType:0
+          }
+          Socket.send(message);
+          this.fileData = [];
+          this.uploadFileShow = false;
+          this.fullscreenLoading = false;
+        } else if (res.code === 40001) {
+          this.fileData = [];
+          this.fullscreenLoading = false;
+        }
+      })
+    },
     // 開始計時
     startHandler() {
       this.resetTime();
@@ -689,17 +768,18 @@ export default {
         }
       }
     },
-    closeReplyMessage() {
-      this.setReplyMsg({
-        name: "",
-        icon: "",
-        chatType: "",
-        clickType: "",
-        innerText: "",
-        replyHistoryId: "",
-      });
-      this.setEditMsg({ innerText: "" });
-    },
+    // closeReplyMessage() {
+    //   this.setReplyMsg({
+    //     name: "",
+    //     icon: "",
+    //     chatType: "",
+    //     clickType: "",
+    //     innerText: "",
+    //     replyHistoryId: "",
+    //     fileSize:"",   
+    //   });
+    //   this.setEditMsg({ innerText: "" });
+    // },
     // 发送消息
     sendMessage() {
       const dictionary = this.textArea.replace(/(\n*$)/g,"").split(" ")
@@ -765,7 +845,7 @@ export default {
           if (res.key === "group" && res.isNofity) this.audioAction();
         });
         Socket.send(message);
-        this.closeReplyMessage();
+        this.$root.closeReplyMessage();
         // 消息清空
         this.targetArray = [];
         this.checkName = [];
@@ -809,7 +889,7 @@ export default {
       };
       // 发送服务器
       Socket.send(editMessage);
-      this.closeReplyMessage();
+      this.$root.closeReplyMessage();
       // 消息清空
       this.textArea = "";
     },

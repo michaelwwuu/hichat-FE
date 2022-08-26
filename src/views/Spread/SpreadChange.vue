@@ -243,20 +243,6 @@ export default {
     }
   }
 }
-/deep/.el-dialog__wrapper {
-  .el-dialog {
-    .el-dialog__body {
-      .upload-demo {
-        .el-upload-list {
-          .el-upload-list__item {
-            margin-top: -72px;
-          }
-        }
-      }
-    }
-  }
-}
-
 .hichat-pc {
   .home-wrapper {
     .home-search {

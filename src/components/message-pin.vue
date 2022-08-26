@@ -47,6 +47,24 @@
               </div>
             </span>
             <span
+              class="message-classic"
+              v-else-if="el.chatType === 'SRV_USER_FILE'"
+              @contextmenu.prevent.stop="onContextmenu(el)"
+              @dblclick="dblclick(el)" 
+              @click.prevent.stop="
+                device === 'moblie' ? onContextmenu(el) : false
+              "
+            >
+              <div class="message-file-box" id="file-download">
+                <div class="file-box"></div>
+                <div class="file-message">
+                  <span>{{fileBoxName(isBase64(el.chat.text))}}</span>
+                  <span>档案大小　: {{ formatFileSize(el.fileSize) }}</span>
+                </div>
+
+              </div>
+            </span>            
+            <span
               class="message-mini-audio"
               v-else-if="el.chatType === 'SRV_USER_AUDIO'"
               @contextmenu.prevent.stop="onContextmenu(el)"
@@ -179,6 +197,32 @@ export default {
       setTopMsgShow: "ws/setTopMsgShow",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
+    fileBoxName(data){
+      let url = data
+      let index = url.lastIndexOf("\/");
+      let str = url.substring(index + 1,url.length);
+      return str 
+    },
+    formatFileSize(fileSize) {
+      var temp = fileSize / (1024*1024);
+      temp = temp.toFixed(2);
+      return temp + 'MB';
+      // if (fileSize < 1024) {
+      //     return fileSize + 'B';
+      // } else if (fileSize < (1024*1024)) {
+      //     var temp = fileSize / 1024;
+      //     temp = temp.toFixed(2);
+      //     return temp + 'KB';
+      // } else if (fileSize < (1024*1024*1024)) {
+      //     var temp = fileSize / (1024*1024);
+      //      temp = temp.toFixed(2);
+      //      return temp + 'MB';
+      // } else {
+      //     var temp = fileSize / (1024*1024*1024);
+      //     temp = temp.toFixed(2);
+      //     return temp + 'GB';
+      // }
+    },    
     IsURL(str_url) {
       var strRegex =
         /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
@@ -277,7 +321,7 @@ export default {
       ];
       if (data.chatType === "SRV_USER_SEND") {
         this.newItem = item.filter(list => list.name !== "share" && list.name !== "download");
-      } else if (data.chatType === "SRV_USER_IMAGE") {
+      } else if (data.chatType === "SRV_USER_IMAGE" || data.chatType === "SRV_USER_FILE") {
         this.newItem = item.filter(list => list.name !== "copy");
       } else if (data.chatType === "SRV_USER_AUDIO") {
         this.newItem = item.filter(list => list.name === "upDown");
@@ -627,6 +671,29 @@ export default {
         height: 6em;
       }
     }
+    .message-classic{
+      .message-file-box{
+        display: flex;
+        align-items: center;
+        padding-right: 45px;
+        cursor: pointer;
+        .file-box{
+          width: 4em;
+          height: 4em;
+          background-color: #000;
+          border-radius: 10px;
+          background-image: url("./../../static/images/icon_file.svg");
+          background-repeat: no-repeat;
+          background-size:65%;        
+          background-position: center;
+        }
+        .file-message{
+          display: flex;
+          flex-direction: column;
+          padding-left: 10px;
+        }
+      }
+    }    
     .message-audio {
       width: 190px;
       height: 2.5em;
@@ -636,12 +703,12 @@ export default {
     }
     .message-image {
       position: relative;
-      
       display: inline-block;
       padding: 5px 6px 2px 6px;
       color: #333333;
       background-color: #e5e4e4;
       border-radius: 10px;
+      font-weight: 600;      
       img {
         border-radius: 8px;
         width: 6em;

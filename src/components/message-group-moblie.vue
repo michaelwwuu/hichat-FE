@@ -159,6 +159,27 @@
                     </div>
                   </span>
                   <span
+                    class="message-classic"
+                    v-else-if="el.chatType === 'SRV_GROUP_FILE'"
+                    @contextmenu.prevent.stop="onContextmenu(el)"
+                    @dblclick="dblclick(el)" 
+                    @click.prevent.stop="
+                      device === 'moblie' ? onContextmenu(el) : false
+                    "
+                  >
+                    <div class="message-box">
+                      <div class="message-name" style="padding: 0 0 10px 0;">{{ el.name }}</div>
+                      <div class="message-file-box" id="file-download">
+                        <div class="file-box"></div>
+                        <div class="file-message">
+                          <span>{{fileBoxName(isBase64(el.message.content))}}</span>
+                          <span>档案大小　: {{ formatFileSize(el.fileSize) }}</span>
+                        </div>
+  
+                      </div>
+                    </div>
+                  </span>                  
+                  <span
                     class="message-audio"
                     v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
@@ -409,11 +430,37 @@ export default {
         }
       }
     },
+    fileBoxName(data){
+      let url = data
+      let index = url.lastIndexOf("\/");
+      let str = url.substring(index + 1,url.length);
+      return str 
+    },
+    formatFileSize(fileSize) {
+      var temp = fileSize / (1024*1024);
+      temp = temp.toFixed(2);
+      return temp + 'MB';
+      // if (fileSize < 1024) {
+      //     return fileSize + 'B';
+      // } else if (fileSize < (1024*1024)) {
+      //     var temp = fileSize / 1024;
+      //     temp = temp.toFixed(2);
+      //     return temp + 'KB';
+      // } else if (fileSize < (1024*1024*1024)) {
+      //     var temp = fileSize / (1024*1024);
+      //      temp = temp.toFixed(2);
+      //      return temp + 'MB';
+      // } else {
+      //     var temp = fileSize / (1024*1024*1024);
+      //     temp = temp.toFixed(2);
+      //     return temp + 'GB';
+      // }
+    },    
     showCheckBtn(status, data) {
       if (status) {
         return status;
       } else if (!status) {
-        if (["SRV_GROUP_SEND", "SRV_GROUP_IMAGE", "SRV_GROUP_AUDIO"].includes(data.chatType)) {
+        if (["SRV_GROUP_SEND", "SRV_GROUP_IMAGE", "SRV_GROUP_AUDIO","SRV_GROUP_FILE"].includes(data.chatType)) {
           return status;
         } else {
           return !status;
@@ -568,6 +615,7 @@ export default {
               replyHistoryId: data.historyId,
               name: data.name,
               icon: data.icon,
+              fileSize:data.fileSize,              
             });
           },
         },
@@ -575,7 +623,11 @@ export default {
           name: "download",
           label: "下载",
           onClick: () => {
-            this.downloadImages(data);
+            if(data.chatType === "SRV_GROUP_IMAGE"){
+              this.downloadImages(data);
+            }else{
+              this.downloadFile(data)
+            }            
           },
         },
         {
@@ -632,7 +684,7 @@ export default {
                 )
             );
           }
-        } else if (data.chatType === "SRV_GROUP_IMAGE") {
+        } else if (data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_FILE") {
           if (
             isAdmin ||
             (isManager &&
@@ -663,7 +715,7 @@ export default {
           }
         }
       } else {
-        if (data.chatType === "SRV_GROUP_IMAGE") {
+        if (data.chatType === "SRV_GROUP_IMAGE" || data.chatType === "SRV_GROUP_FILE") {
           this.newItem = item.filter(
             (list) => !["edit", "copy"].includes(list.name)
           );
@@ -733,6 +785,15 @@ export default {
         });
       }
     },
+    downloadFile(filename) {
+      var text = document.getElementById("file-download")
+      var element = document.createElement('a');
+      element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+      element.setAttribute('download', this.isBase64(filename.message.content));
+      document.body.appendChild(element);
+      element.click();
+      //document.body.removeChild(element);
+    },    
     downloadImages(data) {
       let downloadUrl = "";
       downloadUrl = this.isBase64(data.message.content);
@@ -1007,12 +1068,12 @@ export default {
       }
       .message-image {
         position: relative;
-
         display: inline-block;
         padding: 5px 6px 2px 6px;
         color: #333333;
         background-color: #e5e4e4;
         border-radius: 8px 0 8px 8px;
+        font-weight: 600;
         .el-image {
           width: -webkit-fill-available !important;
           height: 9em !important;
@@ -1056,6 +1117,29 @@ export default {
       }
       img {
         height: 6em;
+      }
+    }
+    .message-classic{
+      .message-file-box{
+        display: flex;
+        align-items: center;
+        padding-right: 45px;
+        cursor: pointer;
+        .file-box{
+          width: 4em;
+          height: 4em;
+          background-color: #000;
+          border-radius: 10px;
+          background-image: url("./../../static/images/icon_file.svg");
+          background-repeat: no-repeat;
+          background-size:65%;        
+          background-position: center;
+        }
+        .file-message{
+          display: flex;
+          flex-direction: column;
+          padding-left: 10px;
+        }
       }
     }
     .message-audio {

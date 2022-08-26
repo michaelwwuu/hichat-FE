@@ -418,12 +418,6 @@ export default {
         display: block;
       }
       .upload-demo {
-        // line-height: 1.5em;
-        .el-upload-list {
-          .el-upload-list__item {
-            // margin-top: -72px;
-          }
-        }
         .hidden {
           visibility: hidden;
         }
