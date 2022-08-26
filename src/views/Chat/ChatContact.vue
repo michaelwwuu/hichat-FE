@@ -648,7 +648,7 @@ export default {
         name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
-        fileSize:data.fileSize !== undefined ? data.fileSize : "",        
+        fileSize:data.chat.fileSize !== undefined ? data.chat.fileSize : "",               
       };
     },
     // 訊息過濾比對名稱

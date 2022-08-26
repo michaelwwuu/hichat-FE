@@ -546,7 +546,7 @@ export default {
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing: false,
-        fileSize:data.fileSize !== undefined ? data.fileSize : "",        
+        fileSize:data.chat.fileSize !== undefined ? data.chat.fileSize : "",        
       };
     },
     // 訊息過濾比對名稱
