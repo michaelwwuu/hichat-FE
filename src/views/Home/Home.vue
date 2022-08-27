@@ -65,18 +65,16 @@
           >
             <router-link :to="item.path">
               <span>
-                <div class="el-badge-box" v-if="index === 1">
+                <div class="el-badge-box" v-if="index === 1 && badgeNum !== 0">
                   <el-badge
                     :value="badgeNum"
                     class="item"
-                    v-if="badgeNum !== 0"
                   ></el-badge>
                 </div>
-                <div class="el-badge-box" v-if="index === 0">
+                <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
-                    v-if="maybeKnowNum !== 0"
                   ></el-badge>
                 </div>
                 <img :src="index !== num ? item.icon : item.active"
@@ -158,18 +156,16 @@
           >
             <router-link :to="item.path">
               <span>
-                <div class="el-badge-box" v-if="index === 1">
+                <div class="el-badge-box" v-if="index === 1 && badgeNum !== 0">
                   <el-badge
                     :value="badgeNum"
                     class="item"
-                    v-if="badgeNum !== 0"
                   ></el-badge>
                 </div>
-                <div class="el-badge-box" v-if="index === 0">
+                <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
-                    v-if="maybeKnowNum !== 0"
                   ></el-badge>
                 </div>
                 <img :src="index !== num ? item.icon : item.active"

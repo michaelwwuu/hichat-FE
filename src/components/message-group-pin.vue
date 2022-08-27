@@ -64,8 +64,8 @@
                 <div class="message-file-box" id="file-download">
                   <div class="file-box"></div>
                   <div class="file-message">
-                    <span>{{fileBoxName(isBase64(el.chat.text))}}</span>
-                    <span>档案大小　: {{ formatFileSize(el.fileSize) }}</span>
+                    <span>{{fileData(isBase64(el.chat.text),'content')}}</span>
+                    <span>档案大小　: {{ fileData(el.chat.fileSize,'size') }}</span>                    
                   </div>
                 </div>
               </div>
@@ -150,6 +150,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { unpinHistory, pinList } from "@/api";
+import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 import AESBase64 from "@/utils/AESBase64.js";
 
 
@@ -209,32 +210,13 @@ export default {
       setTopMsgShow: "ws/setTopMsgShow",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
-    fileBoxName(data){
-      let url = data
-      let index = url.lastIndexOf("\/");
-      let str = url.substring(index + 1,url.length);
-      return str 
-    },
-    formatFileSize(fileSize) {
-      var temp = fileSize / (1024*1024);
-      temp = temp.toFixed(2);
-      return temp + 'MB';
-      // if (fileSize < 1024) {
-      //     return fileSize + 'B';
-      // } else if (fileSize < (1024*1024)) {
-      //     var temp = fileSize / 1024;
-      //     temp = temp.toFixed(2);
-      //     return temp + 'KB';
-      // } else if (fileSize < (1024*1024*1024)) {
-      //     var temp = fileSize / (1024*1024);
-      //      temp = temp.toFixed(2);
-      //      return temp + 'MB';
-      // } else {
-      //     var temp = fileSize / (1024*1024*1024);
-      //     temp = temp.toFixed(2);
-      //     return temp + 'GB';
-      // }
-    },     
+    fileData(data,type){
+      if(type === "content"){
+        return fileBoxName(data)
+      }else{
+        return formatFileSize(data)
+      }
+    },         
     IsURL(str_url) {
       var strRegex =
         /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;

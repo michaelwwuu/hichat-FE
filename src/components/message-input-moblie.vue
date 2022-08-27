@@ -503,6 +503,7 @@ export default {
       // this.isFinished = false;
       this.recorder.startRecord({
         success: (res) => {
+          console.log(res)
           this.isVoice = true;
           this.endDisabledPlay = false;
           this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
