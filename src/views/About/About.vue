@@ -42,6 +42,8 @@
 <script>
 import { developmentMessage } from "@/assets/tools";
 
+import { getAndroidVersion } from '@/api/version'
+
 export default {
   name: "About",
   data() {
@@ -50,7 +52,7 @@ export default {
         {
           name: "使用版本",
           path: "",
-          version: "1.4.2",
+          version: "",
         },
         // {
         //   name: "服务条款",
@@ -64,7 +66,15 @@ export default {
       developmentMessage: developmentMessage,
     };
   },
+  created() {
+    this.androidVersion()
+  },
   methods: {
+    androidVersion(){
+      getAndroidVersion().then((res)=>{
+        this.aboutData[0].version = res.data.version
+      })
+    },
     back() {
       this.$router.back(-1);
     },

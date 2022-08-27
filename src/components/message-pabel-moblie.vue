@@ -117,8 +117,8 @@
                     <div class="message-file-box" id="file-download">
                       <div class="file-box"></div>
                       <div class="file-message">
-                        <span>{{fileBoxName(el.message.content)}}</span>
-                        <span>档案大小　: {{ formatFileSize(el.fileSize) }}</span>
+                        <span>{{fileData(isBase64(el.message.content),'content')}}</span>
+                        <span>档案大小　: {{ fileData(el.fileSize,'size') }}</span>
                       </div>
  
                     </div>
@@ -211,6 +211,7 @@ import {
 } from "@/api";
 import AESBase64 from "@/utils/AESBase64.js";
 
+import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 import VueMarkdown from "vue-markdown";
 export default {
   name: "MessagePabel",
@@ -316,31 +317,12 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
       setMyUserInfo: "ws/setMyUserInfo",
     }),
-    fileBoxName(data){
-      let url = data
-      let index = url.lastIndexOf("\/");
-      let str = url.substring(index + 1,url.length);
-      return str 
-    },
-    formatFileSize(fileSize) {
-      var temp = fileSize / (1024*1024);
-      temp = temp.toFixed(2);
-      return temp + 'MB';
-      // if (fileSize < 1024) {
-      //     return fileSize + 'B';
-      // } else if (fileSize < (1024*1024)) {
-      //     var temp = fileSize / 1024;
-      //     temp = temp.toFixed(2);
-      //     return temp + 'KB';
-      // } else if (fileSize < (1024*1024*1024)) {
-      //     var temp = fileSize / (1024*1024);
-      //      temp = temp.toFixed(2);
-      //      return temp + 'MB';
-      // } else {
-      //     var temp = fileSize / (1024*1024*1024);
-      //     temp = temp.toFixed(2);
-      //     return temp + 'GB';
-      // }
+    fileData(data,type){
+      if(type === "content"){
+        return fileBoxName(data)
+      }else{
+        return formatFileSize(data)
+      }
     },
     paperScroll(event){
       // console.log(event.target)

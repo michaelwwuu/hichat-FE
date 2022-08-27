@@ -115,8 +115,8 @@
                 v-else-if="replyMsg.chatType === 'SRV_GROUP_FILE'"
                 class="replyMsg-file"
               >
-                <span>{{fileBoxName(replyMsg.innerText)}}</span>
-                <span>档案大小　: {{ formatFileSize(replyMsg.fileSize) }}</span>
+                <span>{{fileData(replyMsg.innerText,'content')}}</span>
+                <span>档案大小　: {{ fileData(replyMsg.fileSize,'size') }}</span>                    
               </div>                 
             </div>
             <div class="reply-close-btn" @click="$root.closeReplyMessage">
@@ -326,6 +326,8 @@ import {
   deleteRecentChatMul,
 } from "@/api";
 import { mapState, mapMutations } from "vuex";
+import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
+
 import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
@@ -479,32 +481,13 @@ export default {
       this.setChatGroup({});
       this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
     },
-    fileBoxName(data){
-      let url = data
-      let index = url.lastIndexOf("\/");
-      let str = url.substring(index + 1,url.length);
-      return str 
-    },
-    formatFileSize(fileSize) {
-      var temp = fileSize / (1024*1024);
-      temp = temp.toFixed(2);
-      return temp + 'MB';      
-      // if (fileSize < 1024) {
-      //     return fileSize + 'B';
-      // } else if (fileSize < (1024*1024)) {
-      //     var temp = fileSize / 1024;
-      //     temp = temp.toFixed(2);
-      //     return temp + 'KB';
-      // } else if (fileSize < (1024*1024*1024)) {
-      //     var temp = fileSize / (1024*1024);
-      //      temp = temp.toFixed(2);
-      //      return temp + 'MB';
-      // } else {
-      //     var temp = fileSize / (1024*1024*1024);
-      //     temp = temp.toFixed(2);
-      //     return temp + 'GB';
-      // }
-    },        
+    fileData(data,type){
+      if(type === "content"){
+        return fileBoxName(data)
+      }else{
+        return formatFileSize(data)
+      }
+    },    
     closeChooseAction(){
       this.showCheckBoxBtn = true;
       this.$root.gotoBottom();
@@ -634,7 +617,7 @@ export default {
             if (this.pinDataList[0].chatType === "SRV_GROUP_AUDIO") {
               this.pinMsg = "語音訊息";
             } else if(this.pinDataList[0].chatType === "SRV_GROUP_FILE"){
-              this.pinMsg = this.fileBoxName(this.isBase64(this.pinDataList[0].chat.text));
+              this.pinMsg = this.fileData(this.isBase64(this.pinDataList[0].chat.text),"content");
             } else {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
@@ -688,7 +671,7 @@ export default {
         newContent: data.chat.newContent,
         isRplay: data.replyChat === null ? null : data.replyChat,
         isPing: false,
-        fileSize:data.fileSize !== undefined ? data.fileSize : "",        
+        fileSize:data.chat.fileSize !== undefined ? data.chat.fileSize : "",
       };
     },
     // 訊息過濾比對名稱

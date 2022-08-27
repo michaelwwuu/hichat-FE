@@ -127,8 +127,8 @@
                 v-else-if="replyMsg.chatType === 'SRV_USER_FILE'"
                 class="replyMsg-file"
               >
-                <span>{{fileBoxName(replyMsg.innerText)}}</span>
-                <span>档案大小　: {{ formatFileSize(replyMsg.fileSize) }}</span>
+                <span>{{fileData(replyMsg.innerText,'content')}}</span>
+                <span>档案大小　: {{ fileData(replyMsg.fileSize,'size') }}</span>                       
               </div>
             </div>
             <div class="reply-close-btn" @click="$root.closeReplyMessage">
@@ -383,6 +383,7 @@ import {
   deleteRecentChatMul,
 } from "@/api";
 import AESBase64 from "@/utils/AESBase64.js";
+import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 
 import { mapState, mapMutations } from "vuex";
 import { getLocal, getToken } from "_util/utils.js";
@@ -488,32 +489,13 @@ export default {
       setCheckBoxBtn: "ws/setCheckBoxBtn",
       setMyContactDataList: "ws/setMyContactDataList",
     }),
-    fileBoxName(data){
-      let url = data
-      let index = url.lastIndexOf("\/");
-      let str = url.substring(index + 1,url.length);
-      return str 
-    },
-    formatFileSize(fileSize) {
-      var temp = fileSize / (1024*1024);
-      temp = temp.toFixed(2);
-      return temp + 'MB';
-      // if (fileSize < 1024) {
-      //     return fileSize + 'B';
-      // } else if (fileSize < (1024*1024)) {
-      //     var temp = fileSize / 1024;
-      //     temp = temp.toFixed(2);
-      //     return temp + 'KB';
-      // } else if (fileSize < (1024*1024*1024)) {
-      //     var temp = fileSize / (1024*1024);
-      //      temp = temp.toFixed(2);
-      //      return temp + 'MB';
-      // } else {
-      //     var temp = fileSize / (1024*1024*1024);
-      //     temp = temp.toFixed(2);
-      //     return temp + 'GB';
-      // }
-    },       
+    fileData(data,type){
+      if(type === "content"){
+        return fileBoxName(data)
+      }else{
+        return formatFileSize(data)
+      }
+    },     
     closeChooseAction() {
       this.showCheckBoxBtn = true;
       this.$root.gotoBottom();
@@ -648,7 +630,7 @@ export default {
         name: data.chat.name,
         nickName: data.chat.nickName,
         isRplay: data.replyChat === null ? null : data.replyChat,
-        fileSize:data.fileSize !== undefined ? data.fileSize : "",        
+        fileSize:data.chat.fileSize !== undefined ? data.chat.fileSize : "",      
       };
     },
     // 訊息過濾比對名稱
