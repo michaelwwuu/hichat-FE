@@ -131,6 +131,10 @@
           {{ one }}<span>:</span>{{ two }}<span>:</span>{{ three }}
         </div>
         <div id="audioVoice-box"></div>
+        <!-- <mini-audio
+          id="audioVoice-box"
+          :audio-source=""
+        ></mini-audio> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" :disabled="disabledPlay" @click="onStartVoice"
@@ -503,10 +507,9 @@ export default {
       // this.isFinished = false;
       this.recorder.startRecord({
         success: (res) => {
-          console.log(res)
           this.isVoice = true;
           this.endDisabledPlay = false;
-          this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
+          this.startHandler()
         },
         error: (e) => {
           this.resetTime();

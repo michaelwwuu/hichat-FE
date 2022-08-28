@@ -645,7 +645,7 @@ export default {
         success: (res) => {
           this.isVoice = true;
           this.endDisabledPlay = false;
-          this.$nextTick(() => setTimeout(() => this.startHandler(), 1000));
+          this.startHandler()
         },
         error: (e) => {
           this.resetTime();

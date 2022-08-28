@@ -1,8 +1,9 @@
 import Vue from "vue";
 const baseWsUrl = process.env.NODE_ENV === 'test' ? 'test.hailiao.net':location.host
 // const wsUrl = `wss://${baseWsUrl}/ws/im/echo`;//動態環境
-// const wsUrl = `wss://www.hailiao.info/ws/im/echo`;//動態環境
-const wsUrl = `ws://test.hailiao.net/ws/im/echo`;//動態環境
+// const wsUrl = `wss://www.hailiao.info/ws/im/echo`;//OL動態環境
+const wsUrl = `wss://pre.hailiao.app/ws/im/echo`;//PRE動態環境
+// const wsUrl = `ws://test.hailiao.net/ws/im/echo`;//Test動態環境
 var socket = new WebSocket(wsUrl);
 const emitter = new Vue({
   data() {
@@ -56,8 +57,8 @@ const emitter = new Vue({
         emitter.$emit("error", err);
       };
       socket.onclose = function (e) {
-        console.log("<--【连线斷開】------自動重新連線-->",e);
-        setTimeout(() => emitter.connect(), 1500);
+        // console.log("<--【连线斷開】------自動重新連線-->",e);
+        setTimeout(() => emitter.connect(), 3000);
       };
     },
   }
