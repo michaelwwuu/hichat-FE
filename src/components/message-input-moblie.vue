@@ -165,7 +165,7 @@
       ></Photo>
     </el-dialog>
     <el-dialog
-      title="上傳檔案"
+      title="档案上传"
       :before-close="closeModel"
       :visible.sync="uploadFileShow"
       :close-on-click-modal="false"
@@ -173,6 +173,7 @@
       :append-to-body="false"
       :class="{ 'el-dialog-loginOut': device === 'pc' }"
       v-loading.fullscreen.lock="fullscreenLoading"
+      element-loading-text="档案上传中"
       width="100%"
       class="el-upload-img"
       center
