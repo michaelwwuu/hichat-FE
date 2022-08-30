@@ -235,7 +235,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 50,
+        pageSize: 20,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },

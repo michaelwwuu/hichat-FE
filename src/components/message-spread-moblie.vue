@@ -27,7 +27,6 @@ export default {
   name: "MessageSpreadPabel",
   data() {
     return {
-
       device: localStorage.getItem("device"),
       //加解密 key iv
       aesKey: "hichatisachatapp",

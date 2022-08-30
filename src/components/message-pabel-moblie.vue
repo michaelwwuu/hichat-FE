@@ -212,6 +212,7 @@ import {
   unpinHistory,
 } from "@/api";
 import AESBase64 from "@/utils/AESBase64.js";
+import { copyPaste } from "@/utils/urlCopy.js";
 
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 import VueMarkdown from "vue-markdown";
@@ -336,12 +337,9 @@ export default {
       historyMessageData.id = Math.random();
       historyMessageData.toChatId = this.chatUser.toChatId;
       historyMessageData.targetId = this.historyId;
-      historyMessageData.pageSize = 50;
+      historyMessageData.pageSize = 20;
       Socket.send(historyMessageData);
     }, 
-    paperScroll(event){
-      // console.log(event.target)
-    },
     showCheckBtn(status, data) {
       if (status) {
         return status;
@@ -457,7 +455,7 @@ export default {
           name: "copy",
           label: "复制",
           onClick: () => {
-            this.copyPaste(data);
+            copyPaste(data.message.content.replace(/(\s*$)/g, ""));
           },
         },
 
@@ -620,22 +618,6 @@ export default {
       link.href = href;
       link.click();
       link.remove();
-    },
-    copyPaste(data) {
-      let url = document.createElement("textarea");
-      document.body.appendChild(url);
-      url.value = data.message.content.replace(/(\s*$)/g, "");
-      url.select();
-      document.execCommand("copy");
-      document.body.removeChild(url);
-
-      this.$message({
-        message: `${
-          url.value.length > 110 ? url.value.substr(0, 110) + " ..." : url.value
-        } 复制成功`,
-        type: "success",
-        duration: 1000,
-      });
     },
     deleteRecent(data, type) {
       let parmas = {

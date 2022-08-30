@@ -1,6 +1,6 @@
 import Vue from "vue";
 
-export default function (copyUrl) {
+export function urlCopy(copyUrl) {
   if (copyUrl == "") {
     return;
   }
@@ -20,4 +20,20 @@ export default function (copyUrl) {
     type: 'success',
     duration: 1000
   });
+}
+//複製
+export function copyPaste(data) {
+  let url = document.createElement("input");
+  document.body.appendChild(url);
+  url.value = data;
+  url.select();
+  document.execCommand("copy");
+  document.body.removeChild(url);
+  
+  Vue.prototype.$message({
+    message: `ID : ${data} 复制成功`,
+    type: "success",
+    duration: 1000,
+  });
+
 }

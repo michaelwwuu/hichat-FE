@@ -37,7 +37,7 @@
                 ID :
                 <span
                   class="user-paste"
-                  @click="copyPaste(chatUser.username)"
+                  @click="copyID()"
                   >{{ chatUser.username }}</span
                 ></span
               >
@@ -263,6 +263,8 @@
 <script>
 import { developmentMessage } from "@/assets/tools";
 import { mapState, mapMutations } from "vuex";
+import { copyPaste } from "@/utils/urlCopy.js";
+
 import {
   getSearchById,
   addContactUser,
@@ -359,25 +361,15 @@ export default {
         this.setChatUser(this.chatUser);
       });
     },
+    copyID(){
+      copyPaste(this.chatUser.username)
+    },   
     noIconShow(iconData) {
       if ([undefined,null,""].includes(iconData.icon)) {
         return require("./../../../static/images/image_user_defult.png");
       } else {
         return iconData.icon;
       }
-    },
-    copyPaste(data) {
-      let url = document.createElement("input");
-      document.body.appendChild(url);
-      url.value = data;
-      url.select();
-      document.execCommand("copy");
-      document.body.removeChild(url);
-      this.$message({
-        message: `ID : ${data} 复制成功`,
-        type: "success",
-        duration: 1000,
-      });
     },
     goChatRoom(data, path) {
       this.$router.push({ name: path, params: data });

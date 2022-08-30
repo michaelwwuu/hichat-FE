@@ -569,6 +569,8 @@ export default {
     },
     chatUser(val){
       this.messageData = []
+      this.pinMsg = "";
+      this.getPinList();         
       this.getUserMemberActivity(val)
     },
     checkBoxBtn(val){
@@ -834,7 +836,7 @@ export default {
       historyMessageData.id = Math.random();
       historyMessageData.toChatId = this.chatUser.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 50;
+      historyMessageData.pageSize = 20;
       Socket.send(historyMessageData);
     },
     infoMsgShow() {
@@ -879,19 +881,21 @@ export default {
       switch (userInfo.chatType) {
         // 历史讯息    
         case "SRV_HISTORY_RSP":
-          this.pinMsg = "";
-          this.getPinList();   
           let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
-            this.messageList(el);
-            this.messageReorganization(this.chatRoomMsg)
-            this.messageData.unshift(this.chatRoomMsg);
-          });
-          this.readMsg = historyMsgList.filter((el) => {
-            return el.chat.toChatId === "u" + localStorage.getItem("id");
-          });
-          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
-          if (this.device === "pc") this.getHiChatDataList();
+          this.$nextTick(() => {
+            setTimeout(() => {           
+              historyMsgList.forEach((el) => {
+                this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
+                this.messageData.unshift(this.chatRoomMsg);
+              });
+              this.readMsg = historyMsgList.filter((el) => {
+                return el.chat.toChatId === "u" + localStorage.getItem("id");
+              });
+              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+              if (this.device === "pc") this.getHiChatDataList();
+            }, 500);
+          });               
           break;        
         // 发送影片照片讯息成功
         // 发送讯息成功

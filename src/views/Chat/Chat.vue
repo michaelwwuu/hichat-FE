@@ -394,6 +394,8 @@ export default {
     },
     groupUser(){
       this.messageData = [];
+      this.pinMsg = "";
+      this.getPinList();
     }
   },
   created() {
@@ -573,7 +575,7 @@ export default {
       historyMessageData.id = Math.random();
       historyMessageData.toChatId = this.groupUser.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 50;
+      historyMessageData.pageSize = 20;
       Socket.send(historyMessageData);
     },
     changeGroupAdminShow() {
@@ -731,21 +733,21 @@ export default {
       switch (userInfo.chatType) {
         // 历史讯息
         case "SRV_GROUP_HISTORY_RSP":
-          this.pinMsg = "";
-          this.getPinList();
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
-            historyMsgList.forEach((el) => {
-              this.base64Msg = this.isBase64(el.chat.text);
-              el.chat.newContent = this.base64Msg.split(" ");
-              this.messageList(el);
-              this.messageReorganization(this.chatRoomMsg)
-              this.messageData.unshift(this.chatRoomMsg);
-            });
-            if (historyMsgList.length > 0) {
-              this.readMsgShow(historyMsgList[0]);
-            }
-            this.getHiChatDataList();
+            setTimeout(() => {
+              historyMsgList.forEach((el) => {
+                this.base64Msg = this.isBase64(el.chat.text);
+                el.chat.newContent = this.base64Msg.split(" ");
+                this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
+                this.messageData.unshift(this.chatRoomMsg);
+              });
+              if (historyMsgList.length > 0) {
+                this.readMsgShow(historyMsgList[0]);
+              }
+              this.getHiChatDataList();              
+            }, 500);
           });
           break;        
         // 发送影片照片讯息成功

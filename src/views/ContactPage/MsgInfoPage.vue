@@ -79,7 +79,8 @@
                   :src="noIconShow(groupUserCheck, 'user')"
                   :preview-src-list="[noIconShow(groupUserCheck, 'user')]"
                 />
-                <span>{{infoMsg.infoMsgMap === 'address'? chatUser.name : groupUserCheck.name}}</span>
+                <span v-if="infoMsg.infoMsgMap === 'address'">{{chatUser.name}}</span>
+                <span v-else-if="infoMsg.infoGroupNav">{{groupUserCheck.name }}</span>
                 <span
                   class="user-data-id"
                   v-if="chatUser.name !== '嗨聊记事本' && groupUserCheck.name !== '嗨聊记事本'"
@@ -89,7 +90,7 @@
                     v-if="infoMsg.infoMsgMap === 'address'"
                     class="user-paste"
                     @click="
-                      copyPaste(
+                      copyID(
                         chatUserId === '' ? chatUser.username : chatUserId
                       )
                     "
@@ -101,7 +102,7 @@
                     v-else
                     class="user-paste"
                     @click="
-                      copyPaste(
+                      copyID(
                         chatUserId === '' ? groupUserCheck.username : chatUserId
                       )
                     "
@@ -368,6 +369,8 @@ import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getToken } from "_util/utils.js";
+import { copyPaste } from "@/utils/urlCopy.js";
+
 import {
   getSearchById,
   groupListMember,
@@ -430,7 +433,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 50,
+        pageSize: 20,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
@@ -515,20 +518,6 @@ export default {
         infoMsgChat: true,
       });
     },
-    copyPaste(data) {
-      let url = document.createElement("input");
-      document.body.appendChild(url);
-      url.value = data;
-      url.select();
-      document.execCommand("copy");
-      document.body.removeChild(url);
-      this.$message({
-        message: `ID : ${data} 复制成功`,
-        type: "success",
-        duration: 1000,
-      });
-    },
-
     dialogShow(type) {
       this.settingDialogShow = true;
       switch (type) {
@@ -709,6 +698,9 @@ export default {
         this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
       }
     },
+    copyID(data){
+      copyPaste(data)
+    },   
     noIconShow(iconData, key) {
       if ([undefined, null, ""].includes(iconData.icon)) {
         if (key === "user") {

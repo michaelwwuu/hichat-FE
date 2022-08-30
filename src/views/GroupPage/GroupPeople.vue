@@ -470,46 +470,32 @@ export default {
           this.setChatUser(data);
           
         } else {
-          if (this.infoMsg.infoMsgMap === "address") {
-            this.setInfoMsg({
-              infoMsgShow: true,
-              infoMsgNav: "ContactPage",
-              infoMsgChat: false,
-              infoMsgMap: "address",
-            });
-            this.setMsgInfoPage({
-              pageShow: true,
-              type: "ContactPage",
-              page: "GroupPeople",
-            });
-          } else {
-            this.isContact = this.contactList.filter((el)=>{
-              return "u"+ el.memberId === data.toChatId
-            })
-            if(this.isContact[0].length !== 0 ){
-              this.isContact[0].isContact = true
-            } else{
-              data.isContact = false
-              this.isContact[0] = data
-            }
-            if (data.memberId === JSON.parse(localStorage.getItem("id"))){
-              this.isContact[0].name = "嗨聊记事本"
-              this.isContact[0].icon = require("./../../../static/images/image_savemessage.png");
-            }
-            this.isContact[0].toChatId = "u" + data.memberId;
-            this.setInfoMsg({
-              infoMsgShow: true,
-              infoMsgChat: true,
-              infoMsgNav: "ContactPage",
-              infoMsgMap: "GroupPeople",
-            });
-            this.setMsgInfoPage({
-              pageShow: true,
-              type: "ContactPage",
-              page: "GroupPeople",
-            });
-            this.setGroupUserCheck(this.isContact[0])
+          this.isContact = this.contactList.filter((el)=>{
+            return "u"+ el.memberId === data.toChatId
+          })
+          if(this.isContact[0].length !== 0 ){
+            this.isContact[0].isContact = true
+          } else{
+            data.isContact = false
+            this.isContact[0] = data
           }
+          if (data.memberId === JSON.parse(localStorage.getItem("id"))){
+            this.isContact[0].name = "嗨聊记事本"
+            this.isContact[0].icon = require("./../../../static/images/image_savemessage.png");
+          }
+          this.isContact[0].toChatId = "u" + data.memberId;
+          this.setInfoMsg({
+            infoMsgShow: true,
+            infoMsgChat: true,
+            infoMsgNav: "ContactPage",
+            infoMsgMap: "GroupPeople",
+          });
+          this.setMsgInfoPage({
+            pageShow: true,
+            type: "ContactPage",
+            page: "GroupPeople",
+          });
+          this.setGroupUserCheck(this.isContact[0])
         }
         // 
       // }

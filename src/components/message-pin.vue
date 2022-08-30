@@ -141,6 +141,8 @@ import { mapState, mapMutations } from "vuex";
 import { unpinHistory, pinList } from "@/api";
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 
+import { copyPaste } from "@/utils/urlCopy.js";
+
 import AESBase64 from "@/utils/AESBase64.js";
 
 
@@ -170,7 +172,7 @@ export default {
   },
   watch: {
     topMsgShow(val) {
-      !val ? this.getPinList() : false;
+      // !val ? this.getPinList() : false;
     },
   },
   computed: {
@@ -279,7 +281,7 @@ export default {
           name: "copy",
           label: "复制",
           onClick: () => {
-            this.copyPaste(data);
+            copyPaste(this.isBase64(data.chat.text).replace(/(\s*$)/g, ""));
           },
         },
         {
@@ -362,24 +364,6 @@ export default {
           this.$emit("resetPinMsg");
           this.getPinList();
         }
-      });
-    },
-    copyPaste(data) {
-      let url = document.createElement("textarea");
-      document.body.appendChild(url);
-      url.value = this.isBase64(data.chat.text).replace(/(\s*$)/g, "");
-      url.select();
-      document.execCommand("copy");
-      document.body.removeChild(url);
-
-      this.$message({
-        message: `${
-          url.value.length > 110
-            ? url.value.substr(0, 110) + " ..."
-            : this.isBase64(url.value)
-        } 复制成功`,
-        type: "success",
-        duration: 1000,
       });
     },
   },

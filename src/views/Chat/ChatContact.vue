@@ -443,6 +443,8 @@ export default {
     },
     contactUser(val) {
       this.messageData = []
+      this.pinMsg = "";
+      this.getPinList();      
       this.getUserMemberActivity(val);
     },
     checkBoxBtn(val) {
@@ -663,7 +665,7 @@ export default {
           ? "u" + this.userData.contactId
           : this.userData.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 50;
+      historyMessageData.pageSize = 20;
       Socket.send(historyMessageData);
     },
     infoMsgShow() {
@@ -707,21 +709,21 @@ export default {
       switch (userInfo.chatType) {
         // 历史讯息
         case "SRV_HISTORY_RSP":
-          if(JSON.stringify(this.contactUser) !== '{}'){
-            this.pinMsg = "";
-            this.getPinList();
-          } 
           let historyMsgList = userInfo.historyMessage.list;
-          historyMsgList.forEach((el) => {
-            this.messageList(el);
-            this.messageReorganization(this.chatRoomMsg)
-            this.messageData.unshift(this.chatRoomMsg);
+          this.$nextTick(() => {
+            setTimeout(() => {
+              historyMsgList.forEach((el) => {
+                this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
+                this.messageData.unshift(this.chatRoomMsg);
+              });
+              this.readMsg = historyMsgList.filter((el) => {
+                return el.chat.toChatId === "u" + localStorage.getItem("id");
+              });
+              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+              this.getHiChatDataList();
+            }, 500);
           });
-          this.readMsg = historyMsgList.filter((el) => {
-            return el.chat.toChatId === "u" + localStorage.getItem("id");
-          });
-          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
-          this.getHiChatDataList();
           break;        
         // 发送影片照片讯息成功
         // 发送讯息成功
@@ -939,7 +941,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 50,
+        pageSize: 20,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       }),

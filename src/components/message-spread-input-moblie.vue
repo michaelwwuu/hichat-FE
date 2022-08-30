@@ -307,7 +307,7 @@ export default {
         tokenType: 0,
         toChatId: this.chatUser.toChatId,
         targetId:"",
-        pageSize: 100,
+        pageSize: 20,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       };

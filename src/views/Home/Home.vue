@@ -291,7 +291,7 @@
 
 <script>
 import VueQr from "vue-qr";
-import urlCopy from "@/utils/urlCopy.js";
+import {urlCopy} from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import AESBase64 from "@/utils/AESBase64.js";
 import { getToken } from "_util/utils.js";
@@ -366,7 +366,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 100,
+        pageSize: 20,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
