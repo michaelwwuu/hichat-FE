@@ -79,8 +79,7 @@
                   :src="noIconShow(groupUserCheck, 'user')"
                   :preview-src-list="[noIconShow(groupUserCheck, 'user')]"
                 />
-                <span v-if="infoMsg.infoMsgMap === 'address'">{{chatUser.name}}</span>
-                <span v-else-if="infoMsg.infoGroupNav">{{groupUserCheck.name }}</span>
+                <span>{{infoMsg.infoMsgMap === 'address'? chatUser.name : groupUserCheck.name}}</span>
                 <span
                   class="user-data-id"
                   v-if="chatUser.name !== '嗨聊记事本' && groupUserCheck.name !== '嗨聊记事本'"
