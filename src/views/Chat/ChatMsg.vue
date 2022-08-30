@@ -190,7 +190,8 @@
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
-            @resetPinMsg="resetPinMsg"            
+            @resetPinMsg="resetPinMsg"        
+            @scrollBar="scrollBar"    
           />
           <div
             class="reply-message"
@@ -532,6 +533,7 @@ export default {
       onlineTime:"",
       pinMsg: "",
       loading: false,
+      isScrollbar:false,
       isTopMsgShow:false,
       showCheckBoxBtn:true,
       isChooseDeleteShow:false,
@@ -566,6 +568,7 @@ export default {
       });
     },
     chatUser(val){
+      this.messageData = []
       this.getUserMemberActivity(val)
     },
     checkBoxBtn(val){
@@ -691,6 +694,9 @@ export default {
     resetPinMsg() {
       this.getPinList();
     },
+    scrollBar(val){
+      this.isScrollbar = val
+    },
     getPinList() {
       let params={
         toChatId:this.chatUser.toChatId,
@@ -717,7 +723,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          this.$root.gotoBottom();
+          !this.isScrollbar ? this.$root.gotoBottom() : false
         }
       });
     },
@@ -828,7 +834,7 @@ export default {
       historyMessageData.id = Math.random();
       historyMessageData.toChatId = this.chatUser.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 1000;
+      historyMessageData.pageSize = 50;
       Socket.send(historyMessageData);
     },
     infoMsgShow() {
@@ -879,7 +885,7 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {   
             setTimeout(() => {
-              this.messageData = [];
+              // this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.messageList(el);
                 this.messageReorganization(this.chatRoomMsg)

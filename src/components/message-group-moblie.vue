@@ -1,14 +1,14 @@
 <template>
   <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
-      <div v-for="(item, index) in newMessageData" :key="index">
+      <div v-for="(item, index) in reversedMessage" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
         </div>
         <el-checkbox-group v-model="checkList">
           <el-checkbox
-            v-for="(el, index) in item"
-            :key="index"
+            v-for="(el, index) in sortItem(item)"
+            :key="el.historyId"
             :label="el"
             :disabled="showCheckBtn(checkBoxDisabled, el)"
             :class="judgeClass(item[index])"
@@ -125,16 +125,6 @@
                               <vue-markdown :anchor-attributes="linkAttrs">{{
                                 calloutTextAreaConvert(item)
                               }}</vue-markdown>
-                              <!-- <span v-html="item"></span> -->
-                              <!--TODO @標註-->
-                              <!-- @click.prevent.stop="
-                                !item.startsWith('@') ? onContextmenu(el) : false
-                              " -->
-                              <!-- @click="
-                                  item.startsWith('@')
-                                    ? carteMsgShow(item.replace(/[\@|\s*]/g, ''))
-                                    : false
-                                " -->
                             </div>
                             <div v-else-if="IsURL(item)">
                               <div
@@ -296,6 +286,7 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import {
   deleteRecentChat,
@@ -330,6 +321,7 @@ export default {
       checkList: [],
       newMessageData: {},
       checkBoxDisabled: true,
+      isChatTop:false,
       fullscreenLoading: false,
       fileList: [],
       device: localStorage.getItem("device"),
@@ -355,6 +347,24 @@ export default {
       contactListData: (state) => state.ws.contactListData,
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
+    reversedMessage: function() {
+      this.historyId = this.messageData.length > 0 ? this.messageData[0].historyId: ""
+      //去除重复
+      const set = new Set();
+      this.message = this.messageData.filter((item) => !set.has(item.historyId) ? set.add(item.historyId) : false);
+
+      this.newMessageData = {};
+      this.messageData.forEach((el) => {
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = this.message.filter((res) => {
+          return (
+            this.$root.formatTimeDay(res.message.time) ===
+            this.$root.formatTimeDay(el.message.time)
+          );
+        });
+      });
+      if(!this.showScrollBar) this.$root.gotoBottom()
+      return this.newMessageData
+    },
   },
   watch: {
     showCheckBoxBtn(val) {
@@ -366,27 +376,6 @@ export default {
     checkDataList(val) {
       this.checkList = val;
     },
-    messageData(val) {
-      //去除重复
-      const set = new Set();
-      this.message = val.filter((item) =>
-        !set.has(item.historyId) ? set.add(item.historyId) : false
-      );
-      this.newMessageData = {};
-      this.message.forEach((el) => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-        let newData = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-          newData;
-          
-      });
-      this.$root.gotoBottom();
-    },
   },
   mounted() {
     window.addEventListener(
@@ -397,6 +386,10 @@ export default {
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
+        if(scrollTop.scrollTop < 800){
+          this.getChatHistoryMessage()
+        }
+        this.$emit('scrollBar',this.showScrollBar)
       },
       true
     );
@@ -416,6 +409,19 @@ export default {
       setMyUserInfo: "ws/setMyUserInfo",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
+    sortItem(item){
+      return Object.freeze(item)
+    },
+    // 獲取歷史訊息
+    getChatHistoryMessage() {
+      let historyMessageData = this.userInfoData;
+      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
+      historyMessageData.id = Math.random();
+      historyMessageData.toChatId = this.groupUser.toChatId;
+      historyMessageData.targetId = this.historyId;
+      historyMessageData.pageSize = 50;
+      Socket.send(historyMessageData);
+    },    
     calloutTextAreaConvert(data){
       if(!data.match("@") || ["@所有成員","@所有成员"].includes(data)){
         return data
@@ -608,7 +614,7 @@ export default {
             if(data.chatType === "SRV_GROUP_IMAGE"){
               this.downloadImages(data);
             }else{
-              this.downloadFile(data)
+              this.downloadFile(this.isBase64(data.message.content),this.fileData(this.isBase64(data.message.content),'content'))
             }            
           },
         },
@@ -767,15 +773,13 @@ export default {
         });
       }
     },
-    downloadFile(filename) {
-      var text = document.getElementById("file-download")
-      var element = document.createElement('a');
-      element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
-      element.setAttribute('download', this.isBase64(filename.message.content));
-      document.body.appendChild(element);
-      element.click();
-      //document.body.removeChild(element);
-    },    
+    downloadFile(href,filename) {
+      let element = document.createElement('a')
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(href))
+      element.setAttribute('download', filename)
+      element.style.display = 'none'
+      element.click()
+    },  
     downloadImages(data) {
       let downloadUrl = "";
       downloadUrl = this.isBase64(data.message.content);

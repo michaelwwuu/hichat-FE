@@ -80,8 +80,9 @@
             :showCheckBoxBtn="showCheckBoxBtn"
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
-            @isCheckDataList="isCheckDataList"            
+            @isCheckDataList="isCheckDataList"    
             @resetPinMsg="resetPinMsg"
+            @scrollBar="scrollBar"            
           />
           <div
             class="reply-message"
@@ -353,6 +354,7 @@ export default {
       checkDataList:[],
       loading: false,
       isTopMsgShow: false,
+      isScrollbar:false,      
       showCheckBoxBtn:true,
       isChooseDeleteShow:false,
 
@@ -389,6 +391,9 @@ export default {
     },
     showCheckBoxBtn(val){
       if(val) this.isChooseDeleteShow = false
+    },
+    groupUser(){
+      this.messageData = [];
     }
   },
   created() {
@@ -530,6 +535,9 @@ export default {
     resetPinMsg() {
       this.getPinList();
     },
+    scrollBar(val){
+      this.isScrollbar = val
+    },    
     goTopMsgShow() {
       this.setTopMsgShow(false);
       this.showCheckBoxBtn = true;
@@ -565,21 +573,9 @@ export default {
       historyMessageData.id = Math.random();
       historyMessageData.toChatId = this.groupUser.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 1000;
+      historyMessageData.pageSize = 50;
       Socket.send(historyMessageData);
     },
-    // closeReplyMessage() {
-    //   this.setReplyMsg({
-    //     name: "",
-    //     icon: "",
-    //     chatType: "",
-    //     clickType: "",
-    //     innerText: "",
-    //     replyHistoryId: "",
-    //     fileSize:"",   
-    //   });
-    //   this.setEditMsg({ innerText: "" });
-    // },
     changeGroupAdminShow() {
       this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
       this.setInfoMsg({
@@ -622,7 +618,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          this.$root.gotoBottom();
+          !this.isScrollbar ? this.$root.gotoBottom() : false
         }
       });
     },
@@ -659,7 +655,7 @@ export default {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
         message: {
-          time: data.chat.sendTime,
+          time: this.$root.formatTimeS(data.chat.sendTime),
           content: data.chat.text,
         },
         isRead: data.isRead,
@@ -669,7 +665,7 @@ export default {
         name: data.chat.name,
         username: data.chat.username,
         newContent: data.chat.newContent,
-        isRplay: data.replyChat === null ? null : data.replyChat,
+        isRplay: [null,undefined].includes(data.replyChat) ? null : data.replyChat,
         isPing: false,
         fileSize:data.chat.fileSize !== undefined ? data.chat.fileSize : "",
       };
@@ -737,25 +733,22 @@ export default {
         case "SRV_GROUP_HISTORY_RSP":
           this.pinMsg = "";
           this.getPinList();
-          this.loading = true;
-          this.messageData = [];
+          // this.loading = true;
+          // this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
-            setTimeout(() => {
-              this.messageData = [];
-              historyMsgList.forEach((el) => {
-                this.base64Msg = this.isBase64(el.chat.text);
-                el.chat.newContent = this.base64Msg.split(" ");
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-              if (historyMsgList.length > 0) {
-                this.readMsgShow(historyMsgList[0]);
-              }
-              this.loading = false;
-              this.getHiChatDataList();
-            }, 500);
+            historyMsgList.forEach((el) => {
+              this.base64Msg = this.isBase64(el.chat.text);
+              el.chat.newContent = this.base64Msg.split(" ");
+              this.messageList(el);
+              this.messageReorganization(this.chatRoomMsg)
+              this.messageData.unshift(this.chatRoomMsg);
+            });
+            if (historyMsgList.length > 0) {
+              this.readMsgShow(historyMsgList[0]);
+            }
+            this.loading = false;
+            this.getHiChatDataList();
           });
           break;        
         // 发送影片照片讯息成功

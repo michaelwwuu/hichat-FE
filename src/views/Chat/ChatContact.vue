@@ -94,6 +94,7 @@
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
             @resetPinMsg="resetPinMsg"
+            @scrollBar="scrollBar"                 
           />
           <div
             class="reply-message"
@@ -410,6 +411,7 @@ export default {
       pinMsg: "",
       loading: false,
       isTopMsgShow: false,
+      isScrollbar:false,      
       showCheckBoxBtn: true,
       isChooseDeleteShow: false,
       allHistoruShow: false,
@@ -440,6 +442,7 @@ export default {
       });
     },
     contactUser(val) {
+      this.messageData = []
       this.getUserMemberActivity(val);
     },
     checkBoxBtn(val) {
@@ -561,6 +564,9 @@ export default {
     resetPinMsg() {
       this.getPinList();
     },
+    scrollBar(val){
+      this.isScrollbar = val
+    },    
     getPinList() {
       let params = {
         toChatId: this.contactUser.toChatId,
@@ -585,7 +591,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          // this.$root.gotoBottom();
+          !this.isScrollbar ? this.$root.gotoBottom() : false
         }
       });
     },
@@ -669,7 +675,7 @@ export default {
           ? "u" + this.userData.contactId
           : this.userData.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 1000;
+      historyMessageData.pageSize = 50;
       Socket.send(historyMessageData);
     },
     infoMsgShow() {
@@ -721,7 +727,7 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
             setTimeout(() => {
-              this.messageData = [];
+              // this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.messageList(el);
                 this.messageReorganization(this.chatRoomMsg)
@@ -953,7 +959,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 1000,
+        pageSize: 50,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       }),

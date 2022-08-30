@@ -65,6 +65,7 @@
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
             @resetPinMsg="resetPinMsg"
+            @scrollBar="scrollBar"            
           />
           <div
             class="reply-message"
@@ -260,6 +261,7 @@ export default {
       isChooseDeleteShow: false,
       allHistoruShow: false,
       isTopMsgShow: false,
+      isScrollbar:false,      
       isLeaveGroupShow: false,
       unGroupDisabledWord: false,
 
@@ -283,6 +285,9 @@ export default {
         });
       });
     },
+    groupData(){
+      this.messageData = [];
+    }    
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
@@ -405,6 +410,9 @@ export default {
     resetPinMsg() {
       this.getPinList();
     },
+    scrollBar(val){
+      this.isScrollbar = val
+    },    
     goTopMsgShow() {
       this.setTopMsgShow(false);
     },
@@ -432,18 +440,6 @@ export default {
         return iconData.icon;
       }
     },
-    // closeReplyMessage() {
-    //   this.setReplyMsg({
-    //     name: "",
-    //     icon: "",
-    //     chatType: "",
-    //     clickType: "",
-    //     innerText: "",
-    //     replyHistoryId: "",
-    //     fileSize:"",   
-    //   });
-    //   this.setEditMsg({ innerText: "" });
-    // },
     getHiChatDataList() {
       let chatMsgKey = {
         chatType: "CLI_RECENT_CHAT",
@@ -478,7 +474,7 @@ export default {
               this.pinMsg = this.pinDataList[0].chat.text;
             }
           }
-          this.$root.gotoBottom();
+          !this.isScrollbar ? this.$root.gotoBottom() : false
         }
       });
     },
@@ -565,7 +561,7 @@ export default {
       historyMessageData.id = Math.random();
       historyMessageData.toChatId = this.groupData.toChatId;
       historyMessageData.targetId = "";
-      historyMessageData.pageSize = 1000;
+      historyMessageData.pageSize = 50;
       Socket.send(historyMessageData);
     },
     // 已讀
@@ -609,7 +605,7 @@ export default {
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
             setTimeout(() => {
-              this.messageData = [];
+              // this.messageData = [];
               historyMsgList.forEach((el) => {
                 this.base64Msg = this.isBase64(el.chat.text);
                 el.chat.newContent = this.base64Msg.split(" ");

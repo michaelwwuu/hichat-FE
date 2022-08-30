@@ -1,14 +1,14 @@
 <template>
   <div class="message-pabel-box" @touchmove="$root.handleTouch">
     <ul class="message-styles-box">
-      <div v-for="(item, index) in newMessageData" :key="index">
+      <div v-for="(item, index) in reversedMessage" :key="index">
         <div class="now-time">
           <span>{{ index }}</span>
-        </div>
+        </div>     
         <el-checkbox-group v-model="checkList" >
           <el-checkbox
             v-for="(el, index) in item"
-            :key="index"
+            :key="el.historyId"
             :label="el"
             :disabled="showCheckBtn(checkBoxDisabled, el)"
             :class="judgeClass(item[index])"
@@ -56,11 +56,11 @@
                                 >{{ isBase64(el.isRplay.text) }}</span
                               >
                               <img
-                                v-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
+                                v-else-if="el.isRplay.chatType === 'SRV_USER_IMAGE'"
                                 :src="isBase64(el.isRplay.text)"
                                 style="border-radius: 5px"
                               />
-                              <span v-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
+                              <span v-else-if="el.isRplay.chatType === 'SRV_USER_AUDIO'">
                                 <div class="reply-audio-box"></div>
                                 <mini-audio
                                   :audio-source="isBase64(el.isRplay.text)"
@@ -203,6 +203,8 @@
 </template>
 
 <script>
+import Socket from "@/utils/socket";
+
 import { mapState, mapMutations } from "vuex";
 import {
   deleteRecentChat,
@@ -260,26 +262,6 @@ export default {
     checkDataList(val){
       this.checkList = val
     },
-    messageData(val) {
-      //去除重复
-      const set = new Set();
-      this.message = val.filter((item) =>
-        !set.has(item.historyId) ? set.add(item.historyId) : false
-      );
-      this.newMessageData = {};
-      this.message.forEach((el) => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = [];
-        let newData = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] =
-          newData;
-      });
-      this.$root.gotoBottom();
-    },
   },
   computed: {
     ...mapState({
@@ -288,6 +270,24 @@ export default {
       myUserInfo: (state) => state.ws.myUserInfo,
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
+    reversedMessage: function() {
+      this.historyId = this.messageData.length > 0 ? this.messageData[0].historyId: ""
+      //去除重复
+      const set = new Set();
+      this.message = this.messageData.filter((item) => !set.has(item.historyId) ? set.add(item.historyId) : false);
+
+      this.newMessageData = {};
+      this.messageData.forEach((el) => {
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = this.message.filter((res) => {
+          return (
+            this.$root.formatTimeDay(res.message.time) ===
+            this.$root.formatTimeDay(el.message.time)
+          );
+        });
+      });
+      if(!this.showScrollBar) this.$root.gotoBottom()
+      return this.newMessageData = Object.freeze(this.newMessageData)
+    },
   },
   created() {
     this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")));
@@ -301,6 +301,10 @@ export default {
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.60009765625 : 0.60009765625)  <=
           scrollTop.clientHeight
         );
+        if(scrollTop.scrollTop < 800){
+          this.getChatHistoryMessage()
+        } 
+        this.$emit('scrollBar',this.showScrollBar)
       },
       true
     );
@@ -310,6 +314,7 @@ export default {
         this.setGoAnchorMessage({});
       }, 3000);
     }
+   
   },
   methods: {
     ...mapMutations({
@@ -324,6 +329,16 @@ export default {
         return formatFileSize(data)
       }
     },
+    // 獲取歷史訊息
+    getChatHistoryMessage() {
+      let historyMessageData = this.userInfoData;
+      historyMessageData.chatType = "CLI_HISTORY_REQ";
+      historyMessageData.id = Math.random();
+      historyMessageData.toChatId = this.chatUser.toChatId;
+      historyMessageData.targetId = this.historyId;
+      historyMessageData.pageSize = 50;
+      Socket.send(historyMessageData);
+    }, 
     paperScroll(event){
       // console.log(event.target)
     },
@@ -468,7 +483,7 @@ export default {
             if(data.chatType === "SRV_USER_IMAGE"){
               this.downloadImages(data);
             }else{
-              this.downloadFile(data)
+              this.downloadFile(data.message.content,this.fileData(data.message.content,'content'))
             }
           },
         },
@@ -569,17 +584,14 @@ export default {
         });
       }
     },
-    downloadFile(filename) {
-      var text = document.getElementById("file-download")
-      var element = document.createElement('a');
-      element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
-      element.setAttribute('download', this.isBase64(filename.message.content));
-      document.body.appendChild(element);
-      element.click();
-      //document.body.removeChild(element);
+    downloadFile(href,filename) {
+      let element = document.createElement('a')
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(href))
+      element.setAttribute('download', filename)
+      element.style.display = 'none'
+      element.click()
     },
     downloadImages(data) {
-      console.log(data)
       let hreLocal = "";
       hreLocal = this.isBase64(data.message.content);
       this.downloadByBlob(hreLocal, "images");

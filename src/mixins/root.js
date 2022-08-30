@@ -41,7 +41,9 @@ const rootMixins = {
     gotoBottom() {
       const box = document.getElementsByClassName('message-pabel-box')[0]
       this.$nextTick(() => {
-        box.scrollTop = box.scrollHeight
+        setTimeout(() =>{
+          box.scrollTop = box.scrollHeight
+        },500)
       })
     },
     // // 为了做验证的时分秒默认时间
