@@ -612,19 +612,6 @@ export default {
         }
       }
     },
-    // 關閉回復訊息
-    // closeReplyMessage() {
-    //   this.setReplyMsg({
-    //     name: "",
-    //     icon: "",
-    //     chatType: "",
-    //     clickType: "",
-    //     innerText: "",
-    //     replyHistoryId: "",
-    //     fileSize:"",   
-    //   });
-    //   this.setEditMsg({ innerText: "" });
-    // },
     // 发送消息
     sendMessage() {
       if (this.textArea.replace(/\s+/g, "") === "") {

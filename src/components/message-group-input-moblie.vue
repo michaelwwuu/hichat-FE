@@ -774,18 +774,6 @@ export default {
         }
       }
     },
-    // closeReplyMessage() {
-    //   this.setReplyMsg({
-    //     name: "",
-    //     icon: "",
-    //     chatType: "",
-    //     clickType: "",
-    //     innerText: "",
-    //     replyHistoryId: "",
-    //     fileSize:"",   
-    //   });
-    //   this.setEditMsg({ innerText: "" });
-    // },
     // 发送消息
     sendMessage() {
       const dictionary = this.textArea.replace(/(\n*$)/g,"").split(" ")
