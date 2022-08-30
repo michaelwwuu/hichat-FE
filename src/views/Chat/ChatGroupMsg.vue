@@ -601,23 +601,16 @@ export default {
         case "SRV_GROUP_HISTORY_RSP":
           this.pinMsg = "";
           this.getPinList();
-          this.loading = true;
           let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(() => {
-            setTimeout(() => {
-              // this.messageData = [];
-              historyMsgList.forEach((el) => {
-                this.base64Msg = this.isBase64(el.chat.text);
-                el.chat.newContent = this.base64Msg.split(" ");
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-              if (historyMsgList.length > 0)
-                this.readMsgShow(historyMsgList[0]);
-              this.loading = false;
-            }, 500);
+          historyMsgList.forEach((el) => {
+            this.base64Msg = this.isBase64(el.chat.text);
+            el.chat.newContent = this.base64Msg.split(" ");
+            this.messageList(el);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.unshift(this.chatRoomMsg);
           });
+          if (historyMsgList.length > 0)
+            this.readMsgShow(historyMsgList[0]);
           break;        
         // 发送影片照片讯息成功
         // 发送讯息成功

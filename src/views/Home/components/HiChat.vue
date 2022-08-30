@@ -594,18 +594,6 @@ export default {
       this.setTopMsgShow(true);
       this.getGroupDataList();      
     },
-    // closeReplyMessage() {
-    //   this.setReplyMsg({
-    //     name: "",
-    //     icon: "",
-    //     chatType: "",
-    //     clickType: "",
-    //     innerText: "",
-    //     replyHistoryId: "",
-    //     fileSize:"",   
-    //   });
-    //   this.setEditMsg({ innerText: "" });
-    // },
     getHistory(data, path) {
       if (path === "ChatMsg" || path === "ChatContact") {
         this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";

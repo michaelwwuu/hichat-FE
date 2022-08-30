@@ -733,8 +733,6 @@ export default {
         case "SRV_GROUP_HISTORY_RSP":
           this.pinMsg = "";
           this.getPinList();
-          // this.loading = true;
-          // this.messageData = [];
           let historyMsgList = userInfo.historyMessage.list;
           this.$nextTick(() => {
             historyMsgList.forEach((el) => {
@@ -747,7 +745,6 @@ export default {
             if (historyMsgList.length > 0) {
               this.readMsgShow(historyMsgList[0]);
             }
-            this.loading = false;
             this.getHiChatDataList();
           });
           break;        

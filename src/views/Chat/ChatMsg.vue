@@ -881,24 +881,17 @@ export default {
         case "SRV_HISTORY_RSP":
           this.pinMsg = "";
           this.getPinList();   
-          this.loading = true;
           let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(() => {   
-            setTimeout(() => {
-              // this.messageData = [];
-              historyMsgList.forEach((el) => {
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-              this.readMsg = historyMsgList.filter((el) => {
-                return el.chat.toChatId === "u" + localStorage.getItem("id");
-              });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
-              if (this.device === "pc") this.getHiChatDataList();
-              this.loading = false;
-            }, 500);
-          });   
+          historyMsgList.forEach((el) => {
+            this.messageList(el);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.unshift(this.chatRoomMsg);
+          });
+          this.readMsg = historyMsgList.filter((el) => {
+            return el.chat.toChatId === "u" + localStorage.getItem("id");
+          });
+          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+          if (this.device === "pc") this.getHiChatDataList();
           break;        
         // 发送影片照片讯息成功
         // 发送讯息成功
