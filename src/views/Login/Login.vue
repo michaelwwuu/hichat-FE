@@ -224,6 +224,7 @@ export default {
           if(!/^[\u4E00-\u9FA5_a-zA-Z/@~!#$%.^&*=<>:?"{}()]+$/.test(num)) newNum.push(num)
         })
         this.loginForm.phone = newNum.toString().replace(/,/g, "")
+        document.cookie = `phone=${this.loginForm.phone}`
         if (
           Object.values(val).every((el) => el !== "") &&
           val.password.toString().length >= 4
@@ -232,14 +233,14 @@ export default {
         } else {
           this.disabled = true;
         }
-        this.remember ? localStorage.setItem("phone", val.phone) : "";
+        this.remember ? document.cookie = 'phone=': "";
       },
       deep: true,
     },
     remember(val) {
       !val
-        ? localStorage.removeItem("phone")
-        : localStorage.setItem("phone", this.loginForm.phone);
+        ? document.cookie = 'phone='
+        : document.cookie = `phone=${this.loginForm.phone}`
     },
   },
   created() {
@@ -248,8 +249,8 @@ export default {
   mounted() {
     if (this.remember) {
       this.loginForm.phone =
-        localStorage.getItem("phone") !== null
-          ? localStorage.getItem("phone")
+        document.cookie.replace("phone=","") !== null
+          ? document.cookie.replace("phone=","")
           : "";
     }
     this.getUUID();

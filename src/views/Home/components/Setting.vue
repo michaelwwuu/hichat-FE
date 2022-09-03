@@ -246,10 +246,7 @@ export default {
       logout().then((res) => {
         if(res.code === 200 && res.message === "登出成功"){
           this.$router.push({ path: "/login" });
-          localStorage.removeItem("id");
-          localStorage.removeItem("token");
-          localStorage.removeItem("myUserInfo");
-          localStorage.removeItem("myUserList");
+          localStorage.clear()
           window.location.reload();
         }
       })

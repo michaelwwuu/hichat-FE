@@ -151,7 +151,7 @@ export default {
   data() {
     return {
       loginForm: {
-        phoneNo: localStorage.getItem("phone"),
+        phoneNo: document.cookie.replace("phone=",""),
         authCode: "",
       },
       count: 60,

@@ -153,7 +153,7 @@ export default {
         this.addUser = {};
         this.noData = true;
         return;
-      } else if (token === localStorage.getItem("username") || token === localStorage.getItem("phone")) {
+      } else if (token === localStorage.getItem("username") || token === document.cookie.replace("phone=","")) {
         this.$message({ message: "无法增加自己到联络人", type: "error" });
         return;
       }

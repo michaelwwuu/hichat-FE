@@ -39,12 +39,15 @@ const rootMixins = {
     },
     // 置底
     gotoBottom() {
-      const box = document.getElementsByClassName('message-pabel-box')[0]
-      this.$nextTick(() => {
-        setTimeout(() =>{
-          box.scrollTop = box.scrollHeight
-        },500)
-      })
+      let box = document.getElementsByClassName('message-pabel-box')[0]
+      if(box !== undefined){
+        this.$nextTick(() => {
+          setTimeout(() =>{
+            box.scrollTop = box.scrollHeight
+          },500)
+        })
+      }
+
     },
     // // 为了做验证的时分秒默认时间
     newDefaultEnd() {

@@ -7,6 +7,7 @@ export const state = {
   groupUser:{},
   myUserInfo:{},
   contactUser:{},
+  groupMemberDataList:{},
   groupList:[],
   contactListData:[],
   myContactDataList:[],
@@ -107,6 +108,9 @@ export const state = {
 export const actions = {};
 
 export const mutations = {
+  setGroupMemberDataList(state, groupMemberDataList) {
+    state.groupMemberDataList = groupMemberDataList;
+  },    
   setMaybeKnowList(state, maybeKnowList) {
     state.maybeKnowList = maybeKnowList;
   },    

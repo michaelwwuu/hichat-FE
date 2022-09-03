@@ -354,7 +354,6 @@ export default {
       chatDataList: [],
       addressDataList: [],
       maybeKnowDataList:[],
-      groupMemberDataList:{},
       downloadFilename: "",
       logoutDialogShow: false,
       infoMsgAsideShow: false,
@@ -366,7 +365,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 20,
+        pageSize: 30,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
@@ -448,6 +447,7 @@ export default {
       contactUser: (state) => state.ws.contactUser,
       nofity: (state) => state.ws.nofity,
       soundNofiy: (state) => state.ws.soundNofiy,
+      groupMemberDataList: (state) => state.ws.groupMemberDataList,
     }),
   },
   methods: {
@@ -505,7 +505,7 @@ export default {
           }    
          memberActivityData.push(el.contactId)   
         });
-        this.getUserMemberActivity(memberActivityData)
+        // this.getUserMemberActivity(memberActivityData)
       });
       getGroupList().then((res) => {
         this.groupList = res.data.list;
@@ -603,13 +603,9 @@ export default {
                 item.contactId = this.chatUser.contactId;
                 item.username = this.chatUser.username;
               }
-              // if (this.device === "pc") {
-              //   this.setChatUser(item);
-              // }
             }
             this.setBadgeNum(numNumber);
           });
-          this.getGroupMemberList()
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -662,13 +658,6 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
-    getGroupMemberList(){
-      groupMemberList().then((res)=>{
-        if(res.code === 200){
-          this.groupMemberDataList = res.data
-        }
-      })
-    },    
     openNotify(msgInfo, chatType) {
       // 判断浏览器是否支持Notification
       if (!window.Notification) {
@@ -814,10 +803,7 @@ export default {
         .then((res) => {
           if (res.code === 200 && res.message === "登出成功") {
             this.$router.push({ path: "/login" });
-            localStorage.removeItem("id");
-            localStorage.removeItem("token");
-            localStorage.removeItem("myUserInfo");
-            localStorage.removeItem("myUserList");
+            localStorage.clear()
             window.location.reload();
           }
         })

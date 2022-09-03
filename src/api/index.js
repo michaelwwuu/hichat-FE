@@ -289,6 +289,7 @@ export const pinList = (params) => {
   }
   return axios.request(postData)
 }
+
 // 置頂訊息列表
 export const getChatHistory = (params) => {
   let postData = {
