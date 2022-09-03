@@ -351,9 +351,6 @@ export default {
     }),
     reversedMessage: function () {
       this.newMessageData = {};
-      this.messageData.forEach(el => {
-        this.newArr.push(el);
-      });
       //去除重复
       this.message = this.unique(this.messageData , 'historyId') 
       this.messageData.forEach((el) => {
