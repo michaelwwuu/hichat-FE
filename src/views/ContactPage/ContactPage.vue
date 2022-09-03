@@ -323,14 +323,11 @@ export default {
   },
   created() {
     // this.chatUser = JSON.parse(localStorage.getItem("userData"));
-    this.myInfo = JSON.parse(localStorage.getItem("myUserInfo"))
-    this.setMyUserInfo(this.myInfo)
     this.getUserId();
   },
   methods: {
     ...mapMutations({
       setChatUser: "ws/setChatUser",
-      setMyUserInfo:"ws/setMyUserInfo"
     }),
     deleteMessage(){
       let parmas = {

@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box" @touchmove="$root.handleTouch">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch" v-debounce="scrollHistoryBar">
     <ul class="message-styles-box">
       <div v-for="(item, index) in reversedMessage" :key="index">
         <div class="now-time">
@@ -253,17 +253,6 @@ export default {
       aesIv: "hichatisachatapp",
     };
   },
-  watch: {
-    showCheckBoxBtn(val) {
-      this.checkBoxDisabled = val;
-    },
-    checkList(val) {
-      this.$emit("isCheckDataList", val);
-    },
-    checkDataList(val){
-      this.checkList = val
-    },
-  },
   computed: {
     ...mapState({
       chatUser: (state) => state.ws.chatUser,
@@ -274,9 +263,7 @@ export default {
     reversedMessage: function() {
       this.historyId = this.messageData.length > 0 ? this.messageData[0].historyId: ""
       //去除重复
-      const set = new Set();
-      this.message = this.messageData.filter((item) => !set.has(item.historyId) ? set.add(item.historyId) : false);
-
+      this.message = this.unique(this.messageData , 'historyId') 
       this.newMessageData = {};
       this.messageData.forEach((el) => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = this.message.filter((res) => {
@@ -287,28 +274,25 @@ export default {
         });
       });
       if(!this.showScrollBar) this.$root.gotoBottom()
-      return this.newMessageData = Object.freeze(this.newMessageData)
+      return this.newMessageData
     },
   },
-  created() {
-    this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")));
-  },
+  watch: {
+    showCheckBoxBtn(val) {
+      this.checkBoxDisabled = val;
+    },
+    checkList(val) {
+      this.$emit("isCheckDataList", val);
+    },
+    checkDataList(val){
+      this.checkList = val
+    },
+    chatUser(){
+      this.$root.gotoBottom()
+    },
+
+  },  
   mounted() {
-    window.addEventListener(
-      "scroll",
-      () => {
-        let scrollTop = document.querySelector(".message-pabel-box");
-        this.showScrollBar = !(
-          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.60009765625 : 0.60009765625)  <=
-          scrollTop.clientHeight
-        );
-        if(scrollTop.scrollTop < 800){
-          this.getChatHistoryMessage()
-        } 
-        this.$emit('scrollBar',this.showScrollBar)
-      },
-      true
-    );
     if (this.goAnchorMessage.historyId !== undefined) {
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
@@ -321,8 +305,30 @@ export default {
     ...mapMutations({
       setEditMsg: "ws/setEditMsg",
       setReplyMsg: "ws/setReplyMsg",
-      setMyUserInfo: "ws/setMyUserInfo",
     }),
+    unique(arr, key) {
+        if (!arr) return arr
+        if (key === undefined) return [...new Set(arr)]
+        const map = {
+            'string': e => e[key],
+            'function': e => key(e),
+        }
+        const fn = map[typeof key]
+        const obj = arr.reduce((o,e) => (o[fn(e)]=e, o), {})
+        return Object.values(obj)
+    },
+    scrollHistoryBar(){
+      let scrollTop = document.querySelector(".message-pabel-box");
+      if(scrollTop !==null){
+        this.showScrollBar = !(
+          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625) <= scrollTop.clientHeight
+        );
+        if(scrollTop.scrollTop < 600){
+          this.$emit("scrollHistory",this.messageData[0].historyId)
+        }
+        this.$emit('scrollBar',this.showScrollBar)
+      }
+    },    
     fileData(data,type){
       if(type === "content"){
         return fileBoxName(data)
@@ -330,16 +336,6 @@ export default {
         return formatFileSize(data)
       }
     },
-    // 獲取歷史訊息
-    getChatHistoryMessage() {
-      let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_HISTORY_REQ";
-      historyMessageData.id = Math.random();
-      historyMessageData.toChatId = this.chatUser.toChatId;
-      historyMessageData.targetId = this.historyId;
-      historyMessageData.pageSize = 20;
-      Socket.send(historyMessageData);
-    }, 
     showCheckBtn(status, data) {
       if (status) {
         return status;

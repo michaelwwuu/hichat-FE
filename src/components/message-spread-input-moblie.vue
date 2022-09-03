@@ -204,7 +204,6 @@ export default {
           this.uploadImgShow = false;
           this.fullscreenLoading = false;
           this.$message({ message: "发送讯息成功", type: "success" });
-          this.getChatHistoryMessage()
           this.disabled = true
           setTimeout(() => {
             this.setSpreadDataList([])
@@ -273,7 +272,6 @@ export default {
         Socket.send(message);
       })
       this.$message({ message: "发送讯息成功", type: "success" });
-      this.getChatHistoryMessage()
       this.disabled = true
       setTimeout(() => {
         this.setSpreadDataList([])
@@ -298,20 +296,6 @@ export default {
         audioEl.src = require("./../../static/wav/send.mp3")
         audioEl.play();
       }, 150);
-    },
-    // 獲取歷史訊息
-    getChatHistoryMessage() {
-      let historyMessageData = {
-        chatType: "CLI_HISTORY_REQ",
-        id: Math.random(),
-        tokenType: 0,
-        toChatId: this.chatUser.toChatId,
-        targetId:"",
-        pageSize: 20,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-      };
-      Socket.send(historyMessageData);
     },
   },
   components: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="message-pabel-box" @touchmove="$root.handleTouch">
+  <div class="message-pabel-box" @touchmove="$root.handleTouch" v-debounce="scrollHistoryBar">
     <ul class="message-styles-box">
       <div v-for="(item, index) in reversedMessage" :key="index">
         <div class="now-time">
@@ -7,7 +7,7 @@
         </div>
         <el-checkbox-group v-model="checkList">
           <el-checkbox
-            v-for="(el, index) in sortItem(item)"
+            v-for="(el, index) in item"
             :key="el.historyId"
             :label="el"
             :disabled="showCheckBtn(checkBoxDisabled, el)"
@@ -39,7 +39,7 @@
                       reply: el.isRplay !== null,
                     },
                   ]"
-                  :id="el.historyId"
+                  :id="el"
                 >
                   <span
                     v-if="el.chatType === 'SRV_GROUP_SEND'"
@@ -321,6 +321,7 @@ export default {
       newData: [],
       message: [],
       checkList: [],
+      newArr:[],
       newMessageData: {},
       checkBoxDisabled: true,
       isChatTop:false,
@@ -339,7 +340,6 @@ export default {
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
-    this.setMyUserInfo(JSON.parse(localStorage.getItem("myUserInfo")));
     this.getGroupAuthority();
   },
   computed: {
@@ -349,13 +349,13 @@ export default {
       contactListData: (state) => state.ws.contactListData,
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
-    reversedMessage: function() {
-      this.historyId = this.messageData.length > 0 ? this.messageData[0].historyId: ""
-      //去除重复
-      const set = new Set();
-      this.message = this.messageData.filter((item) => !set.has(item.historyId) ? set.add(item.historyId) : false);
-
+    reversedMessage: function () {
       this.newMessageData = {};
+      this.messageData.forEach(el => {
+        this.newArr.push(el);
+      });
+      //去除重复
+      this.message = this.unique(this.messageData , 'historyId') 
       this.messageData.forEach((el) => {
         this.newMessageData[this.$root.formatTimeDay(el.message.time)] = this.message.filter((res) => {
           return (
@@ -378,23 +378,11 @@ export default {
     checkDataList(val) {
       this.checkList = val;
     },
+    groupUser(){
+      this.$root.gotoBottom()
+    },
   },
   mounted() {
-    window.addEventListener(
-      "scroll",
-      () => {
-        let scrollTop = document.querySelector(".message-pabel-box");
-        this.showScrollBar = !(
-          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625)  <=
-          scrollTop.clientHeight
-        );
-        if(scrollTop.scrollTop < 800){
-          this.getChatHistoryMessage()
-        }
-        this.$emit('scrollBar',this.showScrollBar)
-      },
-      true
-    );
     if (this.goAnchorMessage.historyId !== undefined) {
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
@@ -408,22 +396,31 @@ export default {
       setEditMsg: "ws/setEditMsg",
       setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
-      setMyUserInfo: "ws/setMyUserInfo",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),
-    sortItem(item){
-      return Object.freeze(item)
+    unique(arr, key) {
+        if (!arr) return arr
+        if (key === undefined) return [...new Set(arr)]
+        const map = {
+            'string': e => e[key],
+            'function': e => key(e),
+        }
+        const fn = map[typeof key]
+        const obj = arr.reduce((o,e) => (o[fn(e)]=e, o), {})
+        return Object.values(obj)
     },
-    // 獲取歷史訊息
-    getChatHistoryMessage() {
-      let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
-      historyMessageData.id = Math.random();
-      historyMessageData.toChatId = this.groupUser.toChatId;
-      historyMessageData.targetId = this.historyId;
-      historyMessageData.pageSize = 20;
-      Socket.send(historyMessageData);
-    },    
+    scrollHistoryBar(){
+      let scrollTop = document.querySelector(".message-pabel-box");
+      if(scrollTop !==null){
+        this.showScrollBar = !(
+          (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625) <= scrollTop.clientHeight
+        );
+        if(scrollTop.scrollTop < 600){
+          this.$emit("scrollHistory",this.messageData[0].historyId)
+        }
+        this.$emit('scrollBar',this.showScrollBar)
+      }
+    },
     calloutTextAreaConvert(data){
       if(!data.match("@") || ["@所有成員","@所有成员"].includes(data)){
         return data
@@ -529,34 +526,6 @@ export default {
       } else {
         return "message-layout-left";
       }
-    },
-    carteMsgShow(data) {
-      this.carteContact = this.contactListData.filter((el) => {
-        return el.username === data;
-      });
-      if (this.carteContact.length === 0) {
-        this.$message({ message: "無此成員", type: "error" });
-        return;
-      } else {
-        this.carteContact[0].toChatId = "u" + this.carteContact[0].memberId;
-        if (
-          data === JSON.parse(localStorage.getItem("myUserInfo")).username
-        ) {
-          this.$message({ message: "此即为您的帐号", type: "warning" });
-        } else {
-          if (this.device === "moblie"){
-            this.$router.push({ name: "ContactPage" });
-          } else{
-            this.carteContact[0].type = "address";
-            this.setInfoMsg({
-              infoMsgShow: true,
-              infoMsgChat: true,
-              infoMsgNav: "ContactPage",
-            });
-          }
-        }
-      }
-      this.setChatUser(this.carteContact[0]);
     },
     dblclick(event) {
       this.setReplyMsg({

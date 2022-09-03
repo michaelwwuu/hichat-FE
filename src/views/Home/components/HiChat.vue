@@ -235,7 +235,7 @@ export default {
         id: Math.random(),
         tokenType: 0,
         targetId: "",
-        pageSize: 20,
+        pageSize: 30,
         token: getToken("token"),
         deviceId: localStorage.getItem("UUID"),
       },
@@ -255,12 +255,11 @@ export default {
     Socket.$on("message", this.handleGetMessage);
     this.getGroupDataList();
     this.setActiveName(this.hichatNav.type);
-    this.memberTime = setInterval(() => {
-      this.getUserMemberActivity(this.noGroupPeopleData)
-    }, 30000);
-  },
-  mounted() {
-    this.getGroupMemberList()
+    if(this.hichatNav.type !=="group"){
+      this.memberTime = setInterval(() => {
+        this.getUserMemberActivity(this.noGroupPeopleData)
+      }, 30000);
+    }
   },
   beforeDestroy() {
     Socket.$off("message", this.handleGetMessage);
@@ -281,6 +280,11 @@ export default {
   mounted() {
     this.getHiChatDataList();
     this.homeScrollHeight()
+    setTimeout(() => {
+      this.getGroupMemberList()
+      this.getUserMemberActivity(this.noGroupPeopleData) 
+    }, 500);
+
   },
   watch: {
     contactDataList(val) {
@@ -306,6 +310,7 @@ export default {
       setActiveName: "ws/setActiveName",
       setCheckBoxBtn: "ws/setCheckBoxBtn",
       setContactListData: "ws/setContactListData",
+      setGroupMemberDataList:"ws/setGroupMemberDataList",
       setAuthorityGroupData: "ws/setAuthorityGroupData",
     }),
     // TODO 右鍵
@@ -428,7 +433,6 @@ export default {
           this.groupNumBadge = 0;
           this.hiChatNumBadge = 0;
           this.contactNumBadge = 0;
-          this.groupDataList = [];
           userInfo.recentChat.forEach((item) => {
             if (item.isContact && (item.forChatId === item.toChatId)) {
               item.name = "嗨聊记事本"
@@ -446,8 +450,6 @@ export default {
             }
           });
           this.noGroupPeopleData = userInfo.recentChat.filter(res=> !res.isGroup)
-          this.getUserMemberActivity(this.noGroupPeopleData)
-          this.getGroupMemberList()
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -550,9 +552,17 @@ export default {
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
-        this.setChatUser(data);
+        if(data.toChatId === this.chatUser.toChatId){
+          return false;
+        } else{
+          this.setChatUser(data);
+        }
       } else if (path === "ChatContact") {
-        this.setContactUser(data);
+        if(data.toChatId === this.chatUser.toChatId){
+          return false;
+        } else{
+          this.setContactUser(data);
+        }        
       } else {
         data.icon = data.icon;
         data.groupName = data.name;
@@ -565,9 +575,14 @@ export default {
             data.isManager = item.isManager;
           }
         });
-        this.setChatGroup(data);
-        this.getGroupListMember(data);
-        this.getGroupAuthority(data);
+        if(data.toChatId === this.groupUser.toChatId){
+          return false;
+        } else{
+          this.setChatGroup(data);
+          // this.getGroupListMember(data);
+          // this.getGroupAuthority(data);
+        }     
+
       }
       if (this.device === "moblie") {
         clearInterval(this.memberTime)
@@ -587,7 +602,7 @@ export default {
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
           infoMsgMap: "HiChat"
         });
-        this.getHistory(data, path);
+        // this.getHistory(data, path);
         this.$root.closeReplyMessage();
         this.setCheckBoxBtn(true)
       }

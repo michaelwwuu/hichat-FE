@@ -81,8 +81,9 @@
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"    
-            @resetPinMsg="resetPinMsg"
-            @scrollBar="scrollBar"            
+            @resetPinMsg="getPinList"
+            @scrollBar="scrollBar"
+            @scrollHistory="scrollHistory"        
           />
           <div
             class="reply-message"
@@ -168,7 +169,7 @@
             </el-dropdown>
           </div>
         </el-header>
-        <message-pin :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
+        <message-pin :userInfoData="userInfoData" @resetPinMsg="getPinList" />
         <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
@@ -325,6 +326,7 @@ import {
   getGroupAuthoritySetting,
   deleteRecentChat,
   deleteRecentChatMul,
+  getChatHistory,
 } from "@/api";
 import { mapState, mapMutations } from "vuex";
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
@@ -396,6 +398,9 @@ export default {
       this.messageData = [];
       this.pinMsg = "";
       this.getPinList();
+      this.getChatHistoryMessage()
+      this.getGroupListMember();
+      this.getGroupAuthority();      
     }
   },
   created() {
@@ -403,11 +408,6 @@ export default {
     if (this.groupData !== null) this.setChatGroup(this.groupData);
     Socket.$on("message", this.handleGetMessage);
     this.getPinList();
-  },
-  mounted() {
-    this.getGroupListMember();
-    this.getGroupAuthority();
-    this.getChatHistoryMessage();
   },
   computed: {
     ...mapState({
@@ -438,20 +438,79 @@ export default {
       setContactListData: "ws/setContactListData",
       setCheckBoxBtn: "ws/setCheckBoxBtn",
     }),
-    deleteRecent() {
-      let parmas = {
-        fullDelete: true,
-        historyId: "",
-        toChatId: this.groupUser.toChatId,
-      };
-      deleteRecentChat(parmas).then((res) => {
-        if (res.code === 200) {
-          localStorage.removeItem("groupData");
-          this.setHichatNav({ type: "group", num: 1 });
-          this.setChatGroup({});
-          this.getHiChatDataList();
+    scrollHistory(val){
+      this.getChatHistoryMessage(val)
+    },
+    //獲取歷史訊息
+    getChatHistoryMessage(data){
+      this.loading = true
+      let params={
+        toChatId:this.groupUser.toChatId,
+        historyId:data === undefined ? "":data,
+        order:0,
+        pageSize:100,
+      }
+      getChatHistory(params).then((res) => {
+        if(res.code === 200 ){
+          let historyMsgList = res.data
+          if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
+          // this.getHiChatDataList();  
+          // this.messageData = []
+          // this.$nextTick(() => {
+          //   setTimeout(() => {
+              historyMsgList.forEach((el) => {
+                this.base64Msg = this.isBase64(el.chat.text);
+                el.chat.newContent = this.base64Msg.split(" ");
+                this.messageList(el);
+                this.messageReorganization(this.chatRoomMsg)
+                this.messageData.unshift(this.chatRoomMsg);
+              });
+
+          //   }, 0);
+          // })
+          this.loading = false
         }
-      });
+      })
+    },
+
+    //上傳檔案及名稱
+    fileData(data,type){
+      if(type === "content"){
+        return fileBoxName(data)
+      }else{
+        return formatFileSize(data)
+      }
+    },   
+    closeChooseAction(){
+      this.showCheckBoxBtn = true;
+      this.$root.gotoBottom();
+    }, 
+    //勾選訊息   
+    chooseDeleteAction(){
+      if(this.checkDataList.length === 0){
+        this.$message({ message: "請勾選訊息", type: "error" });
+        return false
+      }else{
+        this.isChooseDeleteShow = true;
+      }
+    },  
+    //離開群組
+    leaveGroupAction() {
+      this.isLeaveGroupShow = false;
+      this.getHiChatDataList();
+      this.setHichatNav({ type: "address", num: 1 });
+      this.setChatGroup({});
+      this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
+    },
+    checkBoxDisabled(data){
+      this.showCheckBoxBtn = data
+      this.setCheckBoxBtn(data)
+    },
+    isCheckDataList(data){
+      this.checkDataList = data
+      if((this.groupUser.isManager && !this.authority.delUserMessage) || (!this.groupUser.isManager && !this.groupUser.isAdmin)){
+        this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
+      } 
     },
     deleteMessage(type) {
       this.historyIdData = []
@@ -480,43 +539,7 @@ export default {
         .catch((err) => {
           this.$message({ message: err, type: "error" });
         });
-    },      
-    leaveGroupAction() {
-      this.isLeaveGroupShow = false;
-      this.getHiChatDataList();
-      this.setHichatNav({ type: "address", num: 1 });
-      this.setChatGroup({});
-      this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
-    },
-    fileData(data,type){
-      if(type === "content"){
-        return fileBoxName(data)
-      }else{
-        return formatFileSize(data)
-      }
-    },    
-    closeChooseAction(){
-      this.showCheckBoxBtn = true;
-      this.$root.gotoBottom();
-    },    
-    chooseDeleteAction(){
-      if(this.checkDataList.length === 0){
-        this.$message({ message: "請勾選訊息", type: "error" });
-        return false
-      }else{
-        this.isChooseDeleteShow = true;
-      }
-    },    
-    checkBoxDisabled(data){
-      this.showCheckBoxBtn = data
-      this.setCheckBoxBtn(data)
-    },
-    isCheckDataList(data){
-      this.checkDataList = data
-      if((this.groupUser.isManager && !this.authority.delUserMessage) || (!this.groupUser.isManager && !this.groupUser.isAdmin)){
-        this.allHistoruShow = this.checkDataList.some( el=> el.userChatId !== "u"+ this.myUserInfo.id)
-      } 
-    },
+    },  
     getGroupAuthority() {
       let groupId = this.groupData.groupId;
       getGroupAuthoritySetting({ groupId }).then((res) => {
@@ -534,9 +557,9 @@ export default {
         }
       });
     },
-    resetPinMsg() {
-      this.getPinList();
-    },
+    // resetPinMsg() {
+    //   this.getPinList();
+    // },
     scrollBar(val){
       this.isScrollbar = val
     },    
@@ -552,6 +575,7 @@ export default {
         if (res.code === 200) {
           this.setTopMsgShow(true);
           this.isTopMsgShow = false;
+          this.getPinList()
         }
       });
     },
@@ -567,33 +591,7 @@ export default {
       } else {
         return iconData.icon;
       }
-    },
-    // 獲取歷史訊息
-    getChatHistoryMessage() {
-      let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_GROUP_HISTORY_REQ";
-      historyMessageData.id = Math.random();
-      historyMessageData.toChatId = this.groupUser.toChatId;
-      historyMessageData.targetId = "";
-      historyMessageData.pageSize = 20;
-      Socket.send(historyMessageData);
-    },
-    changeGroupAdminShow() {
-      this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
-      this.setInfoMsg({
-        infoMsgShow: true,
-        infoMsgNav: "GroupPage",
-        infoMsgChat: true,
-      });
-    },
-    infoMsgShow() {
-      this.setMsgInfoPage({ pageShow: true, type: "" });
-      this.setInfoMsg({
-        infoMsgShow: true,
-        infoMsgNav: "GroupPage",
-        infoMsgChat: true,
-      });
-    },
+    },  
     getPinList() {
       let params = {
         toChatId: this.groupUser.toChatId,
@@ -650,7 +648,7 @@ export default {
         this.setChatGroup(this.groupUser);
         this.setContactListData(this.contactList);
       });
-    },
+    },   
     // 訊息統一格式
     messageList(data) {
       this.chatRoomMsg = {
@@ -694,7 +692,8 @@ export default {
           data.isRplay.nickName = item.name;
         }        
       })      
-    },        
+    },   
+      
     //判斷是否base64
     isBase64(data) {
       return AESBase64(data, this.aesKey ,this.aesIv)
@@ -725,31 +724,11 @@ export default {
           });
       }
     },
-
     // 收取 socket 回来讯息 (全局讯息)
     handleGetMessage(msg) {
       this.setWsRes(JSON.parse(msg));
       let userInfo = JSON.parse(msg);
       switch (userInfo.chatType) {
-        // 历史讯息
-        case "SRV_GROUP_HISTORY_RSP":
-          let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(() => {
-            setTimeout(() => {
-              historyMsgList.forEach((el) => {
-                this.base64Msg = this.isBase64(el.chat.text);
-                el.chat.newContent = this.base64Msg.split(" ");
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-              if (historyMsgList.length > 0) {
-                this.readMsgShow(historyMsgList[0]);
-              }
-              this.getHiChatDataList();              
-            }, 500);
-          });
-          break;        
         // 发送影片照片讯息成功
         // 发送讯息成功
         case "SRV_GROUP_IMAGE":
@@ -841,13 +820,53 @@ export default {
           this.messageData = this.messageData.filter(item => !userInfo.targetArray.includes(item.historyId))
           this.checkDataList = this.checkDataList.filter(item => !userInfo.targetArray.includes(item.historyId))
           this.getHiChatDataList();
-          break   
-        // 撈取歷史訊息
-        case "SRV_NEED_AUTH":
-          this.getChatHistoryMessage();
-          break;           
+          break           
       }
     },
+    getHiChatDataList() {
+      let chatMsgKey = {
+        chatType: "CLI_RECENT_CHAT",
+        id: Math.random(),
+        tokenType: 0,
+        token: getToken("token"),
+        deviceId: localStorage.getItem("UUID"),
+      };
+      Socket.send(chatMsgKey);
+    },
+
+    deleteRecent() {
+      let parmas = {
+        fullDelete: true,
+        historyId: "",
+        toChatId: this.groupUser.toChatId,
+      };
+      deleteRecentChat(parmas).then((res) => {
+        if (res.code === 200) {
+          localStorage.removeItem("groupData");
+          this.setHichatNav({ type: "group", num: 1 });
+          this.setChatGroup({});
+          this.getHiChatDataList();
+        }
+      });
+    },
+  
+    changeGroupAdminShow() {
+      this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "GroupPage",
+        infoMsgChat: true,
+      });
+    },
+    infoMsgShow() {
+      this.setMsgInfoPage({ pageShow: true, type: "" });
+      this.setInfoMsg({
+        infoMsgShow: true,
+        infoMsgNav: "GroupPage",
+        infoMsgChat: true,
+      });
+    },
+
     submitBtn() {
       let groupId = this.groupUser.groupId;
       leaveGroup({ groupId })
@@ -861,17 +880,7 @@ export default {
         .catch((err) => {
           return false;
         });
-    },
-    getHiChatDataList() {
-      let chatMsgKey = {
-        chatType: "CLI_RECENT_CHAT",
-        id: Math.random(),
-        tokenType: 0,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-      };
-      Socket.send(chatMsgKey);
-    },
+    },    
   },
   components: {
     MessagePabel,

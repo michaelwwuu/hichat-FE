@@ -49,10 +49,25 @@ Vue.use(VueAudio)
 //i18n
 import i18n from './common/plugins/vue-i18n'
 
+Vue.directive('debounce', {
+  inserted(el, binding, vnode) {
+    let timer = {}
+    el.addEventListener('scroll', () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        binding.value()
+      }, 500)
+    })
+  }
+})
 
 Vue.prototype.$md5 = md5;
+moment.suppressDeprecationWarnings = true; // 关闭日期警告
 Vue.prototype.$moment = moment;
 Vue.config.productionTip = false
+
 
 
 new Vue({

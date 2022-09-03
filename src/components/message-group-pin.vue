@@ -265,7 +265,7 @@ export default {
             this.setTopMsgShow(true);
             this.$emit("resetPinMsg");
           }
-          this.$root.gotoBottom();
+          // this.$root.gotoBottom();
         }
       });
     },

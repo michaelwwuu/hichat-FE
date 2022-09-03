@@ -190,8 +190,9 @@
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
-            @resetPinMsg="resetPinMsg"        
-            @scrollBar="scrollBar"    
+            @resetPinMsg="getPinList"        
+            @scrollBar="scrollBar"
+            @scrollHistory="scrollHistory"          
           />
           <div
             class="reply-message"
@@ -277,7 +278,7 @@
             </div>
           </template>
         </el-header>
-        <message-pin :userInfoData="userInfoData" @resetPinMsg="resetPinMsg" />
+        <message-pin :userInfoData="userInfoData" @resetPinMsg="getPinList" />
         <div class="top-msg-bottom" @click="isTopMsgShow = true">
           <span>取消所有置顶讯息(共 {{ pinDataList.length }} 則)</span>
         </div>
@@ -506,6 +507,7 @@ import {
   unpinHistory,
   getMemberActivity,
   deleteRecentChatMul,
+  getChatHistory,
 } from "@/api";
 import AESBase64 from "@/utils/AESBase64.js";
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
@@ -572,6 +574,7 @@ export default {
       this.pinMsg = "";
       this.getPinList();         
       this.getUserMemberActivity(val)
+      this.getChatHistoryMessage()
     },
     checkBoxBtn(val){
       this.showCheckBoxBtn = val
@@ -638,6 +641,7 @@ export default {
       this.showCheckBoxBtn = true;
       this.$root.gotoBottom();
     },
+    //勾選訊息   
     chooseDeleteAction(){
       if(this.checkDataList.length === 0){
         this.$message({ message: "請勾選訊息", type: "error" });
@@ -645,7 +649,7 @@ export default {
       }else{
         this.isChooseDeleteShow = true;
       }
-    },
+    },  
     checkBoxDisabled(data){
       this.showCheckBoxBtn = data
       this.setCheckBoxBtn(data)      
@@ -690,12 +694,13 @@ export default {
         if (res.code === 200) {
           this.setTopMsgShow(true);
           this.isTopMsgShow = false;
+          this.getPinList()
         }
       });
     },
-    resetPinMsg() {
-      this.getPinList();
-    },
+    // resetPinMsg() {
+    //   this.getPinList();
+    // },
     scrollBar(val){
       this.isScrollbar = val
     },
@@ -789,7 +794,7 @@ export default {
         chatType: data.chat.chatType,
         historyId: data.chat.historyId,
         message: {
-          time: data.chat.sendTime,
+          time: this.$root.formatTimeS(data.chat.sendTime),
           content: this.isBase64(data.chat.text),
         },
         isRead: data.isRead,
@@ -798,7 +803,7 @@ export default {
         icon: data.chat.icon,
         name: data.chat.name,
         nickName: data.chat.nickName,
-        isRplay: data.replyChat === null ? null : data.replyChat,
+        isRplay: [null,undefined].includes(data.replyChat) ? null : data.replyChat,
         isPing:false,
         fileSize:data.chat.fileSize !== undefined ? data.chat.fileSize : "",
       };
@@ -828,16 +833,6 @@ export default {
     //判斷是否base64
     isBase64(data) {
       return AESBase64(data, this.aesKey ,this.aesIv)
-    },
-    // 獲取歷史訊息
-    getChatHistoryMessage() {
-      let historyMessageData = this.userInfoData;
-      historyMessageData.chatType = "CLI_HISTORY_REQ";
-      historyMessageData.id = Math.random();
-      historyMessageData.toChatId = this.chatUser.toChatId;
-      historyMessageData.targetId = "";
-      historyMessageData.pageSize = 20;
-      Socket.send(historyMessageData);
     },
     infoMsgShow() {
       this.setMsgInfoPage({ pageShow: true, type: "" });
@@ -874,29 +869,42 @@ export default {
           });
       }
     },
-    // 收取 socket 回来讯息 (全局讯息)
-    handleGetMessage(msg) {
-      this.setWsRes(JSON.parse(msg));
-      let userInfo = JSON.parse(msg);
-      switch (userInfo.chatType) {
-        // 历史讯息    
-        case "SRV_HISTORY_RSP":
-          let historyMsgList = userInfo.historyMessage.list;
-          this.$nextTick(() => {
-            setTimeout(() => {           
+    scrollHistory(val){
+      this.getChatHistoryMessage(val)
+    },
+    //獲取歷史訊息
+    getChatHistoryMessage(data){
+      this.loading = true
+      let params={
+        toChatId:this.chatUser.toChatId,
+        historyId:data === undefined ? "":data,
+        order:0,
+        pageSize:30,
+      }
+      getChatHistory(params).then((res) => {
+        if(res.code === 200 ){
+          this.loading = false
+          let historyMsgList = Object.freeze(res.data)
+          this.readMsg = historyMsgList.filter((el) => el.chat.toChatId === "u" + localStorage.getItem("id"));              
+          if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
+          if (this.device === "pc") this.getHiChatDataList();      
+          // this.$nextTick(() => {
+          //   setTimeout(() => {           
               historyMsgList.forEach((el) => {
                 this.messageList(el);
                 this.messageReorganization(this.chatRoomMsg)
                 this.messageData.unshift(this.chatRoomMsg);
               });
-              this.readMsg = historyMsgList.filter((el) => {
-                return el.chat.toChatId === "u" + localStorage.getItem("id");
-              });
-              if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
-              if (this.device === "pc") this.getHiChatDataList();
-            }, 500);
-          });               
-          break;        
+          //   }, 100);
+          // });  
+        }    
+      })
+    },
+    // 收取 socket 回来讯息 (全局讯息)
+    handleGetMessage(msg) {
+      this.setWsRes(JSON.parse(msg));
+      let userInfo = JSON.parse(msg);
+      switch (userInfo.chatType) {
         // 发送影片照片讯息成功
         // 发送讯息成功
         case "SRV_USER_IMAGE":
@@ -953,10 +961,6 @@ export default {
           this.checkDataList = this.checkDataList.filter(item => !userInfo.targetArray.includes(item.historyId))
           this.getHiChatDataList();
           break    
-        // 撈取歷史訊息
-        case "SRV_NEED_AUTH":
-          this.getChatHistoryMessage();
-          break;
       }
     },
     addUser(data) {
