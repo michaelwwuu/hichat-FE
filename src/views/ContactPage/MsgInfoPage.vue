@@ -724,7 +724,6 @@ export default {
         this.setMsgInfoPage({ pageShow: false, type: path });
       }
     },
-
     back() {
       this.$router.back(-1);
     },

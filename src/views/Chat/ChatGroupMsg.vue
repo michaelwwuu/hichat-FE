@@ -442,9 +442,7 @@ export default {
         }
       });
     },
-    // resetPinMsg() {
-    //   this.getPinList();
-    // },
+
     scrollBar(val){
       this.isScrollbar = val
     },    
