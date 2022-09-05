@@ -6,7 +6,8 @@
   >
     <div class="input-tools-right" >
       <div>
-        <img src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true">
+        <!--TODO 上傳檔案-->
+        <!-- <img src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true"> -->
         <img
           v-if="device === 'moblie'"
           src="./../../static/images/image.png"

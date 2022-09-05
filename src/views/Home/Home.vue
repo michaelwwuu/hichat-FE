@@ -71,12 +71,13 @@
                     class="item"
                   ></el-badge>
                 </div>
-                <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
+                <!--TODO 可能認識-->
+                <!-- <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
                   ></el-badge>
-                </div>
+                </div> -->
                 <img :src="index !== num ? item.icon : item.active"
               /></span>
               <span>{{ item.name }}</span>
@@ -162,12 +163,13 @@
                     class="item"
                   ></el-badge>
                 </div>
-                <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
+                <!--TODO 可能認識-->
+                <!-- <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
                   ></el-badge>
-                </div>
+                </div> -->
                 <img :src="index !== num ? item.icon : item.active"
               /></span>
             </router-link>

@@ -7,7 +7,8 @@
  
     <div class="input-tools-right">
       <div>
-        <img v-if="authorityGroupSendLink(groupData)" src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true">
+        <!--TODO 上傳檔案-->
+        <!-- <img v-if="authorityGroupSendLink(groupData)" src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true"> -->
         <template v-if="authorityGroupSendImg(groupData) && device === 'moblie'">
           <img
             src="./../../static/images/image.png"
