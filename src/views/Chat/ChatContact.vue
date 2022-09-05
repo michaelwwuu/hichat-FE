@@ -90,6 +90,7 @@
             :userInfoData="userInfoData"
             :checkDataList="checkDataList"
             :showCheckBoxBtn="showCheckBoxBtn"
+            :historyMsgLength="historyMsgLength"
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
@@ -410,6 +411,7 @@ export default {
       readMsgData: [],
       pinDataList: [],
       checkDataList: [],
+      historyMsgLength:0,
       onlineTime: "",
       pinMsg: "",
       loading: false,
@@ -509,25 +511,22 @@ export default {
         toChatId:this.contactUser.toChatId,
         historyId:data === undefined ? "":data,
         order:0,
-        pageSize:30,
+        pageSize: 200,
       }
       getChatHistory(params).then((res) => {
         if(res.code === 200 ){
-          this.loading = false
+          
           let historyMsgList = Object.freeze(res.data)
           this.readMsg = historyMsgList.filter((el) => el.chat.toChatId === "u" + localStorage.getItem("id"));
+          this.historyMsgLength = historyMsgList.length
           if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
           this.getHiChatDataList();
-          // this.$nextTick(() => {
-          //   setTimeout(() => {
-              historyMsgList.forEach((el) => {
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-
-          //   }, 100);
-          // });
+          historyMsgList.forEach((el) => {
+            this.messageList(el);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.unshift(this.chatRoomMsg);
+          });
+          this.loading = false
         }
       })
     },    
@@ -808,7 +807,6 @@ export default {
             this.setChatUser(data);
             this.setContactUser({});
             if (this.device === "pc") {
-              this.getHistory(data);
               this.getHiChatDataList();
               this.setHichatNav({ type: "address", num: 1 });
               this.getAddressList()
@@ -938,19 +936,7 @@ export default {
     back() {
       this.$router.back(-1);
     },
-    getHistory(data) {
-      (this.getHistoryMessage = {
-        chatType: "CLI_HISTORY_REQ",
-        toChatId: data.toChatId,
-        id: Math.random(),
-        tokenType: 0,
-        targetId: "",
-        pageSize: 30,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-      }),
-        Socket.send(this.getHistoryMessage);
-    },
+
   },
   components: {
     MessagePabel,

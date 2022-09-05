@@ -45,7 +45,7 @@
                     v-if="el.chatType === 'SRV_GROUP_SEND'"
                     class="message-classic"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)"
+                    @dblclick="replyMsgclick(el,'replyMsg')"
                   >
                     <div class="message-box">
                       <div
@@ -152,7 +152,7 @@
                     class="message-classic"
                     v-else-if="el.chatType === 'SRV_GROUP_FILE'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)" 
+                    @dblclick="replyMsgclick(el,'replyMsg')" 
                     @click.prevent.stop="
                       device === 'moblie' ? onContextmenu(el) : false
                     "
@@ -173,7 +173,7 @@
                     class="message-audio"
                     v-else-if="el.chatType === 'SRV_GROUP_AUDIO'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)"
+                    @dblclick="replyMsgclick(el,'replyMsg')"
                   >
                     <div class="message-box">
                       <div class="message-name">{{ el.name }}</div>
@@ -195,7 +195,7 @@
                     class="message-image"
                     v-else-if="el.chatType === 'SRV_GROUP_IMAGE'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)"
+                    @dblclick="replyMsgclick(el,'replyMsg')"
                   >
                     <div class="message-box">
                       <div class="message-name" style="padding-right: 36px">
@@ -315,6 +315,9 @@ export default {
     checkDataList: {
       type: Array,
     },
+    historyMsgLength:{
+      type: Number,
+    }
   },
   data() {
     return {
@@ -353,14 +356,14 @@ export default {
       this.newMessageData = {};
       //去除重复
       this.message = this.unique(this.messageData , 'historyId') 
-      this.messageData.forEach((el) => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-      });
+      this.message.forEach((el)=>{
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)]=[]
+      })
+      for(let item in this.newMessageData){
+        this.newMessageData[item] = this.message.filter((res)=>{
+          return item === this.$root.formatTimeDay(res.message.time)
+        })
+      }
       if(!this.showScrollBar) this.$root.gotoBottom()
       return this.newMessageData
     },
@@ -411,10 +414,10 @@ export default {
       if(scrollTop !==null){
         this.showScrollBar = !(
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625) <= scrollTop.clientHeight
-        );
-        if(scrollTop.scrollTop < 600){
-          this.$emit("scrollHistory",this.messageData[0].historyId)
-        }
+          );   
+          if(scrollTop.scrollTop < 5000 && this.historyMsgLength === 200){
+            this.$emit("scrollHistory",this.message[0].historyId)
+          }
         this.$emit('scrollBar',this.showScrollBar)
       }
     },
@@ -481,11 +484,17 @@ export default {
       }
     },
     goAnchor(data) {
-      document.getElementById(data).classList.add("blink");
-      document.getElementById(data).scrollIntoView(true);
-      setTimeout(() => {
-        document.getElementById(data).classList.remove("blink");
-      }, 3000);
+      if(document.getElementById(data) === null){
+        this.$message({ message: "讯息过久，无法查询", type: "error" });
+        return
+      }else{
+        document.getElementById(data).classList.add("blink");
+        document.getElementById(data).scrollIntoView(true);
+        setTimeout(() => {
+          document.getElementById(data).classList.remove("blink");
+        }, 3000);
+      }
+
     },
     //判斷是否base64
     isBase64(data) {
@@ -524,10 +533,10 @@ export default {
         return "message-layout-left";
       }
     },
-    dblclick(event) {
+    replyMsgclick(event,type) {
       this.setReplyMsg({
         chatType: event.chatType,
-        clickType: "replyMsg",
+        clickType: type,
         innerText: this.isBase64(event.message.content),
         replyHistoryId: event.historyId,
         name: event.name,
@@ -541,14 +550,7 @@ export default {
           name: "edit",
           label: "编辑",
           onClick: () => {
-            this.setReplyMsg({
-              chatType: data.chatType,
-              clickType: "editMsg",
-              innerText: this.isBase64(data.message.content),
-              replyHistoryId: data.historyId,
-              name: data.name,
-              icon: data.icon,
-            });
+            this.replyMsgclick(data,'editMsg')
             this.setEditMsg({ innerText: this.isBase64(data.message.content) });
           },
         },
@@ -564,15 +566,7 @@ export default {
           name: "reply",
           label: "回覆",
           onClick: () => {
-            this.setReplyMsg({
-              chatType: data.chatType,
-              clickType: "replyMsg",
-              innerText: this.isBase64(data.message.content),
-              replyHistoryId: data.historyId,
-              name: data.name,
-              icon: data.icon,
-              fileSize:data.fileSize,              
-            });
+            this.replyMsgclick(data,'replyMsg')
           },
         },
         {

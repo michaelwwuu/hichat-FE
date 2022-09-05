@@ -61,6 +61,7 @@
             :userInfoData="userInfoData"
             :checkDataList="checkDataList"
             :showCheckBoxBtn="showCheckBoxBtn"
+            :historyMsgLength="historyMsgLength"
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
@@ -250,7 +251,6 @@ export default {
         deviceId: localStorage.getItem("UUID"),
         tokenType: 0,
       },
-      inChatNum:0,
       pinMsg: "",
       groupData: {},
       authorityGroupData: {},
@@ -258,6 +258,7 @@ export default {
       contactList: [],
       pinDataList: [],
       checkDataList: [],
+      historyMsgLength:0,
       loading: false,
       showCheckBoxBtn: true,
       isChooseDeleteShow: false,
@@ -288,7 +289,6 @@ export default {
       });
     },
     groupData(){
-      this.inChatNum =0
       this.messageData = [];
       this.pinMsg = "";
       this.getPinList();      
@@ -340,26 +340,21 @@ export default {
         toChatId:this.groupUser.toChatId,
         historyId:data === undefined ? "":data,
         order:0,
-        pageSize:30,
+        pageSize: 200,
       }
       getChatHistory(params).then((res) => {
         if(res.code === 200 ){
-          this.loading = false
-          this.inChatNum = 1
           let historyMsgList = Object.freeze(res.data)
           if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
-          // this.getHiChatDataList();  
-          // this.$nextTick(() => {
-          //   setTimeout(() => {
-              historyMsgList.forEach((el) => {
-                this.base64Msg = this.isBase64(el.chat.text);
-                el.chat.newContent = this.base64Msg.split(" ");
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-          //   }, 100);
-          // })
+          this.historyMsgLength = historyMsgList.length
+          historyMsgList.forEach((el) => {
+            this.base64Msg = this.isBase64(el.chat.text);
+            el.chat.newContent = this.base64Msg.split(" ");
+            this.messageList(el);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.unshift(this.chatRoomMsg);
+          });
+          this.loading = false
         }
       })
     },    

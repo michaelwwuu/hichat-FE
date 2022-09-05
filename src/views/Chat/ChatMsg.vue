@@ -187,6 +187,7 @@
             :userInfoData="userInfoData"
             :checkDataList="checkDataList"
             :showCheckBoxBtn="showCheckBoxBtn"
+            :historyMsgLength="historyMsgLength"
             @deleteMsgHistoryData="deleteMsgData"
             @checkBoxDisabled="checkBoxDisabled"
             @isCheckDataList="isCheckDataList"
@@ -532,6 +533,7 @@ export default {
       readMsgData: [],
       pinDataList: [],
       checkDataList:[],
+      historyMsgLength:0,
       onlineTime:"",
       pinMsg: "",
       loading: false,
@@ -879,24 +881,21 @@ export default {
         toChatId:this.chatUser.toChatId,
         historyId:data === undefined ? "":data,
         order:0,
-        pageSize:30,
+        pageSize: 200,
       }
       getChatHistory(params).then((res) => {
         if(res.code === 200 ){
-          this.loading = false
           let historyMsgList = Object.freeze(res.data)
-          this.readMsg = historyMsgList.filter((el) => el.chat.toChatId === "u" + localStorage.getItem("id"));              
+          this.readMsg = historyMsgList.filter((el) => el.chat.toChatId === "u" + localStorage.getItem("id"));   
+          this.historyMsgLength = historyMsgList.length
           if (historyMsgList.length > 0 && this.readMsg.length > 0) this.readMsgShow(this.readMsg[0]);
-          if (this.device === "pc") this.getHiChatDataList();      
-          // this.$nextTick(() => {
-          //   setTimeout(() => {           
-              historyMsgList.forEach((el) => {
-                this.messageList(el);
-                this.messageReorganization(this.chatRoomMsg)
-                this.messageData.unshift(this.chatRoomMsg);
-              });
-          //   }, 100);
-          // });  
+          if (this.device === "pc") this.getHiChatDataList();           
+          historyMsgList.forEach((el) => {
+            this.messageList(el);
+            this.messageReorganization(this.chatRoomMsg)
+            this.messageData.unshift(this.chatRoomMsg);
+          });
+          this.loading = false
         }    
       })
     },

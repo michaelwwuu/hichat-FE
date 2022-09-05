@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper" @touchmove="$root.handleTouch">
-    <el-container v-if="device === 'moblie'">
+    <el-container>
       <el-main>
         <el-header height="125px">
           <div class="home-header">
@@ -44,50 +44,6 @@
           >
         </div>
       </el-main>
-    </el-container>
-    <el-container v-else>
-      <el-aside width="300px">
-        <el-header height="70px">
-          <div class="home-header flex-start">
-            <div class="home-user-pc" @click="back()"></div>
-            <span class="home-header-title">私讯广播</span>
-          </div>
-        </el-header>
-        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)">
-          <div class="home-search">
-            <el-input
-              placeholder="搜寻"
-              prefix-icon="el-icon-search"
-              v-model="searchKey"
-            >
-            </el-input>
-          </div>
-        </div>
-        <div class="home-content">
-          <el-checkbox-group v-model="checkList">
-            <el-checkbox
-              :label="item"
-              v-for="(item, index) in newContactList"
-              :key="index"
-            >
-              <div class="address-box">
-                <el-image :src="item.icon" />
-                <div class="msg-box">
-                  <span>{{ item.name }}</span>
-                </div>
-              </div>
-            </el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div class="home-footer-btn">
-          <el-button
-            :class="disabled ? 'gray-btn' : 'orange-btn'"
-            :disabled="disabled"
-            @click="chooseContact(checkList)"
-            >选择联络人</el-button
-          >
-        </div>
-      </el-aside>
     </el-container>
   </div>
 </template>
@@ -140,12 +96,10 @@ export default {
       });
     },
     chooseContact(data) {
-      if (this.device === "moblie") {
-        this.$router.push({
-          name: "spreadMessage",
-          params: { spreadData: data },
-        });
-      }
+      this.$router.push({
+        name: "spreadMessage",
+        params: { spreadData: data },
+      });
     },
     back() {
       this.$router.push({ path: "/HiChat" });

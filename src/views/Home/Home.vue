@@ -359,16 +359,6 @@ export default {
       infoMsgAsideShow: false,
       centerDialogVisible: false,
       device: localStorage.getItem("device"),
-      getHistoryMessage: {
-        chatType: "",
-        toChatId: "",
-        id: Math.random(),
-        tokenType: 0,
-        targetId: "",
-        pageSize: 30,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-      },
       agentId: "",
 
       //加解密 key iv
@@ -484,7 +474,6 @@ export default {
         this.setChatGroup(this.groupUser);
       }
       this.setHichatNav({ type: type, num: 1 });
-      this.getHistory(type);
       this.$router.push({ name: "HiChat", params: data });
     },
     //判斷是否base64
@@ -567,7 +556,6 @@ export default {
       this.num = index;
       this.setInfoMsg({ infoMsgShow: false });
       this.setHichatNav({ type: this.hichatNav.type, num: this.num });
-      if (this.num === 1) this.getHistory(this.hichatNav.type);
       this.getHistorySetTimeout();
     },
     getHistorySetTimeout() {
@@ -661,7 +649,7 @@ export default {
     openNotify(msgInfo, chatType) {
       // 判断浏览器是否支持Notification
       if (!window.Notification) {
-        // console.log("浏览器不支持通知");
+        this.$message({ message: "浏览器无法开启桌面通知", type: "error" });
       } else {
         // 检查用户曾经是否同意接受通知
         if (Notification.permission === "granted") {
@@ -671,10 +659,7 @@ export default {
           Notification.requestPermission(function (permission) {
             this.notifyMe(msgInfo, chatType); // 显示通知
           });
-        } else {
-          // denied 用户拒绝
-          // console.log("用户曾经拒绝显示通知");
-        }
+        } 
       }
     },
     noIconShow(iconData, key) {
@@ -780,23 +765,10 @@ export default {
               this.setChatGroup(this.notifyData[0]);
               this.getGroupListMember();
             }
-            this.getHistory(notify.type);
             this.getHistorySetTimeout();
           },
         }
       );
-    },
-    getHistory(type) {
-      if (type === "address" || type === "contact") {
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = type === "address" ? this.chatUser.toChatId : this.contactUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-      } else {
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-      }
-      Socket.send(this.getHistoryMessage);
     },
     loginOut() {
       logout()

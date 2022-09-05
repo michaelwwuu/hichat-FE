@@ -229,16 +229,7 @@ export default {
       newHiChatDataList:[],
       newContactDataList:[],
       noGroupPeopleData:[],
-      getHistoryMessage: {
-        chatType: "",
-        toChatId: "",
-        id: Math.random(),
-        tokenType: 0,
-        targetId: "",
-        pageSize: 30,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-      },
+      contactDataList:[],      
       groupMemberDataList:{},
       device: localStorage.getItem("device"),
       activeName: "address",
@@ -280,11 +271,7 @@ export default {
   mounted() {
     this.getHiChatDataList();
     this.homeScrollHeight()
-    setTimeout(() => {
-      this.getGroupMemberList()
-      this.getUserMemberActivity(this.noGroupPeopleData) 
-    }, 500);
-
+    this.getGroupMemberList()
   },
   watch: {
     contactDataList(val) {
@@ -342,38 +329,50 @@ export default {
       let tabsContentHeight = scrollTop.scrollHeight - headerScrollTop.scrollHeight
       document.querySelector(".el-tabs__content").style.height = tabsContentHeight + 'px';       
     }, 
+    calloutList(){
+      for (let item in this.groupMemberDataList) {
+        this.groupDataList.forEach((el)=>{
+          if(this.groupMemberDataList[item].groupId === Number(el.toChatId.replace("g", ""))){
+            if(el.lastChat === null){
+              return this.newGroupDataList = this.groupDataList
+            }else{
+              const dictionary = this.isBase64(el.lastChat.text).split(" ")
+              this.groupMemberDataList[item].memberList.forEach((name)=> {
+                const xIndex = dictionary.indexOf("@"+name.memberId + "\u200B")
+                if (xIndex > -1) {
+                  dictionary.splice(xIndex, 1, "@" + name.name)
+                }
+              });
+              return el.lastChat.text = dictionary.toString().replace(/,/g, " ")
+            }
+          }
+          this.groupList.forEach((list)=>{
+            if((el.forChatId === "u"+list.memberId) && (el.toChatId === "g" +  list.groupId )){
+              return el.setting = list.setting
+            }
+          })
+        })
+      }
+      this.newGroupDataList = this.groupDataList
+    },
     getGroupMemberList(){
       groupMemberList().then((res)=>{
         if(res.code === 200){
           this.groupMemberDataList = res.data
-          for (let item in this.groupMemberDataList) {
-            this.groupDataList.forEach((el)=>{
-              if(this.groupMemberDataList[item].groupId === Number(el.toChatId.replace("g", ""))){
-                if(el.lastChat === null){
-                  return this.newGroupDataList = this.groupDataList
-                }else{
-                  const dictionary = this.isBase64(el.lastChat.text).split(" ")
-                  this.groupMemberDataList[item].memberList.forEach((name)=> {
-                    const xIndex = dictionary.indexOf("@"+name.memberId + "\u200B")
-                    if (xIndex > -1) {
-                      dictionary.splice(xIndex, 1, "@" + name.name)
-                    }
-                  });
-                  return el.lastChat.text = dictionary.toString().replace(/,/g, " ")
-                }
-              }
-              this.groupList.forEach((list)=>{
-                if((el.forChatId === "u"+list.memberId) && (el.toChatId === "g" +  list.groupId )){
-                  return el.setting = list.setting
-                }
-              })
-            })
-          }
-          this.newGroupDataList = this.groupDataList
         }
       })
     },
-
+    unique(arr, key) {
+        if (!arr) return arr
+        if (key === undefined) return [...new Set(arr)]
+        const map = {
+            'string': e => e[key],
+            'function': e => key(e),
+        }
+        const fn = map[typeof key]
+        const obj = arr.reduce((o,e) => (o[fn(e)]=e, o), {})
+        return Object.values(obj)
+    },
     judgeTextMarking(data) {
       let judgeTextData = data.replace(/\n|\r/g, "").split(" ")
       const xIndex = judgeTextData.indexOf("@" + this.myUserInfo.nickname)
@@ -400,19 +399,12 @@ export default {
     },
     handleClick(tab) {
       if (tab.name === "address" || tab.name === "contact") {
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = tab.name === "address" ? this.chatUser.toChatId : this.contactUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
         this.memberTime = setInterval(() => {
           this.getUserMemberActivity(this.noGroupPeopleData)
         }, 30000);
       } else {
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
         clearInterval(this.memberTime)
       }
-      Socket.send(this.getHistoryMessage);
       this.setInfoMsg({ infoMsgShow: false });
       this.setActiveName(this.hichatNav.type);
       this.setTopMsgShow(true);
@@ -433,6 +425,7 @@ export default {
           this.groupNumBadge = 0;
           this.hiChatNumBadge = 0;
           this.contactNumBadge = 0;
+          this.groupDataList = []
           userInfo.recentChat.forEach((item) => {
             if (item.isContact && (item.forChatId === item.toChatId)) {
               item.name = "嗨聊记事本"
@@ -450,6 +443,11 @@ export default {
             }
           });
           this.noGroupPeopleData = userInfo.recentChat.filter(res=> !res.isGroup)
+          // this.getGroupMemberList()
+          this.calloutList()
+          if(this.hichatNav.type !=="group"){          
+            this.getUserMemberActivity(this.noGroupPeopleData)
+          }
           break;
         case "SRV_USER_IMAGE":
         case "SRV_USER_AUDIO":
@@ -558,7 +556,7 @@ export default {
           this.setChatUser(data);
         }
       } else if (path === "ChatContact") {
-        if(data.toChatId === this.chatUser.toChatId){
+        if(data.toChatId === this.contactUser.toChatId){
           return false;
         } else{
           this.setContactUser(data);
@@ -602,22 +600,11 @@ export default {
           infoMsgNav: path === "ChatMsg" ? "ContactPage" : "GroupPage",
           infoMsgMap: "HiChat"
         });
-        // this.getHistory(data, path);
         this.$root.closeReplyMessage();
         this.setCheckBoxBtn(true)
       }
       this.setTopMsgShow(true);
       this.getGroupDataList();      
-    },
-    getHistory(data, path) {
-      if (path === "ChatMsg" || path === "ChatContact") {
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-      } else {
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
-      }
-      this.getHistoryMessage.toChatId = data.toChatId;
-      this.getHistoryMessage.id = Math.random();
-      Socket.send(this.getHistoryMessage);
     },
   },
 };

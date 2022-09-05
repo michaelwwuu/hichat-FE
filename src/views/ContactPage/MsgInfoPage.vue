@@ -426,16 +426,6 @@ export default {
           path: "GroupPeople",
         },
       ],
-      getHistoryMessage: {
-        chatType: "",
-        toChatId: "",
-        id: Math.random(),
-        tokenType: 0,
-        targetId: "",
-        pageSize: 30,
-        token: getToken("token"),
-        deviceId: localStorage.getItem("UUID"),
-      },
       chatUserId: "",
       dialogTitle: "",
       dialogContent: "",
@@ -711,18 +701,6 @@ export default {
         return iconData.icon;
       }
     },
-    getHistory(type) {
-      if (type === "address") {
-        this.getHistoryMessage.chatType = "CLI_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.chatUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-      } else {
-        this.getHistoryMessage.chatType = "CLI_GROUP_HISTORY_REQ";
-        this.getHistoryMessage.toChatId = this.groupUser.toChatId;
-        this.getHistoryMessage.id = Math.random();
-      }
-      Socket.send(this.getHistoryMessage);
-    },
     goChatRoom(data, path, type) {
       if (path === "HiChat") {
         this.setInfoMsg({
@@ -738,7 +716,6 @@ export default {
           this.setChatGroup(this.groupUser);
         }
         this.setHichatNav({ type: type, num: 1 });
-        this.getHistory(type);
         this.$router.push({ name: path, params: data });
       } else if (path === "GroupPeople") {
         if(data.authority !== undefined){

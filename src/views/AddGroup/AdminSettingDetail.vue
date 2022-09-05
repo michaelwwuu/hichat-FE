@@ -235,7 +235,6 @@ export default {
             res.authority = this.newManagerAuthorityData;
           }
         });
-        // console.log(this.groupPermissionData)
         this.setGroupPermissionData(this.groupPermissionData)
         this.$router.push({ path: "/AdminSetting" });
       }

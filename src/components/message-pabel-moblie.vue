@@ -34,7 +34,7 @@
                     class="message-classic"
                     v-if="el.chatType === 'SRV_USER_SEND'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)" 
+                    @dblclick="replyMsgclick(el,'replyMsg')" 
                   >
                     <template v-if="el.isRplay !== null">
                       <div
@@ -109,7 +109,7 @@
                     class="message-classic"
                     v-else-if="el.chatType === 'SRV_USER_FILE'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)" 
+                    @dblclick="replyMsgclick(el,'replyMsg')" 
                     @click.prevent.stop="
                       device === 'moblie' ? onContextmenu(el) : false
                     "
@@ -128,7 +128,7 @@
                     class="message-mini-audio"
                     v-else-if="el.chatType === 'SRV_USER_AUDIO'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)"
+                    @dblclick="replyMsgclick(el,'replyMsg')"
                   >
                     <div
                       v-if="device === 'moblie'"
@@ -149,7 +149,7 @@
                     class="message-image"
                     v-else-if="el.chatType === 'SRV_USER_IMAGE'"
                     @contextmenu.prevent.stop="onContextmenu(el)"
-                    @dblclick="dblclick(el)"
+                    @dblclick="replyMsgclick(el,'replyMsg')"
                   >
                     <div
                       v-if="device === 'moblie'"
@@ -230,7 +230,10 @@ export default {
     },    
     checkDataList:{
       type: Array,
-    }
+    },
+    historyMsgLength:{
+      type: Number,
+    }    
   },
   data() {
     return {
@@ -261,18 +264,17 @@ export default {
       goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
     reversedMessage: function() {
-      this.historyId = this.messageData.length > 0 ? this.messageData[0].historyId: ""
+      this.newMessageData = {};
       //去除重复
       this.message = this.unique(this.messageData , 'historyId') 
-      this.newMessageData = {};
-      this.messageData.forEach((el) => {
-        this.newMessageData[this.$root.formatTimeDay(el.message.time)] = this.message.filter((res) => {
-          return (
-            this.$root.formatTimeDay(res.message.time) ===
-            this.$root.formatTimeDay(el.message.time)
-          );
-        });
-      });
+      this.message.forEach((el)=>{
+        this.newMessageData[this.$root.formatTimeDay(el.message.time)]=[]
+      })
+      for(let item in this.newMessageData){
+        this.newMessageData[item] = this.message.filter((res)=>{
+          return item === this.$root.formatTimeDay(res.message.time)
+        })
+      }
       if(!this.showScrollBar) this.$root.gotoBottom()
       return this.newMessageData
     },
@@ -299,7 +301,6 @@ export default {
         this.setGoAnchorMessage({});
       }, 3000);
     }
-   
   },
   methods: {
     ...mapMutations({
@@ -323,8 +324,8 @@ export default {
         this.showScrollBar = !(
           (scrollTop.scrollHeight - scrollTop.scrollTop) - (this.device==="pc" ? 0.2001953125 : 0.60009765625) <= scrollTop.clientHeight
         );
-        if(scrollTop.scrollTop < 600){
-          this.$emit("scrollHistory",this.messageData[0].historyId)
+        if(scrollTop.scrollTop < 5000 && this.historyMsgLength === 200){
+          this.$emit("scrollHistory",this.message[0].historyId)
         }
         this.$emit('scrollBar',this.showScrollBar)
       }
@@ -419,10 +420,10 @@ export default {
         });
       }
     },
-    dblclick(event) {
+    replyMsgclick(event,type) {
       this.setReplyMsg({
         chatType: event.chatType,
-        clickType: "replyMsg",
+        clickType: type,
         innerText: event.message.content,
         replyHistoryId: event.historyId,
         name: event.name,
@@ -436,14 +437,7 @@ export default {
           name: "edit",
           label: "编辑",
           onClick: () => {
-            this.setReplyMsg({
-              chatType: data.chatType,
-              clickType: "editMsg",
-              innerText: data.message.content,
-              replyHistoryId: data.historyId,
-              name: data.name,
-              icon: data.icon,
-            });
+            this.replyMsgclick(data,"editMsg")
             this.setEditMsg({ innerText: data.message.content });
           },
         },
@@ -459,15 +453,7 @@ export default {
           name: "reply",
           label: "回覆",
           onClick: () => {
-            this.setReplyMsg({
-              chatType: data.chatType,
-              clickType: "replyMsg",
-              innerText: data.message.content,
-              replyHistoryId: data.historyId,
-              name: data.name,
-              icon: data.icon,
-              fileSize:data.fileSize,
-            });
+            this.replyMsgclick(data,'replyMsg')
           },
         },
         {

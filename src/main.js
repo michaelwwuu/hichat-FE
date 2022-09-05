@@ -58,10 +58,11 @@ Vue.directive('debounce', {
       }
       timer = setTimeout(() => {
         binding.value()
-      }, 500)
+      }, 100)
     })
   }
 })
+
 
 Vue.prototype.$md5 = md5;
 moment.suppressDeprecationWarnings = true; // 关闭日期警告

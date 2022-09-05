@@ -112,7 +112,6 @@ export default {
     // if(localStorage.getItem("soundNofiy") === null){
     //   this.setSoundNofiy(this.soundNofiy)
     // }
-    // console.log(JSON.parse(localStorage.getItem("nofity")))
   },
   methods: {
     ...mapMutations({
