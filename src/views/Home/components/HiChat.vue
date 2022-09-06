@@ -272,6 +272,10 @@ export default {
     this.getHiChatDataList();
     this.homeScrollHeight()
     this.getGroupMemberList()
+    setTimeout(() => {
+      this.getUserMemberActivity(this.noGroupPeopleData)
+    }, 500);
+
   },
   watch: {
     contactDataList(val) {

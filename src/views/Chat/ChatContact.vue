@@ -70,7 +70,7 @@
           <div
             class="top-msg"
             v-if="pinMsg !== '' && showCheckBoxBtn && pinDataList.length !==0"
-            @click="goTopMsgShow"
+            @click="setTopMsgShow(false)"
           >
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
@@ -585,9 +585,6 @@ export default {
           }
         }
       });
-    },
-    goTopMsgShow() {
-      this.setTopMsgShow(false);
     },
     untopMsgAction() {
       let param = {

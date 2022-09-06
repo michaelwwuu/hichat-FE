@@ -168,7 +168,7 @@
           element-loading-background="rgba(255, 255, 255, 0.5)"
         >
           <!-- 置頂訊息 -->
-          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn && pinDataList.length !==0" @click="goTopMsgShow">
+          <div class="top-msg" v-if="pinMsg !== '' && showCheckBoxBtn && pinDataList.length !==0" @click="setTopMsgShow(false)">
             <div class="top-msg-left">
               <img src="./../../../static/images/pin.png" alt="" />
               <span v-if="pinDataList[0].chatType === 'SRV_USER_IMAGE'">
@@ -685,9 +685,6 @@ export default {
         }
       });
     },
-    goTopMsgShow() {
-      this.setTopMsgShow(false);
-    },
     untopMsgAction() {
       let param = {
         toChatId: this.chatUser.toChatId,
@@ -970,7 +967,7 @@ export default {
             this.successDialogShow = true;
             data.isContact = true;
             this.setChatUser(data);
-            this.setHichatNav({ type: "address", num: 1 });
+            this.setNavGo("address")
             this.$root.getMaybeKnow()
             if (this.device === "pc") {
               this.getHiChatDataList();
@@ -996,7 +993,7 @@ export default {
             this.deleteDialogShow = false;
             localStorage.removeItem("userData");
             if (this.device === "pc") {
-              this.setHichatNav({ type: "address", num: 1 });
+              this.setNavGo("address")
               this.setChatUser({});
               this.getHiChatDataList();
             } else if (this.device === "moblie") {
@@ -1053,7 +1050,7 @@ export default {
             data.isContact = false;
             this.getHiChatDataList();
             this.setChatUser({});
-            this.setHichatNav({ type: "address", num: 1 });
+            this.setNavGo("address")
             this.newContact = this.myContactDataList.filter((el)=>{
               return data.forChatId !== "u"+ el.contactId
             })
@@ -1066,6 +1063,9 @@ export default {
           return false;
         });
     },
+    setNavGo(type){
+      this.setHichatNav({ type: type, num: 1 });
+    },    
     getHiChatDataList() {
       let chatMsgKey = {
         chatType: "CLI_RECENT_CHAT",

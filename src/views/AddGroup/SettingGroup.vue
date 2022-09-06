@@ -207,7 +207,7 @@ export default {
     }),
   },  
   created() {
-    this.groupData = this.groupPermissionData.addGroup ? JSON.parse(localStorage.getItem("addGroupData")): JSON.parse(localStorage.getItem("groupData"))
+    this.groupData = this.groupPermissionData.addGroup ? JSON.parse(localStorage.getItem("addGroupData")): this.groupUser
   },
   mounted() {
     if(!this.groupPermissionData.addGroup) this.getGroupAuthority()
@@ -282,8 +282,7 @@ export default {
             if(this.device === "moblie"){
               this.$router.push({ path: "/GroupPage",});
             }else{
-              this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
-              this.setMsgInfoPage({ pageShow: true });
+              this.setInfoMsgTure()
             }  
           }
         })
@@ -317,11 +316,14 @@ export default {
         if (this.device === "moblie"){
           this.$router.push({ path: "/GroupPage",});
         }else{
-          this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true, });
-          this.setMsgInfoPage({ pageShow: true });
+          this.setInfoMsgTure()
         }
       }
     },    
+    setInfoMsgTure(){
+      this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true,infoMsgNav:"GroupPage" });
+      this.setMsgInfoPage({ pageShow: true });
+    }
   },
 };
 </script>

@@ -203,8 +203,6 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
-
 import { mapState, mapMutations } from "vuex";
 import {
   deleteRecentChat,

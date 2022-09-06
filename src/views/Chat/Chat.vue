@@ -403,7 +403,10 @@ export default {
       this.getChatHistoryMessage()
       this.getGroupListMember();
       this.getGroupAuthority();      
-    }
+    },
+    // goAnchorMessage(val){
+    //   this.getChatHistoryMessage(val.historyId)
+    // }
   },
   created() {
     this.groupData = JSON.parse(localStorage.getItem("groupData"));
@@ -423,6 +426,7 @@ export default {
       contactListData: (state) => state.ws.contactListData,
       authority: (state) => state.ws.authority,
       checkBoxBtn: (state) => state.ws.checkBoxBtn,
+      // goAnchorMessage: (state) => state.ws.goAnchorMessage,
     }),
   },
   methods: {
@@ -456,7 +460,6 @@ export default {
         if(res.code === 200 ){
           let historyMsgList = Object.freeze(res.data)
           if (historyMsgList.length > 0) this.readMsgShow(historyMsgList[0]);
-
           this.historyMsgLength = historyMsgList.length
           historyMsgList.forEach((el) => {
             this.base64Msg = this.isBase64(el.chat.text);
@@ -494,9 +497,12 @@ export default {
     leaveGroupAction() {
       this.isLeaveGroupShow = false;
       this.getHiChatDataList();
-      this.setHichatNav({ type: "address", num: 1 });
+      this.setNavGo("address")
       this.setChatGroup({});
       this.setInfoMsg({ infoMsgShow: false, infoMsgChat: false });
+    },
+    setNavGo(type){
+      this.setHichatNav({ type: type, num: 1 });
     },
     checkBoxDisabled(data){
       this.showCheckBoxBtn = data
@@ -836,7 +842,7 @@ export default {
       deleteRecentChat(parmas).then((res) => {
         if (res.code === 200) {
           localStorage.removeItem("groupData");
-          this.setHichatNav({ type: "group", num: 1 });
+          this.setNavGo("group")
           this.setChatGroup({});
           this.getHiChatDataList();
         }
@@ -845,28 +851,26 @@ export default {
   
     changeGroupAdminShow() {
       this.setMsgInfoPage({ pageShow: false, type: "AdminChange" });
-      this.setInfoMsg({
-        infoMsgShow: true,
-        infoMsgNav: "GroupPage",
-        infoMsgChat: true,
-      });
+      this.setInfoMsgNavGroup()
     },
     infoMsgShow() {
       this.setMsgInfoPage({ pageShow: true, type: "" });
+      this.setInfoMsgNavGroup()
+    },
+    setInfoMsgNavGroup(){
       this.setInfoMsg({
         infoMsgShow: true,
         infoMsgNav: "GroupPage",
         infoMsgChat: true,
       });
     },
-
     submitBtn() {
       let groupId = this.groupUser.groupId;
       leaveGroup({ groupId })
         .then((res) => {
           if (res.code === 200) {
             this.leaveGroupDialogShow = false;
-            this.setHichatNav({ type: "group", num: 1 });
+            this.setNavGo("group")
             this.setChatGroup({});
           }
         })

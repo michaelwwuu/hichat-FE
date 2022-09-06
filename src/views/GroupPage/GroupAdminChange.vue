@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState,mapMutations } from "vuex";
 import { groupListMember, changeAdmin } from "@/api";
 
 export default {
@@ -137,8 +137,13 @@ export default {
       device: localStorage.getItem("device"),
     };
   },
+  computed: {
+    ...mapState({
+      groupUser: (state) => state.ws.groupUser,
+    }),
+  },  
   created() {
-    this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.groupData = this.groupUser;
   },
   mounted() {
     this.getGroupListMember();
@@ -208,7 +213,7 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true });
+        this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true,infoMsgNav:"GroupPage" });
         this.setMsgInfoPage({ pageShow: true });
       }
     },

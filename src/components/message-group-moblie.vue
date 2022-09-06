@@ -39,7 +39,7 @@
                       reply: el.isRplay !== null,
                     },
                   ]"
-                  :id="el"
+                  :id="el.historyId"
                 >
                   <span
                     v-if="el.chatType === 'SRV_GROUP_SEND'"
@@ -73,26 +73,22 @@
                             <div>
                               <div class="goAnchor-box">
                                 <span
-                                  v-if="
-                                    el.isRplay.chatType === 'SRV_GROUP_SEND'
-                                  "
+                                  v-if="el.isRplay.chatType === 'SRV_GROUP_SEND'"
                                   class="goAnchor"
                                   >{{ isBase64(el.isRplay.text) }}</span
                                 >
                                 <img
-                                  v-if="
-                                    el.isRplay.chatType === 'SRV_GROUP_IMAGE'
-                                  "
+                                  v-else-if="el.isRplay.chatType === 'SRV_GROUP_IMAGE'"
                                   :src="isBase64(el.isRplay.text)"
                                   style="border-radius: 5px"
                                 />
-                                <div class="reply-audio-box"></div>
-                                <mini-audio
-                                  v-if="
-                                    el.isRplay.chatType === 'SRV_GROUP_AUDIO'
-                                  "
-                                  :audio-source="isBase64(el.isRplay.text)"
-                                ></mini-audio>
+                                <span v-else-if="el.isRplay.chatType === 'SRV_GROUP_AUDIO'">
+                                  <div class="reply-audio-box"></div>
+                                  <mini-audio
+                                    :audio-source="isBase64(el.isRplay.text)"
+                                  ></mini-audio>
+                                </span>
+                                
                               </div>
                             </div>
                           </div>
@@ -286,7 +282,6 @@
 </template>
 
 <script>
-import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
 import {
   deleteRecentChat,
@@ -359,10 +354,11 @@ export default {
       this.message.forEach((el)=>{
         this.newMessageData[this.$root.formatTimeDay(el.message.time)]=[]
       })
+
       for(let item in this.newMessageData){
         this.newMessageData[item] = this.message.filter((res)=>{
           return item === this.$root.formatTimeDay(res.message.time)
-        })
+        })   
       }
       if(!this.showScrollBar) this.$root.gotoBottom()
       return this.newMessageData
@@ -387,7 +383,7 @@ export default {
       setTimeout(() => {
         this.goAnchor(this.goAnchorMessage.historyId);
         this.setGoAnchorMessage({});
-      }, 3000);
+      }, 2000);
     }
   },
   methods: {
@@ -493,8 +489,7 @@ export default {
         setTimeout(() => {
           document.getElementById(data).classList.remove("blink");
         }, 3000);
-      }
-
+      }   
     },
     //判斷是否base64
     isBase64(data) {

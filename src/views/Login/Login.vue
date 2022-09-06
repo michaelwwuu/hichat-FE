@@ -233,7 +233,7 @@ export default {
         } else {
           this.disabled = true;
         }
-        this.remember ? document.cookie = 'phone=': "";
+        this.remember ? document.cookie = `phone=${this.loginForm.phone}`:document.cookie = 'phone=';
       },
       deep: true,
     },
@@ -251,7 +251,7 @@ export default {
       this.loginForm.phone =
         document.cookie.replace("phone=","") !== null
           ? document.cookie.replace("phone=","")
-          : "";
+          : document.cookie = 'phone=';
     }
     this.getUUID();
   },
@@ -359,6 +359,7 @@ export default {
               message: "登录验证失败，请重输入并确认",
               type: "error",
             });
+            this.loginForm.password = Decrypt(this.loginForm.password,this.aesKey,this.aesIv)
             localStorage.clear();
             this.getUUID();
             return false;

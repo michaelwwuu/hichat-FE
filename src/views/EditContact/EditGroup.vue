@@ -136,17 +136,15 @@ export default {
       },
       deep: true,
     },
-    // groupUser(val){
-    //   this.groupForm.name = val.groupName
-    // }
   },
   computed: {
     ...mapState({
       groupList: (state) => state.ws.groupList,
+      groupUser: (state) => state.ws.groupUser,
     }),
   },
   created() {
-    this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.groupData = this.groupUser;
     this.groupForm.name = this.groupData.groupName;
   },
   methods: {

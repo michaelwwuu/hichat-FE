@@ -458,6 +458,7 @@ export default {
     if (this.infoMsg.infoMsgNav === "ContactPage" && this.infoMsg.infoMsgChat) {
       this.getUserId();
     }
+
   },
   methods: {
     ...mapMutations({
@@ -499,8 +500,8 @@ export default {
         this.setChatUser(this.chatUser);
       });
     },    
-    changeSettingAdminGroupShow(key){
-      this.setMsgInfoPage({ pageShow: false, type: key });
+    changeSettingAdminGroupShow(type){
+      this.setInfoPageType(type)
       this.setInfoMsg({
         infoMsgShow: true,
         infoMsgNav: "GroupPage",
@@ -677,8 +678,11 @@ export default {
       };
       Socket.send(chatMsgKey);
     },
-    editShowBtn(data) {
-      this.setMsgInfoPage({ pageShow: false, type: data });
+    editShowBtn(type) {
+      this.setInfoPageType(type)
+    },
+    setInfoPageType(type){
+      this.setMsgInfoPage({ pageShow: false, type: type });
     },
     closeInfoMsgShow() {
       if (this.msgInfoPage.page === "GroupPeople") {
