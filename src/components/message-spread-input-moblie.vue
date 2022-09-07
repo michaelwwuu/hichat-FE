@@ -106,7 +106,7 @@ import {VEmojiPicker} from 'v-emoji-picker'
 import Photo from "./Photo.vue";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import { uploadMessageImage } from "@/api";
+import { uploadMessageImage } from '@/api/uploadController'
 import { Encrypt } from "@/utils/AESUtils.js";
 
 export default {

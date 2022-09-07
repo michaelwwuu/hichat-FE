@@ -283,16 +283,11 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import {
-  deleteRecentChat,
-  pinHistory,
-  unpinHistory,
-  getGroupAuthoritySetting,
-} from "@/api";
-import AESBase64 from "@/utils/AESBase64.js";
+import { pinHistory,unpinHistory,deleteRecentChat } from '@/api/chatController'
+import { getGroupAuthoritySetting } from '@/api/groupController'
 import { copyPaste } from "@/utils/urlCopy.js";
-
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import VueMarkdown from "vue-markdown";
 
 export default {
@@ -337,7 +332,7 @@ export default {
     };
   },
   created() {
-    this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.groupData = this.groupUser
     this.getGroupAuthority();
   },
   computed: {
@@ -388,9 +383,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setInfoMsg: "ws/setInfoMsg",
       setEditMsg: "ws/setEditMsg",
-      setChatUser: "ws/setChatUser",
       setReplyMsg: "ws/setReplyMsg",
       setGoAnchorMessage: "ws/setGoAnchorMessage",
     }),

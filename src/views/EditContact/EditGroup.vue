@@ -111,8 +111,9 @@
 <script>
 import Socket from "@/utils/socket";
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
-import { uploadGroupIcon, updateGroup } from "@/api";
+import { getToken } from "_util/utils.js";
+import { uploadGroupIcon } from '@/api/uploadController'
+import { updateGroup } from '@/api/groupController'
 
 export default {
   name: "EditContact",

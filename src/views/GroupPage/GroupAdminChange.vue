@@ -119,7 +119,7 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { groupListMember, changeAdmin } from "@/api";
+import { listMember, changeAdmin } from "@/api/groupController";
 
 export default {
   name: "GroupAdminChange",
@@ -140,6 +140,7 @@ export default {
   computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
+      infoMsg: (state) => state.ws.infoMsg,
     }),
   },  
   created() {
@@ -174,7 +175,7 @@ export default {
     }),
     getGroupListMember() {
       let groupId = this.groupData.groupId;
-      groupListMember({ groupId })
+      listMember({ groupId })
         .then((res) => {
           this.contactList = res.data.list;
           this.contactList.forEach((item) => {
@@ -213,8 +214,18 @@ export default {
       if (this.device === "moblie") {
         this.$router.back(-1);
       } else {
-        this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true,infoMsgNav:"GroupPage" });
-        this.setMsgInfoPage({ pageShow: true });
+        if (this.infoMsg.infoMsgMap === "address") {
+          this.setInfoMsg({
+            infoMsgShow: true,
+            infoMsgNav: "GroupPage",
+            infoMsgChat: false,
+            infoMsgMap: "address",
+          });
+          this.setMsgInfoPage({ pageShow: true, type: "" });
+        } else {
+          this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true, infoMsgNav: "GroupPage", });
+          this.setMsgInfoPage({ pageShow: true });
+        }
       }
     },
   },

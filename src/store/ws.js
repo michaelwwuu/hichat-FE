@@ -103,7 +103,6 @@ export const state = {
   goAnchorMessage:{},
   authorityGroupData:{},
   spreadDataList:[],
-  
 };
 export const actions = {};
 

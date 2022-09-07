@@ -154,7 +154,7 @@ export default {
         {
           name: "密码管理",
           icon: require("./../../../../static/images/safe.png"),
-          pcIcon: require("./../../../../static/images/pc/shield.svg"),
+          pcIcon: require("./../../../../static/images/shield.svg"),
           path: "/PasswordMange",
         },
         {

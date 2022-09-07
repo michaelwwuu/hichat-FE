@@ -107,7 +107,8 @@
 </template>
 
 <script>
-import { updateNickname, uploadIcon } from "@/api";
+import { updateNickname } from "@/api";
+import { uploadIcon } from '@/api/uploadController'
 import { mapMutations } from "vuex";
 
 export default {

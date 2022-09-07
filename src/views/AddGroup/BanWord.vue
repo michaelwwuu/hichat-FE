@@ -128,7 +128,7 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { addGroupDisabledWord,getGroupDisabledWord,delGroupDisabledWord } from "@/api";
+import { getGroupDisabledWord ,addGroupDisabledWord,delGroupDisabledWord } from '@/api/groupController'
 
 export default {
   name: "AdminSetting",

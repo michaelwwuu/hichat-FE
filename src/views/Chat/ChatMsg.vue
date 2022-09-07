@@ -501,20 +501,15 @@ import {
   addContactUser,
   addBlockContactUser,
   unBlockContactUser,
-  deleteRecentChat,
   deleteContactUser,
   getSearchById,
-  pinList,
-  unpinHistory,
   getMemberActivity,
-  deleteRecentChatMul,
-  getChatHistory,
 } from "@/api";
-import AESBase64 from "@/utils/AESBase64.js";
+import { pinList,getChatHistory,deleteRecentChatMul,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
-
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import MessagePin from "@/components/message-pin";

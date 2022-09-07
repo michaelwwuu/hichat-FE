@@ -223,19 +223,12 @@
 
 <script>
 import Socket from "@/utils/socket";
-import {
-  groupListMember,
-  pinList,
-  unpinHistory,
-  getGroupAuthoritySetting,
-  deleteRecentChatMul,
-  getChatHistory,
-} from "@/api";
-import AESBase64 from "@/utils/AESBase64.js";
+import { pinList,deleteRecentChatMul,getChatHistory,unpinHistory } from '@/api/chatController'
+import { listMember,getGroupAuthoritySetting } from '@/api/groupController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
-
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
 import MessagePin from "@/components/message-group-pin";
@@ -501,7 +494,7 @@ export default {
     },
     getGroupListMember() {
       let groupId = this.groupData.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.memberId === this.groupUser.memberId) {

@@ -218,10 +218,10 @@ import Socket from "@/utils/socket";
 import {VEmojiPicker} from 'v-emoji-picker'
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
+import { uploadMessageFile,uploadMessageImage } from '@/api/uploadController'
 
-import { uploadMessageImage, uploadMessageFile } from "@/api";
 import { Encrypt } from "@/utils/AESUtils.js";
 
 export default {

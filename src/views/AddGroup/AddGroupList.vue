@@ -166,7 +166,7 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { uploadGroupIcon } from "@/api";
+import { uploadGroupIcon } from '@/api/uploadController'
 
 export default {
   name: "AddGroupList",

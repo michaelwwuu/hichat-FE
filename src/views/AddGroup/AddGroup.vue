@@ -130,7 +130,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { getContactList, uploadGroupIcon, addGroup } from "@/api";
+import { getContactList, addGroup } from "@/api";
+import { uploadGroupIcon } from '@/api/uploadController'
 
 export default {
   name: "AddGroup",
@@ -197,7 +198,6 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
       setInfoMsg: "ws/setInfoMsg",
       setGroupPermissionData: "ws/setGroupPermissionData",

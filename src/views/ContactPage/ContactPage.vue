@@ -271,9 +271,9 @@ import {
   addBlockContactUser,
   unBlockContactUser,
   deleteContactUser,
-  setBanPostByPersonal,
-  deleteRecentChat,
 } from "@/api";
+import { deleteRecentChat } from '@/api/chatController'
+import { setBanPostByPersonal } from '@/api/groupController'
 
 export default {
   name: "ContactPage",

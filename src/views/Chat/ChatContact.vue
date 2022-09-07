@@ -378,19 +378,15 @@ import {
   addContactUser,
   addBlockContactUser,
   unBlockContactUser,
-  deleteRecentChat,
   deleteContactUser,
-  pinList,
-  unpinHistory,
   getMemberActivity,
-  deleteRecentChatMul,
-  getChatHistory,
+  
 } from "@/api";
-import AESBase64 from "@/utils/AESBase64.js";
+import { pinList,deleteRecentChatMul,getChatHistory,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
-
 import { mapState, mapMutations } from "vuex";
-import { getLocal, getToken } from "_util/utils.js";
+import { getToken } from "_util/utils.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import MessagePabel from "@/components/message-pabel-moblie";
 import MessageInput from "@/components/message-input-moblie";
 import MessagePin from "@/components/message-pin";
@@ -491,8 +487,7 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setEditMsg: "ws/setEditMsg",
-      setReplyMsg: "ws/setReplyMsg",
+
       setChatUser: "ws/setChatUser",
       setHichatNav: "ws/setHichatNav",
       setContactUser: "ws/setContactUser",

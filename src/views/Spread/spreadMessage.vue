@@ -120,7 +120,8 @@ import Socket from "@/utils/socket";
 import { VEmojiPicker } from 'v-emoji-picker'
 import { getToken } from "_util/utils.js";
 import { Encrypt } from "@/utils/AESUtils.js";
-import { uploadMessageImage } from "@/api";
+import { uploadMessageImage } from '@/api/uploadController'
+
 export default {
   name: "spreadMessage",
   data() {

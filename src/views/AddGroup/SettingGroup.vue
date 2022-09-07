@@ -151,7 +151,7 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { addGroup,getGroupAuthoritySetting,setGroupAuthority} from "@/api";
+import { addGroup,getGroupAuthoritySetting,setGroupAuthority } from '@/api/groupController'
 
 export default {
   name: "SettingGroup",
@@ -168,11 +168,17 @@ export default {
           key:"sendImage",
           isCheck:true,
         },
+        //TODO 傳送檔案
+        // {
+        //   name:"传送档案或链接网址",
+        //   key:"sendLink",
+        //   isCheck:true,
+        // },    
         {
-          name:"传送档案或链接网址",
+          name:"传送链接或网址",
           key:"sendLink",
           isCheck:true,
-        },        
+        },               
         {
           name:"查看群组成员资讯",
           key:"checkUserInfo",
@@ -203,6 +209,7 @@ export default {
   computed: {
     ...mapState({
       groupUser: (state) => state.ws.groupUser,
+      infoMsg: (state) => state.ws.infoMsg,      
       groupPermissionData: (state) => state.ws.groupPermissionData,
     }),
   },  
@@ -321,8 +328,18 @@ export default {
       }
     },    
     setInfoMsgTure(){
-      this.setInfoMsg({ infoMsgShow: true,infoMsgChat:true,infoMsgNav:"GroupPage" });
-      this.setMsgInfoPage({ pageShow: true });
+      if (this.infoMsg.infoMsgMap === "address") {
+        this.setInfoMsg({
+          infoMsgShow: true,
+          infoMsgNav: "GroupPage",
+          infoMsgChat: false,
+          infoMsgMap: "address",
+        });
+        this.setMsgInfoPage({ pageShow: true, type: "" });
+      } else {
+        this.setInfoMsg({ infoMsgShow: true, infoMsgChat: true, infoMsgNav: "GroupPage", });
+        this.setMsgInfoPage({ pageShow: true });
+      }
     }
   },
 };

@@ -94,7 +94,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { groupListMember, setBanPost, listMember } from "@/api";
+import { listMember,setBanPost } from '@/api/groupController'
 
 export default {
   name: "SettingGroup",
@@ -143,7 +143,7 @@ export default {
     getGroupListMember() {
       if (!this.groupPermissionData.addGroup) {
         let groupId = this.groupData.groupId;
-        groupListMember({ groupId }).then((res) => {
+        listMember({ groupId }).then((res) => {
           this.contactList = res.data.list;
           this.contactList.forEach((item) => {
             if (item.icon === undefined) {

@@ -210,13 +210,8 @@ import Socket from "@/utils/socket";
 import AESBase64 from "@/utils/AESBase64.js";
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
-import {
-  getGroupList,
-  groupListMember,
-  getGroupAuthoritySetting,
-  groupMemberList,
-  getMemberActivity,
-} from "@/api";
+import { getMemberActivity } from "@/api";
+import { listMember,getGroupList,groupMemberList,getGroupAuthoritySetting } from '@/api/groupController'
 
 export default {
   name: "HiChat",
@@ -290,8 +285,6 @@ export default {
       setTopMsg: "ws/setTopMsg",
       setTopMsgShow: "ws/setTopMsgShow",
       setInfoMsg: "ws/setInfoMsg",
-      setEditMsg: "ws/setEditMsg",
-      setReplyMsg: "ws/setReplyMsg",
       setChatUser: "ws/setChatUser",
       setChatGroup: "ws/setChatGroup",
       setContactUser: "ws/setContactUser",
@@ -363,6 +356,7 @@ export default {
       groupMemberList().then((res)=>{
         if(res.code === 200){
           this.groupMemberDataList = res.data
+          this.setGroupMemberDataList(this.groupMemberDataList)
         }
       })
     },
@@ -528,7 +522,7 @@ export default {
     },
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.memberId === this.groupUser.memberId) {

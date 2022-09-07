@@ -135,7 +135,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { groupListMember, delManager } from "@/api";
+import { listMember,delManager } from '@/api/groupController'
 
 export default {
   name: "AdminSetting",
@@ -192,7 +192,7 @@ export default {
     getGroupListMember() {
       if (!this.groupPermissionData.addGroup) {
         let groupId = this.groupData.groupId;
-        groupListMember({ groupId }).then((res) => {
+        listMember({ groupId }).then((res) => {
           this.contactList = res.data.list;
           this.contactList.forEach((item) => {
             if (item.icon === undefined) {

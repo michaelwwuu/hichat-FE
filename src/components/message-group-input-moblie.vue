@@ -276,17 +276,15 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { VEmojiPicker } from "v-emoji-picker";
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
+import { VEmojiPicker } from "v-emoji-picker";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import {
-  uploadMessageImage,
-  uploadMessageFile,
-  getGroupDisabledWord,
-} from "@/api";
-import { Decrypt, Encrypt } from "@/utils/AESUtils.js";
+import { getGroupDisabledWord } from '@/api/groupController'
+import { uploadMessageImage,uploadMessageFile } from '@/api/uploadController'
+
+import { Encrypt } from "@/utils/AESUtils.js";
 
 
 export default {
@@ -359,7 +357,6 @@ export default {
     ...mapState({
       replyMsg: (state) => state.ws.replyMsg,
       editMsg: (state) => state.ws.editMsg,
-      groupUser: (state) => state.ws.groupUser,
       soundNofiy: (state) => state.ws.soundNofiy,
       contactListData: (state) => state.ws.contactListData,
     }),

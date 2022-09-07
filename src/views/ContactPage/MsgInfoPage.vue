@@ -299,7 +299,7 @@
               <div class="setting-button" v-if="groupUser.isAdmin">
                 <a @click="changeSettingAdminGroupShow('AdminChange')">
                   <div class="setting-button-left">
-                    <img src="./../../../static/images/pc/shield.svg" alt="" />
+                    <img src="./../../../static/images/shield.svg" alt="" />
                     <span>转移群主权限</span>
                   </div>
                 </a>
@@ -369,16 +369,15 @@ import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getToken } from "_util/utils.js";
 import { copyPaste } from "@/utils/urlCopy.js";
-
 import {
   getSearchById,
-  groupListMember,
   addContactUser,
   addBlockContactUser,
   unBlockContactUser,
   deleteContactUser,
-  setBanPostByPersonal,
 } from "@/api";
+import { listMember,setBanPostByPersonal } from '@/api/groupController'
+
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";
 import GroupPeople from "../GroupPage/GroupPeople.vue";
@@ -458,7 +457,6 @@ export default {
     if (this.infoMsg.infoMsgNav === "ContactPage" && this.infoMsg.infoMsgChat) {
       this.getUserId();
     }
-
   },
   methods: {
     ...mapMutations({
@@ -474,7 +472,7 @@ export default {
     }),
     getGroupListMember(data) {
       let groupId = data.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {
@@ -505,7 +503,8 @@ export default {
       this.setInfoMsg({
         infoMsgShow: true,
         infoMsgNav: "GroupPage",
-        infoMsgChat: true,
+        infoMsgChat: false,
+        infoMsgMap:"address"
       });
     },
     dialogShow(type) {

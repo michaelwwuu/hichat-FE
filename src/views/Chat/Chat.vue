@@ -32,7 +32,7 @@
                     v-if="groupUser.isAdmin"
                     @click="changeGroupAdminShow"
                   >
-                    <img src="./../../../static/images/pc/shield.svg" alt="" />
+                    <img src="./../../../static/images/shield.svg" alt="" />
                     <span>转移群主权限</span>
                   </div>
                 </el-dropdown-item>
@@ -156,7 +156,7 @@
                     v-if="groupUser.isAdmin"
                     @click="changeGroupAdminShow"
                   >
-                    <img src="./../../../static/images/pc/shield.svg" alt="" />
+                    <img src="./../../../static/images/shield.svg" alt="" />
                     <span>转移群主权限</span>
                   </div>
                 </el-dropdown-item>
@@ -318,20 +318,10 @@
 <script>
 import Socket from "@/utils/socket";
 import AESBase64 from "@/utils/AESBase64.js";
-
-import {
-  groupListMember,
-  leaveGroup,
-  pinList,
-  unpinHistory,
-  getGroupAuthoritySetting,
-  deleteRecentChat,
-  deleteRecentChatMul,
-  getChatHistory,
-} from "@/api";
+import { pinList,deleteRecentChatMul,getChatHistory,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { mapState, mapMutations } from "vuex";
+import { listMember,leaveGroup,getGroupAuthoritySetting } from '@/api/groupController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
-
 import { getToken } from "_util/utils.js";
 import MessagePabel from "@/components/message-group-moblie";
 import MessageInput from "@/components/message-group-input-moblie";
@@ -433,8 +423,6 @@ export default {
     ...mapMutations({
       setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
-      setEditMsg: "ws/setEditMsg",
-      setReplyMsg: "ws/setReplyMsg",
       setChatGroup: "ws/setChatGroup",
       setHichatNav: "ws/setHichatNav",
       setTopMsgShow: "ws/setTopMsgShow",
@@ -623,7 +611,7 @@ export default {
     },
     getGroupListMember() {
       let groupId = this.groupUser.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.memberId === this.groupUser.memberId) {

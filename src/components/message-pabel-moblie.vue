@@ -204,15 +204,10 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import {
-  deleteRecentChat,
-  pinHistory,
-  unpinHistory,
-} from "@/api";
-import AESBase64 from "@/utils/AESBase64.js";
-import { copyPaste } from "@/utils/urlCopy.js";
-
+import { pinHistory,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
+import { copyPaste } from "@/utils/urlCopy.js";
+import AESBase64 from "@/utils/AESBase64.js";
 import VueMarkdown from "vue-markdown";
 export default {
   name: "MessagePabel",

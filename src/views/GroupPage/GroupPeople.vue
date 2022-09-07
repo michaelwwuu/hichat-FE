@@ -227,12 +227,8 @@
 
 <script>
 import Socket from "@/utils/socket";
-import {
-  removeMember,
-  groupListMember,
-  getMemberActivity,
-  getGroupAuthoritySetting,
-} from "@/api";
+import { getMemberActivity } from "@/api";
+import { listMember,getGroupAuthoritySetting, removeMember } from '@/api/groupController'
 import { mapState, mapMutations } from "vuex";
 
 export default {
@@ -304,7 +300,6 @@ export default {
     ...mapMutations({
       setInfoMsg: "ws/setInfoMsg",
       setChatUser: "ws/setChatUser",
-      setAuthority:"ws/setAuthority",
       setMsgInfoPage: "ws/setMsgInfoPage",
       setGroupUserCheck:"ws/setGroupUserCheck",
       setContactListData: "ws/setContactListData",
@@ -333,7 +328,7 @@ export default {
     },
     getGroupListMember() {
       let groupId = this.groupData.groupId;
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.memberId === this.groupData.memberId) {

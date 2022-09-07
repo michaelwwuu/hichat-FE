@@ -141,8 +141,8 @@ export default {
   created() {
     this.getDataList();
     this.getMaybeKnow();
-    this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setActiveName(this.activeName);
+    this.userData = JSON.parse(localStorage.getItem("userData"));
     Socket.$on("message", this.handleGetMessage);
     this.memberTime = setInterval(() => {
       this.getUserMemberActivity(this.memberActivityData);

@@ -257,7 +257,7 @@
         <router-link :to="'/QRcode'" v-if="num === 0"
           ><img src="./../../../static/images/scan.png" alt=""
         /></router-link>
-        <img src="./../../../static/images/share.png" alt="" @click="copyUrl" />
+        <img src="./../../../static/images/share.svg" alt="" @click="copyUrl" />
         <img
           v-if="num === 0"
           src="./../../../static/images/download.png"
@@ -293,21 +293,19 @@
 
 <script>
 import VueQr from "vue-qr";
-import {urlCopy} from "@/utils/urlCopy.js";
 import Socket from "@/utils/socket";
 import AESBase64 from "@/utils/AESBase64.js";
+import { urlCopy } from "@/utils/urlCopy.js";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import {
-  getGroupList,
-  groupListMember,
   getUserInfo,
   getContactList,
   getMemberActivity,
-  groupMemberList,
   maybeKnow,
   logout,
 } from "@/api";
+import { listMember,getGroupList } from '@/api/groupController'
 import { Encrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";
 import ChatGroupMsg from "./../Chat/Chat.vue";
@@ -358,10 +356,8 @@ export default {
       maybeKnowDataList:[],
       downloadFilename: "",
       logoutDialogShow: false,
-      infoMsgAsideShow: false,
       centerDialogVisible: false,
       device: localStorage.getItem("device"),
-      agentId: "",
 
       //加解密 key iv
       aesKey: "hichatisachatapp",
@@ -444,9 +440,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setNofiy: "ws/setNofiy",
       setSoundNofiy: "ws/setSoundNofiy",
-      setWsRes: "ws/setWsRes",
       setInfoMsg: "ws/setInfoMsg",
       setBadgeNum: "ws/setBadgeNum",
       setChatUser: "ws/setChatUser",
@@ -544,7 +538,7 @@ export default {
     },
     getGroupListMember() {
       let groupId = this.groupUser.toChatId.replace("g", "");
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.contactList.forEach((item) => {
           if (item.icon === undefined) {

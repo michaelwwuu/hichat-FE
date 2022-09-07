@@ -93,9 +93,8 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { developmentMessage } from "@/assets/tools";
-import { groupListMember, addMember } from "@/api";
+import { mapState,mapMutations } from "vuex";
+import { listMember,addMember } from '@/api/groupController'
 
 export default {
   name: "GroupPeople",
@@ -112,8 +111,13 @@ export default {
       device: localStorage.getItem("device"),
     };
   },
+  computed: {
+    ...mapState({
+      groupUser: (state) => state.ws.groupUser,
+    }),
+  },    
   created() {
-    this.groupData = JSON.parse(localStorage.getItem("groupData"));
+    this.groupData = this.groupUser;
     this.myContactDataList = JSON.parse(localStorage.getItem("myContactDataList"));
   },
   mounted() {
@@ -136,12 +140,11 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setInfoMsg: "ws/setInfoMsg",
       setMsgInfoPage: "ws/setMsgInfoPage",
     }),
     getGroupListMember() {
       let groupId = this.groupData.groupId;
-      groupListMember({ groupId }).then((res) => {
+      listMember({ groupId }).then((res) => {
         this.contactList = res.data.list;
         this.newContactDataList = this.myContactDataList;
         this.newContactDataList.forEach((el) => {

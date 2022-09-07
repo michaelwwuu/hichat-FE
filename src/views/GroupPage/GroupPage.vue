@@ -88,7 +88,7 @@
           <div class="setting-button" v-if="groupData.isAdmin">
             <a @click="goChatRoom(groupData, 'GroupAdminChange')">
               <div class="setting-button-left">
-                <img src="./../../../static/images/shield.png" alt="" />
+                <img src="./../../../static/images/shield.svg" alt="" />
                 <span>转移群主权限</span>
               </div>
             </a>
@@ -162,7 +162,8 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
-import { leaveGroup,deleteRecentChat } from "@/api";
+import { deleteRecentChat } from '@/api/chatController'
+import { leaveGroup } from '@/api/groupController'
 
 export default {
   name: "GroupPage",

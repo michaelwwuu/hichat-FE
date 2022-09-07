@@ -138,9 +138,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { unpinHistory, pinList } from "@/api";
+import { pinList,unpinHistory } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
-
 import { copyPaste } from "@/utils/urlCopy.js";
 
 import AESBase64 from "@/utils/AESBase64.js";

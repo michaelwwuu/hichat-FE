@@ -92,7 +92,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { addManager, groupListMember, setManagerAuthority } from "@/api";
+import { listMember,addManager,setManagerAuthority } from '@/api/groupController'
 
 export default {
   name: "AdminSetting",
@@ -253,7 +253,7 @@ export default {
     getGroupListMember() {
       if (!this.groupPermissionData.addGroup) {
         let groupId = this.groupData.groupId;
-        groupListMember({ groupId }).then((res) => {
+        listMember({ groupId }).then((res) => {
           let parmaMemberId =
             this.device === "moblie"
               ? this.$route.params.memberId
