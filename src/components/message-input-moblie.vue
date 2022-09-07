@@ -214,14 +214,12 @@
 
 <script>
 import Socket from "@/utils/socket";
-
-import {VEmojiPicker} from 'v-emoji-picker'
 import Record from "./../../static/js/record-sdk";
 import Photo from "./Photo.vue";
 import { getToken } from "_util/utils.js";
+import { VEmojiPicker } from 'v-emoji-picker'
 import { mapState, mapMutations } from "vuex";
 import { uploadMessageFile,uploadMessageImage } from '@/api/uploadController'
-
 import { Encrypt } from "@/utils/AESUtils.js";
 
 export default {

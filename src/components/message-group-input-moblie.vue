@@ -283,9 +283,7 @@ import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import { getGroupDisabledWord } from '@/api/groupController'
 import { uploadMessageImage,uploadMessageFile } from '@/api/uploadController'
-
 import { Encrypt } from "@/utils/AESUtils.js";
-
 
 export default {
   name: "MessageInput",
