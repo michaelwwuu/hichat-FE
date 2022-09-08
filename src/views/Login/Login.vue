@@ -46,6 +46,7 @@
             v-model.trim="loginForm.password"
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
+            :disabled="passwordDisabled"
             tabindex="2"
             maxLength="12"
             @input="
@@ -90,6 +91,7 @@
             v-model.trim="loginForm.password"
             name="password"
             :type="passwordType === 'password' ? 'password' : 'text'"
+            :disabled="passwordDisabled"
             tabindex="2"
             maxLength="12"
             @input="
@@ -208,6 +210,7 @@ export default {
       remember: true,
       disabled: true,
       dialogShow: false,
+      passwordDisabled:false,
       token: localStorage.getItem("token"),
       device: localStorage.getItem("device"),
 
@@ -336,9 +339,11 @@ export default {
         }
         this.loginForm.phone = this.loginForm.phone.trim();
         this.loginForm.password = Encrypt(this.loginForm.password,this.aesKey,this.aesIv)
+        this.passwordDisabled = true
         login(this.loginForm)
           .then((res) => {
             //登录成功
+            this.passwordDisabled = false
             if (res.code === 200) {
               localStorage.setItem(
                 "token",

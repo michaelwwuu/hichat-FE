@@ -26,6 +26,7 @@
                 v-model="loginForm.oldPassword"
                 name="oldPassword"
                 :type="oldPasswordType === 'password' ? 'password' : 'text'"
+                :disabled="passwordDisabled"
                 tabindex="2"
                 maxLength="12"
                 @input="
@@ -55,6 +56,7 @@
                 v-model="loginForm.newPassword"
                 name="newPassword"
                 :type="newPasswordType === 'password' ? 'password' : 'text'"
+                :disabled="passwordDisabled"
                 tabindex="2"
                 maxLength="12"
                 @input="
@@ -84,6 +86,7 @@
                 v-model="loginForm.newPasswordAganin"
                 name="newPasswordAganin"
                 :type="newPasswordTypeAgain === 'password' ? 'password' : 'text'"
+                :disabled="passwordDisabled"
                 tabindex="2"
                 maxLength="12"
                 @input="
@@ -160,6 +163,7 @@
                 v-model="loginForm.oldPassword"
                 name="oldPassword"
                 :type="oldPasswordType === 'password' ? 'password' : 'text'"
+                :disabled="passwordDisabled"
                 tabindex="2"
                 maxLength="12"
                 @input="
@@ -192,6 +196,7 @@
                 v-model="loginForm.newPassword"
                 name="newPassword"
                 :type="newPasswordType === 'password' ? 'password' : 'text'"
+                :disabled="passwordDisabled"
                 tabindex="2"
                 maxLength="12"
                 @input="
@@ -226,6 +231,7 @@
                 :type="
                   newPasswordTypeAgain === 'password' ? 'password' : 'text'
                 "
+                :disabled="passwordDisabled"
                 tabindex="2"
                 maxLength="12"
                 @input="
@@ -296,6 +302,7 @@ export default {
       newPasswordTypeAgain: "password",
       disabled: true,
       dialogShow: false,
+      passwordDisabled:false,
       notification: false,
       device: localStorage.getItem("device"),
 
@@ -355,15 +362,16 @@ export default {
         }
         this.loginForm.newPassword = Encrypt(this.loginForm.newPassword,this.aesKey,this.aesIv)
         this.loginForm.oldPassword = Encrypt(this.loginForm.oldPassword,this.aesKey,this.aesIv)
+        this.passwordDisabled = true
         // delete this.loginForm.newPasswordAganin;
         updatePassword(this.loginForm)
           .then((res) => {
+            this.loginForm.newPassword = Decrypt(this.loginForm.newPassword,this.aesKey,this.aesIv)
+            this.loginForm.oldPassword = Decrypt(this.loginForm.oldPassword,this.aesKey,this.aesIv)
+            this.passwordDisabled = false
             //登录成功
             if (res.code === 200) {
               this.dialogShow = true;
-            }else{
-              this.loginForm.newPassword = Decrypt(this.loginForm.newPassword,this.aesKey,this.aesIv)
-              this.loginForm.oldPassword = Decrypt(this.loginForm.oldPassword,this.aesKey,this.aesIv)
             }
           })
           .catch((err) => {

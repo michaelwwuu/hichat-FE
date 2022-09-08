@@ -41,7 +41,7 @@
           <div class="home-header flex-start">
             <div class="home-user-pc" @click="back"></div>
             <span class="home-header-title">编辑个人资料</span>
-            <div class="home-add-user home-edit-img" @click="editSubmit"></div>
+            <div class="home-add-user home-edit-img" @click="editSubmit()"></div>
           </div>
         </el-header>
         <div class="home-content">
@@ -58,7 +58,7 @@
             </div> -->
           </div>
           <div class="user-edit-form">
-            <el-form ref="form" :model="userEditForm" label-width="100px">
+            <el-form ref="form" :model="userEditForm" label-width="100px" onsubmit="return false;">
               <el-form-item label="用户昵称">
                 <el-input v-model="userEditForm.nickname"></el-input>
               </el-form-item>

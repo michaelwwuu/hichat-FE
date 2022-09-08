@@ -168,12 +168,9 @@ export default {
       let blockIdList = this.checkList
       unBlockContactUser({blockIdList}).then((res) => {
         if(res.code === 200){
-          console.log(123)
           this.settingDialogShow = false;
           this.unblockDialogShow = false;
           this.editBtnShow = true;
-          console.log(this.chatUser)
-          console.log(this.contactUser)
           blockIdList.forEach(el => {
             if(this.chatUser.toChatId !== undefined && (el === this.chatUser.toChatId.replace("u", ""))){
               this.chatUser.isBlock = false

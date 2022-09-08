@@ -118,12 +118,13 @@ import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
 import {
   getContactList,
-  getGroupList,
   getSearchById,
   getMemberActivity,
   maybeKnow,
   addContactUser,
 } from "@/api";
+import { getGroupList } from '@/api/groupController'
+
 export default {
   name: "Address",
   data() {

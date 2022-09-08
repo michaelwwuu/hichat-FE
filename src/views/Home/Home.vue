@@ -180,17 +180,18 @@
         <template v-if="num === 1 && $route.name !== 'Spread'">
           <chat-msg
             v-if="
-              hichatNav.type === 'address' && JSON.stringify(chatUser) !== '{}'
+              hichatNav.type === 'address' && chatUser.type !== 'address' && JSON.stringify(chatUser) !== '{}' 
             "
           />
           <chat-group-msg
             v-else-if="
-              hichatNav.type === 'group' && JSON.stringify(groupUser) !== '{}'
+              hichatNav.type === 'group' && groupUser.type !== 'address' && JSON.stringify(groupUser) !== '{}'
             "
           />
           <chat-contact
             v-else-if="
               hichatNav.type === 'contact' &&
+              contactUser.type !== 'address' && 
               JSON.stringify(contactUser) !== '{}'
             "
           />
