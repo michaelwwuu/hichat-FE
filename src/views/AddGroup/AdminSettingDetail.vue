@@ -110,7 +110,7 @@ export default {
           isCheck:true,
         },
         {
-          name:"传送链接或网址",
+          name:"传送档案或链接网址",
           key: "sendLink",
           isCheck:true,
         },    

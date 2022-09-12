@@ -227,7 +227,7 @@
 
 <script>
 import Socket from "@/utils/socket";
-import { getMemberActivity } from "@/api";
+import { getMemberActivity } from "@/api/memberProfileController";
 import { listMember,getGroupAuthoritySetting, removeMember } from '@/api/groupController'
 import { mapState, mapMutations } from "vuex";
 

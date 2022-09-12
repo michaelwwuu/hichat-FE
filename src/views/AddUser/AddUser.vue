@@ -107,7 +107,8 @@
 
 <script>
 import {mapMutations } from "vuex";
-import { searchByEmailUsername, addContactUser } from "@/api";
+import { searchByEmailUsername  } from "@/api/memberProfileController";
+import { addContactUser } from "@/api/memberContactController";
 
 export default {
   name: "AddUser",

@@ -640,7 +640,6 @@ export default {
         display: flex;
         align-items: center;
         padding-right: 45px;
-        cursor: pointer;
         .file-box{
           width: 4em;
           height: 4em;

@@ -369,14 +369,11 @@ import { mapState, mapMutations } from "vuex";
 import { developmentMessage } from "@/assets/tools";
 import { getToken } from "_util/utils.js";
 import { copyPaste } from "@/utils/urlCopy.js";
-import {
-  getSearchById,
-  addContactUser,
-  addBlockContactUser,
-  unBlockContactUser,
-  deleteContactUser,
-} from "@/api";
+import { getSearchById } from "@/api/memberProfileController";
+import { addContactUser,deleteContactUser } from "@/api/memberContactController";
+import { addBlockContactUser,unBlockContactUser } from '@/api/memberBlockController'
 import { listMember,setBanPostByPersonal } from '@/api/groupController'
+
 
 import EditGroup from "./../EditContact/EditGroup.vue";
 import EditContact from "./../EditContact/EditContact.vue";

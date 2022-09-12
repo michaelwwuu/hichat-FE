@@ -1,4 +1,4 @@
-import { maybeKnow } from "@/api";
+import { maybeKnow} from "@/api/memberContactController";
 import { mapMutations } from "vuex";
 
 const rootMixins = {

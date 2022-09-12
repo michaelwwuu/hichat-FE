@@ -119,7 +119,8 @@
 
 <script>
 import { mapState,mapMutations } from "vuex";
-import { blockListMember,unBlockContactUser } from "@/api";
+import { unBlockContactUser,blockListMember } from '@/api/memberBlockController'
+
 export default {
   name: "BlockMange",
   data() {

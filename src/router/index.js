@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Router from 'vue-router'
 import { setLocal } from '_util/utils.js'
-import { getUserInfo } from "@/api"
+import { getUserInfo } from "@/api/memberProfileController"
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch((err) => err)

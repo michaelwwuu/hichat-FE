@@ -45,8 +45,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <!--TODO 可能認識-->
-      <!-- <el-tab-pane
+      <el-tab-pane
         label="可能认识"
         name="maybeKnow"
         v-if="maybeKnowDataList.length !== 0"
@@ -82,7 +81,7 @@
             <div class="contont-border-bottom"></div>
           </div>
         </div>
-      </el-tab-pane> -->
+      </el-tab-pane>
     </el-tabs>
     <el-dialog
       :title="device === 'pc' ? '添加联络人' : ''"
@@ -116,13 +115,8 @@
 import Socket from "@/utils/socket";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import {
-  getContactList,
-  getSearchById,
-  getMemberActivity,
-  maybeKnow,
-  addContactUser,
-} from "@/api";
+import { getMemberActivity,getSearchById } from "@/api/memberProfileController";
+import { addContactUser,getContactList,maybeKnow } from "@/api/memberContactController";
 import { getGroupList } from '@/api/groupController'
 
 export default {

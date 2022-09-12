@@ -168,14 +168,8 @@ export default {
           key:"sendImage",
           isCheck:true,
         },
-        //TODO 傳送檔案
-        // {
-        //   name:"传送档案或链接网址",
-        //   key:"sendLink",
-        //   isCheck:true,
-        // },    
         {
-          name:"传送链接或网址",
+          name:"传送档案或链接网址",
           key:"sendLink",
           isCheck:true,
         },               

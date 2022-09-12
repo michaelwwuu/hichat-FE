@@ -88,7 +88,12 @@
                                     :audio-source="isBase64(el.isRplay.text)"
                                   ></mini-audio>
                                 </span>
-                                
+                                <div v-else-if="el.isRplay.chatType === 'SRV_GROUP_FILE'" class="message-file-box" id="file-download">
+                                <div class="file-message" style="padding-left:0;">
+                                  <span>{{fileData(isBase64(el.isRplay.text),'content')}}</span>
+                                  <span>档案大小　: {{ fileData(el.isRplay.fileSize,'size') }}</span>
+                                </div>
+                              </div>
                               </div>
                             </div>
                           </div>
@@ -1044,7 +1049,6 @@ export default {
         display: flex;
         align-items: center;
         padding-right: 45px;
-        cursor: pointer;
         .file-box{
           width: 4em;
           height: 4em;

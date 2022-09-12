@@ -71,13 +71,12 @@
                     class="item"
                   ></el-badge>
                 </div>
-                <!--TODO 可能認識-->
-                <!-- <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
+                <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
                   ></el-badge>
-                </div> -->
+                </div>
                 <img :src="index !== num ? item.icon : item.active"
               /></span>
               <span>{{ item.name }}</span>
@@ -163,13 +162,12 @@
                     class="item"
                   ></el-badge>
                 </div>
-                <!--TODO 可能認識-->
-                <!-- <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
+                <div class="el-badge-box" v-if="index === 0 && maybeKnowNum !== 0">
                   <el-badge
                     :value="maybeKnowNum"
                     class="item"
                   ></el-badge>
-                </div> -->
+                </div>
                 <img :src="index !== num ? item.icon : item.active"
               /></span>
             </router-link>
@@ -299,13 +297,9 @@ import AESBase64 from "@/utils/AESBase64.js";
 import { urlCopy } from "@/utils/urlCopy.js";
 import { getToken } from "_util/utils.js";
 import { mapState, mapMutations } from "vuex";
-import {
-  getUserInfo,
-  getContactList,
-  getMemberActivity,
-  maybeKnow,
-  logout,
-} from "@/api";
+import { logout } from "@/api";
+import { getMemberActivity,getUserInfo } from "@/api/memberProfileController";
+import { getContactList,maybeKnow } from "@/api/memberContactController";
 import { listMember,getGroupList } from '@/api/groupController'
 import { Encrypt } from "@/utils/AESUtils.js";
 import ChatMsg from "./../Chat/ChatMsg.vue";

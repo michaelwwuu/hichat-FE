@@ -210,7 +210,7 @@ import Socket from "@/utils/socket";
 import AESBase64 from "@/utils/AESBase64.js";
 import { mapState, mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
-import { getMemberActivity } from "@/api";
+import { getMemberActivity } from "@/api/memberProfileController";
 import { listMember,getGroupList,groupMemberList,getGroupAuthoritySetting } from '@/api/groupController'
 
 export default {
@@ -548,13 +548,13 @@ export default {
       if (path === "ChatMsg") {
         data.contactId = data.toChatId.replace("u", "");
         data.memberId = data.toChatId.replace("u", "");
-        if(data.toChatId === this.chatUser.toChatId){
+        if(this.device === "pc" && (data.toChatId === this.chatUser.toChatId)){
           return false;
         } else{
           this.setChatUser(data);
         }
       } else if (path === "ChatContact") {
-        if(data.toChatId === this.contactUser.toChatId){
+        if(this.device === "pc" && (data.toChatId === this.contactUser.toChatId)){
           return false;
         } else{
           this.setContactUser(data);
@@ -571,12 +571,10 @@ export default {
             data.isManager = item.isManager;
           }
         });
-        if(data.toChatId === this.groupUser.toChatId){
+        if(this.device === "pc" && (data.toChatId === this.groupUser.toChatId)){
           return false;
         } else{
           this.setChatGroup(data);
-          // this.getGroupListMember(data);
-          // this.getGroupAuthority(data);
         }     
 
       }

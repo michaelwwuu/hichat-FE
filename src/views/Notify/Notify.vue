@@ -94,8 +94,7 @@ export default {
   data() {
     return {
       device: localStorage.getItem("device"),
-      nofityData: JSON.parse(localStorage.getItem("nofity")),
-
+      // nofityData: JSON.parse(localStorage.getItem("nofity")),
       soundNofiyData: JSON.parse(localStorage.getItem("soundNofiy")),
     };
   },

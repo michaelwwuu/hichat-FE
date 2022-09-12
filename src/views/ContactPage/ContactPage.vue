@@ -262,18 +262,13 @@
 
 <script>
 import { developmentMessage } from "@/assets/tools";
-import { mapState, mapMutations } from "vuex";
 import { copyPaste } from "@/utils/urlCopy.js";
-
-import {
-  getSearchById,
-  addContactUser,
-  addBlockContactUser,
-  unBlockContactUser,
-  deleteContactUser,
-} from "@/api";
+import { mapState, mapMutations } from "vuex";
 import { deleteRecentChat } from '@/api/chatController'
 import { setBanPostByPersonal } from '@/api/groupController'
+import { getSearchById } from "@/api/memberProfileController";
+import { addContactUser,deleteContactUser } from "@/api/memberContactController";
+import { addBlockContactUser,unBlockContactUser } from '@/api/memberBlockController'
 
 export default {
   name: "ContactPage",

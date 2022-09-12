@@ -6,8 +6,7 @@
   >
     <div class="input-tools-right" >
       <div>
-        <!--TODO 上傳檔案-->
-        <!-- <img src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true"> -->
+        <img src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true">
         <img
           v-if="device === 'moblie'"
           src="./../../static/images/image.png"
@@ -310,6 +309,16 @@ export default {
       this.fileList = fileList
     },
     handleChange(file, fileList) {
+      let fileFilter = file.name.substring(file.name.lastIndexOf('.')+1)      
+      if(file.name.length > 50){
+        this.$message.error("档案名称过长无法传送");
+        fileList.splice(-1,1)
+        return false;
+      }else if(["exe","apk","ipa"].includes(fileFilter)){
+        this.$message.error("不支援exe、apk、ipa档案格式上传");
+        fileList.splice(-1,1)
+        return false;
+      }      
       this.fileData = fileList
     },  
     // 选择的文件超出限制的文件总数量时触发
@@ -411,6 +420,7 @@ export default {
       formData.append("type", "FILE");
       this.fullscreenLoading = true;
       uploadMessageFile(formData).then((res) => {
+        console.log(res.lengthComputable);
         if (res.code === 200) {
           let message ={
             chatType: "CLI_USER_FILE",
@@ -614,7 +624,7 @@ export default {
     // 发送消息
     sendMessage() {
       if (this.textArea.replace(/\s+/g, "") === "") {
-        this.$message({ message: "不能发送空白消息", type: "error" });
+        this.$message.error("不能发送空白消息");
         this.textArea = "";
         return false;
       }      

@@ -19,8 +19,8 @@
 
 <script>
 import Socket from "@/utils/socket";
+import { getContactList } from "@/api/memberContactController";
 
-import { getContactList } from "@/api";
 import { mapMutations } from "vuex";
 import { getToken } from "_util/utils.js";
 

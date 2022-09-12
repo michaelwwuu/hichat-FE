@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { getContactList } from "@/api";
+import { getContactList } from "@/api/memberContactController";
 
 export default {
   name: "SpreadChange",

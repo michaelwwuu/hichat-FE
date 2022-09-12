@@ -70,7 +70,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { getContactList } from "@/api";
+import { getContactList } from "@/api/memberContactController";
 import { getGroupList,updateGroupSetting } from '@/api/groupController'
 
 export default {

@@ -75,7 +75,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { updateContactNickName } from "@/api";
+import { updateContactNickName} from "@/api/memberContactController";
 import { copyPaste } from "@/utils/urlCopy.js";
 
 export default {

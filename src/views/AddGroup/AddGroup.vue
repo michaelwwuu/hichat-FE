@@ -130,9 +130,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { getContactList} from "@/api";
+import { getContactList} from "@/api/memberContactController";
 import { addGroup } from '@/api/groupController'
-
 import { uploadGroupIcon } from '@/api/uploadController'
 
 export default {

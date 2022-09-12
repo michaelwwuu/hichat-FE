@@ -7,8 +7,7 @@
  
     <div class="input-tools-right">
       <div>
-        <!--TODO 上傳檔案-->
-        <!-- <img v-if="authorityGroupSendLink(groupData)" src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true"> -->
+        <img v-if="authorityGroupSendLink(groupData)" src="./../../static/images/plus.png" alt="" :style="device === 'moblie'?'margin-right: 10px;':'margin-left: 10px; cursor: pointer;'" @click="uploadFileShow = true">
         <template v-if="authorityGroupSendImg(groupData) && device === 'moblie'">
           <img
             src="./../../static/images/image.png"
@@ -452,6 +451,16 @@ export default {
       this.fileList = fileList;
     },
     handleChange(file, fileList) {
+      let fileFilter = file.name.substring(file.name.lastIndexOf('.')+1)      
+      if(file.name.length > 50){
+        this.$message.error("档案名称过长无法传送");
+        fileList.splice(-1,1)
+        return false;
+      }else if(["exe","apk","ipa"].includes(fileFilter)){
+        this.$message.error("不支援exe、apk、ipa档案格式上传");
+        fileList.splice(-1,1)
+        return false;
+      }
       this.fileData = fileList
     },      
     // 取得圖片
@@ -463,6 +472,7 @@ export default {
       this.fileData = [];
       this.copyPicture = false;
       this.uploadImgShow = false;
+      this.uploadFileShow = false,
       this.fullscreenLoading = false;
     },
     //貼上上傳圖片
@@ -504,7 +514,7 @@ export default {
           (this.groupData.isManager && !this.authority.sendImage)) &&
         !this.authorityGroupData.sendImage
       ) {
-        this.$message({ message: "群組已禁止發送圖片訊息", type: "error" });
+        this.$message.error("群組已禁止發送圖片訊息");
         this.fileList = [];
         this.uploadImgShow = false;
         this.fullscreenLoading = false;
@@ -548,6 +558,7 @@ export default {
       formData.append("type", "FILE");
       this.fullscreenLoading = true;
       uploadMessageFile(formData).then((res) => {
+
         if (res.code === 200) {
           let message ={
             chatType: "CLI_GROUP_FILE",
@@ -697,7 +708,7 @@ export default {
           (this.groupData.isManager && !this.authority.sendImage)) &&
         !this.authorityGroupData.sendImage
       ) {
-        this.$message({ message: "群组已禁止发送语音讯息", type: "error" });
+        this.$message.error("群组已禁止发送语音讯息");
         this.sendAduioShow = false;
         this.fullscreenLoading = false;
         this.audioMessageData = {};
@@ -784,7 +795,7 @@ export default {
       this.calloutTextArea = dictionary.toString().replace(/,/g, " ")
 
       if (this.textArea.replace(/\s+/g, "") === "") {
-        this.$message({ message: "不能发送空白消息", type: "error" });
+        this.$message.error("不能发送空白消息");
         this.textArea = "";
         return false;
       }else if (
@@ -796,7 +807,7 @@ export default {
           /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
         var re = new RegExp(strRegex);
         if (re.test(this.textArea.replace(/(\s*$)/g, ""))) {
-          this.$message({ message: "无法发送超连结", type: "error" });
+          this.$message.error("无法发送超连结");
           this.textArea = "";
           return false;
         }
@@ -805,7 +816,7 @@ export default {
         this.textArea.replace(/(\s*$)/g, "").includes(el.word)
       );
       if (this.banMessageData.length !== 0) {
-        this.$message({ message: "讯息含有禁用字词，无法传送", type: "error" });
+        this.$message.error("讯息含有禁用字词，无法传送");
         this.textArea = this.textArea.replace(/(\s*$)/g, "");
         return false;
       } else {

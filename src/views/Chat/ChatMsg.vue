@@ -497,14 +497,9 @@
 
 <script>
 import Socket from "@/utils/socket";
-import {
-  addContactUser,
-  addBlockContactUser,
-  unBlockContactUser,
-  deleteContactUser,
-  getSearchById,
-  getMemberActivity,
-} from "@/api";
+import { getMemberActivity,getSearchById } from "@/api/memberProfileController";
+import { addContactUser,deleteContactUser } from "@/api/memberContactController";
+import { addBlockContactUser,unBlockContactUser } from '@/api/memberBlockController'
 import { pinList,getChatHistory,deleteRecentChatMul,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 import { mapState, mapMutations } from "vuex";

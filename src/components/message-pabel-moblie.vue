@@ -66,6 +66,12 @@
                                   :audio-source="isBase64(el.isRplay.text)"
                                 ></mini-audio>
                               </span>
+                              <div v-else-if="el.isRplay.chatType === 'SRV_USER_FILE'" class="message-file-box" id="file-download">
+                                <div class="file-message" style="padding-left:0;">
+                                  <span>{{fileData(isBase64(el.isRplay.text),'content')}}</span>
+                                  <span>档案大小　: {{ fileData(el.isRplay.fileSize,'size') }}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -120,7 +126,6 @@
                         <span>{{fileData(isBase64(el.message.content),'content')}}</span>
                         <span>档案大小　: {{ fileData(el.fileSize,'size') }}</span>
                       </div>
- 
                     </div>
                   </span>
 
@@ -301,15 +306,15 @@ export default {
       setReplyMsg: "ws/setReplyMsg",
     }),
     unique(arr, key) {
-        if (!arr) return arr
-        if (key === undefined) return [...new Set(arr)]
-        const map = {
-            'string': e => e[key],
-            'function': e => key(e),
-        }
-        const fn = map[typeof key]
-        const obj = arr.reduce((o,e) => (o[fn(e)]=e, o), {})
-        return Object.values(obj)
+      if (!arr) return arr
+      if (key === undefined) return [...new Set(arr)]
+      const map = {
+          'string': e => e[key],
+          'function': e => key(e),
+      }
+      const fn = map[typeof key]
+      const obj = arr.reduce((o,e) => (o[fn(e)]=e, o), {})
+      return Object.values(obj)
     },
     scrollHistoryBar(){
       let scrollTop = document.querySelector(".message-pabel-box");
@@ -456,7 +461,7 @@ export default {
             if(data.chatType === "SRV_USER_IMAGE"){
               this.downloadImages(data);
             }else{
-              this.downloadFile(data.message.content,this.fileData(data.message.content,'content'))
+              this.downloadFile(data.message.content,this.fileData(data.message.content,'content'),data)
             }
           },
         },
@@ -557,12 +562,36 @@ export default {
         });
       }
     },
-    downloadFile(href,filename) {
-      let element = document.createElement('a')
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(href))
-      element.setAttribute('download', filename)
-      element.style.display = 'none'
-      element.click()
+    // downloadFile(href,filename) {
+    //   let element = document.createElement('a')
+    //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(href))
+    //   element.setAttribute('download', filename)
+    //   console.log(element)
+    //   // element.style.display = 'none'
+    //   element.click()
+    // },
+    downloadFile (domImg, filename,data) {
+      let fileFilter = filename.substring(filename.lastIndexOf('.')+1)      
+      if(["png","jpg","svg","gif","jpeg"].includes(fileFilter)){
+        this.downloadImages(data)
+      }
+        // // 创建隐藏的可下载链接
+        // var eleLink = document.createElement('a');
+        // eleLink.download = filename;
+        // eleLink.style.display = 'none';
+        // // 图片转base64地址
+        // var canvas = document.createElement('canvas');
+        // var context = canvas.getContext('2d');
+        // var width = domImg.naturalWidth;
+        // var height = domImg.naturalHeight;
+        // context.drawImage(domImg, 0, 0);
+        // // 如果是PNG图片，则canvas.toDataURL('image/png')
+        // eleLink.href = canvas.toDataURL('image/jpeg');
+        // // 触发点击
+        // document.body.appendChild(eleLink);
+        // eleLink.click();
+        // // 然后移除
+        // document.body.removeChild(eleLink);
     },
     downloadImages(data) {
       let hreLocal = "";
@@ -905,7 +934,6 @@ export default {
         display: flex;
         align-items: center;
         padding-right: 45px;
-        cursor: pointer;
         .file-box{
           width: 4em;
           height: 4em;
