@@ -292,6 +292,7 @@ import { copyPaste } from "@/utils/urlCopy.js";
 import { getGroupAuthoritySetting } from '@/api/groupController'
 import { pinHistory,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
+import { saveAs } from 'file-saver';
 import AESBase64 from "@/utils/AESBase64.js";
 import VueMarkdown from "vue-markdown";
 
@@ -566,11 +567,7 @@ export default {
           name: "download",
           label: "下载",
           onClick: () => {
-            if(data.chatType === "SRV_GROUP_IMAGE"){
-              this.downloadImages(data);
-            }else{
-              this.downloadFile(this.isBase64(data.message.content),this.fileData(this.isBase64(data.message.content),'content'))
-            }            
+            this.downloadFile(this.isBase64(data.message.content),this.fileData(this.isBase64(data.message.content),'content'))          
           },
         },
         {
@@ -728,42 +725,8 @@ export default {
         });
       }
     },
-    downloadFile(href,filename) {
-      let element = document.createElement('a')
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(href))
-      element.setAttribute('download', filename)
-      element.style.display = 'none'
-      element.click()
-    },  
-    downloadImages(data) {
-      let downloadUrl = "";
-      downloadUrl = this.isBase64(data.message.content);
-      this.downloadByBlob(downloadUrl, "images");
-    },
-    downloadByBlob(url, name) {
-      let image = new Image();
-      image.setAttribute("crossOrigin", "anonymous");
-      image.src = url;
-      image.onload = () => {
-        let canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-        let ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0, image.width, image.height);
-        canvas.toBlob((blob) => {
-          let url = URL.createObjectURL(blob);
-          this.download(url, name);
-          // 用完释放URL对象
-          URL.revokeObjectURL(url);
-        });
-      };
-    },
-    download(href, name) {
-      let link = document.createElement("a");
-      link.download = name;
-      link.href = href;
-      link.click();
-      link.remove();
+    downloadFile (href,filename) {
+      saveAs(href, filename);
     },
     deleteRecent(data, type) {
       let parmas = {

@@ -212,6 +212,7 @@ import { mapState, mapMutations } from "vuex";
 import { pinHistory,unpinHistory,deleteRecentChat } from '@/api/chatController'
 import { fileBoxName, formatFileSize } from "@/utils/FileSizeName.js";
 import { copyPaste } from "@/utils/urlCopy.js";
+import { saveAs } from 'file-saver';
 import AESBase64 from "@/utils/AESBase64.js";
 import VueMarkdown from "vue-markdown";
 export default {
@@ -458,11 +459,7 @@ export default {
           name: "download",
           label: "下载",
           onClick: () => {
-            if(data.chatType === "SRV_USER_IMAGE"){
-              this.downloadImages(data);
-            }else{
-              this.downloadFile(data.message.content,this.fileData(data.message.content,'content'),data)
-            }
+            this.downloadFile(data.message.content,this.fileData(data.message.content,'content'))
           },
         },
         {
@@ -562,66 +559,8 @@ export default {
         });
       }
     },
-    // downloadFile(href,filename) {
-    //   let element = document.createElement('a')
-    //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(href))
-    //   element.setAttribute('download', filename)
-    //   console.log(element)
-    //   // element.style.display = 'none'
-    //   element.click()
-    // },
-    downloadFile (domImg, filename,data) {
-      let fileFilter = filename.substring(filename.lastIndexOf('.')+1)      
-      if(["png","jpg","svg","gif","jpeg"].includes(fileFilter)){
-        this.downloadImages(data)
-      }
-        // // 创建隐藏的可下载链接
-        // var eleLink = document.createElement('a');
-        // eleLink.download = filename;
-        // eleLink.style.display = 'none';
-        // // 图片转base64地址
-        // var canvas = document.createElement('canvas');
-        // var context = canvas.getContext('2d');
-        // var width = domImg.naturalWidth;
-        // var height = domImg.naturalHeight;
-        // context.drawImage(domImg, 0, 0);
-        // // 如果是PNG图片，则canvas.toDataURL('image/png')
-        // eleLink.href = canvas.toDataURL('image/jpeg');
-        // // 触发点击
-        // document.body.appendChild(eleLink);
-        // eleLink.click();
-        // // 然后移除
-        // document.body.removeChild(eleLink);
-    },
-    downloadImages(data) {
-      let hreLocal = "";
-      hreLocal = this.isBase64(data.message.content);
-      this.downloadByBlob(hreLocal, "images");
-    },
-    downloadByBlob(url, name) {
-      let image = new Image();
-      image.setAttribute("crossOrigin", "anonymous");
-      image.src = url;
-      image.onload = () => {
-        let canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-        let ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0, image.width, image.height);
-        canvas.toBlob((blob) => {
-          let url = URL.createObjectURL(blob);
-          this.download(url, name);
-          // 用完释放URL对象
-          URL.revokeObjectURL(url);
-        });
-      };
-    },
-    download(href, name) {
-      let link = document.createElement("a");
-      link.download = name;
-      link.href = href;
-      link.click();
-      link.remove();
+    downloadFile (href,filename) {
+     saveAs(href, filename);
     },
     deleteRecent(data, type) {
       let parmas = {
