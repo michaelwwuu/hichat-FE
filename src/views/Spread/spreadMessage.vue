@@ -407,7 +407,7 @@ export default {
     }
   }
   .text-send-box {
-    width: 280px;
+    width: 260px;
     height: 35px;
     display: flex;
     align-items: center;

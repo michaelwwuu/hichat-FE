@@ -919,14 +919,14 @@ export default {
     }
   }
   .text-send-box {
-    width: 280px;
+    width: 260px;
     height: 35px;
     display: flex;
     align-items: center;
     background-color: #f4f4f4;
     border-radius: 20px;
     .disable-box {
-      width: 280px;
+      width: 260px;
       height: 35px;
       display: flex;
       align-items: center;

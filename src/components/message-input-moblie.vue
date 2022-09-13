@@ -706,7 +706,7 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .message-input-box {
   height: 55px;
   background-color: rgba(255, 255, 255, 0.85);
@@ -723,7 +723,7 @@ export default {
     }
   }
   .text-send-box {
-    width: 280px;
+    width: 260px;
     height: 35px;
     display: flex;
     align-items: center;
